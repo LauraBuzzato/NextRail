@@ -6,77 +6,139 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AquaTech | Página Inicial</title>
+    <title>NextRail | Página Inicial</title>
 
     <script src="./js/sessao.js"></script>
-
-    <link rel="stylesheet" href="./css/estilo.css">
-    <link rel="icon" href="./assets/icon/favicon2.ico">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/menu.css">
+    <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
     <link rel="preconnect" href="https://fonts.gstatic.com">
 </head>
-
 <body>
-    <div class="header">
-      <div class="container">
-        <h1 class="titulo">AquaTech</h1>
-        <ul class="navbar">
-          <li class="agora">
-            <a href="#">Inicial</a>
-          </li>
-          <li>
-            <a href="simulador.html">Simulador</a>
-          </li>
-          <li>|</li>
-          <li>
-            <a href="login.html">Login</a>
-          </li>
-          <li>
-            <a href="cadastro.html">Cadastro</a>
-          </li>
-        </ul>
-      </div>
-    </div>
   
-    <div class="banner">
-      <div class="container">
-        <p>Preservando <span>hoje</span> para existirem <span>amanhã</span>.</p>
+  <!--Menu vertical-->
+  <div class="menu">
+    <ul class="link-items">
+      <div class="logo-container">
+        <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
       </div>
-    </div>
-  
-    <div class="social">
-      <div class="container">
-        <div class="boxes">
-          <div class="box">
-            <img src="assets/imgs/planet-earth_color.png">
-            <h4>Missão</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
+
+
+      <!-- Página inicial com introdução ao sistema -->
+      <li class="link-item active">
+        <a href="#inicio" class="link">
+          <ion-icon name="home-outline"></ion-icon>
+          <span style="--i: 1">Início</span>
+        </a>
+      </li>
+
+      <!-- Monitoramento de recursos -->
+      <li class="link-item">
+        <a href="#monitoramento" class="link">
+          <ion-icon name="desktop-outline"></ion-icon>
+          <span style="--i: 2">Monitoramento</span>
+        </a>
+      </li>
+
+      <!-- Alertas do sistema -->
+      <li class="link-item">
+        <a href="#alertas" class="link">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span style="--i: 3">Alertas</span>
+        </a>
+      </li>
+
+      <!-- Relatórios -->
+      <li class="link-item">
+        <a href="#relatorios" class="link">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          <span style="--i: 4">Relatórios</span>
+        </a>
+      </li>
+
+      <!-- Curiosidades sobre ferrovias/tecnologia -->
+      <li class="link-item">
+        <a href="#curiosidades" class="link">
+          <ion-icon name="bulb-outline"></ion-icon>
+          <span style="--i: 5">Curiosidades</span>
+        </a>
+      </li>
+
+      <!-- Sobre o projeto -->
+      <li class="link-item">
+        <a href="#sobre" class="link">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <span style="--i: 6">Sobre</span>
+        </a>
+      </li>
+
+      <!-- Botão de login -->
+      <li class="link-item">
+        <a href="login.html" class="link">
+          <ion-icon name="log-in-outline"></ion-icon>
+          <span style="--i: 7">Entrar</span>
+        </a>
+      </li>
+
+      <!-- Alternância de tema -->
+      <li class="link-item dark-mode">
+        <a href="#" class="link">
+          <ion-icon name="moon-outline"></ion-icon>
+          <span style="--i: 8">Modo escuro</span>
+        </a>
+      </li>
+    </ul>
+
+  </div>
+
+  <main class="fundo-escuro fundo-imagem">
+    <div class="container-pagina">
+      <section class="conteudo-principal">
+        <div class="lado-esquerdo">
+          <div class="logo-principal">
+            <span class="texto-logo">NextRail</span>
           </div>
-          <div class="box">
-            <img src="assets/imgs/lightbulb_color.png">
-            <h4>Visão</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
-          <div class="box">
-            <img src="assets/imgs/growth_color.png">
-            <h4>Valores</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
+          <div class="colecao-monitoramento">
+            <span class="id-colecao">/ 01</span>
+            <div class="titulo-colecao">Monitoramento de Recursos</div>
+            <div class="desc-colecao">Sistema Ativo &bull; Dashboard &bull; Alertas</div>
           </div>
         </div>
-      </div>
+        <div class="principal">
+          <h1 class="titulo-destaque">Monitore<br>de Qualquer Lugar</h1>
+          <p class="subtitulo">Acompanhe o status dos recursos computacionais do CCO ferroviário em tempo real.<br>Ferramenta moderna para profissionais do setor.</p>
+        </div>
+      </section>
+      <section class="rodape-principal">
+        <div class="eventos">
+          <h3>EVENTOS</h3>
+          <div class="lista-eventos">
+            <div class="item-evento">
+              <span class="titulo-evento">Alerta de CPU</span>
+              <span class="desc-evento">Servidor 01 &bull; 18/08 &bull; 14:00</span>
+            </div>
+            <div class="item-evento">
+              <span class="titulo-evento">Atualização de Sistema</span>
+              <span class="desc-evento">Servidor 02 &bull; 19/08 &bull; 09:00</span>
+            </div>
+          </div>
+        </div>
+        <div class="noticias">
+          <h3>NOTÍCIAS</h3>
+          <div class="lista-noticias">
+            <div class="item-noticia">
+              <span class="titulo-noticia">Nova funcionalidade de relatórios</span>
+              <span class="desc-noticia">Agora disponível para todos os usuários. <a href="#">Leia mais</a></span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-  
-    <div class="footer">
-      <div class="container">
-        <h4>Feito com amor por aluno &hearts; SPTech &copy; 2023</h4>
-        <span class="version">v1.0.0</span>
-      </div>
-    </div>
-  </body>
+  </main>
+
+  <!--Script-->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script src="./js/script.js"></script>
 
 </html>
