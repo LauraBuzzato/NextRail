@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="./css/menu.css">
     <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
     <link rel="preconnect" href="https://fonts.gstatic.com">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   
@@ -148,7 +149,23 @@
 
   <!-- Parte de relatorios -->
   <main class="relatorios">
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti error necessitatibus dignissimos ad, voluptatem molestiae accusantium ratione? Impedit sit possimus quaerat dicta, ullam quis assumenda molestias in adipisci fugit fuga!</p>
+    <div id="item-relatorios">
+      <ul>
+        <li>texto</li>
+        <li>texto</li>
+        <li>texto</li>
+        <li>texto</li>
+      </ul>
+    </div>
+    <div class="gr1">
+    <canvas id="graficoRelatorioCPU" width="100" height="50"></canvas>
+        <canvas id="graficoRelatorioDisco" width="100" height="50"></canvas>
+    </div>
+
+    <div id="conteudo">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore expedita, eos ex corporis neque praesentium cupiditate aut necessitatibus tempora illo, culpa maxime accusamus nemo eveniet debitis laboriosam quidem voluptate. Quam.
+    </div>
+    
   </main>
 
   <!-- Parte de curiosidades -->
@@ -160,10 +177,67 @@
     <main class="sobre">
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio quibusdam, veritatis assumenda nihil suscipit rem nobis asperiores nam vero, consequuntur nulla quis. Atque aliquam dignissimos ea tenetur debitis fuga recusandae?</p>
     </main>
-    
+
   <!--Script-->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script src="./js/script.js"></script>
 
+  <!-- gráficos -->
+
+  <script>
+    const ctx = document.getElementById('graficoRelatorioCPU').getContext('2d');
+    const graficoRelatorio = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+        datasets: [{
+          label: 'Relatórios Gerados',
+          data: [90, 4, 6, 8, 12, 15, 20],
+          borderColor: 'rgba(99, 102, 241, 1)',
+          backgroundColor: 'rgba(99, 102, 241, 0.2)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+    const xtc = document.getElementById('graficoRelatorioDisco').getContext('2d');
+    const graficoRelatorioDisco = new Chart(xtc, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+        datasets: [{
+          label: 'Relatórios Gerados',
+          data: [90, 4, 6, 8, 12, 15, 20],
+          borderColor: 'rgba(99, 102, 241, 1)',
+          backgroundColor: 'rgba(99, 102, 241, 0.2)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  </script>
+
+  <footer>
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaah
+  </footer>
 </html>
