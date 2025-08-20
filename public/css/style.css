@@ -292,7 +292,7 @@
 
   #img_tempo_real {
     width: 25vw;
-    height: 30vh;
+    height: 28vh;
     background: linear-gradient(300deg, #97979733 0%, #000000 100%), url('../assets/imgs/img_tempo_real.png') right;
     background-size: cover;
     background-blend-mode: lighten;
@@ -300,14 +300,14 @@
 
   #img_alertas {
     width: 25vw;
-    height: 30vh;
+    height: 28vh;
     background: url('../assets/imgs/img_alertas.png') center no-repeat;
     background-size: contain;
   }
 
   #img_relatorios {
     width: 25vw;
-    height: 30vh;
+    height: 28vh;
     background: url('../assets/imgs/img_relatorios.png') center no-repeat;
     background-size: contain;
   }
