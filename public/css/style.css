@@ -248,7 +248,8 @@
 /* HOME MONITORAMENTO */
 
 .monitoramento {
-  background: linear-gradient(to top, #000000, #303030, #000000);
+  /* background: linear-gradient(to right, #000000, #303030, #000000); */
+  background: radial-gradient(circle, #303030, #000000);
   color: #fff;
 
   .container_primario {
@@ -284,32 +285,33 @@
     font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: 2px;
+    text-decoration: underline;
   }
 
   .box_monitoramento p {
     font-size: 0.95rem;
   }
 
-  #img_tempo_real {
+  .img_monitoramento{
     width: 25vw;
     height: 28vh;
-    background: linear-gradient(300deg, #97979733 0%, #000000 100%), url('../assets/imgs/img_tempo_real.png') right;
+    border-radius: 30px;
+    border: solid black 6px;
+  }
+
+  #img_tempo_real {
+    background: url('../assets/imgs/img_tempo_real.png') right no-repeat;
     background-size: cover;
-    background-blend-mode: lighten;
   }
 
   #img_alertas {
-    width: 25vw;
-    height: 28vh;
     background: url('../assets/imgs/img_alertas.png') center no-repeat;
-    background-size: contain;
+    background-size: cover;
   }
 
   #img_relatorios {
-    width: 25vw;
-    height: 28vh;
     background: url('../assets/imgs/img_relatorios.png') center no-repeat;
-    background-size: contain;
+    background-size: cover;
   }
 
 }
