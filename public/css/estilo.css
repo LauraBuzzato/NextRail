@@ -199,7 +199,9 @@ body {
   border-radius: 10px;
   margin: 0;
 }
-
+.formulario>a{
+  color: azure;
+}
 .formulario select {
   border: 2px solid #32b9cd;
   background-color: white;
@@ -275,14 +277,15 @@ body {
 
 .card_erro {
   display: none;
-  background-color: #fff;
-  color: black;
-  width: 230px;
+  background-color: #545454da;
+  color: rgb(198, 198, 198);
+  width: 40%;
   position: fixed;
   border-radius: 4px;
-  border: #ED145B 3px solid;
-  padding: 10px;
-  margin-right: 10%;
+  border: #535353 3px solid;
+  padding: 10px; 
+  bottom: 0px;
+  right: 0px;
 }
 
 .card_erro #mensagem_erro{
