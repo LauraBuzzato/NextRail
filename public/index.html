@@ -296,78 +296,73 @@
   </main>
 
   <!-- SCRIPT GRÁFICOS -->
-  <script>
-    const cpuCtx = document.getElementById('graficoRelatorioCPU').getContext('2d');
-    const ramCtx = document.getElementById('graficoRelatorioRAM').getContext('2d');
-    const discoCtx = document.getElementById('graficoRelatorioDisco').getContext('2d');
-    const redeCtx = document.getElementById('graficoRelatorioRede').getContext('2d');
+<script>
+  const cpuCtx = document.getElementById('graficoRelatorioCPU').getContext('2d');
+  const ramCtx = document.getElementById('graficoRelatorioRAM').getContext('2d');
+  const discoCtx = document.getElementById('graficoRelatorioDisco').getContext('2d');
+  const redeCtx = document.getElementById('graficoRelatorioRede').getContext('2d');
 
-    const configLine = {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-        datasets: [{
-          label: '',
-          data: [],
-          borderColor: '#4e79a7',
-          backgroundColor: 'rgba(78,121,167,0.2)',
-          tension: 0.4,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        animation: { duration: 2000 },
-        plugins: { legend: { display: true } },
-        scales: { y: { beginAtZero: true, max: 100 } }
-      }
-    };
+  const configLine = {
+    type: 'line',
+    data: {
+      labels: Array.from({ length: 10 }, (_, i) => i + 1),
+      datasets: [{
+        label: '',
+        data: [],
+        borderColor: '#4e79a7',
+        backgroundColor: 'rgba(78,121,167,0.2)',
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 800 },
+      plugins: { legend: { display: true } },
+      scales: { y: { beginAtZero: true, max: 100 } }
+    }
+  };
 
-    const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
-    graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
+  const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
 
-    const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
-    graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
+  const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
 
-    const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
-    graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
+  const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
 
-    const graficoRede = new Chart(redeCtx, JSON.parse(JSON.stringify(configLine)));
-    graficoRede.data.datasets[0].label = 'Uso de Rede (%)';
+  const graficoRede = new Chart(redeCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoRede.data.datasets[0].label = 'Uso de Rede (%)';
 
-    const dadosCPU = [20, 40, 60, 55, 75, 65, 80];
-    const dadosRAM = [35, 50, 70, 65, 85, 60, 90];
-    const dadosDisco = [15, 30, 45, 35, 50, 70, 90];
-    const dadosRede = [10, 20, 40, 35, 60, 55, 75];
+  function gerarDadoAleatorio() {
+    return Math.floor(Math.random() * 100);
+  }
 
-    const graficoCPUelem = document.getElementById('graficoRelatorioCPU');
-    const graficoRAMelem = document.getElementById('graficoRelatorioRAM');
-    const graficoDiscoelem = document.getElementById('graficoRelatorioDisco');
-    const graficoRedeelem = document.getElementById('graficoRelatorioRede');
+  function atualizarGrafico(grafico) {
+    if (grafico.data.datasets[0].data.length >= 10) {
+      grafico.data.datasets[0].data.shift();
+    }
+    grafico.data.datasets[0].data.push(gerarDadoAleatorio());
+    grafico.update();
+  }
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        graficoCPU.data.datasets[0].data = dadosCPU;
-        graficoRAM.data.datasets[0].data = dadosRAM;
-        graficoDisco.data.datasets[0].data = dadosDisco;
-        graficoRede.data.datasets[0].data = dadosRede;
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      
+      //Mudar depois...
+      setInterval(() => atualizarGrafico(graficoCPU), 500);
+      setInterval(() => atualizarGrafico(graficoRAM), 1000);
+      setInterval(() => atualizarGrafico(graficoDisco), 700);
+      setInterval(() => atualizarGrafico(graficoRede), 1020);
 
-        graficoCPU.update();
-        graficoRAM.update();
-        graficoDisco.update();
-        graficoRede.update();
+      observer.disconnect();
+    }
+  }, { threshold: 0.4 });
 
-        graficoCPUelem.classList.add('visible');
-        graficoRAMelem.classList.add('visible');
-        graficoDiscoelem.classList.add('visible');
-        graficoRedeelem.classList.add('visible');
+  observer.observe(document.getElementById('relatorios'));
+</script>
 
-        observer.disconnect();
-      }
-    }, { threshold: 0.4 });
-
-    observer.observe(document.getElementById('relatorios'));
-  </script>
 
   <!--Script-->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
