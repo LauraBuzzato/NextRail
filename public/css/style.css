@@ -119,12 +119,14 @@
   border-radius: 0 0 20px 20px;
 }
 
-.eventos, .noticias {
+.eventos,
+.noticias {
   flex: 1;
   margin-right: 30px;
 }
 
-.eventos h3, .noticias h3 {
+.eventos h3,
+.noticias h3 {
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 18px;
@@ -209,7 +211,7 @@
   font-weight: 800;
   margin-bottom: 20px;
   color: #ffe066;
-  text-shadow: 0 3px 8px rgba(0,0,0,0.6);
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
 }
 
 .relatorios p {
@@ -231,20 +233,20 @@
 
 .relatorios .lista-beneficios li {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 18px 30px;
   border-radius: 16px;
   font-size: 1rem;
   font-weight: 500;
   color: #fff;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .relatorios .lista-beneficios li:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.55);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -261,7 +263,7 @@
   font-weight: 800;
   margin-bottom: 20px;
   color: #ffe066;
-  text-shadow: 0 3px 8px rgba(0,0,0,0.6);
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
 }
 
 .relatorios p {
@@ -283,20 +285,20 @@
 
 .relatorios .lista-beneficios li {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 18px 30px;
   border-radius: 16px;
   font-size: 1rem;
   font-weight: 500;
   color: #fff;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .relatorios .lista-beneficios li:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.55);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -313,7 +315,7 @@
   background: #1d0d1d;
   padding: 20px;
   border-radius: 18px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   text-align: center;
 }
 
@@ -325,74 +327,157 @@
 }
 
 .grafico-box canvas {
-  width: 100% ;
-  height: 190px ;
+  width: 100%;
+  height: 190px;
 }
 
 /* ============== CURIOSIDADES ================== */
 .curiosidades {
-  background: linear-gradient(180deg, #181a20 0%, #23262b 100%);
+  background: linear-gradient(160deg, #0f0a10 0%, #181a20 100%);
+  padding: 100px 60px;
   color: #fff;
-  padding: 80px 60px;
+  text-align: center;
+  border-top: 4px solid #e63946;
 }
 
 .curiosidades .container-secao {
   max-width: 1200px;
   margin: 0 auto;
-  text-align: center;
 }
 
 .curiosidades h2 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 800;
   margin-bottom: 20px;
+  color: #ffe066;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
 }
 
-.curiosidades p {
-  color: #bdbdbd;
-  font-size: 1rem;
-  margin-bottom: 40px;
+.curiosidades>p {
+  font-size: 1.1rem;
+  color: #d6d6d6;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
 }
 
+/* Cards de curiosidades */
 .caixas-info {
   display: flex;
-  gap: 30px;
   justify-content: center;
+  gap: 30px;
   flex-wrap: wrap;
+  padding: 70px;
 }
 
 .caixa-info {
-  background: #23262b;
-  padding: 30px 20px;
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 28px 24px;
+  border-radius: 18px;
   flex: 1;
   min-width: 250px;
   max-width: 320px;
   text-align: center;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .caixa-info:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+  background: rgba(255, 255, 255, 0.08);
 }
 
+/* Ícones*/
 .caixa-info ion-icon {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   color: #ffe066;
   margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.caixa-info:hover ion-icon {
+  transform: scale(1.2) rotate(5deg);
 }
 
 .caixa-info h3 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 10px;
+  color: #fff;
 }
 
 .caixa-info p {
   font-size: 0.95rem;
-  color: #bdbdbd;
+  color: #d6d6d6;
+  line-height: 1.5;
+}
+
+.curiosidade-extra {
+  margin-top: 60px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 40px 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+.curiosidade-extra h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #ffe066;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.curiosidade-extra p {
+  font-size: 1rem;
+  color: #d6d6d6;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.curiosidade-extra button {
+  background: #e63946;
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+.curiosidade-extra button:hover {
+  background: #ff4d5a;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.55);
+}
+
+.curiosidade-extra button:active {
+  transform: scale(0.96);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.curiosidade-texto {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-top: 20px;
+  font-style: italic;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.curiosidade-texto.mostrar {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ================== SOBRE ================== */
@@ -436,13 +521,13 @@
   min-width: 250px;
   max-width: 320px;
   text-align: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card-info:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
 }
 
 .card-info h3 {
@@ -555,15 +640,18 @@ html {
     gap: 20px;
   }
 
-  .eventos, .noticias {
+  .eventos,
+  .noticias {
     margin-right: 0;
   }
 
-  .curiosidades, .sobre {
+  .curiosidades,
+  .sobre {
     padding: 60px 20px;
   }
 
-  .caixas-info, .missao-valores {
+  .caixas-info,
+  .missao-valores {
     flex-direction: column;
     align-items: center;
   }

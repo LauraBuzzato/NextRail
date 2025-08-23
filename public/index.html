@@ -14,6 +14,7 @@
   <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -139,63 +140,66 @@
       <div class="box_monitoramento">
         <div id="img_alertas"></div>
         <span class="titulo_boxes">Sistema de Alertas</span>
-        <p>Alertas em caso de informações indesejadas, para evitar o risco de acidentes e tratar os problemas antes mesmo de começar.</p>
+        <p>Alertas em caso de informações indesejadas, para evitar o risco de acidentes e tratar os problemas antes
+          mesmo de começar.</p>
       </div>
       <div class="box_monitoramento">
         <div id="img_relatorios"></div>
         <span class="titulo_boxes">Geração de Relatórios</span>
-        <p>Relatórios personalizados indicando o histórico de desempenho, tendências de uso e destaque de informações importantes para otimização dos recursos.</p>
+        <p>Relatórios personalizados indicando o histórico de desempenho, tendências de uso e destaque de informações
+          importantes para otimização dos recursos.</p>
       </div>
     </section>
   </main>
 
   <!-- RELATÓRIOS -->
-<main class="relatorios" id="relatorios">
-  <div class="container-secao">
-    <div class="texto-secao">
-      <h2>Otimização através de Relatórios</h2>
-      <p>
-        Com gráficos intuitivos, você acompanha tendências de desempenho de CPU, memória, disco e rede.
-        Descubra picos de uso, identifique gargalos e tome decisões rápidas para manter a operação estável e eficiente.
-      </p>
-<ul class="lista-beneficios">
-  <li>
-    <ion-icon name="bar-chart-outline"></ion-icon>
-    <span>Visualização clara de indicadores críticos</span>
-  </li>
-  <li>
-    <ion-icon name="flash-outline"></ion-icon>
-    <span>Relatórios otimizados para análise em tempo real</span>
-  </li>
-  <li>
-    <ion-icon name="shield-checkmark-outline"></ion-icon>
-    <span>Dados seguros e confiáveis</span>
-  </li>
-</ul>
+  <main class="relatorios" id="relatorios">
+    <div class="container-secao">
+      <div class="texto-secao">
+        <h2>Otimização através de Relatórios</h2>
+        <p>
+          Com gráficos intuitivos, você acompanha tendências de desempenho de CPU, memória, disco e rede.
+          Descubra picos de uso, identifique gargalos e tome decisões rápidas para manter a operação estável e
+          eficiente.
+        </p>
+        <ul class="lista-beneficios">
+          <li>
+            <ion-icon name="bar-chart-outline"></ion-icon>
+            <span>Visualização clara de indicadores críticos</span>
+          </li>
+          <li>
+            <ion-icon name="flash-outline"></ion-icon>
+            <span>Relatórios otimizados para análise em tempo real</span>
+          </li>
+          <li>
+            <ion-icon name="shield-checkmark-outline"></ion-icon>
+            <span>Dados seguros e confiáveis</span>
+          </li>
+        </ul>
 
-    </div>
+      </div>
 
-    <!-- Container dos gráficos -->
-    <div class="graficos-container">
-      <div class="grafico-box">
-        <h3>Uso de CPU</h3>
-        <canvas id="graficoRelatorioCPU"></canvas>
-      </div>
-      <div class="grafico-box">
-        <h3>Uso de RAM</h3>
-        <canvas id="graficoRelatorioRAM"></canvas>
-      </div>
-      <div class="grafico-box">
-        <h3>Uso de Disco</h3>
-        <canvas id="graficoRelatorioDisco"></canvas>
-      </div>
-      <div class="grafico-box">
-        <h3>Uso de Rede</h3>
-        <canvas id="graficoRelatorioRede"></canvas>
+      <!-- Container dos gráficos -->
+      <div class="graficos-container">
+        <div class="grafico-box">
+          <h3>Uso de CPU</h3>
+          <canvas id="graficoRelatorioCPU"></canvas>
+        </div>
+        <div class="grafico-box">
+          <h3>Uso de RAM</h3>
+          <canvas id="graficoRelatorioRAM"></canvas>
+        </div>
+        <div class="grafico-box">
+          <h3>Uso de Disco</h3>
+          <canvas id="graficoRelatorioDisco"></canvas>
+        </div>
+        <div class="grafico-box">
+          <h3>Uso de Rede</h3>
+          <canvas id="graficoRelatorioRede"></canvas>
+        </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
 
 
 
@@ -207,6 +211,7 @@
         Além do monitoramento, a ferrovia é um dos setores que mais evoluem tecnologicamente.
         Trouxemos algumas curiosidades que mostram como a inovação está presente no dia a dia:
       </p>
+
       <div class="caixas-info">
         <div class="caixa-info">
           <ion-icon name="analytics-outline"></ion-icon>
@@ -218,27 +223,60 @@
           <h3>Segurança e Precisão</h3>
           <p>Os dados coletados são altamente confiáveis, garantindo decisões assertivas e maior proteção.</p>
         </div>
-
         <div class="caixa-info">
           <ion-icon name="trending-up-outline"></ion-icon>
           <h3>Eficiência Otimizada</h3>
           <p>Com base em análises preditivas, é possível prever falhas e evitar prejuízos ao sistema.</p>
         </div>
       </div>
+
+      <div class="curiosidade-extra">
+        <h3>Você sabia?</h3>
+        <p>Clique no botão abaixo para descobrir uma curiosidade aleatória sobre o setor ferroviário:</p>
+        <button onclick="mostrarCuriosidade()">Mostrar Curiosidade</button>
+        <p id="curiosidadeTexto" class="curiosidade-texto"></p>
+      </div>
     </div>
   </main>
+
+  <script>
+    var curiosidades = [
+      "Trens modernos podem atingir mais de 300 km/h em alguns trechos.",
+      "Sensores inteligentes já conseguem detectar falhas antes mesmo de ocorrerem.",
+      "O uso de big data permite prever gargalos e aumentar a eficiência das operações.",
+      "O setor ferroviário é um dos que mais investem em energia limpa e sustentável.",
+      "Drones já são usados para inspecionar trilhos e detectar problemas em tempo real."
+    ];
+
+    function mostrarCuriosidade() {
+      var texto = document.getElementById("curiosidadeTexto");
+      var aleatorio = curiosidades[Math.floor(Math.random() * curiosidades.length)];
+      texto.textContent = aleatorio;
+      texto.classList.add("mostrar");
+
+      // Reinicia animação se vc clicar de novo :)
+      setTimeout(() => {
+        texto.classList.remove("mostrar");
+        void texto.offsetWidth; // Funciona pra resetar a animação
+        texto.classList.add("mostrar");
+      }, 50);
+    }
+
+  </script>
+
 
   <!-- SOBRE -->
   <main class="sobre" id="sobre">
     <div class="container-secao">
       <h2>Sobre o Projeto NextRail</h2>
       <p>
-        O <strong>NextRail</strong> foi desenvolvido para transformar a forma como os Centros de Controle Operacional 
-        ferroviário monitoram seus recursos. O sistema oferece dashboards interativos, relatórios automáticos e alertas inteligentes.
+        O <strong>NextRail</strong> foi desenvolvido para transformar a forma como os Centros de Controle Operacional
+        ferroviário monitoram seus recursos. O sistema oferece dashboards interativos, relatórios automáticos e alertas
+        inteligentes.
       </p>
       <p>
-        Nosso objetivo é <strong>trazer tecnologia de ponta</strong> para dentro das operações ferroviárias, 
-        promovendo eficiência, segurança e tomada de decisão em tempo real. 
+        Nosso objetivo é <strong>trazer tecnologia de ponta</strong> para dentro das operações ferroviárias,
+        promovendo eficiência, segurança e tomada de decisão em tempo real.
       </p>
       <div class="missao-valores">
         <div class="card-info">
@@ -258,78 +296,78 @@
   </main>
 
   <!-- SCRIPT GRÁFICOS -->
-<script>
-  const cpuCtx = document.getElementById('graficoRelatorioCPU').getContext('2d');
-  const ramCtx = document.getElementById('graficoRelatorioRAM').getContext('2d');
-  const discoCtx = document.getElementById('graficoRelatorioDisco').getContext('2d');
-  const redeCtx = document.getElementById('graficoRelatorioRede').getContext('2d');
+  <script>
+    const cpuCtx = document.getElementById('graficoRelatorioCPU').getContext('2d');
+    const ramCtx = document.getElementById('graficoRelatorioRAM').getContext('2d');
+    const discoCtx = document.getElementById('graficoRelatorioDisco').getContext('2d');
+    const redeCtx = document.getElementById('graficoRelatorioRede').getContext('2d');
 
-  const configLine = {
-    type: 'line',
-    data: {
-      labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-      datasets: [{
-        label: '',
-        data: [],
-        borderColor: '#4e79a7',
-        backgroundColor: 'rgba(78,121,167,0.2)',
-        tension: 0.4,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      animation: { duration: 2000 },
-      plugins: { legend: { display: true } },
-      scales: { y: { beginAtZero: true, max: 100 } }
-    }
-  };
+    const configLine = {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+        datasets: [{
+          label: '',
+          data: [],
+          borderColor: '#4e79a7',
+          backgroundColor: 'rgba(78,121,167,0.2)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: { duration: 2000 },
+        plugins: { legend: { display: true } },
+        scales: { y: { beginAtZero: true, max: 100 } }
+      }
+    };
 
-  const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
-  graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
+    const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
+    graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
 
-  const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
-  graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
+    const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
+    graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
 
-  const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
-  graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
+    const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
+    graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
 
-  const graficoRede = new Chart(redeCtx, JSON.parse(JSON.stringify(configLine)));
-  graficoRede.data.datasets[0].label = 'Uso de Rede (%)';
+    const graficoRede = new Chart(redeCtx, JSON.parse(JSON.stringify(configLine)));
+    graficoRede.data.datasets[0].label = 'Uso de Rede (%)';
 
-  const dadosCPU = [20, 40, 60, 55, 75, 65, 80];
-  const dadosRAM = [35, 50, 70, 65, 85, 60, 90];
-  const dadosDisco = [15, 30, 45, 35, 50, 70, 90];
-  const dadosRede = [10, 20, 40, 35, 60, 55, 75];
+    const dadosCPU = [20, 40, 60, 55, 75, 65, 80];
+    const dadosRAM = [35, 50, 70, 65, 85, 60, 90];
+    const dadosDisco = [15, 30, 45, 35, 50, 70, 90];
+    const dadosRede = [10, 20, 40, 35, 60, 55, 75];
 
-  const graficoCPUelem = document.getElementById('graficoRelatorioCPU');
-  const graficoRAMelem = document.getElementById('graficoRelatorioRAM');
-  const graficoDiscoelem = document.getElementById('graficoRelatorioDisco');
-  const graficoRedeelem = document.getElementById('graficoRelatorioRede');
+    const graficoCPUelem = document.getElementById('graficoRelatorioCPU');
+    const graficoRAMelem = document.getElementById('graficoRelatorioRAM');
+    const graficoDiscoelem = document.getElementById('graficoRelatorioDisco');
+    const graficoRedeelem = document.getElementById('graficoRelatorioRede');
 
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-      graficoCPU.data.datasets[0].data = dadosCPU;
-      graficoRAM.data.datasets[0].data = dadosRAM;
-      graficoDisco.data.datasets[0].data = dadosDisco;
-      graficoRede.data.datasets[0].data = dadosRede;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        graficoCPU.data.datasets[0].data = dadosCPU;
+        graficoRAM.data.datasets[0].data = dadosRAM;
+        graficoDisco.data.datasets[0].data = dadosDisco;
+        graficoRede.data.datasets[0].data = dadosRede;
 
-      graficoCPU.update();
-      graficoRAM.update();
-      graficoDisco.update();
-      graficoRede.update();
+        graficoCPU.update();
+        graficoRAM.update();
+        graficoDisco.update();
+        graficoRede.update();
 
-      graficoCPUelem.classList.add('visible');
-      graficoRAMelem.classList.add('visible');
-      graficoDiscoelem.classList.add('visible');
-      graficoRedeelem.classList.add('visible');
+        graficoCPUelem.classList.add('visible');
+        graficoRAMelem.classList.add('visible');
+        graficoDiscoelem.classList.add('visible');
+        graficoRedeelem.classList.add('visible');
 
-      observer.disconnect();
-    }
-  }, { threshold: 0.4 });
+        observer.disconnect();
+      }
+    }, { threshold: 0.4 });
 
-  observer.observe(document.getElementById('relatorios'));
-</script>
+    observer.observe(document.getElementById('relatorios'));
+  </script>
 
   <!--Script-->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
