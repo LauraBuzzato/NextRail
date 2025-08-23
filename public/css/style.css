@@ -1,15 +1,14 @@
-/* Fundo escuro principal */
+/* ================== FUNDO PRINCIPAL ================== */
 .fundo-escuro {
   background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
   min-height: 100vh;
   color: #fff;
   font-family: "Poppins", sans-serif;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding: 40px 0;
   box-sizing: border-box;
 }
 
-/* Container central da página para evitar sobreposição do menu */
+/* Container central da página */
 .container-pagina {
   max-width: 1200px;
   margin: 0 auto;
@@ -19,18 +18,17 @@
 @media (max-width: 1300px) {
   .container-pagina {
     max-width: 98vw;
-    padding-left: 0;
-    padding-right: 0;
+    padding: 0;
   }
 }
 
-/* Conteúdo principal centralizado */
+/* ================== CONTEÚDO PRINCIPAL ================== */
 .conteudo-principal {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 0px 60px 0 60px;
+  padding: 0 60px;
   position: relative;
 }
 
@@ -93,7 +91,7 @@
 .subtitulo {
   font-size: 1rem;
   color: #bdbdbd;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .imagem-destaque {
@@ -111,10 +109,9 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-/* rodapé principal com eventos e notíciaaaas*/
+/* ================== RODAPÉ ================== */
 .rodape-principal {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   background: rgba(30, 32, 38, 0.95);
   padding: 30px 60px;
@@ -122,14 +119,12 @@
   border-radius: 0 0 20px 20px;
 }
 
-.eventos,
-.noticias {
+.eventos, .noticias {
   flex: 1;
   margin-right: 30px;
 }
 
-.eventos h3,
-.noticias h3 {
+.eventos h3, .noticias h3 {
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 18px;
@@ -138,7 +133,6 @@
 
 .lista-eventos {
   display: flex;
-  flex-direction: row;
   gap: 30px;
 }
 
@@ -193,19 +187,297 @@
   font-weight: 500;
 }
 
-/* Imagem de fundo cobre toda a área principal */
+/* ================== FUNDO IMAGEM ================== */
 .fundo-imagem {
   background: linear-gradient(120deg, #17171783 0%, #000000 100%), url('../assets/imgs/img03.jpg') no-repeat center center;
   background-size: cover;
   background-blend-mode: darken;
 }
 
-@media (max-width: 900px) {
-  .fundo-imagem {
-    background-position: center center;
-    background-size: cover;
-  }
+/* ================== RELATÓRIOS ================== */
+.relatorios {
+  background: linear-gradient(160deg, #181a20 0%, #101214 100%);
+  padding: 100px 60px;
+  color: #fff;
+  text-align: center;
+}
 
+.relatorios h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.relatorios p {
+  font-size: 1.1rem;
+  color: #bdbdbd;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+.relatorios .lista-beneficios {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 50px;
+}
+
+.relatorios .lista-beneficios li {
+  background: #23262b;
+  padding: 15px 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  font-size: 1rem;
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.relatorios .lista-beneficios li:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+
+.graficos-secao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.graficos-secao canvas {
+  width: 100% !important;
+  max-width: 400px;
+  height: 300px !important;
+}
+
+.btn-acao {
+  background: linear-gradient(45deg, #4e73df, #1cc88a);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  margin-top: 30px;
+  transition: all 0.3s ease;
+}
+
+.btn-acao:hover {
+  background: linear-gradient(45deg, #1cc88a, #4e73df);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+/* ================== CURIOSIDADES ================== */
+.curiosidades {
+  background: linear-gradient(180deg, #181a20 0%, #23262b 100%);
+  color: #fff;
+  padding: 80px 60px;
+}
+
+.curiosidades .container-secao {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.curiosidades h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.curiosidades p {
+  color: #bdbdbd;
+  font-size: 1rem;
+  margin-bottom: 40px;
+}
+
+.caixas-info {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.caixa-info {
+  background: #23262b;
+  padding: 30px 20px;
+  border-radius: 20px;
+  flex: 1;
+  min-width: 250px;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.caixa-info:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+}
+
+.caixa-info ion-icon {
+  font-size: 2.5rem;
+  color: #ffe066;
+  margin-bottom: 15px;
+}
+
+.caixa-info h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.caixa-info p {
+  font-size: 0.95rem;
+  color: #bdbdbd;
+}
+
+/* ================== SOBRE ================== */
+.sobre {
+  background: linear-gradient(180deg, #23262b 0%, #181a20 100%);
+  color: #fff;
+  padding: 100px 60px;
+}
+
+.sobre .container-secao {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.sobre h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.sobre p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #bdbdbd;
+  margin-bottom: 20px;
+}
+
+.missao-valores {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.card-info {
+  background: #2d3036;
+  padding: 25px 20px;
+  border-radius: 20px;
+  min-width: 250px;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-info:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+}
+
+.card-info h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.card-info p {
+  font-size: 0.95rem;
+  color: #d0d0d0;
+}
+
+/* ================== MONITORAMENTO ================== */
+.monitoramento {
+  background: linear-gradient(to top, #000000, #303030, #000000);
+  color: #fff;
+  padding: 2vh;
+}
+
+.monitoramento .container_primario {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 2vh 0;
+}
+
+.monitoramento .assunto_monitoramento {
+  text-align: center;
+  width: 50vw;
+}
+
+.monitoramento .container_secundario {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.monitoramento .box_monitoramento {
+  display: flex;
+  flex-direction: column;
+  width: 25vw;
+  min-width: 250px;
+  text-align: center;
+  align-items: center;
+  border-radius: 30px;
+  gap: 1vh;
+}
+
+.monitoramento .titulo_boxes {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.monitoramento .box_monitoramento p {
+  font-size: 0.95rem;
+}
+
+.monitoramento #img_tempo_real {
+  width: 25vw;
+  min-width: 250px;
+  height: 28vh;
+  background: linear-gradient(300deg, #97979733 0%, #000000 100%), url('../assets/imgs/img_tempo_real.png') right;
+  background-size: cover;
+  background-blend-mode: lighten;
+}
+
+.monitoramento #img_alertas {
+  width: 25vw;
+  min-width: 250px;
+  height: 28vh;
+  background: url('../assets/imgs/img_alertas.png') center no-repeat;
+  background-size: contain;
+}
+
+.monitoramento #img_relatorios {
+  width: 25vw;
+  min-width: 250px;
+  height: 28vh;
+  background: url('../assets/imgs/img_relatorios.png') center no-repeat;
+  background-size: contain;
+}
+
+/* ================== RESPONSIVIDADE ================== */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 900px) {
   .fundo-escuro {
     padding-left: 0;
   }
@@ -216,7 +488,7 @@
 
   .conteudo-principal {
     flex-direction: column;
-    padding: 30px 10px 0 0px;
+    padding: 30px 10px 0 0;
     gap: 30px;
   }
 
@@ -226,94 +498,27 @@
     gap: 20px;
   }
 
-  .eventos,
-  .noticias {
+  .eventos, .noticias {
     margin-right: 0;
   }
-}
 
-.relatorios {
-  background-color: #0000003d;
-  padding: 90px;
+  .curiosidades, .sobre {
+    padding: 60px 20px;
+  }
 
-}
-
-.gr1 {
-  width: 400px;
-  height: 400px;
-  display: flex;
-  align-items: baseline;
-}
-
-/* HOME MONITORAMENTO */
-
-.monitoramento {
-  background: linear-gradient(to top, #000000, #303030, #000000);
-  color: #fff;
-
-  .container_primario {
-    display: flex;
+  .caixas-info, .missao-valores {
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    margin: 2vh;
   }
 
-  .assunto_monitoramento {
-    text-align: center;
-    width: 50vw;
+  .monitoramento .assunto_monitoramento {
+    width: 80vw;
   }
 
-  .container_secundario {
-    display: flex;
-    justify-content: space-around;
+  .monitoramento .box_monitoramento,
+  .monitoramento #img_tempo_real,
+  .monitoramento #img_alertas,
+  .monitoramento #img_relatorios {
+    width: 80vw;
   }
-
-  .box_monitoramento {
-    display: flex;
-    flex-direction: column;
-    width: 25vw;
-    height: fit-content;
-    text-align: center;
-    align-items: center;
-    border-radius: 30px;
-    gap: 1vh;
-  }
-
-  .titulo_boxes {
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-  }
-
-  .box_monitoramento p {
-    font-size: 0.95rem;
-  }
-
-  #img_tempo_real {
-    width: 25vw;
-    height: 28vh;
-    background: linear-gradient(300deg, #97979733 0%, #000000 100%), url('../assets/imgs/img_tempo_real.png') right;
-    background-size: cover;
-    background-blend-mode: lighten;
-  }
-
-  #img_alertas {
-    width: 25vw;
-    height: 28vh;
-    background: url('../assets/imgs/img_alertas.png') center no-repeat;
-    background-size: contain;
-  }
-
-  #img_relatorios {
-    width: 25vw;
-    height: 28vh;
-    background: url('../assets/imgs/img_relatorios.png') center no-repeat;
-    background-size: contain;
-  }
-
-}
-
-html {
-  scroll-behavior: smooth;
 }

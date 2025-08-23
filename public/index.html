@@ -25,8 +25,6 @@
         <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
       </div>
 
-
-      <!-- Página inicial com introdução ao sistema -->
       <li class="link-item active">
         <a href="index.html" class="link">
           <ion-icon name="home-outline"></ion-icon>
@@ -34,7 +32,6 @@
         </a>
       </li>
 
-      <!-- Monitoramento de recursos -->
       <li class="link-item">
         <a href="#monitoramento" class="link">
           <ion-icon name="desktop-outline"></ion-icon>
@@ -42,15 +39,6 @@
         </a>
       </li>
 
-      <!-- Alertas do sistema -->
-      <!-- <li class="link-item">
-        <a href="#alertas" class="link">
-          <ion-icon name="alert-circle-outline"></ion-icon>
-          <span style="--i: 3">Alertas</span>
-        </a>
-      </li> -->
-
-      <!-- Relatórios -->
       <li class="link-item">
         <a href="#relatorios" class="link">
           <ion-icon name="stats-chart-outline"></ion-icon>
@@ -58,7 +46,6 @@
         </a>
       </li>
 
-      <!-- Curiosidades sobre ferrovias/tecnologia -->
       <li class="link-item">
         <a href="#curiosidades" class="link">
           <ion-icon name="bulb-outline"></ion-icon>
@@ -66,7 +53,6 @@
         </a>
       </li>
 
-      <!-- Sobre o projeto -->
       <li class="link-item">
         <a href="#sobre" class="link">
           <ion-icon name="information-circle-outline"></ion-icon>
@@ -74,7 +60,6 @@
         </a>
       </li>
 
-      <!-- Botão de login -->
       <li class="link-item">
         <a href="login.html" class="link">
           <ion-icon name="log-in-outline"></ion-icon>
@@ -82,7 +67,6 @@
         </a>
       </li>
 
-      <!-- Alternância de tema -->
       <li class="link-item dark-mode">
         <a href="#" class="link">
           <ion-icon name="moon-outline"></ion-icon>
@@ -90,9 +74,9 @@
         </a>
       </li>
     </ul>
-
   </div>
 
+  <!-- INÍCIO -->
   <main class="fundo-escuro fundo-imagem" id="inicio">
     <div class="container-pagina">
       <section class="conteudo-principal">
@@ -108,10 +92,10 @@
         </div>
         <div class="principal">
           <h1 class="titulo-destaque">Monitore<br>de Qualquer Lugar</h1>
-          <p class="subtitulo">Acompanhe o status dos recursos computacionais do CCO ferroviário em tempo
-            real.</p>
+          <p class="subtitulo">Acompanhe o status dos recursos computacionais do CCO ferroviário em tempo real.</p>
         </div>
       </section>
+
       <section class="rodape-principal">
         <div class="eventos">
           <h3>EVENTOS</h3>
@@ -139,7 +123,7 @@
     </div>
   </main>
 
-  <!-- Parte de monitoramento -->
+  <!-- MONITORAMENTO -->
   <main class="monitoramento" id="monitoramento">
     <section class="container_primario">
       <div class="assunto_monitoramento">
@@ -155,118 +139,152 @@
       <div class="box_monitoramento">
         <div id="img_alertas"></div>
         <span class="titulo_boxes">Sistema de Alertas</span>
-        <p>Alertas em caso de informações indesejadas, para evitar o risco de acidentes e tratar os problemas antes mesmo
-          de começar.</p>
+        <p>Alertas em caso de informações indesejadas, para evitar o risco de acidentes e tratar os problemas antes mesmo de começar.</p>
       </div>
       <div class="box_monitoramento">
         <div id="img_relatorios"></div>
         <span class="titulo_boxes">Geração de Relatórios</span>
-        <p>Relatórios personalizados indicando o histórico de desempenho, tendências de uso e destaque de informações
-          importantes para otimização dos recursos.</p>
+        <p>Relatórios personalizados indicando o histórico de desempenho, tendências de uso e destaque de informações importantes para otimização dos recursos.</p>
       </div>
     </section>
   </main>
 
-  <!-- Parte de alertas -->
-  <!-- <main class="alertas" id="alertas">
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis facere non sed aliquam quia sunt repellendus
-      molestias libero eaque magni earum, iste, modi nobis dolorum, veritatis corporis minima dolor! Aspernatur!</p>
-  </main> -->
-
-  <!-- Parte de relatorios -->
+  <!-- RELATÓRIOS -->
   <main class="relatorios" id="relatorios">
-    <div id="item-relatorios">
-      <ul>
-        <li>texto</li>
-        <li>texto</li>
-        <li>texto</li>
-      </ul>
-    </div>
-    <div class="gr1">
-      <canvas id="graficoRelatorioCPU" width="100" height="50"></canvas>
-      <canvas id="graficoRelatorioDisco" width="100" height="50"></canvas>
-    </div>
-
-    <div id="conteudo">
-      Tempore expedita, eos ex corporis neque praesentium cupiditate aut necessitatibus tempora illo, culpa maxime
-      accusamus nemo eveniet debitis laboriosam quidem voluptate. Quam.
+    <div class="container-secao">
+      <div class="texto-secao">
+        <h2>Otimização através de Relatórios</h2>
+        <p>
+          Com gráficos intuitivos, você acompanha tendências de desempenho de CPU, memória e disco.
+          Descubra picos de uso, identifique gargalos e tome decisões rápidas para manter a operação estável e eficiente.
+        </p>
+        <ul class="lista-beneficios">
+          <li>📊 Visualização clara de indicadores críticos</li>
+          <li>⚡ Relatórios otimizados para análise em tempo real</li>
+          <li>🔒 Dados seguros e confiáveis</li>
+        </ul>
+        <button class="btn-acao">Saber mais</button>
+      </div>
+      <div class="graficos-secao">
+        <canvas id="graficoRelatorioCPU"></canvas>
+        <canvas id="graficoRelatorioDisco"></canvas>
+      </div>
     </div>
   </main>
 
-  <!-- Parte de curiosidades -->
+  <!-- CURIOSIDADES -->
   <main class="curiosidades" id="curiosidades">
-    <p>Lorem ipsumaaaaaaaaaaaaaaaaah dolor sit amet consectetur adipisicing elit. Deserunt quisquam dolorem ut est ipsam
-      nobis ad quaerat eius facilis necessitatibus quod quas amet, quam minus impedit? Voluptatum nam ex reiciendis.</p>
+    <div class="container-secao">
+      <h2>Curiosidades sobre o Setor</h2>
+      <p>
+        Além do monitoramento, a ferrovia é um dos setores que mais evoluem tecnologicamente.
+        Trouxemos algumas curiosidades que mostram como a inovação está presente no dia a dia:
+      </p>
+      <div class="caixas-info">
+        <div class="caixa-info">
+          <ion-icon name="analytics-outline"></ion-icon>
+          <h3>Monitoramento em Tempo Real</h3>
+          <p>A tecnologia moderna permite rastrear cada recurso computacional a cada segundo, reduzindo riscos.</p>
+        </div>
+        <div class="caixa-info">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <h3>Segurança e Precisão</h3>
+          <p>Os dados coletados são altamente confiáveis, garantindo decisões assertivas e maior proteção.</p>
+        </div>
+        <div class="caixa-info">
+          <ion-icon name="trending-up-outline"></ion-icon>
+          <h3>Eficiência Otimizada</h3>
+          <p>Com base em análises preditivas, é possível prever falhas e evitar prejuízos ao sistema.</p>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <!-- Parte de "Sobre" -->
+  <!-- SOBRE -->
   <main class="sobre" id="sobre">
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio quibusdam, veritatis assumenda nihil suscipit rem
-      nobis asperiores nam vero, consequuntur nulla quis. Atque aliquam dignissimos ea tenetur debitis fuga recusandae?
-    </p>
+    <div class="container-secao">
+      <h2>Sobre o Projeto NextRail</h2>
+      <p>
+        O <strong>NextRail</strong> foi desenvolvido para transformar a forma como os Centros de Controle Operacional 
+        ferroviário monitoram seus recursos. O sistema oferece dashboards interativos, relatórios automáticos e alertas inteligentes.
+      </p>
+      <p>
+        Nosso objetivo é <strong>trazer tecnologia de ponta</strong> para dentro das operações ferroviárias, 
+        promovendo eficiência, segurança e tomada de decisão em tempo real. 
+      </p>
+      <div class="missao-valores">
+        <div class="card-info">
+          <h3>Missão</h3>
+          <p>Fornecer soluções inteligentes para monitoramento e otimização de recursos críticos.</p>
+        </div>
+        <div class="card-info">
+          <h3>Inovação</h3>
+          <p>Unir tecnologia de ponta e usabilidade em uma plataforma acessível e robusta.</p>
+        </div>
+        <div class="card-info">
+          <h3>Confiabilidade</h3>
+          <p>Garantir precisão e transparência em cada dado entregue ao usuário.</p>
+        </div>
+      </div>
+    </div>
   </main>
+
+  <!-- SCRIPT GRÁFICOS -->
+  <script>
+    const cpuCtx = document.getElementById('graficoRelatorioCPU').getContext('2d');
+    const discoCtx = document.getElementById('graficoRelatorioDisco').getContext('2d');
+
+    const configLine = {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+        datasets: [{
+          label: 'Eficiência do hardware (%)',
+          data: [],
+          borderColor: '#4e79a7',
+          backgroundColor: 'rgba(78,121,167,0.2)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: { duration: 2000 },
+        plugins: { legend: { display: true } },
+        scales: { y: { beginAtZero: true, max: 100 } }
+      }
+    };
+
+    const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
+    const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
+
+    const dadosCPU = [20, 40, 60, 55, 75, 65, 80];
+    const dadosDisco = [15, 30, 45, 35, 50, 70, 90];
+
+    const graficoCPUelem = document.getElementById('graficoRelatorioCPU');
+    const graficoDiscoelem = document.getElementById('graficoRelatorioDisco');
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        graficoCPU.data.datasets[0].data = dadosCPU;
+        graficoDisco.data.datasets[0].data = dadosDisco;
+        graficoCPU.update();
+        graficoDisco.update();
+
+        graficoCPUelem.classList.add('visible');
+        graficoDiscoelem.classList.add('visible');
+
+        observer.disconnect();
+      }
+    }, { threshold: 0.4 });
+
+    observer.observe(document.getElementById('relatorios'));
+  </script>
 
   <!--Script-->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script src="./js/script.js"></script>
-
-  <!-- gráficos -->
-
-  <script>
-    const ctx = document.getElementById('graficoRelatorioCPU').getContext('2d');
-    const graficoRelatorio = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-        datasets: [{
-          label: 'Relatórios Gerados',
-          data: [90, 4, 6, 8, 12, 15, 20],
-          borderColor: 'rgba(99, 102, 241, 1)',
-          backgroundColor: 'rgba(99, 102, 241, 0.2)',
-          fill: true,
-          tension: 0.4
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: true }
-        },
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
-    });
-
-    const xtc = document.getElementById('graficoRelatorioDisco').getContext('2d');
-    const graficoRelatorioDisco = new Chart(xtc, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-        datasets: [{
-          label: 'Relatórios Gerados',
-          data: [90, 4, 6, 8, 12, 15, 20],
-          borderColor: 'rgba(99, 102, 241, 1)',
-          backgroundColor: 'rgba(99, 102, 241, 0.2)',
-          fill: true,
-          tension: 0.4
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: true }
-        },
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
-    });
-  </script>
-
-  <footer>
-
-  </footer>
+</body>
 
 </html>
