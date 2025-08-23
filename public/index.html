@@ -150,27 +150,54 @@
   </main>
 
   <!-- RELATÓRIOS -->
-  <main class="relatorios" id="relatorios">
-    <div class="container-secao">
-      <div class="texto-secao">
-        <h2>Otimização através de Relatórios</h2>
-        <p>
-          Com gráficos intuitivos, você acompanha tendências de desempenho de CPU, memória e disco.
-          Descubra picos de uso, identifique gargalos e tome decisões rápidas para manter a operação estável e eficiente.
-        </p>
-        <ul class="lista-beneficios">
-          <li>📊 Visualização clara de indicadores críticos</li>
-          <li>⚡ Relatórios otimizados para análise em tempo real</li>
-          <li>🔒 Dados seguros e confiáveis</li>
-        </ul>
-        <button class="btn-acao">Saber mais</button>
-      </div>
-      <div class="graficos-secao">
+<main class="relatorios" id="relatorios">
+  <div class="container-secao">
+    <div class="texto-secao">
+      <h2>Otimização através de Relatórios</h2>
+      <p>
+        Com gráficos intuitivos, você acompanha tendências de desempenho de CPU, memória, disco e rede.
+        Descubra picos de uso, identifique gargalos e tome decisões rápidas para manter a operação estável e eficiente.
+      </p>
+<ul class="lista-beneficios">
+  <li>
+    <ion-icon name="bar-chart-outline"></ion-icon>
+    <span>Visualização clara de indicadores críticos</span>
+  </li>
+  <li>
+    <ion-icon name="flash-outline"></ion-icon>
+    <span>Relatórios otimizados para análise em tempo real</span>
+  </li>
+  <li>
+    <ion-icon name="shield-checkmark-outline"></ion-icon>
+    <span>Dados seguros e confiáveis</span>
+  </li>
+</ul>
+
+    </div>
+
+    <!-- Container dos gráficos -->
+    <div class="graficos-container">
+      <div class="grafico-box">
+        <h3>Uso de CPU</h3>
         <canvas id="graficoRelatorioCPU"></canvas>
+      </div>
+      <div class="grafico-box">
+        <h3>Uso de RAM</h3>
+        <canvas id="graficoRelatorioRAM"></canvas>
+      </div>
+      <div class="grafico-box">
+        <h3>Uso de Disco</h3>
         <canvas id="graficoRelatorioDisco"></canvas>
       </div>
+      <div class="grafico-box">
+        <h3>Uso de Rede</h3>
+        <canvas id="graficoRelatorioRede"></canvas>
+      </div>
     </div>
-  </main>
+  </div>
+</main>
+
+
 
   <!-- CURIOSIDADES -->
   <main class="curiosidades" id="curiosidades">
@@ -191,6 +218,7 @@
           <h3>Segurança e Precisão</h3>
           <p>Os dados coletados são altamente confiáveis, garantindo decisões assertivas e maior proteção.</p>
         </div>
+
         <div class="caixa-info">
           <ion-icon name="trending-up-outline"></ion-icon>
           <h3>Eficiência Otimizada</h3>
@@ -230,56 +258,78 @@
   </main>
 
   <!-- SCRIPT GRÁFICOS -->
-  <script>
-    const cpuCtx = document.getElementById('graficoRelatorioCPU').getContext('2d');
-    const discoCtx = document.getElementById('graficoRelatorioDisco').getContext('2d');
+<script>
+  const cpuCtx = document.getElementById('graficoRelatorioCPU').getContext('2d');
+  const ramCtx = document.getElementById('graficoRelatorioRAM').getContext('2d');
+  const discoCtx = document.getElementById('graficoRelatorioDisco').getContext('2d');
+  const redeCtx = document.getElementById('graficoRelatorioRede').getContext('2d');
 
-    const configLine = {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-        datasets: [{
-          label: 'Eficiência do hardware (%)',
-          data: [],
-          borderColor: '#4e79a7',
-          backgroundColor: 'rgba(78,121,167,0.2)',
-          tension: 0.4,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        animation: { duration: 2000 },
-        plugins: { legend: { display: true } },
-        scales: { y: { beginAtZero: true, max: 100 } }
-      }
-    };
+  const configLine = {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+      datasets: [{
+        label: '',
+        data: [],
+        borderColor: '#4e79a7',
+        backgroundColor: 'rgba(78,121,167,0.2)',
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 2000 },
+      plugins: { legend: { display: true } },
+      scales: { y: { beginAtZero: true, max: 100 } }
+    }
+  };
 
-    const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
-    const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
+  const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
 
-    const dadosCPU = [20, 40, 60, 55, 75, 65, 80];
-    const dadosDisco = [15, 30, 45, 35, 50, 70, 90];
+  const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
 
-    const graficoCPUelem = document.getElementById('graficoRelatorioCPU');
-    const graficoDiscoelem = document.getElementById('graficoRelatorioDisco');
+  const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        graficoCPU.data.datasets[0].data = dadosCPU;
-        graficoDisco.data.datasets[0].data = dadosDisco;
-        graficoCPU.update();
-        graficoDisco.update();
+  const graficoRede = new Chart(redeCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoRede.data.datasets[0].label = 'Uso de Rede (%)';
 
-        graficoCPUelem.classList.add('visible');
-        graficoDiscoelem.classList.add('visible');
+  const dadosCPU = [20, 40, 60, 55, 75, 65, 80];
+  const dadosRAM = [35, 50, 70, 65, 85, 60, 90];
+  const dadosDisco = [15, 30, 45, 35, 50, 70, 90];
+  const dadosRede = [10, 20, 40, 35, 60, 55, 75];
 
-        observer.disconnect();
-      }
-    }, { threshold: 0.4 });
+  const graficoCPUelem = document.getElementById('graficoRelatorioCPU');
+  const graficoRAMelem = document.getElementById('graficoRelatorioRAM');
+  const graficoDiscoelem = document.getElementById('graficoRelatorioDisco');
+  const graficoRedeelem = document.getElementById('graficoRelatorioRede');
 
-    observer.observe(document.getElementById('relatorios'));
-  </script>
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      graficoCPU.data.datasets[0].data = dadosCPU;
+      graficoRAM.data.datasets[0].data = dadosRAM;
+      graficoDisco.data.datasets[0].data = dadosDisco;
+      graficoRede.data.datasets[0].data = dadosRede;
+
+      graficoCPU.update();
+      graficoRAM.update();
+      graficoDisco.update();
+      graficoRede.update();
+
+      graficoCPUelem.classList.add('visible');
+      graficoRAMelem.classList.add('visible');
+      graficoDiscoelem.classList.add('visible');
+      graficoRedeelem.classList.add('visible');
+
+      observer.disconnect();
+    }
+  }, { threshold: 0.4 });
+
+  observer.observe(document.getElementById('relatorios'));
+</script>
 
   <!--Script-->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
