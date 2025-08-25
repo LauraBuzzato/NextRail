@@ -24,7 +24,7 @@ CREATE TABLE usuario (
     cargo varchar(50) not null,
 	fk_empresa INT,
 	FOREIGN KEY (fk_empresa) REFERENCES empresa(id),
-    constraint cargos check(cargo in("Operador","Suporte"))
+    constraint cargos check(cargo in("Operador","Supervisor"))
 );
 
 create table servidor(
@@ -43,32 +43,39 @@ id bigint primary key auto_increment,
 fk_servidor int not null,
 cpu_uso decimal (5,2),
 cpu_temp decimal(5,2),
-cpu_hotspot decimal(5,2),
-ram_total decimal(10,2),
-ram_usada decimal(10,2),
-ram_livre decimal(10,2),
-swap_total decimal(10,2),
-swap_usada decimal(10,2),
-disco_total decimal(10,2),
-disco_usado decimal(10,2),
+ram_uso decimal(10,2),
 disco_livre decimal(10,2),
-disco_uso decimal(5,2),
 disco_temp decimal(5,2),
-disco_hotspot decimal(5,2),
 dt_coleta datetime default current_timestamp not null,
 foreign key(fk_servidor) references servidor(id));
 
 
-create table incidentes (
+create table incidente(
+id int primary key auto_increment,
+descricao varchar(30),
+constraint uniq_problema check 
+(descricao in("Temp. CPU",
+			  "Temp. Disco",
+			  "Alto uso CPU",
+              "Alto Uso RAM",
+              "Alto uso Disco")));
+
+
+
+create table alerta (
 id int primary key auto_increment,
 fk_servidor int not null,
-fk_captura int not null,
+fk_incidente int not null,
 gravidade varchar(20),
-chamado_enviado boolean,
+tipo_problema int,
 chamado_status varchar(30) default "Aberto",
 abertura_chamado datetime default current_timestamp,
 tempo_de_chamado datetime,
-constraint grav check (gravidade in("Baixo","Médio","Alto","Grave")),
-constraint chamdo_status_tpy check (chamado_status in("Aberto","Andamento","fechado"))
-);         
+constraint chamdo_status_tpy check (chamado_status in("Aberto","Andamento","fechado")),
+foreign key (fk_incidente) references incidente(id),
+foreign key (fk_servidor) references servidor(id));
+
+
+
+insert into empresa (razao_social, codigo_ativacao) values ('CPTM', '1');
 
