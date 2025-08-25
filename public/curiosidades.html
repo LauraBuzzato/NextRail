@@ -99,16 +99,67 @@
     <script src="./js/script.js"></script>
 
      <!-- Parte de curiosidades -->
+  <!-- CURIOSIDADES -->
   <main class="curiosidades" id="curiosidades">
-    <h1>Curiosidades sobre Ferrovias</h1>
-    <ul>
-      <li>As ferrovias são uma das formas mais antigas de transporte terrestre.</li>
-      <li>O primeiro trem a vapor foi criado na Inglaterra no início do século 19.</li>
-      <li>As ferrovias desempenharam um papel crucial na Revolução Industrial.</li>
-      <li>O Japão possui um dos sistemas de trem-bala mais avançados do mundo.</li>
-      <li>As ferrovias são uma forma de transporte mais eficiente em termos de energia em comparação com os carros.</li>
-    </ul>
+    <div class="container-secao">
+      <h2>Curiosidades sobre o Setor</h2>
+      <p>
+        Além do monitoramento, a ferrovia é um dos setores que mais evoluem tecnologicamente.
+        Trouxemos algumas curiosidades que mostram como a inovação está presente no dia a dia:
+      </p>
+
+      <div class="caixas-info">
+        <div class="caixa-info">
+          <ion-icon name="analytics-outline"></ion-icon>
+          <h3>Monitoramento em Tempo Real</h3>
+          <p>A tecnologia moderna permite rastrear cada recurso computacional a cada segundo, reduzindo riscos.</p>
+        </div>
+        <div class="caixa-info">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <h3>Segurança e Precisão</h3>
+          <p>Os dados coletados são altamente confiáveis, garantindo decisões assertivas e maior proteção.</p>
+        </div>
+
+        <div class="caixa-info">
+          <ion-icon name="trending-up-outline"></ion-icon>
+          <h3>Eficiência Otimizada</h3>
+          <p>Com base em análises preditivas, é possível prever falhas e evitar prejuízos ao sistema.</p>
+        </div>
+      </div>
+
+      <div class="curiosidade-extra">
+        <h3>Você sabia?</h3>
+        <p>Clique no botão abaixo para descobrir uma curiosidade aleatória sobre o setor ferroviário:</p>
+        <button onclick="mostrarCuriosidade()">Mostrar Curiosidade</button>
+        <p id="curiosidadeTexto" class="curiosidade-texto"></p>
+      </div>
+    </div>
   </main>
+
+  <script>
+    var curiosidades = [
+      "Trens modernos podem atingir mais de 300 km/h em alguns trechos.",
+      "Sensores inteligentes já conseguem detectar falhas antes mesmo de ocorrerem.",
+      "O uso de big data permite prever gargalos e aumentar a eficiência das operações.",
+      "O setor ferroviário é um dos que mais investem em energia limpa e sustentável.",
+      "Drones já são usados para inspecionar trilhos e detectar problemas em tempo real."
+    ];
+
+    function mostrarCuriosidade() {
+      var texto = document.getElementById("curiosidadeTexto");
+      var aleatorio = curiosidades[Math.floor(Math.random() * curiosidades.length)];
+      texto.textContent = aleatorio;
+      texto.classList.add("mostrar");
+
+      // Reinicia animação se vc clicar de novo :)
+      setTimeout(() => {
+        texto.classList.remove("mostrar");
+        void texto.offsetWidth; // Funciona pra resetar a animação
+        texto.classList.add("mostrar");
+      }, 50);
+    }
+
+  </script>
 
 
     <footer>
