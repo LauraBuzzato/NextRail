@@ -24,7 +24,7 @@ CREATE TABLE usuario (
     cargo varchar(50) not null,
 	fk_empresa INT,
 	FOREIGN KEY (fk_empresa) REFERENCES empresa(id),
-    constraint cargos check(cargo in("Operador","Supervisor"))
+    constraint cargos check(cargo in("Operador","Suporte"))
 );
 
 create table servidor(
@@ -70,40 +70,5 @@ abertura_chamado datetime default current_timestamp,
 tempo_de_chamado datetime,
 constraint grav check (gravidade in("Baixo","Médio","Alto","Grave")),
 constraint chamdo_status_tpy check (chamado_status in("Aberto","Andamento","fechado"))
-);
-
-
-
-insert into empresa (razao_social, codigo_ativacao) values ('CPTM', '1');
-
-/*Triggers*/
-DELIMITER $$
-create trigger tempo_de_chamado
-before update on incidentes
-for each row
-begin
-     if new.chamado_status = "Fechado" then
-        set new.tempo_de_chamado = timestampdiff(minute, old.abertura_chamado, now());
-end if;
-end$$
-DELIMITER ;
-
-
-DELIMITER $$
-create trigger cadastro_incidente
-before insert on captura
-for each row
-begin 
-		if new.cpu_uso >= 80 or 
-		   new.cpu_temp >= 80 or
-		  (new.ram_usada - new.ram_livre) <= 5 or
-		  (new.swap_total - new.swap_usada) <= 5 or
-		  (new.disco_total - new.disco_usado) <= 500 or 
-           new.disco_temp >= 80 
-then
-           insert into incidentes (fk_servidor, fk_captura, chamado_enviado, abertura_chamado) values
-           (new.fk_servidor,new.fkcaptura,False,now());
-           end if;
-DELIMITER ;
-          
+);         
 
