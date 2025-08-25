@@ -14,6 +14,7 @@
   <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -25,8 +26,6 @@
         <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
       </div>
 
-
-      <!-- Página inicial com introdução ao sistema -->
       <li class="link-item active">
         <a href="index.html" class="link">
           <ion-icon name="home-outline"></ion-icon>
@@ -34,7 +33,6 @@
         </a>
       </li>
 
-      <!-- Monitoramento de recursos -->
       <li class="link-item">
         <a href="sistema.html" class="link">
           <ion-icon name="desktop-outline"></ion-icon>
@@ -42,15 +40,6 @@
         </a>
       </li>
 
-      <!-- Alertas do sistema -->
-      <!-- <li class="link-item">
-        <a href="#alertas" class="link">
-          <ion-icon name="alert-circle-outline"></ion-icon>
-          <span style="--i: 3">Alertas</span>
-        </a>
-      </li> -->
-
-      <!-- Relatórios -->
       <li class="link-item">
         <a href="relatorios.html" class="link">
           <ion-icon name="stats-chart-outline"></ion-icon>
@@ -58,7 +47,6 @@
         </a>
       </li>
 
-      <!-- Curiosidades sobre ferrovias/tecnologia -->
       <li class="link-item">
         <a href="curiosidades.html" class="link">
           <ion-icon name="bulb-outline"></ion-icon>
@@ -66,7 +54,6 @@
         </a>
       </li>
 
-      <!-- Sobre o projeto -->
       <li class="link-item">
         <a href="sobre.html" class="link">
           <ion-icon name="information-circle-outline"></ion-icon>
@@ -74,7 +61,6 @@
         </a>
       </li>
 
-      <!-- Botão de login -->
       <li class="link-item">
         <a href="login.html" class="link">
           <ion-icon name="log-in-outline"></ion-icon>
@@ -82,7 +68,6 @@
         </a>
       </li>
 
-      <!-- Alternância de tema -->
       <li class="link-item dark-mode">
         <a href="#" class="link">
           <ion-icon name="moon-outline"></ion-icon>
@@ -90,15 +75,9 @@
         </a>
       </li>
     </ul>
-
   </div>
 
-  <!--Script-->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-  <script src="./js/script.js"></script>
-
-  <main class="fundo-escuro fundo-imagem">
+  <main class="fundo-escuro fundo-imagem" id="inicio">
     <div class="container-pagina">
       <section class="conteudo-principal">
         <div class="lado-esquerdo">
@@ -111,7 +90,8 @@
         </div>
         <div class="principal">
           <h1 class="titulo-destaque">Monitore<br>de Qualquer Lugar</h1>
-          <p class="subtitulo">Acompanhe o status dos recursos do CCO ferroviário em tempo real.</p>
+          <p class="subtitulo">Acompanhe o status dos recursos computacionais do CCO ferroviário em tempo
+            real.</p>
         </div>
       </section>
 
@@ -135,6 +115,14 @@
       </section>
     </div>
   </main>
+
+  <!--Script-->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script src="./js/script.js"></script>
+
+  <!-- gráficos -->
+
 
   <footer>
 
