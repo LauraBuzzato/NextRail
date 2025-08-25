@@ -199,7 +199,7 @@
 /* ================== RELATÓRIOS ================== */
 
 .relatorios {
-  background: linear-gradient(160deg, var(--cor-primaria) 0%, #0f0a10 100%);
+  background: linear-gradient(160deg, #23262b 0%, #181a20 100%);
   padding: 100px 40px;
   color: #fff;
   text-align: center;
@@ -250,7 +250,7 @@
 }
 
 .relatorios {
-  background: linear-gradient(160deg, var(--cor-primaria) 0%, #181a20 100%);
+  background: linear-gradient(160deg, #23262b 0%, #181a20 100%);
   padding: 100px 60px;
   color: #fff;
   text-align: center;
