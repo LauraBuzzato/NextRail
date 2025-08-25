@@ -250,7 +250,7 @@
 }
 
 .relatorios {
-  background: linear-gradient(160deg, var(--cor-primaria) 0%, #0f0a10 100%);
+  background: linear-gradient(160deg, var(--cor-primaria) 0%, #181a20 100%);
   padding: 100px 60px;
   color: #fff;
   text-align: center;
@@ -537,130 +537,108 @@
   font-size: 0.95rem;
   color: #d0d0d0;
 }
-
-/* ================== MONITORAMENTO ================== */
+/* ================== SISTEMA ================== */
 .monitoramento {
-  background: linear-gradient(to top, #000000, #303030, #000000);
+  background: linear-gradient(160deg, #23262b 0%, #181a20 100%);
   color: #fff;
-  padding: 2vh;
+  padding: 80px 60px 40px 60px;
+  min-height: 80vh;
 }
 
 .monitoramento .container_primario {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 2vh 0;
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
+  text-align: center;
 }
 
-.monitoramento .assunto_monitoramento {
-  text-align: center;
-  width: 50vw;
+.monitoramento .titulo-destaque {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 18px;
+  color: #ffe066;
+  text-shadow: 0 3px 8px rgba(0,0,0,0.6);
+}
+
+.monitoramento .assunto_monitoramento p {
+  font-size: 1.1rem;
+  color: #d6d6d6;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 .monitoramento .container_secundario {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 30px;
   flex-wrap: wrap;
-  gap: 20px;
+  margin-top: 40px;
 }
 
 .monitoramento .box_monitoramento {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  border-radius: 18px;
+  padding: 38px 28px 28px 28px;
+  min-width: 260px;
+  max-width: 340px;
+  flex: 1;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
   display: flex;
   flex-direction: column;
-  width: 25vw;
-  min-width: 250px;
-  text-align: center;
   align-items: center;
-  border-radius: 30px;
-  gap: 1vh;
+}
+
+.monitoramento .box_monitoramento:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.55);
+  background: rgba(255,255,255,0.08);
+}
+
+.monitoramento .icon-feature {
+  font-size: 2.8rem;
+  color: #ffe066;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .monitoramento .titulo_boxes {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  color: #ffe066;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
 }
 
 .monitoramento .box_monitoramento p {
-  font-size: 0.95rem;
-}
-
-.monitoramento #img_tempo_real {
-  width: 25vw;
-  min-width: 250px;
-  height: 28vh;
-  background: linear-gradient(300deg, #97979733 0%, #000000 100%), url('../assets/imgs/img_tempo_real.png') right;
-  background-size: cover;
-  background-blend-mode: lighten;
-}
-
-.monitoramento #img_alertas {
-  width: 25vw;
-  min-width: 250px;
-  height: 28vh;
-  background: url('../assets/imgs/img_alertas.png') center no-repeat;
-  background-size: contain;
-}
-
-.monitoramento #img_relatorios {
-  width: 25vw;
-  min-width: 250px;
-  height: 28vh;
-  background: url('../assets/imgs/img_relatorios.png') center no-repeat;
-  background-size: contain;
-}
-
-/* ================== RESPONSIVIDADE ================== */
-html {
-  scroll-behavior: smooth;
+  font-size: 1rem;
+  color: #d6d6d6;
+  margin-bottom: 0;
+  line-height: 1.5;
 }
 
 @media (max-width: 900px) {
-  .fundo-escuro {
-    padding-left: 0;
+  .monitoramento {
+    padding: 40px 10px 20px 10px;
   }
-
-  .container-pagina {
-    padding-bottom: 10px;
+  .monitoramento .container_primario {
+    padding: 0;
   }
-
-  .conteudo-principal {
+  .monitoramento .container_secundario {
     flex-direction: column;
-    padding: 30px 10px 0 0;
-    gap: 30px;
-  }
-
-  .rodape-principal {
-    flex-direction: column;
-    padding: 20px 10px;
     gap: 20px;
-  }
-
-  .eventos,
-  .noticias {
-    margin-right: 0;
-  }
-
-  .curiosidades,
-  .sobre {
-    padding: 60px 20px;
-  }
-
-  .caixas-info,
-  .missao-valores {
-    flex-direction: column;
     align-items: center;
   }
-
-  .monitoramento .assunto_monitoramento {
-    width: 80vw;
+  .monitoramento .box_monitoramento {
+    min-width: 220px;
+    max-width: 98vw;
+    width: 100%;
   }
-
-  .monitoramento .box_monitoramento,
-  .monitoramento #img_tempo_real,
-  .monitoramento #img_alertas,
-  .monitoramento #img_relatorios {
-    width: 80vw;
+  .monitoramento .assunto_monitoramento p {
+    width: 98vw;
   }
 }

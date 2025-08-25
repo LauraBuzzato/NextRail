@@ -24,7 +24,7 @@ CREATE TABLE usuario (
     cargo varchar(50) not null,
 	fk_empresa INT,
 	FOREIGN KEY (fk_empresa) REFERENCES empresa(id),
-    constraint cargos check(cargo in("Operador","Supervisor"))
+    constraint cargos check(cargo in("Operador","Suporte de TI"))
 );
 
 create table servidor(
