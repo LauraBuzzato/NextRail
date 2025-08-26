@@ -7,6 +7,9 @@
   padding: 40px 0;
   box-sizing: border-box;
 }
+main{
+  border-top: solid #ffe066;
+}
 
 /* Container central da página */
 .container-pagina {
