@@ -76,107 +76,117 @@
     </ul>
   </div>
 
-  <!-- Conteúdo principal -->
-  <main class="relatorios">
+   <main class="relatorios" id="relatorios">
     <div class="container-secao">
-      <h2>Relatórios de Desempenho</h2>
-      <p>
-        Acompanhe o histórico de utilização de recursos do CCO ferroviário com nossos relatórios inteligentes.
-        Visualize tendências de consumo de CPU, memória e disco para uma gestão eficiente e preventiva.
-      </p>
+      <div class="texto-secao">
+        <h2>Otimização através de Relatórios</h2>
+        <p>
+          Com gráficos intuitivos, você acompanha tendências de desempenho de CPU, memória e disco.
+          Descubra picos de uso, identifique gargalos e tome decisões rápidas para manter a operação estável e
+          eficiente.
+        </p>
+        <ul class="lista-beneficios">
+          <li>
+            <ion-icon name="bar-chart-outline"></ion-icon>
+            <span>Visualização clara de indicadores críticos</span>
+          </li>
+          <li>
+            <ion-icon name="flash-outline"></ion-icon>
+            <span>Relatórios otimizados para análise em tempo real</span>
+          </li>
+          <li>
+            <ion-icon name="shield-checkmark-outline"></ion-icon>
+            <span>Dados seguros e confiáveis</span>
+          </li>
+        </ul>
 
-      <!-- Lista de Benefícios -->
-      <ul class="lista-beneficios">
-        <li> Análises em tempo real</li>
-        <li> Relatórios mensais automáticos</li>
-        <li> Histórico de alertas críticos</li>
-        <li> Previsão de tendências</li>
-      </ul>
+      </div>
 
-      <!-- Gráficos -->
+      <!-- Container dos gráficos -->
       <div class="graficos-container">
         <div class="grafico-box">
-          <h3>Uso da CPU</h3>
+          <h3>Uso de CPU</h3>
           <canvas id="graficoRelatorioCPU"></canvas>
         </div>
         <div class="grafico-box">
-          <h3>Consumo de Disco</h3>
-          <canvas id="graficoRelatorioDisco"></canvas>
+          <h3>Uso de RAM</h3>
+          <canvas id="graficoRelatorioRAM"></canvas>
         </div>
         <div class="grafico-box">
-          <h3>Memória RAM</h3>
-          <canvas id="graficoRelatorioRAM"></canvas>
+          <h3>Uso de Disco</h3>
+          <canvas id="graficoRelatorioDisco"></canvas>
         </div>
       </div>
     </div>
-  </main>
+  </main>y
 
   <!-- Scripts -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script src="./js/script.js"></script>
 
+
   <script>
-    // CPU
-    const ctxCPU = document.getElementById('graficoRelatorioCPU').getContext('2d');
-    new Chart(ctxCPU, {
-      type: 'doughnut',
-      data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-        datasets: [{
-          label: 'Uso de CPU (%)',
-          data: [90, 70, 65, 80, 85, 60, 75],
-          backgroundColor: [
-            'rgba(99, 102, 241, 0.7)',
-            'rgba(139, 92, 246, 0.7)',
-            'rgba(236, 72, 153, 0.7)',
-            'rgba(16, 185, 129, 0.7)',
-            'rgba(251, 191, 36, 0.7)',
-            'rgba(239, 68, 68, 0.7)'
-          ],
-          borderWidth: 2,
-          borderColor: '#0f0a10'
-        }]
-      }
-    });
+  const cpuCtx = document.getElementById('graficoRelatorioCPU').getContext('2d');
+  const ramCtx = document.getElementById('graficoRelatorioRAM').getContext('2d');
+  const discoCtx = document.getElementById('graficoRelatorioDisco').getContext('2d');
 
-    // Disco
-    const ctxDisco = document.getElementById('graficoRelatorioDisco').getContext('2d');
-    new Chart(ctxDisco, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-        datasets: [{
-          label: 'Uso do Disco (GB)',
-          data: [120, 135, 150, 160, 175, 180, 200],
-          borderColor: 'rgba(236, 72, 153, 1)',
-          backgroundColor: 'rgba(236, 72, 153, 0.2)',
-          fill: true,
-          tension: 0.4
-        }]
-      }
-    });
+  const configLine = {
+    type: 'line',
+    data: {
+      labels: Array.from({ length: 10 }, (_, i) => i + 1),
+      datasets: [{
+        label: '',
+        data: [],
+        borderColor: '#4e79a7',
+        backgroundColor: 'rgba(78,121,167,0.2)',
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 800 },
+      plugins: { legend: { display: true } },
+      scales: { y: { beginAtZero: true, max: 100 } }
+    }
+  };
 
-    // RAM
-    const ctxRAM = document.getElementById('graficoRelatorioRAM').getContext('2d');
-    new Chart(ctxRAM, {
-      type: 'bar',
-      data: {
-        labels: ['Servidor 01', 'Servidor 02', 'Servidor 03', 'Servidor 04'],
-        datasets: [{
-          label: 'Uso de RAM (%)',
-          data: [75, 60, 85, 50],
-          backgroundColor: [
-            'rgba(99, 102, 241, 0.8)',
-            'rgba(139, 92, 246, 0.8)',
-            'rgba(16, 185, 129, 0.8)',
-            'rgba(239, 68, 68, 0.8)'
-          ],
-          borderRadius: 8
-        }]
-      }
-    });
-  </script>
+  const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
+
+  const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
+
+  const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
+  graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
+
+  function gerarDadoAleatorio() {
+    return Math.floor(Math.random() * 100);
+  }
+
+  function atualizarGrafico(grafico) {
+    if (grafico.data.datasets[0].data.length >= 10) {
+      grafico.data.datasets[0].data.shift();
+    }
+    grafico.data.datasets[0].data.push(gerarDadoAleatorio());
+    grafico.update();
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      
+      //Mudar depois...
+      setInterval(() => atualizarGrafico(graficoCPU), 500);
+      setInterval(() => atualizarGrafico(graficoRAM), 1000);
+      setInterval(() => atualizarGrafico(graficoDisco), 700);
+
+      observer.disconnect();
+    }
+  }, { threshold: 0.4 });
+
+  observer.observe(document.getElementById('relatorios'));
+</script>
 
   <footer>
     <p style="text-align: center; color: #bdbdbd; font-size: 0.9rem; padding: 20px;">
