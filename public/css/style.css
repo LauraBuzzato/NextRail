@@ -18,12 +18,6 @@ main{
   padding-bottom: 40px;
 }
 
-@media (max-width: 1300px) {
-  .container-pagina {
-    max-width: 98vw;
-    padding: 0;
-  }
-}
 
 /* ================== CONTEÚDO PRINCIPAL ================== */
 .conteudo-principal {
@@ -625,6 +619,22 @@ main{
   line-height: 1.5;
 }
 
+
+footer p{
+  text-align: center; 
+  background-color: #23262b;
+  color: #bdbdbd; 
+  font-size: 0.9rem;
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 100px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.507);
+  border-top: solid rgba(0, 0, 0, 0.342);
+}
+/* Responsividade */
+
 @media (max-width: 900px) {
   .monitoramento {
     padding: 40px 10px 20px 10px;
@@ -647,16 +657,68 @@ main{
   }
 }
 
-footer p{
-  text-align: center; 
-  background-color: #23262b;
-  color: #bdbdbd; 
-  font-size: 0.9rem;
-  height: 39px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 100px;
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.507);
-  border-top: solid rgba(0, 0, 0, 0.342);
+@media (max-width: 900px) {
+  .relatorios {
+    padding: 40px 20px;
+  }
+
+  .relatorios .lista-beneficios {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .relatorios .lista-beneficios li {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  .graficos-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .grafico-box {
+    width: 100%;
+    max-width: 90vw;
+  }
+}
+@media (max-width: 768px) {
+  footer p {
+    padding: 10px;
+    height: auto;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .titulo-destaque,
+  .subtitulo,
+  .relatorios h2,
+  .relatorios p,
+  .curiosidades h2,
+  .curiosidades p,
+  .sobre h2,
+  .sobre p {
+    text-align: center;
+  }
+}
+@media (max-width: 768px) {
+  .conteudo-principal {
+    flex-direction: column;
+    padding: 0 20px;
+    align-items: center;
+  }
+
+  .principal {
+    margin-left: 0;
+    align-items: center;
+    text-align: center;
+  }
+
+  .img-fundo {
+    max-width: 90vw;
+  }
 }
