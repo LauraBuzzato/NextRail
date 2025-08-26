@@ -37,19 +37,6 @@ foreign key(fk_empresa) references empresa(id),
 constraint so check(sistema_operacional in("Windows","Linux","Red Hat","Windows Server","FreeBSD","Unix"))
 );
 
-
-create table captura(
-id bigint primary key auto_increment,
-fk_servidor int not null,
-cpu_uso decimal (5,2),
-cpu_temp decimal(5,2),
-ram_uso decimal(10,2),
-disco_livre decimal(10,2),
-disco_temp decimal(5,2),
-dt_coleta datetime default current_timestamp not null,
-foreign key(fk_servidor) references servidor(id));
-
-
 create table incidente(
 id int primary key auto_increment,
 descricao varchar(30),
