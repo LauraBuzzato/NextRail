@@ -541,7 +541,7 @@
 .monitoramento {
   background: linear-gradient(160deg, #23262b 0%, #181a20 100%);
   color: #fff;
-  padding: 80px 60px 40px 60px;
+  padding: 75px 60px 40px 60px;
   min-height: 80vh;
 }
 
@@ -641,4 +641,18 @@
   .monitoramento .assunto_monitoramento p {
     width: 98vw;
   }
+}
+
+footer p{
+  text-align: center; 
+  background-color: #23262b;
+  color: #bdbdbd; 
+  font-size: 0.9rem;
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 100px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.507);
+  border-top: solid rgba(0, 0, 0, 0.342);
 }
