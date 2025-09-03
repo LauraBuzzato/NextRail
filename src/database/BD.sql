@@ -17,14 +17,16 @@ CREATE TABLE empresa (
 );
 
 
-create table cargo(
-	id int primary key auto_increment,
-	descricao varchar (50) unique not null,
-	dashboard Boolean, 
-	chamados Boolean, 
-	administrador boolean, 
-	alertas Boolean
-);
+	create table cargo(
+		id int primary key auto_increment,
+		descricao varchar (50) unique not null,
+		dashboard Boolean, 
+		chamados Boolean, 
+		administrador boolean, 
+		alertas Boolean
+	);
+
+
 
 CREATE TABLE usuario (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -54,23 +56,6 @@ create table servidor(
 	foreign key (fk_so) references sistema_operacional(id)
 );
 
-
-
-create table captura(
-	id bigint primary key auto_increment,
-	fk_servidor int not null,
-	cpu_uso decimal (5,2),
-	cpu_temp decimal(5,2),
-	ram_usada decimal(10,2),
-	ram_livre decimal(10,2),
-	disco_usado decimal(10,2),
-	disco_livre decimal(10,2),
-	disco_uso decimal(5,2),
-	disco_temp decimal(5,2),
-	dt_coleta datetime default current_timestamp not null,
-	foreign key(fk_servidor) references servidor(id)
-);
-
 create table gravidade(
 	id int primary key auto_increment, 
 	descricao varchar(30) unique not null
@@ -84,7 +69,7 @@ descricao varchar(30) unique not null
 
 
 
-create table incidentes (
+create table incidente (
 	id int primary key auto_increment,
 	fk_servidor int not null,
 	fk_captura int not null,
@@ -93,14 +78,48 @@ create table incidentes (
 	abertura_chamado datetime default current_timestamp,
 	tempo_de_chamado datetime,
 	foreign key (gravidade) references gravidade(id),
-	foreign key (chamado_status) references status(id)
+	foreign key (chamado_status) references status(id),
+    foreign key (fk_servidor) references servidor(id)
+);
+
+create table  componente (
+id int primary key auto_increment,
+descricao varchar(50) not null,
+fk_servidor int not null,
+foreign key (fk_servidor) references servidor(id));
+
+create table metrica(
+id int primary key auto_increment,
+descricao varchar(50),
+min decimal(4,2) not null,
+max decimal(4,2) not null,
+fk_componente int not null,
+foreign key (fk_componente) references componente(id)
 );
 
 
 
+insert into empresa (razao_social,cnpj, codigo_ativacao) 
+			values ('ViaMobilidade',42288184000187, '1');
 
 
+insert into cargo (descricao,dashboard,chamados,alertas,administrador)
+			values
+				  ('Suporte',false,false,false,true),
+				  ('Analista',True,False,True,False),
+				  ('Técnico',False,True,True,False);
+                       
+Insert into gravidade(descricao)
+			values
+					('Baixo'),
+                    ('Médio'),
+                    ('Alto'),
+                    ('Grave');
 
-insert into empresa (razao_social, codigo_ativacao) values ('CPTM', '1');
 
+Insert into status(descricao)
+			values
+				  ('Aberto'),
+				  ('Andamento'),
+				  ('Fechado');
 
