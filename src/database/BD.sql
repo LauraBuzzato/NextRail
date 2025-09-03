@@ -33,7 +33,7 @@ CREATE TABLE usuario (
 	nome VARCHAR(50) not null,
 	email VARCHAR(50) unique not null ,
 	senha VARCHAR(50) not null,
-    fk_cargo int not null,
+    fk_cargo int not null default 2,
 	fk_empresa INT not null,
 	foreign key (fk_empresa) references empresa(id),
     foreign key (fk_cargo) references cargo(id)
@@ -74,7 +74,7 @@ create table incidente (
 	fk_servidor int not null,
 	fk_captura int not null,
 	gravidade int,
-	chamado_status int default 1,
+	chamado_status int default 2,
 	abertura_chamado datetime default current_timestamp,
 	tempo_de_chamado datetime,
 	foreign key (gravidade) references gravidade(id),
@@ -106,6 +106,8 @@ insert into empresa (razao_social,cnpj, codigo_ativacao)
 insert into cargo (descricao,dashboard,chamados,alertas,administrador)
 			values
 				  ('Suporte',false,false,false,true),
+                  ('Novo Usuario',false,false,false,false),
+                  ('Diretor',True,False,True,true),
 				  ('Analista',True,False,True,False),
 				  ('Técnico',False,True,True,False);
                        
