@@ -286,11 +286,13 @@ body {
   padding: 10px; 
   bottom: 0px;
   right: 0px;
+  z-index: 1;
+  
 }
 
 .card_erro #mensagem_erro{
   font-weight: 500;
-  font-size: 20px;
+  font-size:12pt;
 }
 
 .formulario .tipo_campo {

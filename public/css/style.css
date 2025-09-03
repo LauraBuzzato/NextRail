@@ -622,7 +622,7 @@ main {
 }
 
 
-footer p {
+/* footer p {
   text-align: center;
   background-color: #23262b;
   color: #bdbdbd;
@@ -634,7 +634,33 @@ footer p {
   margin-left: 100px;
   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.507);
   border-top: solid rgba(0, 0, 0, 0.342);
+} */
+ footer {
+  margin-left:100px ;
+  background-color: #23262b;
+  color: aliceblue;
+  text-align: center;
+  padding: 20px 10px;
+  border-top: 4px solid #000000; 
 }
+.rodape_conteudo>.coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.rodape_conteudo {
+  display: flex;
+  flex-direction: row;
+  padding: 50px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  justify-content: space-between;
+}
+.contato{
+  color: #ffffff;
+}
+
 
 /* Responsividade */
 
