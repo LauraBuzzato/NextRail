@@ -72,7 +72,6 @@ descricao varchar(30) unique not null
 create table incidente (
 	id int primary key auto_increment,
 	fk_servidor int not null,
-	fk_captura int not null,
 	gravidade int,
 	chamado_status int default 2,
 	abertura_chamado datetime default current_timestamp,
