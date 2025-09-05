@@ -12,6 +12,8 @@ USE nextrail;
 CREATE TABLE empresa (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	razao_social VARCHAR(50) unique not null,
+    email_de_contato VARCHAR(50) not null,
+    telefone VARCHAR(50) not null,
 	cnpj CHAR(14)unique not null,
 	codigo_ativacao VARCHAR(50) unique not null 
 );
@@ -19,11 +21,7 @@ CREATE TABLE empresa (
 
 	create table cargo(
 		id int primary key auto_increment,
-		descricao varchar (50) unique not null,
-		dashboard Boolean, 
-		chamados Boolean, 
-		administrador boolean, 
-		alertas Boolean
+		descricao varchar (50) unique not null
 	);
 
 
@@ -33,6 +31,7 @@ CREATE TABLE usuario (
 	nome VARCHAR(50) not null,
 	email VARCHAR(50) unique not null ,
 	senha VARCHAR(50) not null,
+    administrador boolean,
     fk_cargo int not null default 2,
 	fk_empresa INT not null,
 	foreign key (fk_empresa) references empresa(id),
@@ -98,17 +97,15 @@ foreign key (fk_componente) references componente(id)
 
 
 
-insert into empresa (razao_social,cnpj, codigo_ativacao) 
-			values ('ViaMobilidade',42288184000187, '1');
+insert into empresa (razao_social,email_de_contato, telefone, cnpj, codigo_ativacao) 
+			values ('ViaMobilidade', 'ouvidoria@viamobilidade.com.br', '0800 770 7106', 42288184000187, '1');
 
 
-insert into cargo (descricao,dashboard,chamados,alertas,administrador)
+insert into cargo (descricao)
 			values
-				  ('Suporte',false,false,false,true),
-                  ('Novo Usuario',false,false,false,false),
-                  ('Diretor',True,False,True,true),
-				  ('Analista',True,False,True,False),
-				  ('Técnico',False,True,True,False);
+				  ('Analista de infraestrutura'),
+                  ('Suporte técnico');
+                 
                        
 Insert into gravidade(descricao)
 			values
