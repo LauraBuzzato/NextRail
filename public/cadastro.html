@@ -10,14 +10,14 @@
 
   <script src="./js/sessao.js"></script>
 
-   <link rel="stylesheet" href="./css/estilo.css">
-    <link rel="stylesheet" href="./css/menu.css"> 
-    <link rel="icon" href="./assets/icon/favicon2.ico">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    
-    <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="./css/estilo.css">
+  <link rel="stylesheet" href="./css/menu.css">
+  <link rel="icon" href="./assets/icon/favicon2.ico">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+
+  <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body onload="listar()">
@@ -90,11 +90,12 @@
         <img src="assets/icon/logoSF.png" alt="">
         <h2>Cadastrar</h2>
         <div class="formulario">
-          <!--
-                         Para inserir mais um campo, copie uma das inputs abaixo.
-                         Assim que inserir vá para o script abaixo.
-                     -->
-    
+
+          <div class="campo">
+            <span>Código de ativação:</span>
+            <input id="codigo_input" type="text" placeholder="Insira o código de ativação" />
+          </div>
+
           <div class="campo">
             <span>Nome:</span>
             <input id="nome_input" type="text" placeholder="Seu nome" />
@@ -122,12 +123,13 @@
       </div>
     </div>
   </div>
-   
+
 </body>
+
 </html>
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-  <script src="./js/script.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<script src="./js/script.js"></script>
 <script>
 
   // Array para armazenar empresas cadastradas para validação de código de ativação 
@@ -142,7 +144,7 @@
     var emailVar = email_input.value;
     var senhaVar = senha_input.value;
     var confirmacaoSenhaVar = confirmacao_senha_input.value;
-    var codigoVar = 1;
+    var codigoVar = codigo_ativacao = 1;
     var idEmpresaVincular
 
     // Verificando se há algum campo em branco
@@ -162,6 +164,9 @@
     } else {
       setInterval(sumirMensagem, 5000);
     }
+    if(codigo_ativacao = 1){
+      window.location.href = "dashboard.html"
+    }
 
     // Verificando se o código de ativação é de alguma empresa cadastrada
     for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
@@ -176,6 +181,7 @@
       }
     }
 
+    
     // Enviando o valor da nova input
     fetch("/usuarios/cadastrar", {
       method: "POST",
