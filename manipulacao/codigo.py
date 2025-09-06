@@ -23,10 +23,18 @@ def metricas():
     disc_porcentagem_usando = disc.percent
 
     # Temperatura
-    sensor = psutil.sensors_temperatures()
+    try:
+        sensor = psutil.sensors_temperatures()
+    except:
+        sensor=None
+        
     #Modificar o nome do cpu e disco
-    cpu_temp = sensor["coretemp"][0].current
-    disc_temp_atual = sensor["nvme"][0].current
+    try:
+        disc_temp_atual = sensor["nvme"][0].current
+        cpu_temp = sensor["coretemp"][0].current
+    except:
+        cpu_temp=None
+        disc_temp_atual=None
 
     captura = {
         "Usuario": usuario,
