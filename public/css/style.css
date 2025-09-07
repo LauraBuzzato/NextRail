@@ -642,9 +642,9 @@ footer {
 
 /* Logo */
 .footer-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  width: 100%;       /* ocupa a largura toda */
+  justify-content: flex-start;
+  margin-bottom: 15px; /* espaço entre o logo e o texto */
 }
 
 .footer-logo .nome {
@@ -672,7 +672,19 @@ footer {
   list-style: none;
   padding: 0;
 }
-
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 30px;
+  text-align: left;
+  margin-left: 88px;
+}
+.footer-logo {
+  order: -1; /* garante que o logo sempre venha antes */
+}
 .footer-icons li a {
   display: flex;
   flex-direction: column;
