@@ -1,104 +1,152 @@
-<img src="https://user-images.githubusercontent.com/46379117/192358781-9ca879e4-e55e-4d0d-b876-f9a4a2ed9ae8.png" width="600px">
 
-_Web Data Visualization = Visualização de Dados na Web_
+# NextRail - Sistema de Visualização de Dados Ferroviários  
 
-_Implementação de Referência para o seu Projeto de Primeiro Semestre_
+NextRail é um projeto acadêmico desenvolvido como parte da disciplina de **Pesquisa e Inovação I**, no curso de **Ciência da Computação** da **SPTech School**.  
+O sistema tem como objetivo auxiliar no **gerenciamento e análise de dados ferroviários**, oferecendo uma interface organizada, segura e interativa para usuários.
 
-<hr>
+---
 
-# Como usar
+## Objetivo do Projeto
 
-1. Clone este repositório em sua máquina.
+> [!INFO]
+> O setor ferroviário desempenha papel essencial na logística e transporte de cargas e passageiros.  
+> O **NextRail** surge como uma ferramenta para apoiar o monitoramento e gestão de informações, proporcionando:
+>
+> - Cadastro e autenticação de usuários;  
+> - Gestão de avisos e medições em tempo real;  
+> - Visualização organizada e responsiva de dados;  
+> - Base sólida para futuras análises gráficas e dashboards.  
 
+---
 
-1. Crie, no Banco de Dados, as tabelas necessárias para o funcionamento deste projeto.
-- Siga as instruções no arquivo **/src/database/script-tabelas.sql**
+## Funcionalidades
 
+> [!INFO]
+> O projeto já conta com as seguintes funcionalidades implementadas:
+>
+> - Página inicial de apresentação do sistema;  
+> - Cadastro e login de usuários com persistência em banco de dados;  
+> - CRUD de avisos e medições;  
+> - Estrutura modular com **routes**, **controllers** e **models**;  
+> - Configuração de ambientes (desenvolvimento/produção);  
+> - Backend funcional em Node.js integrado a MySQL;  
+> - Design responsivo em HTML5 e CSS3.  
 
-3. Acesse o arquivo **app.js** e parametrize o ambiente.
-- Se você estiver utilizando o Ambiente de Produção (remoto), comente a linha 2 e deixe habilitada a linha 1 onde está o valor **var ambiente_processo = 'producao';**
-- Se você estiver utilizando o Ambiente de Desenvolvimento (local), comente a linha 1 e deixe habilitada a linha 2 onde está o valor **var ambiente_processo = 'desenvolvimento';**
+---
 
-4. Adicione as credenciais de Banco de Dados no arquivo **.env** ou em **.env.dev**, seguindo as instruções neste.
+## Tecnologias Utilizadas
 
-5. Acesse este repositório no seu terminal (GitBash ou VSCode) e execute os comandos abaixo:
+> [!NOTE]
+> - **HTML5** → Estrutura do front-end.  
+> - **CSS3** → Estilização e layout responsivo.  
+> - **JavaScript (ES6+)** → Interatividade e manipulação de dados.  
+> - **Node.js + Express** → Backend e API REST.  
+> - **MySQL** → Banco de dados relacional.  
+> - **dotenv** → Configuração de variáveis de ambiente.  
+
+---
+
+## Como Executar o Projeto
+
+### 1. Clonar o repositório
+```bash
+git clone https://github.com/igor-trindade/NextRail.git
+cd NextRail
+````
+
+### 2. Instalar dependências
+
+```bash
+npm install
+```
+
+### 3. Configurar ambiente
+
+No arquivo `app.js`, selecione o ambiente:
+
+```js
+// Produção (remoto)
+// var ambiente_processo = 'producao';
+
+// Desenvolvimento (local)
+var ambiente_processo = 'desenvolvimento';
+```
+
+### 4. Criar tabelas no banco
+
+Execute o script localizado em:
 
 ```
-npm i
-``` 
-_O comando acima irá instalar as bibliotecas necessárias para o funcionamento do projeto. As bibliotecas a serem instaladas estão listadas no arquivo **package.json** então é muito importante que este não seja alterado. Será criada uma nova pasta/diretório chamado **node_modules** quando o comando for finalizado, que é onde as bibliotecas estão localizadas. Não altere a pasta/diretório._
-
+/src/database/script-tabelas.sql
 ```
+
+### 5. Configurar variáveis de ambiente
+
+Edite o arquivo `.env` com credenciais de banco e porta.
+
+### 6. Executar servidor
+
+```bash
 npm start
-``` 
+```
 
-_O comando acima irá iniciar seu projeto e efetuar os comandos de acordo com a sua parametrização feita nos passos anteriores._
+---
 
-6. Para "ver" seu projeto funcionando, acesse em seu navegador o caminho **informado no terminal**.
+## Estrutura do Projeto
 
-7. Caso queira parar a execução, tecle **CTRL+C** no terminal em que o projeto está rodando.
+```plaintext
+NextRail/
+├── public/              # Arquivos estáticos (HTML, CSS, JS)
+├── src/
+│   ├── database/        # Script de tabelas e configuração DB
+│   ├── controllers/     # Lógica de negócio
+│   ├── models/          # Modelos de dados
+│   └── routes/          # Definição das rotas
+├── app.js               # Arquivo principal do servidor
+├── package.json         # Dependências e scripts NPM
+└── README.md            # Documentação do projeto
+```
 
-## Adicionar novo recurso ao projeto
+---
 
-**"Recurso? O que é?"** Enquanto no Banco de Dados chamamos as tabelas de "entidades", quando tratamos de desenvolvimento WEB usamos a palavra "recurso" para se referir a algo que podemos criar, ler, atualizar ou deletar [1]. Estas ações são conhecidas como CRUD: Create, Read, Update e Delete. Para acessar cada ação, usamos os métodos HTTP: POST, GET, PUT e DELETE [2]. (Há outros verbos, porém com estes já conseguimos efetuar CRUDs). 
+## Próximos Passos
 
-**Tabela para ajudar a fazer a associação**
+> \[!IMPORTANT]
+>
+> * Melhorar design responsivo e experiência do usuário;
+> * Implementar dashboards com gráficos interativos (ex.: Chart.js);
+> * Criar painel administrativo com níveis de acesso;
+> * Futuras integrações com APIs externas para dados ferroviários.
 
-<table>
-  <tr>
-    <th>C.R.U.D</th>
-    <th>Ação</th>
-    <th>Tradução</th>
-    <th>Verbo HTTP *</th>
-    <th>Comando BD</th>
-  </tr>
-  <tr>
-    <td>C</td>
-    <td>Create</td>
-    <td>Criar</td>
-    <td>POST</td>
-    <td>INSERT</td>
-  </tr>
-  <tr>
-    <td>R</td>
-    <td>Read</td>
-    <td>Ler</td>
-    <td>GET</td>
-    <td>SELECT</td>
-  </tr>
-  <tr>
-    <td>U</td>
-    <td>Update</td>
-    <td>Atualizar</td>
-    <td>PUT</td>
-    <td>UPDATE</td>
-  </tr>
-  <tr>
-    <td>D</td>
-    <td>Delete</td>
-    <td>Deletar</td>
-    <td>DELETE</td>
-    <td>DELETE</td>
-  </tr>
-</table>
+---
 
-_* Você verá o verbo HTTP sendo apontado nos arquivos em /routes_
+## Sobre o Projeto
 
-**"E no meu projeto, o que seria um recurso?"** Em web-data-viz manipulamos os recursos **usuário**, **aviso** e **medida**. Podemos conferir isso vendo para quais entidades foram criados os caminhos de inserção e captura de dados, que envolve os diretórios **routes**, **controllers** e **models**.
+Este projeto foi desenvolvido como prática acadêmica, simulando um sistema de apoio ao setor ferroviário.
+Combinando **front-end, back-end, autenticação e persistência em banco relacional**, o NextRail oferece uma base sólida para expansão de funcionalidades em cenários reais.
 
-Abaixo, uma figura que ajuda a compreender o caminho percorrido para, por exemplo, efetuar o cadastro de um usuário:
+---
 
+## Créditos
 
-![image](https://github.com/BandTec/web-data-viz/assets/46379117/e8d63551-6153-4632-93b9-f59a1d2afd3e)
+**Curso:** Ciência da Computação
+**Instituição:** SPTech School
+**Disciplina:** Pesquisa e Inovação I
 
+> \[!NOTE]
+> **Integrantes do grupo:**
+>
+> * Igor Trindade
+> * Felipe Hideki
+> * Lucas Hideo
+> * Guilherme Aoki
+> * Bianca Ortega
+> * Kheyla Thais
 
-**Entendi o que é um recurso e gostaria de adicionar um novo ao meu projeto! Como faz?**  
-- Primeiro, crie a tabela no Banco de Dados referente a este recurso. Exemplos de recursos comuns de serem adicionados ao projeto no primeiro semestre: Silo, Aquário, Sala, Andar, Endereço, Mercado, Prateleira, Unidade, Carro, Caminhão...  
-- Assim que criada a tabela, faça todo o caminho de **front-end → routes → controllers → models** replicando o que já existe!  
-- Exemplo, se você quiser a funcionalidade de adicionar um novo Aquário, deve criar arquivos referentes ao aquario nos diretórios e replicar também as funções.  
-- Dica: A implementação de AVISO já contém o CRUD completo! :wink:
- 
-### Fontes bibliográficas
+---
 
-[1] https://datatracker.ietf.org/doc/html/rfc2396  
-[2] https://datatracker.ietf.org/doc/html/rfc7231
+## Licença
+
+> \[!WARNING]
+> Este projeto é de uso **educacional** e sem fins comerciais.
+> Todos os direitos reservados aos autores.
