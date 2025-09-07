@@ -101,7 +101,7 @@
 
           <div class="campo">
             <span>Código de ativação:</span>
-            <input id="codigo_input" type="text" placeholder="Insira o código de ativação" />
+            <input id="codigo_input" type="text" placeholder="Insira aqui seu código" />
           </div>
 
           <div class="campo">
@@ -152,7 +152,7 @@
     var emailVar = email_input.value;
     var senhaVar = senha_input.value;
     var confirmacaoSenhaVar = confirmacao_senha_input.value;
-    var codigoVar = codigo_ativacao = 1;
+    var codigoVar = codigo_input.value;
     var idEmpresaVincular
 
     // Verificando se há algum campo em branco
@@ -172,9 +172,6 @@
     } else {
       setInterval(sumirMensagem, 5000);
     }
-    if(codigo_ativacao = 1){
-      window.location.href = "dashboard.html"
-    }
 
     // Verificando se o código de ativação é de alguma empresa cadastrada
     for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
@@ -189,7 +186,6 @@
       }
     }
 
-    
     // Enviando o valor da nova input
     fetch("/usuarios/cadastrar", {
       method: "POST",
