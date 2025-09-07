@@ -8,17 +8,11 @@
   --light-texto-cor: #fff;
   --hover-cor: #f1e8fd;
   --extra-light: #f3f4f6;
+  --cor-amarela: #ffe066;
   --max-width: 800px;
 }
 
-body.modo-escuro {
-  --cor-primaria: #015A96;
-  --cor-bg: #1e1e1e;
-  --branco-bg: #23262b;
-  --dark-texto-cor: #fff;
-  --light-texto-cor: #fff;
-  --hover-cor: #31313f;
-}
+
 
 * {
   margin: 0;
@@ -172,7 +166,7 @@ body.modo-escuro {
   background-color: var(--branco-bg);
 }
  main {
-      margin-left: 100px;
+      margin-left: 78px;
       padding: 40px;
       background-color: var(--cor-bg);
       min-height: 100vh;
@@ -235,4 +229,61 @@ body.modo-escuro {
       display: block;
       color: var(--dark-texto-cor);
     }
-    
+/* Esconder menu lateral e mostrar botão hambúrguer no mobile */
+@media (max-width: 768px) {
+  .menu {
+    width: 0;
+    padding: 0;
+    border-radius: 0;
+    transition: width 0.3s ease;
+    overflow-x: hidden;
+  }
+
+  .menu.active {
+    width: 200px;
+    padding: 20px;
+  }
+
+  /* Ajustar main para ocupar 100% da tela quando menu fechado */
+  main {
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+  }
+
+  main.shifted {
+    margin-left: 200px; /* mesmo valor do menu aberto */
+  }
+
+  /* Mostrar botão hambúrguer */
+  .hamburger {
+    display: flex;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 3000;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+  }
+
+  .hamburger span {
+    display: block;
+    height: 4px;
+    background: var(--cor-amarela);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* Animação do X quando ativo */
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+}

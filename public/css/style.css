@@ -542,7 +542,7 @@ main {
   background: linear-gradient(160deg, #23262b 0%, #181a20 100%);
   color: #fff;
   padding: 75px 60px 40px 60px;
-  min-height: 80vh;
+  min-height: 100vh;
 }
 
 .monitoramento .container_primario {
@@ -621,89 +621,157 @@ main {
   line-height: 1.5;
 }
 
-
-/* footer p {
-  text-align: center;
-  background-color: #23262b;
-  color: #bdbdbd;
-  font-size: 0.9rem;
-  height: 39px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 100px;
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.507);
-  border-top: solid rgba(0, 0, 0, 0.342);
-} */
- footer {
-  margin-left:100px ;
-  background-color: #23262b;
-  color: aliceblue;
-  text-align: center;
-  padding: 20px 10px;
-  border-top: 4px solid #000000; 
-}
-.rodape_conteudo>.coluna {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+footer {
+  background: linear-gradient(180deg, #23262b 0%, #181a20 100%);
+  padding: 50px 20px;
+  color: #fff;
+  border-top: 2px solid #37d6c2;
+  font-family: "Poppins", sans-serif;
 }
 
-.rodape_conteudo {
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   flex-direction: row;
-  padding: 50px;
-  padding-top: 0px;
-  padding-bottom: 0px;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+  text-align: left;
 }
-.contato{
-  color: #ffffff;
+
+/* Logo */
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-logo .nome {
+  color: #ffe066;
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Texto central */
+.footer-text {
+  flex: 1;
+  min-width: 250px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #d6d6d6;
+  text-align: left;
+}
+
+/* Ícones de redes sociais */
+.footer-icons {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+}
+
+.footer-icons li a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.6rem;
+  color: #37d6c2;
+  transition: transform 0.3s ease, color 0.3s ease;
+  text-decoration: none;
+}
+
+.footer-icons li a span {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #d1d5db;
+}
+
+.footer-icons li a:hover {
+  color: #ffe066;
+  transform: translateY(-5px) scale(1.1);
+}
+/* Responsividade */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    justify-content: center;
+  }
+
+  .footer-text {
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  .footer-icons {
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .footer-icons li a span {
+    font-size: 0.75rem;
+  }
 }
 
 
 /* Responsividade */
 
-@media (max-width: 900px) {
-  .rodape_conteudo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-
-}
-.rodape_conteudo>.coluna {
- width: 100%;
- padding-bottom: 20px;
- padding-top:10px ;
- align-items: center; 
- border-bottom: 2px solid #000000;
-}
+@media (max-width: 768px) {
   .monitoramento {
-    padding: 40px 10px 20px 10px;
+    padding: 40px 20px 20px 20px;
   }
 
   .monitoramento .container_primario {
-    padding: 0;
+    padding: 0 10px;
+  }
+
+  .monitoramento .titulo-destaque {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .monitoramento .assunto_monitoramento p {
+    font-size: 1rem;
+    width: 100%;
+    text-align: center;
   }
 
   .monitoramento .container_secundario {
     flex-direction: column;
-    gap: 20px;
     align-items: center;
+    gap: 20px;
   }
 
   .monitoramento .box_monitoramento {
-    min-width: 220px;
-    max-width: 98vw;
-    width: 100%;
+    width: 95%;
+    max-width: 400px;
+    text-align: center;
+    padding: 28px 20px;
   }
 
-  .monitoramento .assunto_monitoramento p {
-    width: 98vw;
+  .monitoramento .icon-feature {
+    font-size: 2.5rem;
+  }
+
+  .monitoramento .titulo_boxes {
+    font-size: 1.1rem;
+  }
+
+  .monitoramento .box_monitoramento p {
+    font-size: 0.95rem;
   }
 }
 
-@media (max-width: 900px) {
+
+@media (max-width: 768px) {
   .relatorios {
     padding: 40px 20px;
   }
@@ -842,4 +910,3 @@ main {
     max-width: 90vw;
   }
 }
-
