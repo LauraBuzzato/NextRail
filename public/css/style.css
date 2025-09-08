@@ -49,12 +49,6 @@ main {
   margin-top: 20px;
 }
 
-.id-colecao {
-  font-size: 1.1rem;
-  color: #bdbdbd;
-  letter-spacing: 2px;
-}
-
 .titulo-colecao {
   font-size: 1.3rem;
   font-weight: 600;
@@ -141,7 +135,7 @@ main {
   padding: 18px 24px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  min-width: 180px;
+  min-width: 325px;
 }
 
 .titulo-evento {
@@ -164,7 +158,7 @@ main {
 
 .item-noticia {
   background: #23262b;
-  padding: 18px 24px;
+  padding: 10px 24px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
