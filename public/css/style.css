@@ -616,16 +616,19 @@ main {
 }
 
 footer {
-  background: linear-gradient(180deg, #23262b 0%, #181a20 100%);
+  background: linear-gradient(45deg, #1c1c1c 0%, #000000 100%);
   padding: 50px 20px;
   color: #fff;
-  border-top: 2px solid #37d6c2;
+  border-top: 2px solid var(--cor-vermelha);
   font-family: "Poppins", sans-serif;
 }
 
+/* Container principal do footer */
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding-left: 88px; /* espaço para o menu lateral */
+  padding-right: 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -636,9 +639,11 @@ footer {
 
 /* Logo */
 .footer-logo {
-  width: 100%;       /* ocupa a largura toda */
+  flex: 1 1 100%;
+  display: flex;
   justify-content: flex-start;
-  margin-bottom: 15px; /* espaço entre o logo e o texto */
+  margin-bottom: 15px;
+  order: -1;
 }
 
 .footer-logo .nome {
@@ -666,25 +671,13 @@ footer {
   list-style: none;
   padding: 0;
 }
-.footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 30px;
-  text-align: left;
-  margin-left: 88px;
-}
-.footer-logo {
-  order: -1; /* garante que o logo sempre venha antes */
-}
+
 .footer-icons li a {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 1.6rem;
-  color: #37d6c2;
+  color: var(--cor-vermelha);
   transition: transform 0.3s ease, color 0.3s ease;
   text-decoration: none;
 }
@@ -696,15 +689,18 @@ footer {
 }
 
 .footer-icons li a:hover {
-  color: #ffe066;
+  color: #CF1D2B;
   transform: translateY(-5px) scale(1.1);
 }
+
 /* Responsividade */
 @media (max-width: 768px) {
   .footer-container {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    padding-left: 20px; /* remove espaço do menu lateral */
+    padding-right: 20px;
     gap: 20px;
   }
 
@@ -726,7 +722,6 @@ footer {
     font-size: 0.75rem;
   }
 }
-
 
 /* Responsividade */
 
