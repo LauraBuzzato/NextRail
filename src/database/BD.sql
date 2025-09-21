@@ -28,6 +28,7 @@ CREATE TABLE empresa (
 CREATE TABLE usuario (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	nome VARCHAR(50) not null,
+    cpf varchar(11) not null,
 	email VARCHAR(50) unique not null ,
 	senha VARCHAR(50) not null,
     fk_cargo int not null,
@@ -97,6 +98,10 @@ foreign key (fk_componente) references componente(id)
 
 insert into empresa (razao_social,email_de_contato, telefone, cnpj) 
 			values ('ViaMobilidade', 'ouvidoria@viamobilidade.com.br', '0800 770 7106', '42288184000187');
+            
+insert into usuario (nome, cpf, email, senha, fk_cargo, fk_empresa)
+			values ('João Silva', '12345678901', 'joao@email.com', 'senha123', 1, 1);
+
 
 
 insert into cargo (nome)
