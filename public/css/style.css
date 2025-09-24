@@ -58,7 +58,7 @@ main {
 
 .desc-colecao {
   font-size: 1rem;
-  color: #bdbdbd;
+  color: white;
   margin-top: 4px;
 }
 
@@ -82,7 +82,7 @@ main {
 
 .subtitulo {
   font-size: 1rem;
-  color: #bdbdbd;
+  color: white;
   margin-bottom: 0;
 }
 
@@ -171,7 +171,7 @@ main {
 
 .desc-noticia {
   font-size: 0.95rem;
-  color: #bdbdbd;
+  color: white;
   margin-top: 6px;
 }
 
@@ -207,7 +207,7 @@ main {
 
 .relatorios p {
   font-size: 1.1rem;
-  color: #d6d6d6;
+  color: white;
   max-width: 800px;
   margin: 0 auto 40px;
   line-height: 1.6;
@@ -258,7 +258,7 @@ main {
 
 .relatorios p {
   font-size: 1.1rem;
-  color: #d6d6d6;
+  color: white;
   max-width: 800px;
   margin: 0 auto 40px;
   line-height: 1.6;
@@ -400,7 +400,7 @@ main {
 
 .caixa-info p {
   font-size: 0.95rem;
-  color: #d6d6d6;
+  color: white;
   line-height: 1.5;
 }
 
@@ -425,7 +425,7 @@ main {
 
 .curiosidade-extra p {
   font-size: 1rem;
-  color: #d6d6d6;
+  color: white;
   margin-bottom: 25px;
   line-height: 1.6;
 }
@@ -492,7 +492,7 @@ main {
 .sobre p {
   font-size: 1rem;
   line-height: 1.6;
-  color: #bdbdbd;
+  color: white;
   margin-bottom: 20px;
 }
 
@@ -555,7 +555,7 @@ main {
 
 .monitoramento .assunto_monitoramento p {
   font-size: 1.1rem;
-  color: #d6d6d6;
+  color: white;
   max-width: 700px;
   margin: 0 auto;
   line-height: 1.6;
@@ -610,7 +610,7 @@ main {
 
 .monitoramento .box_monitoramento p {
   font-size: 1rem;
-  color: #d6d6d6;
+  color: white;
   margin-bottom: 0;
   line-height: 1.5;
 }
@@ -619,7 +619,7 @@ footer {
   background: linear-gradient(45deg, #1c1c1c 0%, #000000 100%);
   padding: 50px 20px;
   color: #fff;
-  border-top: 2px solid var(--cor-vermelha);
+  border-top: 2px solid white;
   font-family: "Poppins", sans-serif;
 }
 
@@ -659,7 +659,7 @@ footer {
   min-width: 250px;
   font-size: 1rem;
   line-height: 1.5;
-  color: #d6d6d6;
+  color: white;
   text-align: left;
 }
 
@@ -677,7 +677,7 @@ footer {
   flex-direction: column;
   align-items: center;
   font-size: 1.6rem;
-  color: var(--cor-vermelha);
+  color: white;
   transition: transform 0.3s ease, color 0.3s ease;
   text-decoration: none;
 }
@@ -685,7 +685,7 @@ footer {
 .footer-icons li a span {
   margin-top: 6px;
   font-size: 0.8rem;
-  color: #d1d5db;
+  color: white;
 }
 
 .footer-icons li a:hover {

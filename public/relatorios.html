@@ -221,6 +221,9 @@
     }
   };
 
+  Chart.defaults.color = 'white';
+  Chart.defaults.borderColor = '#383838';
+
   const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
   graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
 

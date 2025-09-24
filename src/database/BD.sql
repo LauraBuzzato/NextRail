@@ -98,18 +98,17 @@ foreign key (fk_componente) references componente(id)
 
 insert into empresa (razao_social,email_de_contato, telefone, cnpj) 
 			values ('ViaMobilidade', 'ouvidoria@viamobilidade.com.br', '0800 770 7106', '42288184000187');
-            
-insert into usuario (nome, cpf, email, senha, fk_cargo, fk_empresa)
-			values ('João Silva', '12345678901', 'joao@email.com', 'senha123', 1, 1);
-
-
 
 insert into cargo (nome)
 			values
 				  ('Administrador'),
 				  ('Analista de infraestrutura'),
                   ('Suporte técnico');
-                 
+            
+insert into usuario (nome, cpf, email, senha, fk_cargo, fk_empresa)
+			values ('João Silva', '12345678901', 'joao@email.com', 'senha123', 1, 1);
+
+                
                        
 Insert into gravidade(descricao)
 			values
