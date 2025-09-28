@@ -1,0 +1,291 @@
+.container-pagina .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 80vh;
+}
+
+.container-pagina .container {
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.card {
+  width: 70%;
+  border-radius: 40px;
+  display: flex;
+  
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  height: fit-content;
+  padding: 20px 0;
+  position: relative;
+  padding: 40px;
+
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.card>img{
+  max-width: 80px;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+}
+
+
+.card h2 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.formulario {
+  display: flex;
+  height: 90%;
+  width: 80%;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+.formulario span {
+  font-size: 15px;
+  font-weight: 800;
+  color: white;
+}
+
+.formulario input {
+  border: 2px solid black;
+  text-align: center;
+  border-radius: 10px;
+  margin: 0;
+}
+.formulario>a{
+  color: azure;
+}
+.formulario select {
+  border: 2px solid black;
+  background-color: white;
+  color: gray;
+  height: 43px;
+  text-align: center;
+  border-radius: 10px;
+  margin: 0;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  padding: 5px 0;
+}
+
+.botao {
+  cursor: pointer;
+  font-family: "Barlow", sans-serif;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 18px;
+  width: 100%;
+  height: 30px;
+  align-self: center;
+  margin-top: 20px;
+  background-color: #ddd;
+  color: #000;
+}
+
+.botao:hover{
+  background-color: #000;
+  color: #ddd;
+}
+
+@media screen and (max-width: 800px) {
+  .card {
+    width: 100%;
+    
+  }
+
+  .botao{
+
+    margin-top: 40px;
+    height: 50px;
+  }
+  .formulario{
+    margin: 10px 40px;
+    margin-top: 10px; 
+  }
+}
+
+#div_erros_cadastro {
+  display: none
+}
+
+input{
+    padding: 10px;
+}
+
+
+.formulario input,
+.formulario select {
+  background-color: #fff;
+  color: black;
+  border: 2px solid white;
+}
+
+
+
+  .containerTabela {
+    margin: 4% auto 0 auto;
+    padding: 0 2rem;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.8) transparent;
+  }
+
+  table {
+    min-width: 800px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  }
+
+  th,
+  td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: white;
+    color: black;
+    font-size: 1.1rem;
+  }
+
+  tr:hover {
+    background-color: rgba(241, 241, 241, 0.2);
+  }
+
+  .inicial {
+    border-radius: 20px 0 0 0;
+  }
+
+  .final {
+    border-radius: 0 20px 0 0;
+  }
+
+  .icones {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+  }
+
+  .icone {
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 1000px) {
+    .containerTabela {
+      padding: 0 1rem;
+      overflow-x: auto;
+    }
+
+    table {
+      min-width: 600px;
+      font-size: 0.9rem;
+      width: 90%;
+    }
+
+    th,
+    td {
+      padding: 10px;
+    }
+
+    .icones {
+      gap: 15px;
+    }
+  }
+
+
+  .containerTabela::-webkit-scrollbar {
+    height: 8px;
+
+  }
+
+  .containerTabela::-webkit-scrollbar-track {
+    background: rgba(200, 200, 200, 0.1);
+    border-radius: 8px;
+  }
+
+  .containerTabela::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 8px;
+    border: 2px solid rgba(200, 200, 200, 0.1);
+  }
+
+  .containerTabela::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 1);
+  }
+
+  .primeiraLixeira {
+    visibility: hidden;
+  }
+
+
+
+  .popup-excluir {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .popup-conteudo {
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 300px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .popup-conteudo p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #1a1a1a;
+  }
+
+  .popup-botoes button {
+    padding: 8px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .popup-botoes button:first-child {
+    background-color: #d9534f;
+    color: white;
+  }
+
+  .popup-botoes button:last-child {
+    background-color: #6c757d;
+    color: white;
+  }

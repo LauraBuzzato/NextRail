@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>NextRail | Cadastro Usuários </title>
 
-  
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>NextRail | Cadastro Usuários </title>
+
+
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/menu.css">
+  <link rel="stylesheet" href="./css/admStyle.css">
   <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-    <!-- Menu lateral -->
+  <!-- Menu lateral -->
   <div class="menu">
     <ul class="link-items">
       <div class="logo-container">
@@ -35,9 +38,9 @@
         </a>
       </li>
 
-      
 
-      
+
+
 
       <li class="link-item">
         <a href="login.html" class="link">
@@ -48,19 +51,68 @@
     </ul>
   </div>
 
-    <!-- Menu hamburger -->
+  <!-- Menu hamburger -->
   <div class="hamburger" id="hamburger">
-  <span></span>
-  <span></span>
-  <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
 
-  <main class="fundo-escuro" id="dashboard">
+  <main class="fundo-escuro">
+    <div class="container-pagina">
+      <div class="container">
+        <div class="card card-cadastro">
+          <h2>Cadastrar Usuário</h2>
+          <div class="formulario">
+            <div class="campo">
+              <span>Nome:</span>
+              <input id="nome_input" type="text" placeholder="">
+            </div>
+            <div class="campo">
+              <span>CPF:</span>
+              <input type="text" id="cpf_input" required maxlength="14">
+            </div>
+            <div class="campo">
+              <span>Cargo:</span>
+              <select name="" id="">
+                <option value="">Analista de infraestrutura</option>
+                <option value="">Suporte técnico</option>
+              </select>
+            </div>
+            <div class="campo">
+              <span>E-mail:</span>
+              <input id="email_input" type="text" placeholder="@gmail.com">
+            </div>
+            <div class="campo">
+              <span>Senha:</span>
+              <input id="senha_input" type="password" placeholder="******">
+            </div>
+            <button class="botao" onclick="cadastrar()">Cadastrar</button>
+          </div>
 
+          <div id="div_erros_cadastro"></div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script src="./js/script.js"></script>
 </body>
+
 </html>
+
+<script>
+  function mascaraCPF(value) {
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  }
+
+  document.getElementById("cpf_input").addEventListener("input", function () {
+    this.value = mascaraCPF(this.value);
+  });
+</script>
