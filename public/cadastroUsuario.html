@@ -74,9 +74,8 @@
             </div>
             <div class="campo">
               <span>Cargo:</span>
-              <select name="" id="">
-                <option value="">Analista de infraestrutura</option>
-                <option value="">Suporte técnico</option>
+              <select name="" id="cargo_input">
+                <option value="">Escolha uma opção</option>
               </select>
             </div>
             <div class="campo">
@@ -115,4 +114,27 @@
   document.getElementById("cpf_input").addEventListener("input", function () {
     this.value = mascaraCPF(this.value);
   });
+
+  const selectCargo = document.getElementById("cargo_input");
+
+  document.addEventListener("DOMContentLoaded", function() {
+  const selectCargo = document.getElementById("cargo_input");
+
+  fetch("/usuarios/procurarCargos", { method: "POST", headers: { "Content-Type": "application/json" } })
+    .then(res => {
+      if (!res.ok) throw "Erro na requisição de cargos!";
+      return res.json();
+    })
+    .then(dados => {
+      console.log("Cargos:", dados);
+      dados.forEach(cargo => {
+        if(cargo.id!=1){
+        selectCargo.add(new Option(cargo.nome, cargo.id));  
+        }
+        
+      });
+    })
+    .catch(erro => console.log("#ERRO cargos:", erro));
+
+});
 </script>

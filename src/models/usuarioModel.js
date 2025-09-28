@@ -22,7 +22,15 @@ function cadastrar(nome, email, senha, fkEmpresa) {
     return database.executar(instrucaoSql);
 }
 
+function procurarCargos(){
+    var instrucaoSql = `
+        select id, nome from cargo;`
+         console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    procurarCargos
 };

@@ -43,7 +43,7 @@ function entrar() {
                 } else if (json.cargo === "Analista de infraestrutura") {
                     window.location = "./dashboard.html"; 
                 } else {
-                    window.location = "./paginaPadrao.html"; 
+                    window.location = "./usuarios.html"; 
                 }
             }, 1000);
         });
