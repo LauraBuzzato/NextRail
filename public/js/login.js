@@ -38,7 +38,7 @@ function entrar() {
             sessionStorage.CARGO_USUARIO = json.cargo;
 
             setTimeout(() => {
-                if (json.cargo === "Administrador") {
+                if (json.cargo === "Suporte técnico") {
                     window.location = "./paginaSUP.html"; 
                 } else if (json.cargo === "Analista de infraestrutura") {
                     window.location = "./dashboard.html"; 
