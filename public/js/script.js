@@ -1,4 +1,3 @@
-/*Ativar o menu */
 
 const menu = document.querySelector(".menu");
 const linkItems = document.querySelectorAll(".link-item");
