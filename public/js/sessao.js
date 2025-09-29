@@ -4,13 +4,17 @@ function validarSessao() {
     var nome = sessionStorage.NOME_USUARIO;
     var cargo = sessionStorage.CARGO_USUARIO;
 
-    var b_usuario = document.getElementById("b_usuario");
 
-    if (email != null && nome != null  && cargo != null) {
-        b_usuario.innerHTML = nome;
-    } else {
+    if (nome == null && email == null && cargo == null ) {
         window.location = "../login.html";
     }
+
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+            location.reload();
+        }
+    });
+
 }
 
 function limparSessao() {
