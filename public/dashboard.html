@@ -14,9 +14,10 @@
 
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/sessao.js"></script>
 </head>
 
-<body>
+<body onload="validarSessao()">
   <!-- Menu lateral -->
   <div class="menu">
     <ul class="link-items">
@@ -46,7 +47,7 @@
       </li>
 
       <li class="link-item">
-        <a href="login.html" class="link">
+        <a onclick="limparSessao()" class="link">
           <ion-icon name="log-out-outline"></ion-icon>
           <span style="--i: 4">Sair</span>
         </a>
