@@ -32,10 +32,13 @@ function autenticar(req, res) {
 
 
 function cadastrar(req, res) {
-    var nome = req.body.nomeServer;
-    var email = req.body.emailServer;
-    var senha = req.body.senhaServer;
-    var fkEmpresa = req.body.idEmpresaVincularServer;
+    var nome = req.body.nome;
+    var cpf = req.body.cpf;
+    var email = req.body.email;
+    var senha = req.body.senha;
+    var cargo = req.body.cargo;
+    var fkEmpresa = req.body.idempresa;
+    
 
     // Faça as validações dos valores
     if (nome == undefined) {
@@ -44,11 +47,15 @@ function cadastrar(req, res) {
         res.status(400).send("Seu email está undefined!");
     } else if (senha == undefined) {
         res.status(400).send("Sua senha está undefined!");
+    } else if (cpf == undefined) {
+        res.status(400).send("Sua senha está undefined!");
+    } else if (cargo == undefined) {
+        res.status(400).send("Sua senha está undefined!");
     } else if (fkEmpresa == undefined) {
         res.status(400).send("Sua empresa a vincular está undefined!");
     } else {
 
-        usuarioModel.cadastrar(nome, email, senha, fkEmpresa)
+        usuarioModel.cadastrar(nome, cpf, email, senha, cargo, fkEmpresa)
             .then(
                 function (resultado) {
                     res.json(resultado);

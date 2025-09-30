@@ -36,10 +36,11 @@ function entrar() {
             sessionStorage.NOME_USUARIO = json.nome;
             sessionStorage.ID_USUARIO = json.id;
             sessionStorage.CARGO_USUARIO = json.cargo;
+            sessionStorage.ID_EMPRESA = json.empresaId;
 
             setTimeout(() => {
                 if (json.cargo === "Suporte técnico") {
-                    window.location = "./paginaSUP.html"; 
+                    window.location = "./dashboard.html"; 
                 } else if (json.cargo === "Analista de infraestrutura") {
                     window.location = "./dashboard.html"; 
                 } else {
