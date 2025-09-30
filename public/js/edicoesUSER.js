@@ -28,14 +28,4 @@
     }, 100)
   }
 
-  function mascaraCPF(value) {
-        return value
-            .replace(/\D/g, "")
-            .replace(/(\d{3})(\d)/, "$1.$2")
-            .replace(/(\d{3})(\d)/, "$1.$2")
-            .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-    }
-
-    document.getElementById("cpf_input").addEventListener("input", function () {
-        this.value = mascaraCPF(this.value);
-    });
+  

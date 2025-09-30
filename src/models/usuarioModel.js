@@ -29,8 +29,20 @@ function procurarCargos(){
     return database.executar(instrucaoSql);
 }
 
+function buscarUsuarios(fkEmpresa){
+    var instrucaoSql = `
+        SELECT u.id AS id, u.nome AS nome, cpf, u.email AS email, c.nome AS cargo, u.fk_empresa AS empresaId
+    FROM usuario u
+    JOIN cargo c ON u.fk_cargo = c.id
+    WHERE u.fk_empresa = ${fkEmpresa}
+    ORDER BY u.id;`
+         console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     autenticar,
     cadastrar,
-    procurarCargos
+    procurarCargos,
+    buscarUsuarios
 };

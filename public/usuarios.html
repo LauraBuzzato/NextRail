@@ -16,9 +16,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/edicoesUSER.js"></script>
   <script src="js/sessao.js"></script>
+  <script src="js/listaUsuario.js"></script>
 </head>
 
-<body onload="validarSessao()">
+<body onload="validarSessao(), buscarUsuarios()">
   <!-- Menu lateral -->
   <div class="menu">
     <ul class="link-items">
@@ -67,44 +68,9 @@
           <th>Cargo</th>
           <th class="final"></th>
         </tr>
-        <div>
-          <tr>
-            <td>Maria Souza (você)</td>
-            <td>123.456.789-00</td>
-            <td>maria.souza@email.com</td>
-            <td>Administrador</td>
-            <td>
-              <div class="icones">
-                <ion-icon name="pencil" onclick="editar(1)" class="icone"></ion-icon>
-                <ion-icon name="trash" onclick="excluir(1)" class="icone primeiraLixeira"></ion-icon>
-              </div>
-            </td>
-          </tr>
-          <tr id="usuario-2">
-            <td>João Pereira</td>
-            <td>987.654.321-11</td>
-            <td>joao.pereira@email.com</td>
-            <td>Suporte técnico</td>
-            <td>
-              <div class="icones">
-                <ion-icon name="pencil" onclick="editar(2)" class="icone"></ion-icon>
-                <ion-icon name="trash" onclick="excluir(2, 'João Pereira')" class="icone"></ion-icon>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Ana Silva</td>
-            <td>456.789.123-22</td>
-            <td>ana.silva@email.com</td>
-            <td>Analista de infraestrutura</td>
-            <td>
-              <div class="icones">
-                <ion-icon name="pencil" onclick="editar(3)" class="icone"></ion-icon>
-                <ion-icon name="trash" onclick="excluir(3)" class="icone"></ion-icon>
-              </div>
-            </td>
-          </tr>
-        </div>
+        <tbody id="conteudoTabela">
+          
+        </tbody>
       </table>
     </div>
     </div>
@@ -124,7 +90,6 @@
     </div>
   </div>
 </body>
-<script src="js/script.js"></script>
+
 
 </html>
-

@@ -15,4 +15,8 @@ router.post("/procurarCargos", function (req, res) {
     usuarioController.procurarCargos(req, res);
 });
 
+router.post("/buscarUsuarios", function (req, res) {
+    usuarioController.buscarUsuarios(req, res);
+});
+
 module.exports = router;
