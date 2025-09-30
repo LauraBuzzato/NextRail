@@ -10,6 +10,7 @@ document.getElementById("cpf_input").addEventListener("input", function () {
   this.value = mascaraCPF(this.value);
 });
 
+
 const selectCargo = document.getElementById("cargo_input");
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -33,9 +34,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+function RetiraMascara(ObjCPF) {
+    return ObjCPF.value.replace(/\D/g, '');
+}
+
 function cadastrar(){
+  
   var nomeVar = nome_input.value;
-  var cpfVar = cpf_input.value;
+  var cpfVar = RetiraMascara(cpf_input);
   var cargoVar = cargo_input.value;
   var emailVar = email_input.value;
   var senhaVar = senha_input.value;
@@ -54,23 +60,23 @@ function cadastrar(){
     idEmpresaVar == ""
 
   ) {
-    finalizarAguardar("Os campos não podem ser vazios.");
+    alert("Os campos não podem ser vazios.");
     return false;
   }
   if (nomeVar.length <= 1) {
-    finalizarAguardar("O nome deve conter mais de 1 caractere.");
+    alert("O nome deve conter mais de 1 caractere.");
     return false;
   }
 
   if (senhaVar.length < 8 || senhaVar.length > 128 || !CaracterEspeciais.some(char => senhaVar.includes(char))) {
-    finalizarAguardar("Sua senha deve ter mais de 8 caracteres e possuir caracteres Especiais!")
+    alert("Sua senha deve ter mais de 8 caracteres e possuir caracteres Especiais!")
     return false
   }
 
 
 
   if (!emailVar.includes('@') || !emailVar.includes('.')) {
-    finalizarAguardar("O e-mail é inválido.");
+    alert("O e-mail é inválido.");
     return false;
   }
 
@@ -95,10 +101,9 @@ function cadastrar(){
         console.log("resposta: ", resposta);
 
         if (resposta.ok) {
-          var sectionErrosLogin = document.getElementById("section_erros_login");
-          sectionErrosLogin.style.backgroundColor = '#069006';
+          
 
-          finalizarAguardar("Cadastro realizado com sucesso!");
+          alert("Cadastro realizado com sucesso!");
 
           
         } else {
@@ -107,11 +112,8 @@ function cadastrar(){
       })
       .catch(function (resposta) {
         console.log(`#ERRO: ${resposta}`);
-        finalizarAguardar(resposta);
+        alert(resposta);
       });
   }
 
-  function sumirMensagem() {
-    cardErro.style.display = "none";
-  }
 }
