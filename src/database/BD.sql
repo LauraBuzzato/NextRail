@@ -106,9 +106,9 @@ insert into cargo (nome)
                   ('Suporte técnico');
             
 insert into usuario (nome, cpf, email, senha, fk_cargo, fk_empresa)
-			values ('João Silva', '12345678901', 'joao@email.com', 'senha123', 1, 1);
-			values ('Maria Cardoso', '12345678902', 'maria@email.com', 'senha123', 2, 1);
-			values ('Pedro Silva', '12345678903', 'pedro@email.com', 'senha123', 3, 1);
+			values ('João Silva', '12345678901', 'joao@email.com', 'senha123', 1, 1),
+			 ('Maria Cardoso', '12345678902', 'maria@email.com', 'senha123', 2, 1),
+			 ('Pedro Silva', '12345678903', 'pedro@email.com', 'senha123', 3, 1);
 
                 
                        
