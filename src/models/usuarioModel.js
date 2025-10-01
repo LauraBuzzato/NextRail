@@ -40,9 +40,17 @@ function buscarUsuarios(fkEmpresa){
     return database.executar(instrucaoSql);
 }
 
+function excluir(id){
+    var instrucaoSql = `
+        DELETE FROM usuario WHERE id = ${id};`
+         console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     autenticar,
     cadastrar,
     procurarCargos,
-    buscarUsuarios
+    buscarUsuarios,
+    excluir
 };

@@ -19,4 +19,8 @@ router.post("/buscarUsuarios", function (req, res) {
     usuarioController.buscarUsuarios(req, res);
 });
 
+router.post("/excluir", function (req, res) {
+    usuarioController.excluir(req, res);
+});
+
 module.exports = router;

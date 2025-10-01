@@ -28,7 +28,7 @@ function buscarUsuarios(){
 
             if (i == 0) {
                 linha += `
-                <tr>
+                <tr class="teste">
                         <td>${usuario.nome} (você)</td>
                         <td>${mascaraCPF(usuario.cpf)}</td>
                         <td>${usuario.email}</td>
@@ -48,7 +48,7 @@ function buscarUsuarios(){
             }
             else {
                 linha += `
-                        <tr id="usuario-${usuario.id}">
+                        <tr id="usuario-${usuario.id}" class="teste">
                             <td>${usuario.nome}</td>
                             <td>${mascaraCPF(usuario.cpf)}</td>
                             <td>${usuario.email}</td>

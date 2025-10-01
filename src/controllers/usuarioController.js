@@ -83,7 +83,7 @@ function procurarCargos(req, res){
                 function (erro) {
                     console.log(erro);
                     console.log(
-                        "\nHouve um erro ao realizar o cadastro! Erro: ",
+                        "\nHouve um erro ao procurar cargos! Erro: ",
                         erro.sqlMessage
                     );
                     res.status(500).json(erro.sqlMessage);
@@ -102,7 +102,26 @@ function buscarUsuarios(req, res){
                 function (erro) {
                     console.log(erro);
                     console.log(
-                        "\nHouve um erro ao realizar o cadastro! Erro: ",
+                        "\nHouve um erro ao buscar usuários! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
+
+function excluir(req, res){
+    var id = req.body.id;
+    usuarioModel.excluir(id)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao realizar a exclusão! Erro: ",
                         erro.sqlMessage
                     );
                     res.status(500).json(erro.sqlMessage);
@@ -114,5 +133,6 @@ module.exports = {
     autenticar,
     cadastrar,
     procurarCargos,
-    buscarUsuarios
+    buscarUsuarios,
+    excluir
 }
