@@ -142,6 +142,11 @@ Combinando **front-end, back-end, autenticação e persistência em banco relaci
 > * Guilherme Aoki
 > * Bianca Ortega
 > * Kheyla Thais
+> * Enrico Faraldo
+> * Enzo Servilha
+> * Laura Buzzato
+> * Pedro Giraldi
+> * Pedro Martins
 
 ---
 
