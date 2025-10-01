@@ -14,12 +14,12 @@
     <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/edicoesUSER.js"></script>
+    
     <script src="js/sessao.js"></script>
 
 </head>
 
-<body onload="validarSessao()">
+<body onload="validarSessao(), carregarDados()">
     <!-- Menu lateral -->
     <div class="menu">
         <ul class="link-items">
@@ -64,32 +64,8 @@
     <main class="fundo-escuro">
         <div class="container-pagina">
             <div class="container">
-                <div class="card card-cadastro">
-                    <h2>Editar Usuário</h2>
-                    <div class="formulario">
-                        <div class="campo">
-                            <span>Nome:</span>
-                            <input id="nome_input" type="text" placeholder="" value="">
-                        </div>
-                        <div class="campo">
-                            <span>CPF:</span>
-                            <input type="text" id="cpf_input" required maxlength="14">
-                        </div>
-                        <div class="campo">
-                            <span>Cargo:</span>
-                            <select name="" id="cargo_input">
-                                <option value="">Escolha uma opção</option>
-                            </select>
-                        </div>
-                        <div class="campo">
-                            <span>E-mail:</span>
-                            <input id="email_input" type="text" placeholder="@gmail.com">
-                        </div>
-                        <div class="campo">
-                            <span>Senha:</span>
-                            <input id="senha_input" type="password" placeholder="******">
-                        </div>
-                        <button class="botao" onclick="atualizar()">Atualizar</button>
+                <div class="card card-cadastro" id="cardEdicao">
+                    
                     </div>
 
                     <div id="div_erros_cadastro"></div>
@@ -102,6 +78,5 @@
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="./js/script.js"></script>
 </body>
-<script src="js/cadastroUSER.js"></script>
-
+<script src="js/edicoesUSER.js"></script>
 </html>

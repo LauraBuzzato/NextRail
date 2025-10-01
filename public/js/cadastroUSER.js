@@ -10,36 +10,38 @@ document.getElementById("cpf_input").addEventListener("input", function () {
   this.value = mascaraCPF(this.value);
 });
 
+function procurarCargos() {
+  
 
-const selectCargo = document.getElementById("cargo_input");
+  
+    const selectCargo = document.getElementById("cargo_input");
 
-document.addEventListener("DOMContentLoaded", function () {
-  const selectCargo = document.getElementById("cargo_input");
+    fetch("/usuarios/procurarCargos", { method: "POST", headers: { "Content-Type": "application/json" } })
+      .then(res => {
+        if (!res.ok) throw "Erro na requisição de cargos!";
+        return res.json();
+      })
+      .then(dados => {
+        console.log("Cargos:", dados);
+        dados.forEach(cargo => {
+          if (cargo.id != 1) {
+            selectCargo.add(new Option(cargo.nome, cargo.id));
+          }
 
-  fetch("/usuarios/procurarCargos", { method: "POST", headers: { "Content-Type": "application/json" } })
-    .then(res => {
-      if (!res.ok) throw "Erro na requisição de cargos!";
-      return res.json();
-    })
-    .then(dados => {
-      console.log("Cargos:", dados);
-      dados.forEach(cargo => {
-        if (cargo.id != 1) {
-          selectCargo.add(new Option(cargo.nome, cargo.id));
-        }
+        });
+      })
+      .catch(erro => console.log("#ERRO cargos:", erro));
 
-      });
-    })
-    .catch(erro => console.log("#ERRO cargos:", erro));
-
-});
-
-function RetiraMascara(ObjCPF) {
-    return ObjCPF.value.replace(/\D/g, '');
+  
 }
 
-function cadastrar(){
-  
+
+function RetiraMascara(ObjCPF) {
+  return ObjCPF.value.replace(/\D/g, '');
+}
+
+function cadastrar() {
+
   var nomeVar = nome_input.value;
   var cpfVar = RetiraMascara(cpf_input);
   var cargoVar = cargo_input.value;
@@ -101,11 +103,11 @@ function cadastrar(){
         console.log("resposta: ", resposta);
 
         if (resposta.ok) {
-          
+
 
           alert("Cadastro realizado com sucesso!");
 
-          
+
         } else {
           throw "Houve um erro ao tentar realizar o cadastro!";
         }

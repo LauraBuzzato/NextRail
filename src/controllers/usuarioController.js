@@ -129,10 +129,75 @@ function excluir(req, res){
             );
 }
 
+function carregarDados(req, res){
+    var id = req.body.id;
+    usuarioModel.carregarDados(id)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao buscar usuários! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
+
+function atualizar(req, res) {
+    var nome = req.body.nome;
+    var cpf = req.body.cpf;
+    var email = req.body.email;
+    var senha = req.body.senha;
+    var cargo = req.body.cargo;
+    var fkEmpresa = req.body.idempresa;
+    var id = req.body.idusuario
+    
+
+    // Faça as validações dos valores
+    if (nome == undefined) {
+        res.status(400).send("Seu nome está undefined!");
+    } else if (email == undefined) {
+        res.status(400).send("Seu email está undefined!");
+    } else if (senha == undefined) {
+        res.status(400).send("Sua senha está undefined!");
+    } else if (cpf == undefined) {
+        res.status(400).send("Sua senha está undefined!");
+    } else if (cargo == undefined) {
+        res.status(400).send("Sua senha está undefined!");
+    } else if (fkEmpresa == undefined) {
+        res.status(400).send("Sua empresa a vincular está undefined!");
+    } else {
+
+        usuarioModel.atualizar(nome, cpf, email, senha, cargo, fkEmpresa, id)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao realizar o cadastro! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+    }
+}
+
+
 module.exports = {
     autenticar,
     cadastrar,
     procurarCargos,
     buscarUsuarios,
-    excluir
+    excluir,
+    carregarDados,
+    atualizar
 }

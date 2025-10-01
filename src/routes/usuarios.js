@@ -23,4 +23,12 @@ router.post("/excluir", function (req, res) {
     usuarioController.excluir(req, res);
 });
 
+router.post("/carregarDados", function (req, res) {
+    usuarioController.carregarDados(req, res);
+});
+
+router.post("/atualizar", function (req, res) {
+    usuarioController.atualizar(req, res);
+});
+
 module.exports = router;

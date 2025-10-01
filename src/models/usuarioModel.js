@@ -47,10 +47,34 @@ function excluir(id){
     return database.executar(instrucaoSql);
 }
 
+function carregarDados(id){
+    var instrucaoSql = `
+        SELECT u.id AS id, u.nome AS nome, cpf, u.email AS email, c.id AS idcargo, c.nome AS cargo, u.fk_empresa AS empresaId
+    FROM usuario u
+    JOIN cargo c ON u.fk_cargo = c.id
+    WHERE u.id = ${id}
+    ORDER BY u.id;`
+         console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function atualizar(nome, cpf, email, senha, cargo, fkEmpresa, id) {
+    
+    var instrucaoSql = `
+        UPDATE usuario
+SET nome = '${nome}', cpf = '${cpf}', email = '${email}', senha = '${senha}', fk_cargo = ${cargo}
+WHERE id = ${id} AND fk_empresa = ${fkEmpresa};
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     autenticar,
     cadastrar,
     procurarCargos,
     buscarUsuarios,
-    excluir
+    excluir,
+    carregarDados,
+    atualizar
 };
