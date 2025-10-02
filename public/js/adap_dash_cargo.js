@@ -24,7 +24,7 @@ function atualizar(a) {
         li_configuracoes.style.display = "flex";
 
         var li_cadastrar_server = document.getElementById("cadastroServer")
-        li_cadastrar_server.style.display = "none";
+        li_cadastrar_server.style.display = "flex";
 
         // mudança no corpo
         // lembrando de sempre colocar as classes dentro dos atributod para herdar o css
@@ -35,8 +35,12 @@ function atualizar(a) {
         `
         
     }else {
+        
         var li_configuracoes = document.getElementById("configuracoes")
         li_configuracoes.style.display = "none";
+
+        var li_cadastrar_server = document.getElementById("cadastroServer")
+        li_cadastrar_server.style.display = "none";
 
     }
 }
