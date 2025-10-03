@@ -119,3 +119,25 @@ function cadastrar() {
   }
 
 }
+
+var senhaDigitada = ""
+var senhaDigitadaConfirmar = ""
+
+function salvarsenha(){
+    senhaDigitada = senha_input.value
+    senhaDigitadaConfirmar = confirmacao_senha_input.value
+}
+
+function mostrarsenha(){
+    senha.innerHTML = `<input id="senha_input" type="text" placeholder="******" value="${senhaDigitada}" oninput="salvarsenha()">
+            <ion-icon name="eye" class="icon" onclick="escondersenha()"></ion-icon>`
+
+    confirmarSenha.innerHTML = `<input id="confirmacao_senha_input" type="text" placeholder="******" oninput="salvarsenha()" value="${senhaDigitadaConfirmar}">`
+}
+
+function escondersenha(){
+    senha.innerHTML = `<input id="senha_input" type="password" placeholder="******" value="${senhaDigitada}" oninput="salvarsenha()">
+            <ion-icon name="eye-off" class="icon" onclick="mostrarsenha()"></ion-icon>`
+
+    confirmarSenha.innerHTML = `<input id="confirmacao_senha_input" type="password" placeholder="******" oninput="salvarsenha()" value="${senhaDigitadaConfirmar}">`
+}

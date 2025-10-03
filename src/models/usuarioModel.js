@@ -49,7 +49,7 @@ function excluir(id){
 
 function carregarDados(id){
     var instrucaoSql = `
-        SELECT u.id AS id, u.nome AS nome, cpf, u.email AS email, c.id AS idcargo, c.nome AS cargo, u.fk_empresa AS empresaId
+        SELECT u.id AS id, u.nome AS nome, cpf, senha, u.email AS email, c.id AS idcargo, c.nome AS cargo, u.fk_empresa AS empresaId
     FROM usuario u
     JOIN cargo c ON u.fk_cargo = c.id
     WHERE u.id = ${id}

@@ -62,3 +62,19 @@ function entrar() {
 
     return false;
 }
+
+var senhaDigitada = ""
+
+function salvarsenha(){
+    senhaDigitada = senha_input.value
+}
+
+function mostrarsenha(){
+    senha.innerHTML = `<input id="senha_input" type="text" placeholder="******" value="${senhaDigitada}" oninput="salvarsenha()">
+            <ion-icon name="eye" class="icon" onclick="escondersenha()"></ion-icon>`
+}
+
+function escondersenha(){
+    senha.innerHTML = `<input id="senha_input" type="password" placeholder="******" value="${senhaDigitada}" oninput="salvarsenha()">
+            <ion-icon name="eye-off" class="icon" onclick="mostrarsenha()"></ion-icon>`
+}

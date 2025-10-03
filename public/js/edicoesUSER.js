@@ -1,6 +1,9 @@
 let usuarioParaExcluir = ''
 let usuarioIdParaExcluir = null
 
+var senhaDigitada = ""
+var senhaDigitadaConfirmar = ""
+
 function mascaraCPF(value) {
   return value
     .replace(/\D/g, "")
@@ -36,6 +39,9 @@ function carregarDados() {
     .then(res => res.json())
     .then(usuario => {
       console.log(usuario);
+      
+      senhaDigitada = usuario[0].senha
+      senhaDigitadaConfirmar = usuario[0].senha
       if (usuario[0].idcargo == 1) {
         cardEdicao.innerHTML = `<h2>Editar Usuário: ${usuario[0].nome}</h2>
                     <div class="formulario">
@@ -53,11 +59,16 @@ function carregarDados() {
                         </div>
                         <div class="campo">
                             <span>Senha:</span>
-                            <input id="senha_input" type="password" placeholder="******" value="${usuario[0].senha}">
+                            <div class="senha" id="senha">
+                            <input id="senha_input" type="password" placeholder="******" value="${usuario[0].senha}" oninput="salvarsenha()">
+                            <ion-icon name="eye-off" class="icon" onclick="mostrarsenha()"></ion-icon>
+                            </div>
                         </div>
                         <div class="campo">
               <span>Confirmar senha:</span>
-              <input id="confirmacao_senha_input" type="password" placeholder="******" value="${usuario[0].senha}">
+              <div class="confirmarSenha" id="confirmarSenha">
+              <input id="confirmacao_senha_input" type="password" placeholder="******" value="${usuario[0].senha}" oninput="salvarsenha()">
+              </div>
             </div>
                         <button class="botao" onclick="atualizar()">Atualizar</button>`
       } else {
@@ -83,11 +94,16 @@ function carregarDados() {
                         </div>
                         <div class="campo">
                             <span>Senha:</span>
-                            <input id="senha_input" type="password" placeholder="******" value="${usuario[0].senha}">
+                            <div class="senha" id="senha">
+                            <input id="senha_input" type="password" placeholder="******" value="${usuario[0].senha}" oninput="salvarsenha()">
+                            <ion-icon name="eye-off" class="icon" onclick="mostrarsenha()"></ion-icon>
+                            </div>
                         </div>
                         <div class="campo">
               <span>Confirmar senha:</span>
-              <input id="confirmacao_senha_input" type="password" placeholder="******" value="${usuario[0].senha}">
+              <div class="confirmarSenha" id="confirmarSenha">
+              <input id="confirmacao_senha_input" type="password" placeholder="******" value="${usuario[0].senha}" oninput="salvarsenha()">
+              </div>
             </div>
                         <button class="botao" onclick="atualizar()">Atualizar</button>`
 
@@ -252,3 +268,23 @@ function atualizar() {
 
 }
 
+
+
+function salvarsenha(){
+    senhaDigitada = senha_input.value
+    senhaDigitadaConfirmar = confirmacao_senha_input.value
+}
+
+function mostrarsenha(){
+    senha.innerHTML = `<input id="senha_input" type="text" placeholder="******" value="${senhaDigitada}" oninput="salvarsenha()">
+            <ion-icon name="eye" class="icon" onclick="escondersenha()"></ion-icon>`
+
+    confirmarSenha.innerHTML = `<input id="confirmacao_senha_input" type="text" placeholder="******" oninput="salvarsenha()" value="${senhaDigitadaConfirmar}">`
+}
+
+function escondersenha(){
+    senha.innerHTML = `<input id="senha_input" type="password" placeholder="******" value="${senhaDigitada}" oninput="salvarsenha()">
+            <ion-icon name="eye-off" class="icon" onclick="mostrarsenha()"></ion-icon>`
+
+    confirmarSenha.innerHTML = `<input id="confirmacao_senha_input" type="password" placeholder="******" oninput="salvarsenha()" value="${senhaDigitadaConfirmar}">`
+}

@@ -471,3 +471,25 @@ input {
     margin-right: -5px;
   }
 }
+
+.senha{
+  margin-bottom: 10px;
+  border: 2px solid #32b9cd;
+  text-align: center;
+  border-radius: 10px;
+  display: flex;
+
+}
+
+#senha_input{
+  border: none;
+  border-radius: 7px;
+  width: 100%;
+}
+
+.icon{
+  color: black;
+  margin-left: -27px;
+  margin-top: 12px;
+  cursor: pointer;
+}
