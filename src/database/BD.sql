@@ -5,6 +5,7 @@
 /*
 comandos para mysql server
 */
+
 CREATE DATABASE nextrail;
 
 USE nextrail;
@@ -65,25 +66,25 @@ id int primary key auto_increment,
 descricao varchar(30) unique not null
 );
 
-
+create table  componente (
+id int primary key auto_increment,
+nome varchar(50) not null,
+fk_servidor int not null,
+foreign key (fk_servidor) references servidor(id));
 
 create table incidente (
-	id int primary key auto_increment,
-	fk_servidor int not null,
+	id int auto_increment,
+	fk_componente int,
 	fk_gravidade int,
 	fk_status int default 1,
 	abertura_chamado datetime default current_timestamp,
 	fechamento_chamado datetime,
 	foreign key (fk_gravidade) references gravidade(id),
 	foreign key (fk_status) references status(id),
-    foreign key (fk_servidor) references servidor(id)
+    foreign key (fk_componente) references componente(id),
+    primary key (id,fk_componente)
 );
 
-create table  componente (
-id int primary key auto_increment,
-nome varchar(50) not null,
-fk_servidor int not null,
-foreign key (fk_servidor) references servidor(id));
 
 create table metrica(
 id int primary key auto_increment,
