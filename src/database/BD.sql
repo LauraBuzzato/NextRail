@@ -55,11 +55,6 @@ create table servidor(
 	foreign key (fk_so) references sistema_operacional(id)
 );
 
-create table gravidade(
-	id int primary key auto_increment, 
-	descricao varchar(30) unique not null
-);
-
 
 create table status (
 id int primary key auto_increment,
@@ -75,11 +70,9 @@ foreign key (fk_servidor) references servidor(id));
 create table incidente (
 	id int auto_increment,
 	fk_componente int,
-	fk_gravidade int,
 	fk_status int default 1,
 	abertura_chamado datetime default current_timestamp,
 	fechamento_chamado datetime,
-	foreign key (fk_gravidade) references gravidade(id),
 	foreign key (fk_status) references status(id),
     foreign key (fk_componente) references componente(id),
     primary key (id,fk_componente)
@@ -110,15 +103,6 @@ insert into usuario (nome, cpf, email, senha, fk_cargo, fk_empresa)
 			values ('João Silva', '12345678901', 'joao@email.com', 'senha123', 1, 1),
 			 ('Maria Cardoso', '12345678902', 'maria@email.com', 'senha123', 2, 1),
 			 ('Pedro Silva', '12345678903', 'pedro@email.com', 'senha123', 3, 1);
-
-                
-                       
-Insert into gravidade(descricao)
-			values
-					('Baixo'),
-                    ('Médio'),
-                    ('Alto'),
-                    ('Grave');
 
 
 Insert into status(descricao)
