@@ -1,3 +1,17 @@
+function gerarDadoAleatorio() {
+    return Math.floor(Math.random() * 100);
+}
+
+function atualizarGrafico(grafico) {
+    if (grafico.data.datasets[0].data.length >= 10) {
+        grafico.data.datasets[0].data.shift();
+    }
+    grafico.data.datasets[0].data.push(gerarDadoAleatorio());
+    grafico.update();
+
+    setTimeout(() => atualizarGrafico(grafico), 1000)
+}
+
 function inicializarGraficos() {
     const cpuCtx = document.getElementById('graficoRelatorioCPU').getContext('2d');
     const ramCtx = document.getElementById('graficoRelatorioRAM').getContext('2d');
@@ -36,27 +50,7 @@ function inicializarGraficos() {
     const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
     graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
 
-    function gerarDadoAleatorio() {
-        return Math.floor(Math.random() * 100);
-    }
-
-    function atualizarGrafico(grafico) {
-        if (grafico.data.datasets[0].data.length >= 10) {
-            grafico.data.datasets[0].data.shift();
-        }
-        grafico.data.datasets[0].data.push(gerarDadoAleatorio());
-        grafico.update();
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-            setInterval(() => atualizarGrafico(graficoCPU), 500);
-            setInterval(() => atualizarGrafico(graficoRAM), 1000);
-            setInterval(() => atualizarGrafico(graficoDisco), 700);
-            observer.disconnect();
-        }
-    }, { threshold: 0.1 });
-
-
-    observer.observe(document.getElementById('relatorios'));
+    atualizarGrafico(graficoCPU)
+    atualizarGrafico(graficoRAM)
+    atualizarGrafico(graficoDisco)
 }

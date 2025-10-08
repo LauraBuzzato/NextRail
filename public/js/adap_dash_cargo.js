@@ -32,6 +32,7 @@ function atualizar(a) {
         main_conteudo_Principal.innerHTML = `
         <h1 class="titulo-destaque">Bem vindo(a) ${sessionStorage.NOME_USUARIO}</h1>
         <div class="graficos-container">
+        
         <div class="grafico-box">
           <h3>Uso de CPU</h3>
           <canvas id="graficoRelatorioCPU"></canvas>

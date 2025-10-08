@@ -23,11 +23,12 @@ main {
 /* ================== CONTEÚDO PRINCIPAL ================== */
 .conteudo-principal {
   display: flex;
-  flex-direction: row;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
   /*padding: 0 60px;*/
   position: relative;
+  height: 70vh;
 }
 
 .lado-esquerdo {
