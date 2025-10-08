@@ -1,10 +1,3 @@
--- Arquivo de apoio, caso você queira criar tabelas como as aqui criadas para a API funcionar.
--- Você precisa executar os comandos no banco de dados para criar as tabelas,
--- ter este arquivo aqui não significa que a tabela em seu BD estará como abaixo!
-
-/*
-comandos para mysql server
-*/
 
 CREATE DATABASE nextrail;
 
@@ -44,15 +37,39 @@ create table sistema_operacional(
 	descricao varchar (50) unique not null
 );
 
+create table tipo(
+	id int primary key auto_increment,
+	nome varchar(45)
+);
+
+create table estado(
+	id int primary key auto_increment,
+	nome varchar(45),
+	cidade varchar(45)
+);
+
+create table endereco(
+	id int primary key auto_increment,
+	logradouro varchar(100),
+	cep varchar(8),
+	numero varchar(10),
+	complemento varchar(40),
+	fk_estado int,
+	foreign key (fk_estado) references estado(id)
+);
+
 
 create table servidor(
 	id int primary key auto_increment,
 	nome varchar (45) not null,
-	tipo varchar(30) not null,
+	fk_tipo int,
 	fk_so int,
+	fk_endereco int,
 	fk_empresa int not null,
 	foreign key(fk_empresa) references empresa(id),
-	foreign key (fk_so) references sistema_operacional(id)
+	foreign key (fk_so) references sistema_operacional(id),
+	foreign key (fk_tipo) references tipo(id),
+	foreign key (fk_endereco) references endereco(id)
 );
 
 
@@ -78,14 +95,21 @@ create table incidente (
     primary key (id,fk_componente)
 );
 
+create table gravidade(
+	id int primary key auto_increment,
+	nome varchar(30)
+);
+
 
 create table metrica(
-id int primary key auto_increment,
+id int auto_increment,
+fk_gravidade int,
 nome varchar(50) not null,
-min decimal(8,2) not null,
-max decimal(8,2) not null,
+valor decimal(8,2) not null,
 fk_componente int not null,
-foreign key (fk_componente) references componente(id)
+foreign key (fk_componente) references componente(id),
+foreign key (fk_gravidade) references gravidade(id),
+primary key (id,fk_gravidade)
 );
 
 
