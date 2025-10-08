@@ -994,6 +994,8 @@ footer {
     gap: 1rem; 
     width: 100%;
     height: 80%;
+    text-align: center;
+    font-weight: 700;
 }
 
 .kpi-1{
@@ -1007,7 +1009,7 @@ footer {
 .kpi-1 .kpi-titulo{
   height: 30%;
   width: 100%;
-  background-color: rgb(255, 216, 52);
+  background-color: rgb(255, 196, 0);
 }
 
 .kpi-2{
@@ -1019,7 +1021,7 @@ footer {
 .kpi-2 .kpi-titulo{
   height: 30%;
   width: 100%;
-  background-color: rgb(255, 216, 52);
+  background-color: rgb(255, 196, 0);
 }
 
 .kpi-3{
@@ -1031,5 +1033,5 @@ footer {
 .kpi-3 .kpi-titulo{
   height: 30%;
   width: 100%;
-  background-color: rgb(255, 216, 52);
+  background-color: rgb(255, 196, 0);
 }
