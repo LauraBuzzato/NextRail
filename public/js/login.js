@@ -42,7 +42,7 @@ function entrar() {
                 if (json.cargo === "Suporte técnico") {
                     window.location = "./dashboard.html"; 
                 } else if (json.cargo === "Analista de infraestrutura") {
-                    window.location = "./dashboard.html"; 
+                    window.location = "./dashAnalista.html"; 
                 } else {
                     window.location = "./usuarios.html"; 
                 }
