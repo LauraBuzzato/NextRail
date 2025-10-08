@@ -25,10 +25,10 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   /*padding: 0 60px;*/
   position: relative;
-  height: 70vh;
+  height: 100vh;
 }
 
 .lado-esquerdo {
@@ -959,7 +959,7 @@ footer {
 
 
 
-/*Kpis*/
+/*Kpis analista*/
 .kpi-geral-container {
     display: flex; 
     justify-content: space-between;
@@ -984,4 +984,52 @@ footer {
     justify-content: center; 
     text-align: center;    
     margin-bottom: 1rem; 
+}
+
+/*Kpis suporte*/
+.kpi-container {
+    display: flex; 
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 1rem; 
+    width: 100%;
+    height: 80%;
+}
+
+.kpi-1{
+  height: 57%;
+  width: 30%;
+  background-color: rgb(226, 226, 226);
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-1 .kpi-titulo{
+  height: 30%;
+  width: 100%;
+  background-color: rgb(255, 216, 52);
+}
+
+.kpi-2{
+  height: 57%;
+  width: 30%;
+  background-color: rgb(226, 226, 226);
+}
+
+.kpi-2 .kpi-titulo{
+  height: 30%;
+  width: 100%;
+  background-color: rgb(255, 216, 52);
+}
+
+.kpi-3{
+  height: 57%;
+  width: 30%;
+  background-color: rgb(226, 226, 226);
+}
+
+.kpi-3 .kpi-titulo{
+  height: 30%;
+  width: 100%;
+  background-color: rgb(255, 216, 52);
 }

@@ -31,8 +31,24 @@ function atualizar(a) {
         var main_conteudo_Principal = document.getElementById("conteudoPrincipal")
         main_conteudo_Principal.innerHTML = `
         <h1 class="titulo-destaque">Bem vindo(a) ${sessionStorage.NOME_USUARIO}</h1>
-        <div class="graficos-container">
+        <div class="kpi-container">
+
+        <div class="kpi-1">
+          <div class="kpi-titulo"></div>
+          <div class="kpi-conteudo"></div>
+        </div>
         
+        <div class="kpi-2">
+          <div class="kpi-titulo"></div>
+          <div class="kpi-conteudo"></div>
+        </div>
+
+        <div class="kpi-3">
+          <div class="kpi-titulo"></div>
+          <div class="kpi-conteudo"></div>
+        </div>
+    </div>
+        <div class="graficos-container">
         <div class="grafico-box">
           <h3>Uso de CPU</h3>
           <canvas id="graficoRelatorioCPU"></canvas>
