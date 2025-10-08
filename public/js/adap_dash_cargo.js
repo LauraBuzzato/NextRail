@@ -27,12 +27,26 @@ function atualizar(a) {
         li_cadastrar_server.style.display = "flex";
 
         // mudança no corpo
-        // lembrando de sempre colocar as classes dentro dos atributod para herdar o css
+        // lembrando de sempre colocar as classes dentro dos atributos para herdar o css
         var main_conteudo_Principal = document.getElementById("conteudoPrincipal")
         main_conteudo_Principal.innerHTML = `
-        <h1 class="titulo-destaque">Bem vindo a Dashboard Do SUPORTE</h1>
-        <p class="subtitulo">AINDA ESTOU PENSANDO.</p>
+        <h1 class="titulo-destaque">Bem vindo(a) ${sessionStorage.NOME_USUARIO}</h1>
+        <div class="graficos-container">
+        <div class="grafico-box">
+          <h3>Uso de CPU</h3>
+          <canvas id="graficoRelatorioCPU"></canvas>
+        </div>
+        <div class="grafico-box">
+          <h3>Uso de RAM</h3>
+          <canvas id="graficoRelatorioRAM"></canvas>
+        </div>
+        <div class="grafico-box">
+          <h3>Uso de Disco</h3>
+          <canvas id="graficoRelatorioDisco"></canvas>
+        </div>
+      </div>
         `
+        inicializarGraficos();
         
     }else {
         

@@ -693,6 +693,9 @@ footer {
   transform: translateY(-5px) scale(1.1);
 }
 
+/* DASHBOARD SUPORTE */
+
+
 /* Responsividade */
 @media (max-width: 768px) {
   .footer-container {
