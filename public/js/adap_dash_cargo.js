@@ -35,17 +35,35 @@ function atualizar(a) {
 
         <div class="kpi-1">
           <div class="kpi-titulo">Memórias RAM acima do limite estipulado em tempo real</div>
-          <div class="kpi-conteudo"></div>
+          <div class="kpi-conteudo">
+            <span style="color: red;">SERVIDOR: </span>SERV-32 <span style="color: red;">ID: </span> 32 
+            <br>
+            <br>
+          </div>
         </div>
         
         <div class="kpi-2">
           <div class="kpi-titulo">Número de alertas nas últimas duas horas incluindo todos os componentes de todos os servidores</div>
-          <div class="kpi-conteudo"></div>
+          <div class="kpi-conteudo">
+          <span style="color: red;">SERVIDOR: </span>SERV-32 <span style="color: red;">ALERTAS: </span> 2 
+            <br>
+            <br>
+            <span style="color: red;">SERVIDOR: </span>SERV-64 <span style="color: red;">ALERTAS: </span> 0 
+            <br>
+            <br>
+            </div>
         </div>
 
         <div class="kpi-3">
-          <div class="kpi-titulo">Tempo em que a CPU ficou acima do limite estipulado nas últimas duas horas (em segundos por servidor)</div>
-          <div class="kpi-conteudo"></div>
+          <div class="kpi-titulo">Tempo total em que a CPU ficou acima do limite estipulado nas últimas duas horas (em segundos por servidor)</div>
+          <div class="kpi-conteudo">
+          <span style="color: red;">SERVIDOR: </span>SERV-32 <span style="color: red;">TEMPO: </span> 367 
+            <br>
+            <br>
+            <span style="color: red;">SERVIDOR: </span>SERV-64 <span style="color: red;">TEMPO: </span> 28 
+            <br>
+            <br>
+            </div>
         </div>
     </div>
         <div class="graficos-container">

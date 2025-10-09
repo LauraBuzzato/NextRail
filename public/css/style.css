@@ -1012,6 +1012,10 @@ footer {
   background-color: rgb(255, 196, 0);
 }
 
+.kpi-1 .kpi-conteudo{
+  color: black;
+}
+
 .kpi-2{
   height: 57%;
   width: 30%;
@@ -1024,6 +1028,10 @@ footer {
   background-color: rgb(255, 196, 0);
 }
 
+.kpi-2 .kpi-conteudo{
+  color: black;
+}
+
 .kpi-3{
   height: 57%;
   width: 30%;
@@ -1034,4 +1042,8 @@ footer {
   height: 30%;
   width: 100%;
   background-color: rgb(255, 196, 0);
+}
+
+.kpi-3 .kpi-conteudo{
+  color: black;
 }
