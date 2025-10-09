@@ -45,7 +45,7 @@ create table tipo(
 create table estado(
 	id int primary key auto_increment,
 	nome varchar(45),
-	cidade varchar(45)
+	sigla char(2)
 );
 
 create table endereco(
@@ -82,7 +82,8 @@ create table  componente (
 id int primary key auto_increment,
 nome varchar(50) not null,
 fk_servidor int not null,
-foreign key (fk_servidor) references servidor(id));
+foreign key (fk_servidor) references servidor(id)
+);
 
 create table incidente (
 	id int auto_increment,
@@ -102,20 +103,49 @@ create table gravidade(
 
 
 create table metrica(
-id int auto_increment,
-fk_gravidade int,
-nome varchar(50) not null,
-valor decimal(8,2) not null,
-fk_componente int not null,
-foreign key (fk_componente) references componente(id),
-foreign key (fk_gravidade) references gravidade(id),
-primary key (id,fk_gravidade)
+	id int auto_increment,
+	fk_gravidade int,
+	nome varchar(50) not null,
+	valor decimal(8,2) not null,
+	fk_componente int not null,
+	foreign key (fk_componente) references componente(id),
+	foreign key (fk_gravidade) references gravidade(id),
+	primary key (id,fk_gravidade)
 );
 
-
+insert into estado (nome, sigla) 
+			VALUES  
+			('Acre', 'AC'),
+			('Alagoas', 'AL'),
+			('Amapá', 'AP'),
+			('Amazonas', 'AM'),
+			('Bahia', 'BA'),
+			('Ceará', 'CE'),
+			('Distrito Federal', 'DF'),
+			('Espírito Santo', 'ES'),
+			('Goiás', 'GO'),
+			('Maranhão', 'MA'),
+			('Mato Grosso', 'MT'),
+			('Mato Grosso do Sul', 'MS'),
+			('Minas Gerais', 'MG'),
+			('Pará', 'PA'),
+			('Paraíba', 'PB'),
+			('Paraná', 'PR'),
+			('Pernambuco', 'PE'),
+			('Piauí', 'PI'),
+			('Rio de Janeiro', 'RJ'),
+			('Rio Grande do Norte', 'RN'),
+			('Rio Grande do Sul', 'RS'),
+			('Rondônia', 'RO'),
+			('Roraima', 'RR'),
+			('Santa Catarina', 'SC'),
+			('São Paulo', 'SP'),
+			('Sergipe', 'SE'),
+			('Tocantins', 'TO'); 
 
 insert into empresa (razao_social,email_de_contato, telefone, cnpj) 
-			values ('ViaMobilidade', 'ouvidoria@viamobilidade.com.br', '0800 770 7106', '42288184000187');
+			values 
+					('ViaMobilidade', 'ouvidoria@viamobilidade.com.br', '0800 770 7106', '42288184000187');
 
 insert into cargo (nome)
 			values
@@ -124,9 +154,10 @@ insert into cargo (nome)
                   ('Suporte técnico');
             
 insert into usuario (nome, cpf, email, senha, fk_cargo, fk_empresa)
-			values ('João Silva', '12345678901', 'joao@email.com', 'senha123', 1, 1),
-			 ('Maria Cardoso', '12345678902', 'maria@email.com', 'senha123', 2, 1),
-			 ('Pedro Silva', '12345678903', 'pedro@email.com', 'senha123', 3, 1);
+			values 
+					('João Silva', '12345678901', 'joao@email.com', 'senha123', 1, 1),
+					('Maria Cardoso', '12345678902', 'maria@email.com', 'senha123', 2, 1),
+					('Pedro Silva', '12345678903', 'pedro@email.com', 'senha123', 3, 1);
 
 
 Insert into status(descricao)
