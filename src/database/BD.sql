@@ -85,12 +85,12 @@ fk_servidor int not null,
 foreign key (fk_servidor) references servidor(id)
 );
 
-create table incidente (
+create table alerta (
 	id int auto_increment,
 	fk_componente int,
 	fk_status int default 1,
-	abertura_chamado datetime default current_timestamp,
-	fechamento_chamado datetime,
+	inicio datetime,
+	fim datetime,
 	foreign key (fk_status) references status(id),
     foreign key (fk_componente) references componente(id),
     primary key (id,fk_componente)
