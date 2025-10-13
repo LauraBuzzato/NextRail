@@ -2,7 +2,7 @@
 .fundo-escuro {
   background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
   min-height: 100vh;
-  color: #fff;
+  color: #180c0c;
   font-family: "Poppins", sans-serif;
   padding: 40px 0;
   box-sizing: border-box;
@@ -10,6 +10,7 @@
 
 main {
   border-top: solid #ffe066;
+
 }
 
 /* Container central da página */
@@ -300,21 +301,7 @@ main {
   margin-top: 40px;
 }
 
-.grafico-box {
-  flex: 1;
-  background: #1d0d1d;
-  padding: 20px;
-  border-radius: 18px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-  text-align: center;
-}
 
-.grafico-box h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #ffe066;
-}
 
 .grafico-box canvas {
   width: 100%;
@@ -627,7 +614,8 @@ footer {
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding-left: 88px; /* espaço para o menu lateral */
+  padding-left: 88px;
+  /* espaço para o menu lateral */
   padding-right: 20px;
   display: flex;
   flex-direction: row;
@@ -702,7 +690,8 @@ footer {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-left: 20px; /* remove espaço do menu lateral */
+    padding-left: 20px;
+    /* remove espaço do menu lateral */
     padding-right: 20px;
     gap: 20px;
   }
@@ -846,7 +835,7 @@ footer {
 
 /* página index */
 @media (max-width: 768px) {
-  #inicio{
+  #inicio {
     background-color: rgba(0, 0, 0, 0.61);
   }
 
@@ -866,9 +855,10 @@ footer {
     max-width: 100%;
   }
 
-  .desc-colecao{
+  .desc-colecao {
     border-top: solid #ffe066;
   }
+
   .logo-principal .texto-logo {
     font-size: 2rem;
   }
@@ -919,6 +909,7 @@ footer {
 
 
 /*Graficos*/
+/*
 .container-geral {
   display: flex;
   flex-direction: column;
@@ -958,7 +949,7 @@ footer {
 
 
 
-/*Kpis*/
+Kpis
 .kpi-geral-container {
     display: flex; 
     justify-content: space-between;
@@ -972,7 +963,7 @@ footer {
     flex: 1; 
 }
 
-.kpi-box {
+/*.kpi-box {
     background: #a8a8d2;
     border-radius: 12px;
     padding: 1rem 1.5rem; 
@@ -1009,27 +1000,116 @@ footer {
   display: flex;
   flex-direction: column;
   align-items: center;
+}*/
+
+
+.bem-vindo {
+  grid-column: 1 / -1;     
+  text-align: flex-start;      
+  color: #ffe066; 
+  margin-bottom: 1rem;     
+}
+
+.desempenho {
+  grid-column: 1 / -1;     
+  text-align: center;      
+  color: #ffe066; 
+  margin-bottom: 1rem;     
 }
 
 
 
-
-.botao-relatorio {
-
-    background-color: #ef4444;
-    color: #fff; 
-    border: none;
-    padding: 0.75rem 1.5rem; 
-    border-radius: 50px;
-    margin-top: 1.5rem; 
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold; 
-    transition: background-color 0.3s ease, transform 0.1s; 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  padding: 10px 20px;
+  background-color: #0f0e0f;
+  padding-bottom: 40px;
 }
 
-.botao-relatorio:hover {
-    background-color: #dc2626;
-    transform: translateY(-1px); 
-    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4); 
+
+.titulo-secao {
+  grid-column: 1 / -1;
+  color: #ffe066;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border-left: 4px solid #7c3aed;
+  padding-left: 0.6rem;
+  margin: 1.5rem 0 0.8rem 0;
+}
+
+
+.kpis {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 1.8rem;
+  
+}
+
+.kpi-box {
+  background: #1f1f2e;
+  color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  padding: 1.2rem;
+  box-shadow: 0 2px 8px #0003;
+}
+
+.kpi-box span{
+  color: #ffe066;
+}
+
+
+.tendencia-semanal {
+  grid-column: 1 / 7;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.tendencia-semanal .grafico-box {
+  height: 100%;
+  min-height: 350px;
+}
+
+
+.analise-direita {
+  grid-column: 7 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 15px;
+}
+
+
+.grafico-box {
+  background-color: #1a1a2e;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0002;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.grafico-titulo {
+  color: #ffe066;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.grafico-box canvas {
+  flex: 1;
+  width: 100% !important;
+  height: 220px !important;
+  display: block;
 }

@@ -71,62 +71,74 @@
 
   </div>
   <!-- Conteúdo principal -->
-  <main class="fundo-escuro" id="dashboardMain">
-    <div class="container-pagina">
-      <section class="conteudo-principal" id="conteudoPrincipal">
-        <h1 class="titulo-destaque">Bem-vindo ANALISTA</h1>
-      </section>
+  <main class="dashboard-grid">
 
-      <section class="conteudo-principal" id="conteudoPrincipal">
-        <div class="kpi-geral-container">
+    <h1 class="bem-vindo">Bem-vindo Analista</h1>
 
-          <div class="bloco-kpi-grafico">
-            <div class="kpi-box" id="kpiCpu"></div>
-            <div class="grafico-box">
-              <canvas id="cpuChart"></canvas>
-              <p class="grafico-titulo">Uso de CPU (%)</p>
-            </div>
+    <h2 class="desempenho">Desempenho Serv-001</h2>
+    <!-- KPIs -->
+    <section class="kpis">
 
+      <div class="kpi-box">
+        <span class="kpi-title">MTTR (Tempo Médio de Reparo)</span>
+        
+        <h2 class="kpi-value">30 min ↑20%</h2>
+      </div>
 
-            <div class="grafico-box grafico-alertas">
-              <canvas id="alertasComponenteChart"></canvas>
-              <p class="grafico-titulo">Alertas por Componente (Mensal)</p>
-            </div>
-          </div>
+      <div class="kpi-box">
+        <span class="kpi-title">Servidor com Mais Alertas</span>
+        <h2 class="kpi-value">SERV-001</h2>
+      </div>
 
-          <div class="bloco-kpi-grafico">
-            <div class="kpi-box" id="kpiRam"></div>
-            <div class="grafico-box">
-              <canvas id="ramChart"></canvas>
-              <p class="grafico-titulo">Uso de RAM (%)</p>
-            </div>
+      <div class="kpi-box">
+        <span class="kpi-title">Componente Mais Impactado</span>
+        <h2 class="kpi-value">RAM</h2>
+      </div>
 
-            <div class="grafico-box grafico-alertas-semana">
-              <canvas id="alertasSemanaChart"></canvas>
-              <p class="grafico-titulo">Frequência de Alertas por Semana</p>
-            </div>
+      <div class="kpi-box">
+        <span class="kpi-title">Alertas no Mês</span>
+        <h2 class="kpi-value">12</h2>
+      </div>
 
-          </div>
+    </section>
 
-          <div class="bloco-kpi-grafico">
-            <div class="kpi-box" id="kpiDisco"></div>
+    <!-- ... (código antes da seção Tendência semanal) ... -->
 
-            <div class="grafico-box">
-              <canvas id="diskChart"></canvas>
-              <p class="grafico-titulo">Uso de Disco (%)</p>
-            </div>
+    <!-- 1. COLUNA ESQUERDA: Tendência semanal -->
+    <section class="tendencia-semanal">
+      <div class="grafico-box grande">
+        <h3 class="grafico-titulo">Frequência Semanal de Alertas</h3>
+        <canvas id="frequenciaSemanalChart"></canvas>
+      </div>
+    </section>
 
-            <div class="grafico-box grafico-alertas">
-              <canvas id="tempoResolucaoChart"></canvas>
-              <p class="grafico-titulo">Tempo de Resolução de Alertas</p>
-            </div>
-            
-            <button class="botao-relatorio" onclick="relatorio()">Criar relatorio</button>
-          </div>
-        </div>
-      </section>
-    </div>
+    <!-- 2. COLUNA DIREITA: NOVO CONTAINER ENGLOBA OS 4 GRÁFICOS MENORES -->
+    <section class="analise-direita">
+      <!-- Servidores: Linha 1 da Coluna Direita -->
+      <div class="grafico-box">
+        <h3 class="grafico-titulo">Alertas por Servidor (Top 3)</h3>
+        <canvas id="alertasServidorChart"></canvas>
+      </div>
+      <div class="grafico-box">
+        <h3 class="grafico-titulo">Tempo Médio de Resolução por Servidor</h3>
+        <canvas id="tempoResolucaoServidorChart"></canvas>
+      </div>
+
+      <!-- Componentes: Linha 2 da Coluna Direita -->
+      <div class="grafico-box">
+        <h3 class="grafico-titulo">Alertas por Componente</h3>
+        <canvas id="alertasComponenteChart"></canvas>
+      </div>
+      <div class="grafico-box">
+        <h3 class="grafico-titulo">Tempo Médio de Resolução por Componente</h3>
+        <canvas id="tempoResolucaoComponenteChart"></canvas>
+      </div>
+    </section>
+
+    <!-- ... (código após a seção Componentes) ... -->
   </main>
+
+
 
 
   <!-- Footer -->
@@ -191,9 +203,7 @@
 <script>
 
   // Mockados
-  var labels = ['01/10', '02/10', '03/10', '04/10', '05/10', '06/10', '07/10', '08/10', '09/10', '10/10',
-    '11/10', '12/10', '13/10', '14/10', '15/10', '16/10', '17/10', '18/10', '19/10', '20/10',
-    '21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'];
+  var labels = ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'];
 
 
   //Dados de 30 dias dentro de um objeto  
@@ -206,10 +216,8 @@
   for (var i = 0; i < 30; i++) {
     dadosDiarios.cpu.push(Math.floor(Math.random() * 30) + 40)
     dadosDiarios.ram.push(Math.floor(Math.random() * 10) + 70)
-    dadosDiarios.disco.push(Math.floor(Math.random() * 20) + 40)
-
+    dadosDiarios.disco.push(Math.floor(Math.random() * 0) + 40)
   }
-
 
   //Cpu
   var somaCpu = 0
@@ -314,25 +322,16 @@
   }
 
 
-  var kpiCpu = `<span>Média CPU: <b>${mediaCpu}%</b> | ${iconeCpu}</span>`;
-  document.getElementById('kpiCpu').innerHTML = kpiCpu;
 
-  var kpiRam = `<span>Média RAM: <b>${mediaRam}%</b> | ${iconeRam}</span>`;
-  document.getElementById('kpiRam').innerHTML = kpiRam;
 
-  var kpiDisco = `<span>Média DISCO: <b>${mediaDisco}%</b> | ${iconeDisco}</span>`;
-  document.getElementById('kpiDisco').innerHTML = kpiDisco;
 
-  var qtdAlertas = document.getElementById('alertasComponenteChart').getContext('2d');
 
-  var frequenciaSemana = document.getElementById('alertasSemanaChart').getContext('2d');
-
-  var tempoDeResolucao = document.getElementById('tempoResolucaoChart').getContext('2d');
 
 
 
   var options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: false }
     },
@@ -341,110 +340,14 @@
     }
   };
 
-  
+
   Chart.defaults.color = '#fff';
   Chart.defaults.font.weight = 'bold';
 
 
 
-  new Chart(document.getElementById('cpuChart'), {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'CPU',
-        data: dadosDiarios.cpu,
-        borderColor: '#7c3aed',
-        backgroundColor: '#ede9fe',
-        tension: 0.4
-      }]
-    },
-    options
-  });
 
-  new Chart(document.getElementById('ramChart'), {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'RAM',
-        data: dadosDiarios.ram,
-        borderColor: '#22d3ee',
-        backgroundColor: '#e0f2fe',
-        tension: 0.4
-      }]
-    },
-    options
-  });
-
-  new Chart(document.getElementById('diskChart'), {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Disco',
-        data: dadosDiarios.disco,
-        borderColor: '#f59e42',
-        backgroundColor: '#fef3c7',
-        tension: 0.4
-      }]
-    },
-    options
-  });
-
-
-
-  new Chart(document.getElementById('alertasComponenteChart'), {
-    type: 'bar',
-    data: {
-      labels: ['CPU', 'RAM', 'Disco'],
-      datasets: [{
-        label: 'Total de Alertas',
-        data: [32, 50, 8],
-        backgroundColor: [
-          'rgba(147, 112, 219, 0.8)',
-          'rgba(0, 191, 255, 0.8)',
-          'rgba(255, 165, 0, 0.8)'
-        ],
-        borderColor: [
-          '#9370DB',
-          '#00BFFF',
-          '#FFA500'
-        ],
-        borderWidth: 1,
-        borderRadius: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: labelAlerta => `${labelAlerta.parsed.y} alertas`
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: 'Quantidade de Alertas', color: '#fff' },
-          ticks: { color: '#ccc' },
-          grid: { color: '#333' }
-        },
-        x: {
-          ticks: { color: '#ccc' },
-          grid: { display: false }
-        }
-      }
-    }
-  });
-
-
-  new Chart(document.getElementById('alertasSemanaChart'), {
+  new Chart(document.getElementById('frequenciaSemanalChart'), {
     type: 'line',
     data: {
       labels: ['01/10', '08/10', '15/10', '22/10', '29/10'],
@@ -510,7 +413,63 @@
 
 
 
-  new Chart(document.getElementById('tempoResolucaoChart').getContext('2d'), {
+
+
+  new Chart(document.getElementById('alertasComponenteChart'), {
+    type: 'bar',
+    data: {
+      labels: ['CPU', 'RAM', 'Disco'],
+      datasets: [{
+        label: 'Total de Alertas',
+        data: [32, 50, 8],
+        backgroundColor: [
+          'rgba(147, 112, 219, 0.8)',
+          'rgba(0, 191, 255, 0.8)',
+          'rgba(255, 165, 0, 0.8)'
+        ],
+        borderColor: [
+          '#9370DB',
+          '#00BFFF',
+          '#FFA500'
+        ],
+        borderWidth: 1,
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: labelAlerta => `${labelAlerta.parsed.y} alertas`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Quantidade de Alertas', color: '#fff' },
+          ticks: { color: '#ccc' },
+          grid: { color: '#333' }
+        },
+        x: {
+          ticks: { color: '#ccc' },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+
+
+
+
+
+  new Chart(document.getElementById('tempoResolucaoComponenteChart').getContext('2d'), {
     type: 'bar',
     data: {
       labels: ['CPU', 'RAM', 'Disco'],
@@ -551,6 +510,111 @@
             label: function (context) {
               return `${context.parsed.y} minutos`;
             }
+          }
+        }
+      }
+    }
+  });
+
+
+
+
+
+
+
+  // ======================
+  //  ALERTAS POR SERVIDOR (Top 3)
+  // ======================
+  new Chart(document.getElementById('alertasServidorChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Servidor A', 'Servidor B', 'Servidor C'],
+      datasets: [{
+        label: 'Alertas Registrados',
+        data: [45, 38, 25],
+        backgroundColor: [
+          'rgba(147, 112, 219, 0.8)',
+          'rgba(0, 191, 255, 0.8)',
+          'rgba(255, 165, 0, 0.8)'
+        ],
+        borderColor: [
+          '#9370DB',
+          '#00BFFF',
+          '#FFA500'
+        ],
+        borderWidth: 1,
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.parsed.y} alertas`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Quantidade de Alertas', color: '#fff' },
+          ticks: { color: '#ccc' },
+          grid: { color: '#333' }
+        },
+        x: {
+          ticks: { color: '#ccc' },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+
+  // ======================
+  //  TEMPO MÉDIO DE RESOLUÇÃO POR SERVIDOR
+  // ======================
+  new Chart(document.getElementById('tempoResolucaoServidorChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Servidor A', 'Servidor B', 'Servidor C'],
+      datasets: [{
+        label: 'Tempo Médio de Resolução (min)',
+        data: [12, 20, 8],
+        backgroundColor: ['#7c3aed', '#38bdf8', '#fbbf24'],
+        borderWidth: 1,
+        borderRadius: 8
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      scales: {
+        x: {
+          beginAtZero: true,
+          title: { display: true, text: 'Tempo (min)', color: '#fff' },
+          ticks: { color: '#ccc' },
+          grid: { color: '#333' }
+        },
+        y: {
+          ticks: { color: '#ccc' },
+          grid: { display: false }
+        }
+      },
+      plugins: {
+        title: {
+          display: false
+        },
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.parsed.x} minutos`
           }
         }
       }
