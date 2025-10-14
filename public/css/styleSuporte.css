@@ -1,0 +1,329 @@
+/* ================== FUNDO PRINCIPAL ================== */
+.fundo-escuro {
+  background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
+  min-height: 100vh;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  padding: 40px 0;
+  box-sizing: border-box;
+}
+
+main {
+  border-top: solid #ffe066;
+}
+
+/* Container central da página */
+.container-pagina {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+/* ================== CONTEÚDO PRINCIPAL ================== */
+.conteudo-principal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  position: relative;
+  height: 100vh;
+}
+
+.principal {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 350px;
+  margin-left: 135px;
+}
+
+.titulo-destaque {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.subtitulo {
+  font-size: 1rem;
+  color: white;
+  margin-bottom: 0;
+}
+
+.imagem-destaque {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-fundo {
+  max-width: 350px;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ================== RODAPÉ ================== */
+footer {
+  background: linear-gradient(45deg, #1c1c1c 0%, #000000 100%);
+  padding: 50px 20px;
+  color: #fff;
+  border-top: 2px solid white;
+  font-family: "Poppins", sans-serif;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 88px;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+  text-align: left;
+}
+
+.footer-logo {
+  flex: 1 1 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 15px;
+  order: -1;
+}
+
+.footer-logo .nome {
+  color: #ffe066;
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.footer-text {
+  flex: 1;
+  min-width: 250px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: white;
+  text-align: left;
+}
+
+.footer-icons {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+}
+
+.footer-icons li a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.6rem;
+  color: white;
+  transition: transform 0.3s ease, color 0.3s ease;
+  text-decoration: none;
+}
+
+.footer-icons li a span {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: white;
+}
+
+.footer-icons li a:hover {
+  color: #CF1D2B;
+  transform: translateY(-5px) scale(1.1);
+}
+
+/* ================== CONFIGURAÇÃO ALERTAS ================== */
+.configuracao_alerta {
+  display: flex;
+  background: linear-gradient(160deg, #0f0a10 0%, #181a20 100%);
+  color: #fff;
+  text-align: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.configuracao_alerta>h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 6vh;
+  color: #ffe066;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+}
+
+.container_servidor {
+  display: flex;
+  flex-direction: column;
+  background-color:#181a20;
+  width: 90%;
+  border-radius: 18px;
+  padding: 20px;
+  align-items: flex-start; 
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  margin: 3vh 0;
+}
+
+.linha_titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.linha_titulo>h2 {
+  color: #ffe066;
+  margin-bottom: 15px;
+}
+.botao {
+  cursor: pointer;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #ffe066;
+  background-color: black;
+  width: 9vw;
+  height: 5vh;
+  align-self: center;
+}
+
+.botao:hover{
+  background-color: rgb(221, 221, 221);
+  color: black;
+}
+
+.linha_servidor {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.alerta_componente {
+  display: flex;
+  color: #ffe066;
+  font-weight: bold;
+  align-items: center;
+}
+
+.titulo_select {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+}
+
+.titulo_select>select {
+  padding: 2px;
+  text-align: center;
+  border-radius: 5px;
+  border: solid 2px black;
+}
+
+.titulo_select>select option {
+  appearance: none;
+}
+
+/* ================== KPIS SUPORTE ================== */
+.kpi-container {
+    display: flex; 
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 1rem; 
+    width: 100%;
+    height: 80%;
+    text-align: center;
+    font-weight: 700;
+}
+
+.kpi-1, .kpi-2, .kpi-3 {
+  height: 57%;
+  width: 30%;
+  background-color: rgb(226, 226, 226);
+}
+
+.kpi-1 .kpi-titulo, .kpi-2 .kpi-titulo, .kpi-3 .kpi-titulo {
+  height: 30%;
+  width: 100%;
+  background-color: rgb(255, 196, 0);
+}
+
+.kpi-1 .kpi-conteudo,
+.kpi-2 .kpi-conteudo,
+.kpi-3 .kpi-conteudo {
+  color: black;
+}
+
+/* ================== GERAIS ================== */
+.container-geral {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.graficos-container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between; 
+  align-items: stretch;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 0 1rem;
+}
+
+.grafico-box {
+  background: #1a1a2e;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px #0002;
+  flex: 1 0 250px ;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grafico-titulo {
+  margin-top: 1rem;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+/* ================== RESPONSIVIDADE ================== */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    justify-content: center;
+  }
+
+  .footer-text {
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  .footer-icons {
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .footer-icons li a span {
+    font-size: 0.75rem;
+  }
+}

@@ -26,9 +26,15 @@ function atualizar(a) {
         var li_cadastrar_server = document.getElementById("cadastroServer")
         li_cadastrar_server.style.display = "flex";
 
+        var main_titulo_destaque = document.getElementById("titulo-destaque")
+        main_titulo_destaque.innerHTML = `Bem vindo(a) ${sessionStorage.NOME_USUARIO}`
+
         // mudança no corpo
         // lembrando de sempre colocar as classes dentro dos atributos para herdar o css
-        var main_conteudo_Principal = document.getElementById("conteudoPrincipal")
+
+        //João, por favor inserir os elementos da página de dashboard depois na função
+
+        /*var main_conteudo_Principal = document.getElementById("conteudoPrincipal")
         main_conteudo_Principal.innerHTML = `
         <h1 class="titulo-destaque">Bem vindo(a) ${sessionStorage.NOME_USUARIO}</h1>
         <div class="kpi-container">
@@ -80,7 +86,7 @@ function atualizar(a) {
           <canvas id="graficoRelatorioDisco"></canvas>
         </div>
       </div>
-        `
+        `*/
         inicializarGraficos();
         
     }else {
