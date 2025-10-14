@@ -18,7 +18,7 @@
 
 <body onload="validarSessao()">
 
-     <div class="menu">
+    <div class="menu">
         <ul class="link-items">
             <div class="logo-container">
                 <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
@@ -64,65 +64,127 @@
     <main class="relatorios" id="relatorios">
         <div class="container-secao">
             <div class="texto-secao">
-                <h2>CADASTRE SEUS SERVIDORES</h2>
+                <h2>Cadastro de servidores</h2>
                 <p>
-                    Testando
+                    Faça o cadastro dos servidores que são utilizados em sua empresa!
                 </p>
-                <ul class="lista-beneficios">
-                    <li>
-                        <ion-icon name="bar-chart-outline"></ion-icon>
-                        <span>PENSAR</span>
-                    </li>
-                </ul>
 
+                <div class="form-cadastro-servidor">
+                    <form id="formServidor" onsubmit="cadastrarServidor(event)">
+                        <div class="form-section">
+                            <h3>Informações Básicas</h3>
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label for="nome">Nome do Servidor *</label>
+                                    <input type="text" id="nome" name="nome" required
+                                        placeholder="Ex: Servidor-Producao-01">
+                                </div>
+                                <div class="input-group">
+                                    <label for="empresa">Empresa *</label>
+                                    <select id="empresa" name="fk_empresa" required>
+                                        <option value="">Selecione a empresa</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Configurações Técnicas</h3>
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label for="tipo">Tipo de Servidor *</label>
+                                    <select id="tipo" name="fk_tipo" required>
+                                        <option value="">Selecione o tipo</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="so">Sistema Operacional *</label>
+                                    <select id="so" name="fk_so" required>
+                                        <option value="">Selecione o SO</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Endereço</h3>
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label for="logradouro">Logradouro *</label>
+                                    <input type="text" id="logradouro" name="logradouro" required
+                                        placeholder="Ex: Rua das Flores">
+                                </div>
+                                <div class="input-group">
+                                    <label for="numero">Número *</label>
+                                    <input type="text" id="numero" name="numero" required placeholder="Ex: 123">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label for="complemento">Complemento</label>
+                                    <input type="text" id="complemento" name="complemento"
+                                        placeholder="Ex: Bloco A - Sala 2">
+                                </div>
+                                <div class="input-group">
+                                    <label for="cep">CEP *</label>
+                                    <input type="text" id="cep" name="cep" required placeholder="Ex: 04567000">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label for="estado">Estado *</label>
+                                    <select id="estado" name="fk_estado" required>
+                                        <option value="">Selecione o estado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancelar" onclick="limparFormulario()">Cancelar</button>
+                    <button type="submit" class="btn-cadastrar">Cadastrar Servidor</button>
+                </div>
+                </form>
             </div>
+        </div>
         </div>
     </main>
 
-    <!-- Rodapé -->
     <footer>
         <div class="footer-container">
-            <!-- Logo -->
             <div class="footer-logo">
                 <span class="nome">NextRail</span>
             </div>
 
-            <!-- Texto -->
             <p class="footer-text">
                 Sistema de monitoramento ferroviário com foco em performance,
                 confiabilidade e inovação.
             </p>
 
-            <!-- Ícones sociais -->
             <ul class="footer-icons">
-                <!-- Suporte / Jira -->
                 <li>
                     <a href="#"><ion-icon name="headset-outline"></ion-icon><span>Suporte</span></a>
                 </li>
 
-                <!-- LinkedIn -->
                 <li>
                     <a href="#"><ion-icon name="logo-linkedin"></ion-icon><span>LinkedIn</span></a>
                 </li>
 
-                <!-- Instagram -->
                 <li>
                     <a href="#"><ion-icon name="logo-instagram"></ion-icon><span>Instagram</span></a>
                 </li>
 
-                <!-- Facebook -->
                 <li>
                     <a href="#"><ion-icon name="logo-facebook"></ion-icon><span>Facebook</span></a>
                 </li>
 
-                <!-- Email -->
                 <li>
                     <a href="NextRail@gmail.com">
                         <ion-icon name="mail-outline"></ion-icon><span>Email</span>
                     </a>
                 </li>
 
-                <!-- Telefone -->
                 <li>
                     <a href="tel:+5511999999999">
                         <ion-icon name="call-outline"></ion-icon><span>Telefone</span>
@@ -135,6 +197,126 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="./js/script.js"></script>
+
+    <script src="./js/servidor.js"></script>
+    <script>
+        window.onload = () => {
+            carregarSelects();
+        };
+    </script>
+
+
+    <style>
+        .form-cadastro-servidor {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .form-section h3 {
+            color: #491449;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #491449;
+            box-shadow: 0 0 0 2px rgba(73, 20, 73, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-cadastrar,
+        .btn-cancelar {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cadastrar {
+            background-color: #491449;
+            color: white;
+        }
+
+        .btn-cadastrar:hover {
+            background-color: #3a103a;
+        }
+
+        .btn-cancelar {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-cancelar:hover {
+            background-color: #d0d0d0;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-cadastro-servidor {
+                padding: 20px;
+                margin: 20px;
+            }
+        }
+    </style>
 </body>
 
 </html>

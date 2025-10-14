@@ -15,19 +15,24 @@ var HOST_APP = process.env.APP_HOST;
 
 var app = express();
 
-var indexRouter = require("./src/routes/index");
 var usuarioRouter = require("./src/routes/usuarios");
 var empresasRouter = require("./src/routes/empresas");
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(cors());
+var indexRouter = require("./src/routes/index");
+var servidoresRouter = require("./src/routes/servidores");
+var listarEstadosRouter = require("./src/routes/listarEstados");
 
 app.use("/", indexRouter);
+app.use("/servidores", servidoresRouter);
 app.use("/usuarios", usuarioRouter);
 app.use("/empresas", empresasRouter);
+app.use("/estados", listarEstadosRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`
