@@ -1,28 +1,41 @@
+function mascaraCEP(value) {
+  return value
+    .replace(/\D/g, "")
+    .replace(/(\d{5})(\d)/, "$1-$2")
+    .substring(0, 9);
+    
+}
+
+function RetiraMascara(ObjCEP) {
+  return ObjCEP.replace(/\D/g, '');
+}
+
+document.getElementById("cep").addEventListener("input", async function () {
+  this.value = mascaraCEP(this.value);
+
+  const cepLimpo = RetiraMascara(cep.value);
+  if (cepLimpo.length === 8) {
+    await buscarCEP(cepLimpo);
+  }
+});
+
+
 async function carregarSelects() {
   try {
-    const [empresas, tipos, sistemas, estados] = await Promise.all([
-      fetch("/servidores/listarEmpresas").then(res => res.json()),
+    const [tipos, sistemas, estados] = await Promise.all([
       fetch("/servidores/listarTipos").then(res => res.json()),
       fetch("/servidores/listarSO").then(res => res.json()),
       fetch("/estados/listar").then(res => res.json())
     ]);
 
-    const selectEmpresa = document.getElementById("empresa");
     const selectTipo = document.getElementById("tipo");
     const selectSO = document.getElementById("so");
     const selectEstado = document.getElementById("estado");
 
-    selectEmpresa.innerHTML = `<option value="">Selecione a empresa</option>`;
     selectTipo.innerHTML = `<option value="">Selecione o tipo</option>`;
     selectSO.innerHTML = `<option value="">Selecione o sistema operacional</option>`;
     selectEstado.innerHTML = `<option value="">Selecione o estado</option>`;
 
-    empresas.forEach(e => {
-      const opt = document.createElement("option");
-      opt.value = e.id;
-      opt.textContent = e.razao_social;
-      selectEmpresa.appendChild(opt);
-    });
 
     tipos.forEach(t => {
       const opt = document.createElement("option");
@@ -50,15 +63,37 @@ async function carregarSelects() {
   }
 }
 
-async function cadastrarServidor(event) {
-  event.preventDefault();
+async function buscarCEP(cep) {
+  try {
+    const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    if (!resposta.ok) throw new Error("Erro ao consultar CEP");
+    const dados = await resposta.json();
+
+    document.getElementById("logradouro").value = dados.logradouro || "";
+    
+    const selectEstado = document.getElementById("estado");
+    for (const opt of selectEstado.options) {
+      if (opt.textContent.includes(`(${dados.uf})`)) {
+        selectEstado.value = opt.value;
+        break;
+      }
+    }
+
+  } catch (erro) {
+    console.error("Erro ao buscar CEP:", erro);
+  }
+}
+
+async function cadastrarServidor() {
+  
 
   const nome = document.getElementById("nome").value.trim();
-  const fk_empresa = document.getElementById("empresa").value;
+  const fk_empresa = sessionStorage.ID_EMPRESA;
   const fk_tipo = document.getElementById("tipo").value;
   const fk_so = document.getElementById("so").value;
   const logradouro = document.getElementById("logradouro").value.trim();
-  const cep = document.getElementById("cep").value.trim();
+  let cep = document.getElementById("cep").value.trim();
+  cep = RetiraMascara(cep);
   const numero = document.getElementById("numero").value.trim();
   const complemento = document.getElementById("complemento").value.trim();
   const fk_estado = document.getElementById("estado").value;

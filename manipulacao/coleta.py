@@ -9,12 +9,12 @@ import os
 from psutil._common import bytes2human
 import platform
 import hashlib
-#pip install slack_sdk
-from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
-#pip install requests
-import requests 
-from requests.auth import HTTPBasicAuth
+# #pip install slack_sdk
+# from slack_sdk import WebClient
+# from slack_sdk.errors import SlackApiError
+# #pip install requests
+# import requests 
+# from requests.auth import HTTPBasicAuth
 
 load_dotenv(dotenv_path=".env.dev")
 
@@ -104,73 +104,73 @@ while True:
 
 
     # --- ALERTAS ---
-    if cpu_percent > 25 or mem_percent > 25 or disk_percent > 25: #aqui vai pegar os parâmetros do BD
+    # if cpu_percent > 25 or mem_percent > 25 or disk_percent > 25: #aqui vai pegar os parâmetros do BD
         
-        alerta = (
-            f"⚠️ Alerta de uso elevado detectado!\n"
-            f"ID servidor: {machine_id}\n"
-            f"Servidor: {platform.node()}\n"
-            f"Horário: {timestamp}\n"
-            f"Horário de Pico: {validaPico}\n"
-            f"CPU: {cpu_percent}%\n"
-            f"RAM: {mem_percent}%\n"
-            f"RAM Disponível: {mem_avl}\n"
-            f"Disco: {disk_percent}%"
-            f"Disco Disponível: {disk_avl}\n"
-            f"Processos Ativos: {processos}\n"
+    #     alerta = (
+    #         f"⚠️ Alerta de uso elevado detectado!\n"
+    #         f"ID servidor: {machine_id}\n"
+    #         f"Servidor: {platform.node()}\n"
+    #         f"Horário: {timestamp}\n"
+    #         f"Horário de Pico: {validaPico}\n"
+    #         f"CPU: {cpu_percent}%\n"
+    #         f"RAM: {mem_percent}%\n"
+    #         f"RAM Disponível: {mem_avl}\n"
+    #         f"Disco: {disk_percent}%"
+    #         f"Disco Disponível: {disk_avl}\n"
+    #         f"Processos Ativos: {processos}\n"
             
-        )
+    #     )
 
-        if not ultimoAlerta or (timestamp - ultimoAlerta) >= timedelta(minutes=15):
+    #     if not ultimoAlerta or (timestamp - ultimoAlerta) >= timedelta(minutes=15):
             
-            # Slack
+    #         # Slack
             
-            try:
-                CLIENTE.chat_postMessage(channel="#alertas", text=alerta)
-                print("Alerta enviado para o Slack.")
-            except SlackApiError as e:
-                print("Erro ao enviar alerta:", e.response["error"])
+    #         try:
+    #             CLIENTE.chat_postMessage(channel="#alertas", text=alerta)
+    #             print("Alerta enviado para o Slack.")
+    #         except SlackApiError as e:
+    #             print("Erro ao enviar alerta:", e.response["error"])
 
-            ultimoAlerta = timestamp
+    #         ultimoAlerta = timestamp
         
-        if not ultimoAlertaJira or (timestamp - ultimoAlertaJira) >= timedelta(hours=1):
-            # Jira
+    #     if not ultimoAlertaJira or (timestamp - ultimoAlertaJira) >= timedelta(hours=1):
+    #         # Jira
             
 
-            dados = {
-                "fields": {
-                    "project": {"key": projeto_key},
-                    "summary": f"Alerta Máquina {platform.node()} - Uso elevado ({timestamp.strftime('%Y-%m-%d %H:%M:%S')})",
-                    "description": {
-                        "type": "doc",
-                        "version": 1,
-                        "content": [
-                            {
-                                "type": "paragraph",
-                                "content": [
-                                    {"type": "text", "text": alerta}
-                                ]
-                            }
-                        ]
-                    },
-                    "issuetype": {"name": issue_type}
-                }
-            }
+    #         dados = {
+    #             "fields": {
+    #                 "project": {"key": projeto_key},
+    #                 "summary": f"Alerta Máquina {platform.node()} - Uso elevado ({timestamp.strftime('%Y-%m-%d %H:%M:%S')})",
+    #                 "description": {
+    #                     "type": "doc",
+    #                     "version": 1,
+    #                     "content": [
+    #                         {
+    #                             "type": "paragraph",
+    #                             "content": [
+    #                                 {"type": "text", "text": alerta}
+    #                             ]
+    #                         }
+    #                     ]
+    #                 },
+    #                 "issuetype": {"name": issue_type}
+    #             }
+    #         }
 
-            try:
-                response = requests.post(
-                    jira_url,
-                    json=dados,
-                    auth=HTTPBasicAuth(jira_email, jira_token),
-                    headers={"Accept": "application/json", "Content-Type": "application/json"},
-                )
-                if response.status_code == 201:
-                    print(f"Chamado criado no Jira: {response.json()['key']}")
-                else:
-                    print(f"Erro ao criar chamado: {response.status_code} - {response.text}")
-            except Exception as e:
-                print("Erro ao conectar com Jira:", str(e))
-            ultimoAlertaJira = timestamp
+    #         try:
+    #             response = requests.post(
+    #                 jira_url,
+    #                 json=dados,
+    #                 auth=HTTPBasicAuth(jira_email, jira_token),
+    #                 headers={"Accept": "application/json", "Content-Type": "application/json"},
+    #             )
+    #             if response.status_code == 201:
+    #                 print(f"Chamado criado no Jira: {response.json()['key']}")
+    #             else:
+    #                 print(f"Erro ao criar chamado: {response.status_code} - {response.text}")
+    #         except Exception as e:
+    #             print("Erro ao conectar com Jira:", str(e))
+    #         ultimoAlertaJira = timestamp
 
     fim_ciclo = time.time()
     duracao = fim_ciclo - inicio_ciclo

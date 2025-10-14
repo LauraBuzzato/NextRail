@@ -159,6 +159,27 @@ insert into usuario (nome, cpf, email, senha, fk_cargo, fk_empresa)
 					('Maria Cardoso', '12345678902', 'maria@email.com', 'senha123', 2, 1),
 					('Pedro Silva', '12345678903', 'pedro@email.com', 'senha123', 3, 1);
 
+insert into sistema_operacional (descricao) VALUES
+('Ubuntu Server 22.04 LTS'),
+('Debian 12'),
+('CentOS Stream 9'),
+('Rocky Linux 9'),
+('Red Hat Enterprise Linux 9'),
+('AlmaLinux 9'),
+('SUSE Linux Enterprise Server 15'),
+('Amazon Linux 2023'),
+('Oracle Linux 9'),
+('Windows Server 2019'),
+('Windows Server 2022'),
+('FreeBSD 13'),
+('OpenBSD 7'),
+('Fedora Server 40');
+
+insert into tipo (nome) VALUES
+('CTC'),
+('Regulador');
+
+
 
 Insert into status(descricao)
 			values
