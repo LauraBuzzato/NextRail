@@ -32,6 +32,7 @@ function inicializarGraficos() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             animation: { duration: 800 },
             plugins: { legend: { display: true } },
             scales: { y: { beginAtZero: true, max: 100 } }

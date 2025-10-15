@@ -15,6 +15,11 @@
 
 main {
   border-top: solid var(--amarelo);
+  height: 90%;
+}
+
+body {
+  height: 200vh;
 }
 
 /* Container central da página */
@@ -31,7 +36,7 @@ main {
   align-items: center;
   justify-content: space-around;
   position: relative;
-  height: 100vh;
+  height: 160vh;
 }
 
 .principal {
@@ -80,6 +85,7 @@ footer {
   color: #fff;
   border-top: 2px solid white;
   font-family: "Poppins", sans-serif;
+  height: 10%;
 }
 
 .footer-container {
@@ -244,16 +250,18 @@ footer {
     align-items: center;
     gap: 1rem; 
     width: 100%;
-    height: 36%;
+    height: 18%;
     text-align: center;
     font-weight: 700;
     background-color: rgba(255, 255, 255, 0.137);
+    border-radius: 13px;
 }
 
 .kpi-1, .kpi-2, .kpi-3 {
   height: 83%;
   width: 30%;
   background-color: var(--grafico);
+  border-radius: 13px;
 }
 
 .kpi-1 .kpi-titulo, .kpi-2 .kpi-titulo, .kpi-3 .kpi-titulo {
@@ -300,7 +308,10 @@ footer {
 }
 
 .graficos-container {
+  height: 70%;
+  width: 100%;
   display: flex;
+  flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-between; 
   align-items: stretch;
@@ -310,6 +321,8 @@ footer {
 }
 
 .grafico-box {
+  height: 30%;
+  width: clamp(1000px, calc(90% + 125px), 1200px);
   background: var(--grafico);
   border-radius: 12px;
   padding: 2rem;
@@ -320,10 +333,10 @@ footer {
   align-items: center;
 }
 
-.grafico-titulo {
+.grafico-box h3 {
   margin-top: 1rem;
-  color: #fff;
-  font-weight: 500;
+  color: var(--amarelo);
+  font-weight: 700;
   font-size: 1.1rem;
 }
 
