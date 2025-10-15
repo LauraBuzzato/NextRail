@@ -1,3 +1,8 @@
+:root{
+    --amarelo: #ffe066;
+    --grafico: #1a1a2e;
+}
+
 /* ================== FUNDO PRINCIPAL ================== */
 .fundo-escuro {
   background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
@@ -9,7 +14,7 @@
 }
 
 main {
-  border-top: solid #ffe066;
+  border-top: solid var(--amarelo);
 }
 
 /* Container central da página */
@@ -44,7 +49,7 @@ main {
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 20px;
-  color: #fff;
+  color: var(--amarelo);
 }
 
 .subtitulo {
@@ -99,7 +104,7 @@ footer {
 }
 
 .footer-logo .nome {
-  color: #ffe066;
+  color: var(--amarelo);
   font-size: 1.6rem;
   font-weight: bold;
   letter-spacing: 1px;
@@ -157,7 +162,7 @@ footer {
   font-size: 2.8rem;
   font-weight: 800;
   margin-bottom: 6vh;
-  color: #ffe066;
+  color: var(--amarelo);
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
 }
 
@@ -181,7 +186,7 @@ footer {
   width: 100%;
 }
 .linha_titulo>h2 {
-  color: #ffe066;
+  color: var(--amarelo);
   margin-bottom: 15px;
 }
 .botao {
@@ -190,7 +195,7 @@ footer {
   border-radius: 5px;
   font-weight: 600;
   font-size: 18px;
-  color: #ffe066;
+  color: var(--amarelo);
   background-color: black;
   width: 9vw;
   height: 5vh;
@@ -210,7 +215,7 @@ footer {
 
 .alerta_componente {
   display: flex;
-  color: #ffe066;
+  color: var(--amarelo);
   font-weight: bold;
   align-items: center;
 }
@@ -239,28 +244,52 @@ footer {
     align-items: center;
     gap: 1rem; 
     width: 100%;
-    height: 80%;
+    height: 36%;
     text-align: center;
     font-weight: 700;
+    background-color: rgba(255, 255, 255, 0.137);
 }
 
 .kpi-1, .kpi-2, .kpi-3 {
-  height: 57%;
+  height: 83%;
   width: 30%;
-  background-color: rgb(226, 226, 226);
+  background-color: var(--grafico);
 }
 
 .kpi-1 .kpi-titulo, .kpi-2 .kpi-titulo, .kpi-3 .kpi-titulo {
-  height: 30%;
+  height: 25%;
   width: 100%;
-  background-color: rgb(255, 196, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--amarelo);
+  font-size: 1.5rem;
 }
 
 .kpi-1 .kpi-conteudo,
 .kpi-2 .kpi-conteudo,
 .kpi-3 .kpi-conteudo {
-  color: black;
+  height: 45%;
+  width: 100%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
 }
+
+.kpi-1 .kpi-passado,
+.kpi-2 .kpi-passado,
+.kpi-3 .kpi-passado {
+  height: 30%;
+  width: 100%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
 
 /* ================== GERAIS ================== */
 .container-geral {
@@ -281,7 +310,7 @@ footer {
 }
 
 .grafico-box {
-  background: #1a1a2e;
+  background: var(--grafico);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 2px 8px #0002;
