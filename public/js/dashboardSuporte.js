@@ -3,13 +3,17 @@ function gerarDadoAleatorio() {
 }
 
 function atualizarGrafico(grafico) {
-    if (grafico.data.datasets[0].data.length >= 10) {
+    /*if (grafico.data.datasets[0].data.length >= 5) {
         grafico.data.datasets[0].data.shift();
-    }
+    }*/
+    grafico.data.datasets[0].data.push(gerarDadoAleatorio());
+    grafico.data.datasets[0].data.push(gerarDadoAleatorio());
+    grafico.data.datasets[0].data.push(gerarDadoAleatorio());
+    grafico.data.datasets[0].data.push(gerarDadoAleatorio());
     grafico.data.datasets[0].data.push(gerarDadoAleatorio());
     grafico.update();
 
-    setTimeout(() => atualizarGrafico(grafico), 1000)
+    /*setTimeout(() => atualizarGrafico(grafico), 1000)*/
 }
 
 function inicializarGraficos() {
@@ -20,7 +24,7 @@ function inicializarGraficos() {
     const configLine = {
         type: 'line',
         data: {
-            labels: Array.from({ length: 10 }, (_, i) => i + 1),
+            labels: ['16:00:00', '16:30:00', '17:00:00', '17:30:00', '18:00:00'],
             datasets: [{
                 label: '',
                 data: [],

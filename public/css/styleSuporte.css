@@ -19,7 +19,7 @@ main {
 }
 
 body {
-  height: 200vh;
+  height: 300vh;
 }
 
 /* Container central da página */
@@ -36,7 +36,7 @@ body {
   align-items: center;
   justify-content: space-around;
   position: relative;
-  height: 160vh;
+  height: 260vh;
 }
 
 .principal {
