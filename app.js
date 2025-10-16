@@ -27,12 +27,14 @@ app.use(express.static(path.join(__dirname, "public")));
 var indexRouter = require("./src/routes/index");
 var servidoresRouter = require("./src/routes/servidores");
 var listarEstadosRouter = require("./src/routes/listarEstados");
+var relatorioRouter = require("./src/routes/relatorios");
 
 app.use("/", indexRouter);
 app.use("/servidores", servidoresRouter);
 app.use("/usuarios", usuarioRouter);
 app.use("/empresas", empresasRouter);
 app.use("/estados", listarEstadosRouter);
+app.use("/relatorio", relatorioRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`

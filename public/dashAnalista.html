@@ -101,10 +101,7 @@
       </div>
 
     </section>
-
-    <!-- ... (código antes da seção Tendência semanal) ... -->
-
-    <!-- 1. COLUNA ESQUERDA: Tendência semanal -->
+    
     <section class="tendencia-semanal">
       <div class="grafico-box grande">
         <h3 class="grafico-titulo">Frequência Semanal de Alertas</h3>
@@ -112,7 +109,6 @@
       </div>
     </section>
 
-    <!-- 2. COLUNA DIREITA: NOVO CONTAINER ENGLOBA OS 4 GRÁFICOS MENORES -->
     <section class="analise-direita">
       <!-- Servidores: Linha 1 da Coluna Direita -->
       <div class="grafico-box">
@@ -124,7 +120,6 @@
         <canvas id="tempoResolucaoServidorChart"></canvas>
       </div>
 
-      <!-- Componentes: Linha 2 da Coluna Direita -->
       <div class="grafico-box">
         <h3 class="grafico-titulo">Alertas por Componente</h3>
         <canvas id="alertasComponenteChart"></canvas>
@@ -134,12 +129,7 @@
         <canvas id="tempoResolucaoComponenteChart"></canvas>
       </div>
     </section>
-
-    <!-- ... (código após a seção Componentes) ... -->
   </main>
-
-
-
 
   <!-- Footer -->
   <footer>
@@ -321,14 +311,6 @@
     iconeDisco = "~"
   }
 
-
-
-
-
-
-
-
-
   var options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -343,8 +325,6 @@
 
   Chart.defaults.color = '#fff';
   Chart.defaults.font.weight = 'bold';
-
-
 
 
   new Chart(document.getElementById('frequenciaSemanalChart'), {
@@ -412,9 +392,6 @@
   });
 
 
-
-
-
   new Chart(document.getElementById('alertasComponenteChart'), {
     type: 'bar',
     data: {
@@ -465,10 +442,6 @@
   });
 
 
-
-
-
-
   new Chart(document.getElementById('tempoResolucaoComponenteChart').getContext('2d'), {
     type: 'bar',
     data: {
@@ -517,14 +490,6 @@
   });
 
 
-
-
-
-
-
-  // ======================
-  //  ALERTAS POR SERVIDOR (Top 3)
-  // ======================
   new Chart(document.getElementById('alertasServidorChart').getContext('2d'), {
     type: 'bar',
     data: {
@@ -574,10 +539,7 @@
     }
   });
 
-
-  // ======================
-  //  TEMPO MÉDIO DE RESOLUÇÃO POR SERVIDOR
-  // ======================
+  
   new Chart(document.getElementById('tempoResolucaoServidorChart').getContext('2d'), {
     type: 'bar',
     data: {
@@ -622,5 +584,4 @@
   });
 
 </script>
-
 </html>
