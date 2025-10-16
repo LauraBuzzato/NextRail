@@ -228,7 +228,6 @@
             <span class="severity-badge ${classeDaGravidade}">${mes.gravidadePredominante}</span>
         </div>
         
-        <!-- Bloco de Estatísticas Principais (agora usa a classe .mes-stats) -->
         <div class="mes-stats">
             <div class="stat-item"><span>Total de Alertas:</span> <strong>${mes.totalAlerts}</strong></div>
             <div class="stat-item"><span>MTTR Médio:</span> <strong>${Math.round(mes.mttr)} min</strong></div>
@@ -238,8 +237,7 @@
             <div class="stat-item"><span>Comp. Destaque:</span> <strong>${mes.componenteMaisAfetadoMes}</strong></div>
         </div>
 
-        <!-- Bloco da Distribuição de Gravidade (com as cores adicionadas) -->
-       // O CÓDIGO CORRETO
+       
         <div>
             <h5 class="mes-section-title">Distribuição de Gravidade</h5>
                 <div class="gravidade-distribuicao">
@@ -249,7 +247,6 @@
                 </div>
         </div>
         
-        <!-- Bloco de Alertas por Servidor (já estava correto) -->
         <div>
             <h5 class="mes-section-title">Alertas por Servidor</h5>
             <div class="server-list">${serverBreakdownHtml}</div>
@@ -278,6 +275,7 @@
     }
 
     function voltar() {
+        //Tira todo o html e css montado da pagina
         var selecaoAnoDiv = document.querySelector('.selecao-ano');
         var containerDoRelatorio = document.getElementById('relatorio-container');
         selecaoAnoDiv.style.display = 'block';
