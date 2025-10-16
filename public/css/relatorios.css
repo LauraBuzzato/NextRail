@@ -975,6 +975,17 @@ footer {
     padding-top: 5px;
 }
 
+.critico {
+    background-color: #ef4444;
+}
+.alto {
+    background-color: #f97316;
+}
+.medio {
+    background-color: #eab308;
+}
+
+
 .gravidade-distribuicao .critico {
     color: #ef4444;
     background-color: transparent;

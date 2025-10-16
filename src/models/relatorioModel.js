@@ -76,6 +76,7 @@ function buscarDadosAnuais(ano) {
 
             var duracaoMinutos = 0;
             if (alerta.fim) {
+            //subtrai o tempo de início do tempo de fim (o que dá um valor em milissegundos) e divide por 60.000 para transformar em minutos.
                 duracaoMinutos = (new Date(alerta.fim) - new Date(alerta.inicio)) / 60000;
             }
 
@@ -83,7 +84,6 @@ function buscarDadosAnuais(ano) {
                 // Se é a primeira vez que vemos este servidor, atribuimos com 1
                 contagemServidoresAno[alerta.nome_servidor] = 1;
             } else {
-                // Se já vimos antes, apenas somamos mais 1
                 contagemServidoresAno[alerta.nome_servidor]++;
             }
 
@@ -206,9 +206,11 @@ function buscarDadosAnuais(ano) {
         // Médias do ano
         var mttrMedioAnual = 0;
         if (totalAlertsAnual > 0) {
+        //     Soma de todos os min de alerta / qtd
             mttrMedioAnual = totalMinutosParadoAnual / totalAlertsAnual;
         }
 
+        //Calcula os minutos totais do ano / pelos minutos parados do ano e subtrai de 100%
         var disponibilidadeMediaAnual = 100 - (totalMinutosParadoAnual / (365 * 24 * 60)) * 100;
 
         //Json exibido 
