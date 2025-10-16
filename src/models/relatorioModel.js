@@ -228,7 +228,6 @@ function buscarDadosAnuais(ano) {
             dadosMensais: arrayMesesFinal
         };
 
-
         console.log("Objeto final pronto para ser enviado:", resultadoFinal);
         return resultadoFinal;
 
@@ -236,6 +235,33 @@ function buscarDadosAnuais(ano) {
 
 }
 
+    function buscarAnosDisponiveis() {
+
+    var instrucaoSql = `
+        SELECT DISTINCT YEAR(inicio) AS ano 
+        FROM alerta 
+        ORDER BY ano DESC;
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+
+    return database.executar(instrucaoSql).then(function (resultadoSql) {
+
+        var anos = [];
+
+        for (var i = 0; i < resultadoSql.length; i++) {
+            var itemAtual = resultadoSql[i];
+            var ano = itemAtual.ano; 
+            anos.push(ano);
+        }
+        
+        console.log("Anos encontrados:", anos);
+        return anos;
+    });
+}
+
 module.exports = {
-    buscarDadosAnuais
+    buscarDadosAnuais,
+    buscarAnosDisponiveis
+    
+
 };

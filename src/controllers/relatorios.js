@@ -22,6 +22,22 @@ function buscarDadosAnuais(req, res) {
 }
 
 
+function buscarAnosDisponiveis(req, res) {
+    console.log(`Buscando a lista de anos com relatórios`);
+
+    relatorioModel.buscarAnosDisponiveis()
+        .then(function (resultado) {
+            res.status(200).json(resultado);
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            console.log("\nHouve um erro ao buscar os anos! Erro: ", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
+
 module.exports = {
-    buscarDadosAnuais
+    buscarDadosAnuais,
+    buscarAnosDisponiveis
 };

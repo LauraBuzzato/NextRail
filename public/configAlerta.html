@@ -16,72 +16,45 @@
 </head>
 
 <body>
-	
+	<body onload="validarSessao()">
+
   <!-- Menu lateral -->
-  <div class="menu">
+    <div class="menu">
         <ul class="link-items">
             <div class="logo-container">
                 <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
             </div>
 
-
-            <!-- Página inicial com introdução ao sistema -->
             <li class="link-item">
-                <a href="index.html" class="link">
-                    <ion-icon name="home-outline"></ion-icon>
-                    <span style="--i: 1">Início</span>
+                <a href="dashboard.html" class="link">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span style="--i: 1">Dashboard</span>
                 </a>
             </li>
 
-            <!-- Monitoramento de recursos -->
-            <li class="link-item active">
-                <a href="sistema.html" class="link">
-                    <ion-icon name="desktop-outline"></ion-icon>
-                    <span style="--i: 2">Sistema</span>
+
+            <li class="link-item active" id="configuracoes">
+                <a href="configuracoes.html" class="link">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    <span style="--i: 3">Configurações</span>
                 </a>
             </li>
 
-            <!-- Relatórios -->
+            <li class="link-item" id="cadastroServer">
+                <a href="cadastroServidor.html" class="link">
+                    <ion-icon name="construct"></ion-icon>
+                    <span style="--i: 3">Cadastrar Servidor</span>
+                </a>
+            </li>
+
             <li class="link-item">
-                <a href="relatorios.html" class="link">
-                    <ion-icon name="stats-chart-outline"></ion-icon>
-                    <span style="--i: 4">Relatórios</span>
-                </a>
-            </li>
-
-            <!-- Curiosidades sobre ferrovias/tecnologia -->
-            <li class="link-item">
-                <a href="curiosidades.html" class="link">
-                    <ion-icon name="bulb-outline"></ion-icon>
-                    <span style="--i: 5">Curiosidades</span>
-                </a>
-            </li>
-
-            <!-- Sobre o projeto -->
-            <li class="link-item">
-                <a href="sobre.html" class="link">
-                    <ion-icon name="information-circle-outline"></ion-icon>
-                    <span style="--i: 6">Sobre</span>
-                </a>
-            </li>
-
-        <!-- Form CRM -->
-            <li class="link-item ">
-                <a href="form.html" class="link">
-                    <ion-icon name="call-outline"></ion-icon>
-                    <span style="--i: 5">Contate-nos</span>
-                </a>
-            </li>
-
-            <!-- Botão de login -->
-            <li class="link-item">
-                <a href="login.html" class="link">
-                    <ion-icon name="log-in-outline"></ion-icon>
-                    <span style="--i: 7">Entrar</span>
+                <a onclick="limparSessao()" class="link">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                    <span style="--i: 4">Sair</span>
                 </a>
             </li>
         </ul>
-  </div>
+    </div>
 
   <div class="hamburger" id="hamburger">
   <span></span>

@@ -61,20 +61,9 @@
                         <h2>Relatórios De Dados</h2>
                     </div>
                 </div>
-                <div class="box-container">
-                    <div class="box-ano" onclick="abrirRelatorio(2025)">2025</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2024)">2024</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2023)">2023</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2022)">2022</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2021)">2021</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2020)">2020</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2019)">2019</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2018)">2018</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2017)">2017</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2016)">2016</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2015)">2015</div>
-                    <div class="box-ano" onclick="abrirRelatorio(2014)">2014</div>
-                </div>
+
+                <div class="box-container" id="containerAnos"></div>
+
             </div>
             <div id="relatorio-container" class="relatorio-container">
                 <h3>Selecione um ano para ver o relatório</h3>
@@ -143,6 +132,48 @@
 
 </body>
 <script>
+
+    window.onload = function() {
+        carregarAnosDisponiveis();
+    };
+
+    
+    function carregarAnosDisponiveis() {
+    var containerAnos = document.getElementById('containerAnos');
+    containerAnos.innerHTML = '<h4>Carregando anos com relatórios...</h4>';
+
+    fetch(`http://localhost:8080/relatorio/anos`)
+        .then(function (resposta) {
+            if (resposta.ok) {
+                return resposta.json();
+            } else {
+                containerAnos.innerHTML = '<h4>Falha ao carregar os anos.</h4>';
+            }
+        })
+        .then(function (listaDeAnos) {
+            if (listaDeAnos.length == 0) {
+                containerAnos.innerHTML = '<h4>Nenhum relatório encontrado.</h4>';
+                return;
+            }
+
+            // 1. Crie uma variável para guardar todo o HTML, começando vazia.
+            var htmlCompleto = "";
+
+            for (var i = 0; i < listaDeAnos.length; i++) {
+                var ano = listaDeAnos[i];
+
+                htmlCompleto += `<div class="box-ano" onclick="abrirRelatorio(${ano})">${ano}</div>`;
+            }
+
+            containerAnos.innerHTML = htmlCompleto;
+        })
+        .catch(function (erro) {
+            console.error('Ocorreu um erro na requisição:', erro);
+            containerAnos.innerHTML = '<h4>Erro de conexão com o servidor.</h4>';
+        });
+}
+
+
     function abrirRelatorio(ano) {
         var selecaoAnoDiv = document.querySelector('.selecao-ano');
         var containerDoRelatorio = document.getElementById('relatorio-container');
