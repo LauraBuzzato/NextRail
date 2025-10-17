@@ -303,6 +303,22 @@ function buscarDadosMensais(ano, mes) {
 
         var semanas = {};
 
+        var diasNoMes = new Date(ano, mes, 0).getDate();
+        
+        var numeroDeSemanas = Math.ceil(diasNoMes / 7);
+
+        for (var i = 1; i <= numeroDeSemanas; i++) {
+        semanas[i] = {
+            numero: i,
+            alertas: [],
+            totalAlerts: 0,
+            totalMinutosParado: 0,
+            contagemServidores: {},
+            contagemComponentes: {}
+        };
+    }
+
+
         function acharMaisFrequente(objetoDeContagem) {
             var maisFrequente = 'N/A';
             var maxContagem = 0;
@@ -324,15 +340,6 @@ function buscarDadosMensais(ano, mes) {
             // (dia 1-7 é semana 1, 8-14 é semana 2, etc.)
             var numeroSemana = Math.ceil(dataInicio.getDate() / 7);
 
-            // Se for o primeiro alerta da semana, criamos a box  para ela
-            if (semanas[numeroSemana] == undefined) {
-                semanas[numeroSemana] = {
-                    numero: numeroSemana,
-                    alertas: []
-                };
-            }
-
-            
             var duracaoMinutos = 0;
             if (alerta.fim) {
                 duracaoMinutos = (new Date(alerta.fim) - new Date(alerta.inicio)) / 60000;
@@ -342,7 +349,7 @@ function buscarDadosMensais(ano, mes) {
             semanas[numeroSemana].alertas.push({
                 inicio: alerta.inicio,
                 fim: alerta.fim,
-                duracao: duracaoMinutos, 
+                duracao: duracaoMinutos,
                 servidor: alerta.nome_servidor,
                 componente: alerta.nome_componente,
                 gravidade: alerta.nome_gravidade
