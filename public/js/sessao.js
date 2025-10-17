@@ -5,13 +5,13 @@ function validarSessao() {
     var cargo = sessionStorage.CARGO_USUARIO;
 
 
-    var nomeUsuarioSpan = document.getElementById("nome_usuario_span");
+    //var nomeUsuarioSpan = document.getElementById("nome_usuario_span");
 
     if (nome == null && email == null && cargo == null ) {
         window.location = "../login.html";
     }
 
-    nomeUsuarioSpan.innerHTML = nome
+    //nomeUsuarioSpan.innerHTML = nome
 
     window.addEventListener("pageshow", function (event) {
         if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
