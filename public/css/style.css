@@ -369,7 +369,7 @@ main {
   min-width: 250px;
   max-width: 320px;
   text-align: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+ rbox-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
@@ -706,6 +706,71 @@ main {
 .titulo_select>select option {
   appearance: none;
 }
+
+/* ================== SELECIONAR SERVIDOR ================== */
+.selecionar_servidor {
+  display: flex;
+  background: #0f0a10;
+  color: #fff;
+  text-align: left;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 10px;
+  width: 100%-85px;
+  height: fit-content;
+}
+
+.selecionar_servidor>h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffe066;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+  align-self: flex-start;
+  margin-bottom: 15px;
+}
+
+.linha_card_serv {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: space-evenly;
+}
+
+.card_servidor {
+    display: flex;
+    flex-direction: column;
+    background: #181a20;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    width: 300px;
+    border-radius: 18px;
+    border: 10px solid green;
+    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    margin-left: 25px;
+    margin-bottom: 20px;
+}
+.card_servidor>h3 {
+    margin-bottom: 20px;
+    font-size: 25px;
+    font-weight: bold;
+}
+.card_servidor:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+  background: rgba(24, 26, 32, 0.70);
+}
+
+.carac_servidor {
+    margin-bottom: 20px;
+    text-align: left;
+    font-size: 19px;
+}
+.carac_servidor>p {
+    color: #ffe066;
+    font-weight: bold;
+} 
+
 
 footer {
   background: linear-gradient(45deg, #1c1c1c 0%, #000000 100%);
