@@ -24,6 +24,21 @@ function listarSO() {
   return database.executar(instrucaoSql);
 }
 
+function selecionarServidores(fkEmpresa) {
+  var instrucaoSql = `
+        SELECT sv.nome AS servidor,tipo.nome AS tipo,so.descricao AS so,es.sigla AS estado,en.logradouro,en.numero,en.complemento 
+        FROM servidor sv 
+        INNER JOIN tipo ON tipo.id=sv.fk_tipo 
+        INNER JOIN sistema_operacional so ON so.id=sv.fk_so 
+        INNER JOIN endereco en ON en.id=sv.fk_endereco 
+        INNER JOIN estado es ON es.id=en.fk_estado 
+        WHERE fk_empresa=${fkEmpresa}
+        ORDER BY servidor;
+    `;
+  console.log("Executando SQL: \n" + instrucaoSql);
+  return database.executar(instrucaoSql);
+}
+
 function cadastrarServidor(nome, fk_tipo, fk_so, fk_empresa, logradouro, cep, numero, complemento, fk_estado) {
     
     const complementoValue = complemento || null;
@@ -58,5 +73,6 @@ module.exports = {
   listarEmpresas,
   listarTipos,
   listarSO,
+  selecionarServidores,
   cadastrarServidor
 };

@@ -10,6 +10,7 @@
 
   <script src="./js/sessao.js"></script>
   <script src="js/adap_dash_cargo.js"></script>
+  <script src="js/selecionarServidor.js"></script>
 
   <link rel="stylesheet" href="./css/menu.css">
   <link rel="stylesheet" href="./css/style.css">
@@ -17,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
 </head>
 
-<body onload="validarSessao(), analisaCargo()">
+<body onload="validarSessao(), analisaCargo(), listarServidor()">
   <!-- Menu lateral -->
   <div class="menu">
     <ul class="link-items">
@@ -72,84 +73,9 @@
   <main class="selecionar_servidor">
     <h1>Selecionar Servidor</h1>
 
-    <div class="linha_card_serv">
-        <div class="card_servidor">
-            <h3>SERV-001</h3>
-            <div class="carac_servidor">
-                <p>Quantidade de alertas:</p>
-                <div>12</div>
-            </div>
-            <div class="carac_servidor">
-                <p>Tipo:</p>
-                <div>Regulador</div>
-            </div>
-            <div class="carac_servidor">
-                <p>SO:</p>
-                Debian
-            </div>
-            <div class="carac_servidor">
-                <p>Endereço:</p>
-                <div>Rua aaa N bbb</div>
-            </div>
-        </div>
-        <div class="card_servidor">
-            <h3>SERV-001</h3>
-            <div class="carac_servidor">
-                <p>Quantidade de alertas:</p>
-                <div>12</div>
-            </div>
-            <div class="carac_servidor">
-                <p>Tipo:</p>
-                <div>Regulador</div>
-            </div>
-            <div class="carac_servidor">
-                <p>SO:</p>
-                Debian
-            </div>
-            <div class="carac_servidor">
-                <p>Endereço:</p>
-                <div>Rua aaa N bbb</div>
-            </div>
-        </div>
-        <div class="card_servidor">
-            <h3>SERV-001</h3>
-            <div class="carac_servidor">
-                <p>Quantidade de alertas:</p>
-                <div>12</div>
-            </div>
-            <div class="carac_servidor">
-                <p>Tipo:</p>
-                <div>Regulador</div>
-            </div>
-            <div class="carac_servidor">
-                <p>SO:</p>
-                Debian
-            </div>
-            <div class="carac_servidor">
-                <p>Endereço:</p>
-                <div>Rua aaa N bbb</div>
-            </div>
-        </div>
-        <div class="card_servidor">
-            <h3>SERV-001</h3>
-            <div class="carac_servidor">
-                <p>Quantidade de alertas:</p>
-                <div>12</div>
-            </div>
-            <div class="carac_servidor">
-                <p>Tipo:</p>
-                <div>Regulador</div>
-            </div>
-            <div class="carac_servidor">
-                <p>SO:</p>
-                Debian
-            </div>
-            <div class="carac_servidor">
-                <p>Endereço:</p>
-                <div>Rua aaa N bbb</div>
-            </div>
-        </div>
+    <div class="linha_card_serv" id="linha_card_serv">
     </div>
+
   </main>
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>

@@ -27,6 +27,16 @@ function listarSO(req, res) {
     });
 }
 
+function selecionarServidores(req, res) {
+  var fkEmpresa = req.body.idempresa;
+  servidorModel.selecionarServidores(fkEmpresa)
+    .then(resultado => res.json(resultado))
+    .catch(erro => {
+      console.log(erro);
+      res.status(500).json(erro.sqlMessage);
+    });
+}
+
 function cadastrarServidor(req, res) {
   var { 
     nome, 
@@ -57,5 +67,6 @@ module.exports = {
   listarEmpresas,
   listarTipos,
   listarSO,
+  selecionarServidores,
   cadastrarServidor
 };
