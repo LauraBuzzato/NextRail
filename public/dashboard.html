@@ -35,15 +35,8 @@
         </a>
       </li>
 
-      <li class="link-item" id="relatorios">
-        <a href="relatoriosDash.html" class="link">
-          <ion-icon name="stats-chart-outline"></ion-icon>
-          <span style="--i: 2">Relatórios</span>
-        </a>
-      </li>
-
       <li class="link-item" id="configuracoes">
-        <a href="configuracoes.html" class="link">
+        <a href="configAlerta.html" class="link">
           <ion-icon name="settings-outline"></ion-icon>
           <span style="--i: 3">Configurações</span>
         </a>
@@ -74,48 +67,48 @@
   <!-- Conteúdo principal -->
   <main class="fundo-escuro" id="dashboardMain">
     <div class="container-pagina">
+      <div class="titulos">
+        <h1 class="titulo-destaque" id="titulo-destaque"></h1>
+        <h2 class="subtitulo-destaque" id="subtitulo-destaque">Servidor-001</h2>
+      </div>
       <section class="conteudo-principal" id="conteudoPrincipal">
-        <div class="titulos">
-          <h1 class="titulo-destaque" id="titulo-destaque"></h1>
-          <h2 class="subtitulo-destaque" id="subtitulo-destaque">Servidor-001</h2>
-        </div>
         <div class="kpi-container">
 
           <div class="kpi-1">
-            <div class="kpi-titulo">Uso de memória RAM</div>
+            <div class="kpi-titulo">Uso de memória RAM atual</div>
             <div class="kpi-conteudo">
               <span style="color: red;">82%</span>
             </div>
-            <div class="kpi-passado">↓ 3%</div>
+            <div class="kpi-passado">Última leitura: <br> 78%</div>
           </div>
 
           <div class="kpi-2">
-            <div class="kpi-titulo">Uso de CPU</div>
+            <div class="kpi-titulo">Uso de CPU atual</div>
             <div class="kpi-conteudo">
               <span style="color: yellow;">75%</span>
             </div>
-            <div class="kpi-passado">↑ 13%</div>
+            <div class="kpi-passado">Última leitura: <br> 88%</div>
           </div>
 
           <div class="kpi-3">
-            <div class="kpi-titulo">Uso de DISCO</div>
+            <div class="kpi-titulo">Uso de DISCO atual</div>
             <div class="kpi-conteudo">
               <span style="color: green;">53%</span>
             </div>
-            <div class="kpi-passado">↑ 5%</div>
+            <div class="kpi-passado">Última leitura: <br> 48%</div>
           </div>
         </div>
         <div class="graficos-container">
           <div class="grafico-box">
-            <h3>Uso de CPU nas últimas duas horas</h3>
+            <h3>Uso de CPU nas últimas 24 horas</h3>
             <canvas id="graficoRelatorioCPU"></canvas>
           </div>
           <div class="grafico-box">
-            <h3>Uso de RAM nas últimas duas horas</h3>
+            <h3>Uso de RAM nas últimas 24 horas</h3>
             <canvas id="graficoRelatorioRAM"></canvas>
           </div>
           <div class="grafico-box">
-            <h3>Uso de Disco nas últimas duas horas</h3>
+            <h3>Uso de Disco nas últimas 24 horas</h3>
             <canvas id="graficoRelatorioDisco"></canvas>
           </div>
         </div>

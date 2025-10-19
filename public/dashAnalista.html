@@ -73,7 +73,7 @@
   <!-- Conteúdo principal -->
   <main class="dashboard-grid">
 
-    <h1 class="bem-vindo">Bem-vindo Analista</h1>
+    <h1 class="bem-vindo">Bem-vindo(a) <span id="nome_usuario_span"></span></h1>
 
     <h2 class="desempenho">Desempenho Serv-001</h2>
     <!-- KPIs -->
@@ -101,10 +101,7 @@
       </div>
 
     </section>
-
-    <!-- ... (código antes da seção Tendência semanal) ... -->
-
-    <!-- 1. COLUNA ESQUERDA: Tendência semanal -->
+    
     <section class="tendencia-semanal">
       <div class="grafico-box grande">
         <h3 class="grafico-titulo">Frequência Semanal de Alertas</h3>
@@ -112,7 +109,6 @@
       </div>
     </section>
 
-    <!-- 2. COLUNA DIREITA: NOVO CONTAINER ENGLOBA OS 4 GRÁFICOS MENORES -->
     <section class="analise-direita">
       <!-- Servidores: Linha 1 da Coluna Direita -->
       <div class="grafico-box">
@@ -124,7 +120,6 @@
         <canvas id="tempoResolucaoServidorChart"></canvas>
       </div>
 
-      <!-- Componentes: Linha 2 da Coluna Direita -->
       <div class="grafico-box">
         <h3 class="grafico-titulo">Alertas por Componente</h3>
         <canvas id="alertasComponenteChart"></canvas>
@@ -134,12 +129,7 @@
         <canvas id="tempoResolucaoComponenteChart"></canvas>
       </div>
     </section>
-
-    <!-- ... (código após a seção Componentes) ... -->
   </main>
-
-
-
 
   <!-- Footer -->
   <footer>
@@ -321,14 +311,6 @@
     iconeDisco = "~"
   }
 
-
-
-
-
-
-
-
-
   var options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -345,16 +327,14 @@
   Chart.defaults.font.weight = 'bold';
 
 
-
-
   new Chart(document.getElementById('frequenciaSemanalChart'), {
     type: 'line',
     data: {
-      labels: ['01/10', '08/10', '15/10', '22/10', '29/10'],
+      labels: ['01/10', '02/10', '03/10', '04/10', '05/10', '06/10', '07/10'],
       datasets: [
         {
           label: 'CPU',
-          data: [5, 9, 6, 20, 7],
+          data: [5, 9, 6, 17, 7, 13, 6],
           borderColor: '#a78bfa',
           backgroundColor: 'rgba(167,139,250,0.2)',
           tension: 0.3,
@@ -364,7 +344,7 @@
         },
         {
           label: 'RAM',
-          data: [9, 11, 13, 14, 12],
+          data: [9, 11, 13, 14, 12, 18, 17],
           borderColor: '#38bdf8',
           backgroundColor: 'rgba(56,189,248,0.2)',
           tension: 0.3,
@@ -374,7 +354,7 @@
         },
         {
           label: 'Disco',
-          data: [4, 6, 5, 7, 5],
+          data: [4, 6, 5, 7, 5, 8, 3],
           borderColor: '#fbbf24',
           backgroundColor: 'rgba(251,191,36,0.2)',
           tension: 0.3,
@@ -410,9 +390,6 @@
       }
     }
   });
-
-
-
 
 
   new Chart(document.getElementById('alertasComponenteChart'), {
@@ -465,10 +442,6 @@
   });
 
 
-
-
-
-
   new Chart(document.getElementById('tempoResolucaoComponenteChart').getContext('2d'), {
     type: 'bar',
     data: {
@@ -517,14 +490,6 @@
   });
 
 
-
-
-
-
-
-  // ======================
-  //  ALERTAS POR SERVIDOR (Top 3)
-  // ======================
   new Chart(document.getElementById('alertasServidorChart').getContext('2d'), {
     type: 'bar',
     data: {
@@ -574,10 +539,7 @@
     }
   });
 
-
-  // ======================
-  //  TEMPO MÉDIO DE RESOLUÇÃO POR SERVIDOR
-  // ======================
+  
   new Chart(document.getElementById('tempoResolucaoServidorChart').getContext('2d'), {
     type: 'bar',
     data: {
@@ -622,5 +584,4 @@
   });
 
 </script>
-
 </html>

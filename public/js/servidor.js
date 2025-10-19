@@ -3,7 +3,6 @@ function mascaraCEP(value) {
     .replace(/\D/g, "")
     .replace(/(\d{5})(\d)/, "$1-$2")
     .substring(0, 9);
-    
 }
 
 function RetiraMascara(ObjCEP) {
@@ -18,7 +17,6 @@ document.getElementById("cep").addEventListener("input", async function () {
     await buscarCEP(cepLimpo);
   }
 });
-
 
 async function carregarSelects() {
   try {
@@ -35,7 +33,6 @@ async function carregarSelects() {
     selectTipo.innerHTML = `<option value="">Selecione o tipo</option>`;
     selectSO.innerHTML = `<option value="">Selecione o sistema operacional</option>`;
     selectEstado.innerHTML = `<option value="">Selecione o estado</option>`;
-
 
     tipos.forEach(t => {
       const opt = document.createElement("option");
@@ -85,8 +82,6 @@ async function buscarCEP(cep) {
 }
 
 async function cadastrarServidor() {
-  
-
   const nome = document.getElementById("nome").value.trim();
   const fk_empresa = sessionStorage.ID_EMPRESA;
   const fk_tipo = document.getElementById("tipo").value;
@@ -98,7 +93,18 @@ async function cadastrarServidor() {
   const complemento = document.getElementById("complemento").value.trim();
   const fk_estado = document.getElementById("estado").value;
 
-  console.log({
+  // Validação dos campos obrigatórios
+  if (!nome || !fk_tipo || !fk_so || !logradouro || !cep || !numero || !fk_estado) {
+    alert("Por favor, preencha todos os campos obrigatórios!");
+    return;
+  }
+
+  if (cep.length !== 8) {
+    alert("CEP inválido!");
+    return;
+  }
+
+  console.log("Dados do servidor:", {
     nome,
     fk_empresa,
     fk_tipo,
@@ -127,20 +133,28 @@ async function cadastrarServidor() {
       })
     });
 
+    console.log("Status da resposta:", resposta.status); 
+    console.log("Resposta completa:", resposta); 
+
+    const resultado = await resposta.json();
+
     if (resposta.ok) {
-      alert("Servidor cadastrado com sucesso!");
+      console.log("Servidor cadastrado com sucesso:", resultado);
+      alert("Servidor cadastrado com sucesso!\n\nOs componentes (CPU, RAM, Disco) foram criados automaticamente com valores padrão.");
       document.getElementById("formServidor").reset();
     } else {
-      const erroTexto = await resposta.text();
-      console.error("Erro ao cadastrar servidor:", erroTexto);
-      alert("❌ Erro ao cadastrar servidor.");
+      console.error("Erro ao cadastrar servidor:", resultado);
+      alert("Erro ao cadastrar servidor: " + (resultado.message || "Erro desconhecido"));
     }
   } catch (erro) {
     console.error("Erro na requisição:", erro);
+    alert("Erro de conexão ao cadastrar servidor.");
   }
 }
-
 
 function limparFormulario() {
   document.getElementById("formServidor").reset();
 }
+document.addEventListener('DOMContentLoaded', function() {
+  carregarSelects();
+});
