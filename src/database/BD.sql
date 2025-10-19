@@ -109,7 +109,7 @@ create table metrica(
 	id int auto_increment,
 	fk_gravidade int,
 	nome varchar(50) not null,
-	valor decimal(8,2) not null,
+	valor int not null default 0,
 	fk_componente int not null,
 	foreign key (fk_componente) references componente(id),
 	foreign key (fk_gravidade) references gravidade(id),
