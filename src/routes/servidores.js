@@ -6,6 +6,7 @@ var servidorController = require("../controllers/servidorController");
 router.get("/listarEmpresas", servidorController.listarEmpresas);
 router.get("/listarTipos", servidorController.listarTipos);
 router.get("/listarSO", servidorController.listarSO);
+router.post("/selecionarServidores", servidorController.selecionarServidores)
 router.get("/listarServidores", servidorController.listarServidores);
 router.post("/cadastrar", servidorController.cadastrarServidor);
 router.post("/criarComponentesServidor", servidorController.criarComponentesServidor);
