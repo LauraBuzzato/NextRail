@@ -19,7 +19,7 @@ main {
 }
 
 body {
-  height: 300vh;
+  height: 200vh;
 }
 
 /* Container central da página */
@@ -32,11 +32,13 @@ body {
 /* ================== CONTEÚDO PRINCIPAL ================== */
 .conteudo-principal {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-around;
-  position: relative;
-  height: 260vh;
+  justify-content: space-between;
+  position: absolute;
+  left: 15vw;
+  height: 100vh;
+  width: 80vw;
 }
 
 .principal {
@@ -262,11 +264,12 @@ footer {
 /* ================== KPIS SUPORTE ================== */
 .kpi-container {
     display: flex; 
+    flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
     gap: 1rem; 
-    width: 100%;
-    height: 13%;
+    width: 38%;
+    height: 100%;
     text-align: center;
     font-weight: 700;
     background-color: rgba(255, 255, 255, 0.137);
@@ -274,8 +277,8 @@ footer {
 }
 
 .kpi-1, .kpi-2, .kpi-3 {
-  height: 83%;
-  width: 30%;
+  height: 30%;
+  width: 83%;
   background-color: var(--grafico);
   border-radius: 13px;
 }
@@ -324,21 +327,21 @@ footer {
 }
 
 .graficos-container {
-  height: 50%;
-  width: 100%;
+  height: 100%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-between; 
   align-items: stretch;
   gap: 1rem;
-  margin-top: 2rem;
+  /*margin-top: 2rem;*/
   padding: 0 1rem;
 }
 
 .grafico-box {
-  height: 30%;
-  width: clamp(1000px, calc(90% + 125px), 1200px);
+  width: 100%;
+  height: clamp(200px, calc(28% + 15px), 1200px);
   background: var(--grafico);
   border-radius: 12px;
   padding: 2rem;
