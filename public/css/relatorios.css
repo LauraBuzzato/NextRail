@@ -998,3 +998,109 @@ footer {
     color: #eab308;
     background-color: transparent;
 }
+
+
+
+
+/*Botoes*/
+.texto-secao {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px; 
+}
+
+
+.filtros-periodo {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-filtro {
+    background-color: transparent;
+    border: 1px solid #ffe066;
+    color: #ffe066;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-filtro.active {
+    background-color: white;
+    color: #333;
+    border-color: white;
+}
+
+.btn-filtro:not(.active):hover {
+    background-color: rgba(255, 224, 102, 0.1);
+}
+
+
+
+
+
+
+/*CSS MESES*/
+.semana-card {
+    background-color: #27272a;
+    border: 1px solid #3f3f46;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.semana-card h4 {
+    font-size: 1.5rem;
+    color: #ffe066;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #3f3f46;
+    padding-bottom: 10px;
+}
+
+/* Container para os KPIs da semana */
+.semana-kpis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px 25px; /* 15px vertical, 25px horizontal */
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+}
+
+.semana-kpis span {
+    background-color: #3f3f46;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+/* Estilo da tabela de alertas */
+.tabela-alertas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.tabela-alertas th,
+.tabela-alertas td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #3f3f46;
+}
+
+.tabela-alertas th {
+    font-size: 0.8rem;
+    color: #a1a1aa;
+    text-transform: uppercase;
+}
+
+.tabela-alertas td {
+    font-size: 0.9rem;
+    color: #e4e4e7;
+}
+
+.tabela-alertas tbody tr:nth-child(even) {
+    background-color: #303033;
+}

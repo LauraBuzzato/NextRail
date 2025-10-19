@@ -36,8 +36,43 @@ function buscarAnosDisponiveis(req, res) {
         });
 }
 
+    function buscarMesesDisponiveis(req, res) {
+        console.log(`Buscando a lista de meses com relatórios`);
+
+        relatorioModel.buscarMesesDisponiveis()
+            .then(function (resultado) {
+                res.status(200).json(resultado);
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                console.log("\nHouve um erro ao buscar os meses! Erro: ", erro.sqlMessage);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
+
+
+    function buscarDadosMensais(req, res) {
+    var ano = req.params.ano;
+    var mes = req.params.mes;
+
+    if (isNaN(ano) || isNaN(mes)) {
+        res.status(400).send("Ano ou mês fornecido é inválido.");
+        return;
+    }
+
+    relatorioModel.buscarDadosMensais(ano, mes)
+        .then(function (resultado) {
+            res.status(200).json(resultado);
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
 
 module.exports = {
     buscarDadosAnuais,
-    buscarAnosDisponiveis
+    buscarDadosMensais,
+    buscarAnosDisponiveis,
+    buscarMesesDisponiveis
 };

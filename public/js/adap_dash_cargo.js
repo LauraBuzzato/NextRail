@@ -17,8 +17,8 @@ function atualizar(a) {
     // if a = true então a página que logou é a do Suporte técnico
     if (a == true) {
         // mudando o menu de acordo com o cargo para disponibilidade
-        //var li_relatorio = document.getElementById("relatorios");
-        //li_relatorio.style.display = "none";
+       /* var li_relatorio = document.getElementById("relatorios");
+        li_relatorio.style.display = "none";*/
 
         var li_configuracoes = document.getElementById("configuracoes")
         li_configuracoes.style.display = "flex";
