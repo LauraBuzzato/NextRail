@@ -37,6 +37,7 @@ body {
   justify-content: space-between;
   position: absolute;
   left: 15vw;
+  top: 25vh;
   height: 100vh;
   width: 80vw;
 }
