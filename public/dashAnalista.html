@@ -27,9 +27,9 @@
       </div>
 
       <li class="link-item active" id="dashboard">
-        <a href="dashboard.html" class="link">
+        <a href="selecionarServidor.html" class="link">
           <ion-icon name="grid-outline"></ion-icon>
-          <span style="--i: 1">Dashboard</span>
+          <span style="--i: 1">Dashboards</span>
         </a>
       </li>
 
@@ -37,20 +37,6 @@
         <a href="relatoriosDash.html" class="link">
           <ion-icon name="stats-chart-outline"></ion-icon>
           <span style="--i: 2">Relatórios</span>
-        </a>
-      </li>
-
-      <li class="link-item" id="configuracoes">
-        <a href="configuracoes.html" class="link">
-          <ion-icon name="settings-outline"></ion-icon>
-          <span style="--i: 3">Configurações</span>
-        </a>
-      </li>
-
-      <li class="link-item" id="cadastroServer">
-        <a href="cadastroServidor.html" class="link">
-          <ion-icon name="construct"></ion-icon>
-          <span style="--i: 3">Cadastrar Servidor</span>
         </a>
       </li>
 
@@ -131,58 +117,7 @@
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-container">
-      <!-- Logo -->
-      <div class="footer-logo">
-        <span class="nome">NextRail</span>
-      </div>
-
-      <!-- Texto -->
-      <p class="footer-text">
-        Sistema de monitoramento ferroviário com foco em performance,
-        confiabilidade e inovação.
-      </p>
-
-      <!-- Ícones sociais -->
-      <ul class="footer-icons">
-        <!-- Suporte / Jira -->
-        <li>
-          <a href="#"><ion-icon name="headset-outline"></ion-icon><span>Suporte</span></a>
-        </li>
-
-        <!-- LinkedIn -->
-        <li>
-          <a href="#"><ion-icon name="logo-linkedin"></ion-icon><span>LinkedIn</span></a>
-        </li>
-
-        <!-- Instagram -->
-        <li>
-          <a href="#"><ion-icon name="logo-instagram"></ion-icon><span>Instagram</span></a>
-        </li>
-
-        <!-- Facebook -->
-        <li>
-          <a href="#"><ion-icon name="logo-facebook"></ion-icon><span>Facebook</span></a>
-        </li>
-
-        <!-- Email -->
-        <li>
-          <a href="NextRail@gmail.com">
-            <ion-icon name="mail-outline"></ion-icon><span>Email</span>
-          </a>
-        </li>
-
-        <!-- Telefone -->
-        <li>
-          <a href="tel:+5511999999999">
-            <ion-icon name="call-outline"></ion-icon><span>Telefone</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </footer>
+  
 
   <!-- Ícones -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
@@ -191,6 +126,7 @@
 
 </body>
 <script>
+  nome_usuario_span.innerHTML = sessionStorage.NOME_USUARIO
 
   // Mockados
   var labels = ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'];

@@ -1024,7 +1024,7 @@ Kpis
   grid-template-columns: repeat(12, 1fr);
   gap: 16px;
   padding: 10px 20px;
-  background-color: #0f0e0f;
+  background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
   padding-bottom: 40px;
 }
 

@@ -13,6 +13,73 @@ function analisaCargo() {
     atualizar(mudanca)
 }
 
+
+function arrumarMenu() {
+    if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
+        DIVmenu.innerHTML = `<ul class="link-items">
+      <div class="logo-container">
+        <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
+      </div>
+
+      <li class="link-item active" id="dashboard">
+        <a href="selecionarServidor.html" class="link">
+          <ion-icon name="grid-outline"></ion-icon>
+          <span style="--i: 1">Dashboards</span>
+        </a>
+      </li>
+
+      <li class="link-item" id="relatorios">
+        <a href="relatoriosDash.html" class="link">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          <span style="--i: 2">Relatórios</span>
+        </a>
+      </li>
+
+      <li class="link-item">
+        <a onclick="limparSessao()" class="link">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <span style="--i: 4">Sair</span>
+        </a>
+      </li>
+    </ul>`
+    } else{
+        DIVmenu.innerHTML = `<ul class="link-items">
+            <div class="logo-container">
+                <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
+            </div>
+
+            <li class="link-item active" id="dashboard">
+        <a href="selecionarServidor.html" class="link">
+          <ion-icon name="grid-outline"></ion-icon>
+          <span style="--i: 1">Dashboards</span>
+        </a>
+      </li>
+
+            <li class="link-item" id="cadastroServer">
+                <a href="cadastroServidor.html" class="link">
+                    <ion-icon name="construct"></ion-icon>
+                    <span style="--i: 3">Cadastrar Servidor</span>
+                </a>
+            </li>
+
+
+            <li class="link-item" id="configuracoes">
+                <a href="configAlerta.html" class="link">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    <span style="--i: 3">Parâmetros</span>
+                </a>
+            </li>
+
+            <li class="link-item">
+                <a onclick="limparSessao()" class="link">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                    <span style="--i: 4">Sair</span>
+                </a>
+            </li>
+        </ul>`
+    }
+}
+
  async function atualizar(a) {
     // if a = true então a página que logou é a do Suporte técnico
     if (a == true) {
@@ -28,8 +95,7 @@ function analisaCargo() {
         var li_cadastrar_server = document.getElementById("cadastroServer")
         li_cadastrar_server.style.display = "flex";
 
-        var main_titulo_destaque = document.getElementById("titulo-destaque")
-        main_titulo_destaque.innerHTML = `Bem vindo(a) ${sessionStorage.NOME_USUARIO}`
+        
 
        
         

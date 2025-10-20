@@ -324,7 +324,7 @@ main {
 
 /* ============== CURIOSIDADES ================== */
 .curiosidades {
-  background: linear-gradient(160deg, #0f0a10 0%, #181a20 100%);
+  background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
   padding: 100px 60px;
   color: #fff;
   text-align: center;
@@ -619,7 +619,7 @@ main {
 /* ================== CONFIGURAÇÃO ALERTAS ================== */
 .configuracao_alerta {
   display: flex;
-  background: linear-gradient(160deg, #0f0a10 0%, #181a20 100%);
+  background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
   color: #fff;
   text-align: center;
   align-items: center;
@@ -710,7 +710,7 @@ main {
 /* ================== SELECIONAR SERVIDOR ================== */
 .selecionar_servidor {
   display: flex;
-  background: #0f0a10;
+  background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
   color: #fff;
   text-align: left;
   align-items: flex-start;
@@ -749,6 +749,7 @@ main {
     transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     margin-left: 25px;
     margin-bottom: 20px;
+    cursor: pointer;
 }
 .card_servidor>h3 {
     margin-bottom: 20px;

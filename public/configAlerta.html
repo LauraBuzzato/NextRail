@@ -20,38 +20,39 @@
   <!-- Menu lateral -->
   <div class="menu">
     <ul class="link-items">
-      <div class="logo-container">
-        <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
-      </div>
+            <div class="logo-container">
+                <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
+            </div>
 
-      <li class="link-item">
-        <a href="dashboard.html" class="link">
-          <ion-icon name="grid-outline"></ion-icon>
-          <span style="--i: 1">Dashboard</span>
-        </a>
-      </li>
+            <li class="link-item">
+                <a href="dashboard.html" class="link">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span style="--i: 1">Dashboards</span>
+                </a>
+            </li>
 
-      <li class="link-item active" id="configuracoes">
-        <a href="configuracoes.html" class="link">
-          <ion-icon name="settings-outline"></ion-icon>
-          <span style="--i: 3">Configurações</span>
-        </a>
-      </li>
+            <li class="link-item" id="cadastroServer">
+                <a href="cadastroServidor.html" class="link">
+                    <ion-icon name="construct"></ion-icon>
+                    <span style="--i: 3">Cadastrar Servidor</span>
+                </a>
+            </li>
 
-      <li class="link-item" id="cadastroServer">
-        <a href="cadastroServidor.html" class="link">
-          <ion-icon name="construct"></ion-icon>
-          <span style="--i: 3">Cadastrar Servidor</span>
-        </a>
-      </li>
 
-      <li class="link-item">
-        <a onclick="limparSessao()" class="link">
-          <ion-icon name="log-out-outline"></ion-icon>
-          <span style="--i: 4">Sair</span>
-        </a>
-      </li>
-    </ul>
+            <li class="link-item active" id="configuracoes">
+                <a href="configAlerta.html" class="link">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    <span style="--i: 3">Parâmetros</span>
+                </a>
+            </li>
+
+            <li class="link-item">
+                <a onclick="limparSessao()" class="link">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                    <span style="--i: 4">Sair</span>
+                </a>
+            </li>
+        </ul>
   </div>
 
   <div class="hamburger" id="hamburger">
@@ -64,58 +65,7 @@
     <h1>Configurar Parâmetros de Alerta</h1>
   </main>
 
-  <!-- Rodapé -->
-  <footer>
-    <div class="footer-container">
-      <!-- Logo -->
-      <div class="footer-logo">
-        <span class="nome">NextRail</span>
-      </div>
-
-      <!-- Texto -->
-      <p class="footer-text">
-        Sistema de monitoramento ferroviário com foco em performance,
-        confiabilidade e inovação.
-      </p>
-
-      <!-- Ícones sociais -->
-      <ul class="footer-icons">
-        <!-- Suporte / Jira -->
-        <li>
-          <a href="#"><ion-icon name="headset-outline"></ion-icon><span>Suporte</span></a>
-        </li>
-
-        <!-- LinkedIn -->
-        <li>
-          <a href="#"><ion-icon name="logo-linkedin"></ion-icon><span>LinkedIn</span></a>
-        </li>
-
-        <!-- Instagram -->
-        <li>
-          <a href="#"><ion-icon name="logo-instagram"></ion-icon><span>Instagram</span></a>
-        </li>
-
-        <!-- Facebook -->
-        <li>
-          <a href="#"><ion-icon name="logo-facebook"></ion-icon><span>Facebook</span></a>
-        </li>
-
-        <!-- Email -->
-        <li>
-          <a href="NextRail@gmail.com">
-            <ion-icon name="mail-outline"></ion-icon><span>Email</span>
-          </a>
-        </li>
-
-        <!-- Telefone -->
-        <li>
-          <a href="tel:+5511999999999">
-            <ion-icon name="call-outline"></ion-icon><span>Telefone</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </footer>
+  
 
   <!-- Scripts -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

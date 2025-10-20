@@ -11,40 +11,41 @@
     <script src="./js/sessao.js"></script>
     <link rel="stylesheet" href="./css/relatorios.css">
     <link rel="stylesheet" href="./css/menu.css">
+    <script src="js/adap_dash_cargo.js"></script>
     <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body>
+<body onload="validarSessao()">
     <div class="menu">
-        <ul class="link-items">
-            <div class="logo-container">
-                <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
-            </div>
+    <ul class="link-items">
+      <div class="logo-container">
+        <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
+      </div>
 
-            <li class="link-item">
-                <a href="dashAnalista.html" class="link">
-                    <ion-icon name="grid-outline"></ion-icon>
-                    <span style="--i: 1">Dashboard</span>
-                </a>
-            </li>
+      <li class="link-item" id="dashboard">
+        <a href="selecionarServidor.html" class="link">
+          <ion-icon name="grid-outline"></ion-icon>
+          <span style="--i: 1">Dashboards</span>
+        </a>
+      </li>
 
-            <li class="link-item active">
-                <a href="relatoriosDash.html" class="link">
-                    <ion-icon name="stats-chart-outline"></ion-icon>
-                    <span style="--i: 4">Relatórios</span>
-                </a>
-            </li>
+      <li class="link-item active" id="relatorios">
+        <a href="relatoriosDash.html" class="link">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          <span style="--i: 2">Relatórios</span>
+        </a>
+      </li>
 
-            <li class="link-item">
-                <a onclick="limparSessao()" class="link">
-                    <ion-icon name="log-out-outline"></ion-icon>
-                    <span style="--i: 4">Sair</span>
-                </a>
-            </li>
-        </ul>
-    </div>
+      <li class="link-item">
+        <a onclick="limparSessao()" class="link">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <span style="--i: 4">Sair</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 
     <!-- Menu hamburger -->
     <div class="hamburger" id="hamburger">
@@ -83,58 +84,7 @@
         </div>
     </main>
 
-    <!-- Rodapé -->
-    <footer>
-        <div class="footer-container">
-            <!-- Logo -->
-            <div class="footer-logo">
-                <span class="nome">NextRail</span>
-            </div>
-
-            <!-- Texto -->
-            <p class="footer-text">
-                Sistema de monitoramento ferroviário com foco em performance,
-                confiabilidade e inovação.
-            </p>
-
-            <!-- Ícones sociais -->
-            <ul class="footer-icons">
-                <!-- Suporte / Jira -->
-                <li>
-                    <a href="#"><ion-icon name="headset-outline"></ion-icon><span>Suporte</span></a>
-                </li>
-
-                <!-- LinkedIn -->
-                <li>
-                    <a href="#"><ion-icon name="logo-linkedin"></ion-icon><span>LinkedIn</span></a>
-                </li>
-
-                <!-- Instagram -->
-                <li>
-                    <a href="#"><ion-icon name="logo-instagram"></ion-icon><span>Instagram</span></a>
-                </li>
-
-                <!-- Facebook -->
-                <li>
-                    <a href="#"><ion-icon name="logo-facebook"></ion-icon><span>Facebook</span></a>
-                </li>
-
-                <!-- Email -->
-                <li>
-                    <a href="NextRail@gmail.com">
-                        <ion-icon name="mail-outline"></ion-icon><span>Email</span>
-                    </a>
-                </li>
-
-                <!-- Telefone -->
-                <li>
-                    <a href="tel:+5511999999999">
-                        <ion-icon name="call-outline"></ion-icon><span>Telefone</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </footer>
+    
 
     <!-- Scripts -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
