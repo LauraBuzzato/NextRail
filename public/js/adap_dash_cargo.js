@@ -31,9 +31,7 @@ function analisaCargo() {
         var main_titulo_destaque = document.getElementById("titulo-destaque")
         main_titulo_destaque.innerHTML = `Bem vindo(a) ${sessionStorage.NOME_USUARIO}`
 
-         if( window.location.href = "./selecionarServidor.html") {
-          main_titulo_destaque.style.display = "block";
-        }
+       
         
 
         // mudança no corpo
@@ -94,6 +92,7 @@ function analisaCargo() {
         </div>
       </div>
         `*/
+        inicializarGraficos();
     }else {
         
         var li_configuracoes = document.getElementById("configuracoes")

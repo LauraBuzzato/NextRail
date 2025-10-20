@@ -19,8 +19,6 @@ function validarSessao() {
         }
     });
 
-    
-
 }
 
 function limparSessao() {
