@@ -369,7 +369,7 @@ main {
   min-width: 250px;
   max-width: 320px;
   text-align: center;
- rbox-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }

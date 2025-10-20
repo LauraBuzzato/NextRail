@@ -337,7 +337,7 @@ body {
 }
 
 .grafico-box {
-  flex: 1 0 510px; 
+  flex: 1 0 450px; 
   width: 100%;
   max-width: 600px;
 }

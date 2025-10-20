@@ -1,6 +1,6 @@
 function direcionaDash() {
     if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
-        window.location = "./dashAnalista.html"
+        window.location = "./dashboard.html"
     } else {
         window.location = "./dashboard.html"
     }
