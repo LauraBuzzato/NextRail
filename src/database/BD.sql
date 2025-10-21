@@ -189,13 +189,18 @@ Insert into status(descricao)
 				  ('Aberto'),
 				  ('Andamento'),
 				  ('Fechado');
+select * from estado;
+-- ======================== ENDEREÇOS ========================
+INSERT INTO  endereco (logradouro, cep, numero, complemento, fk_estado) VALUES('Rua das Margaridas', '69309550', '500', 'Bloco C', 23),
+('Rua Brisa do Amanhecer', '53404355', '105', NULL, 17),
+('Avenida Cidade Jardim', '01454900', '280', NULL, 25);
 
 -- ======================== SERVIDORES ========================
 INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
 VALUES
-('Servidor01', 1, 1, NULL, 1),
-('Servidor02', 2, 2, NULL, 1),
-('Servidor03', 1, 3, NULL, 1);
+('Servidor01', 1, 1, 2, 1),
+('Servidor02', 2, 2, 3, 1),
+('Servidor03', 1, 3, 1, 1);
 
 -- ======================== COMPONENTES ========================
 INSERT INTO componente (nome, fk_servidor)
@@ -282,3 +287,11 @@ VALUES
 select * from alerta;
 
 
+SELECT sv.nome AS servidor,tipo.nome AS tipo,so.descricao AS so,es.sigla AS estado,en.logradouro,en.numero,en.complemento 
+        FROM servidor sv 
+        INNER JOIN tipo ON tipo.id=sv.fk_tipo 
+        INNER JOIN sistema_operacional so ON so.id=sv.fk_so 
+        INNER JOIN endereco en ON en.id=sv.fk_endereco 
+        INNER JOIN estado es ON es.id=en.fk_estado 
+        WHERE fk_empresa=1
+        ORDER BY servidor;

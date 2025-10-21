@@ -24,8 +24,30 @@ function listarServidor() {
 
         for (let i = 0; i < servidores.length; i++) {
             let servidor = servidores[i];
-
-            listaServidores += `
+            if(servidor.complemento == null){
+                listaServidores += `
+                <div class="card_servidor" onclick="direcionaDash()">
+                    <h3>${servidor.servidor}</h3>
+                    <div class="carac_servidor">
+                        <p>Quantidade de alertas:</p>
+                        <div>12</div>
+                    </div>
+                    <div class="carac_servidor">
+                        <p>Tipo:</p>
+                        <div>${servidor.tipo}</div>
+                    </div>
+                    <div class="carac_servidor">
+                        <p>SO:</p>
+                        <div>${servidor.so}</div>
+                    </div>
+                    <div class="carac_servidor">
+                        <p>Endereço:</p>
+                        <div>${servidor.estado} - ${servidor.logradouro} ${servidor.numero}</div>
+                    </div>
+                </div>
+            `;
+            }else{
+                listaServidores += `
                 <div class="card_servidor" onclick="direcionaDash()">
                     <h3>${servidor.servidor}</h3>
                     <div class="carac_servidor">
@@ -46,6 +68,8 @@ function listarServidor() {
                     </div>
                 </div>
             `;
+            }
+
         }
         const linha_serv = document.getElementById("linha_card_serv");
         linha_serv.innerHTML = listaServidores;
