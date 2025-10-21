@@ -147,8 +147,6 @@ async function cadastrarServidor() {
       alert("Erro ao cadastrar servidor: " + (resultado.message || "Erro desconhecido"));
     }
   } catch (erro) {
-    console.error("Erro na requisição:", erro);
-    alert("Erro de conexão ao cadastrar servidor.");
   }
 }
 
