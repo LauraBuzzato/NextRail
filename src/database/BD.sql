@@ -1,4 +1,4 @@
-
+drop database nextrail;
 CREATE DATABASE nextrail;
 
 USE nextrail;
@@ -224,3 +224,36 @@ VALUES
 ('Médio'),
 ('Alto');
 
+INSERT INTO componente_servidor (fk_servidor, fk_tipo_componente) 
+VALUES
+(1,1),
+(1,2),
+(1,3),
+(2,1),
+(2,2),
+(2,3),
+(3,1),
+(3,2),
+(3,3);
+
+INSERT INTO metrica (fk_gravidade, nome, valor, fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente) 
+VALUES
+(3, 'Uso de RAM', 95.5, 1, 2), 
+(2, 'Uso de CPU', 80.0, 1, 1), 
+(3, 'Uso de Disco', 90.0, 1, 3),
+(1, 'Uso de RAM', 70.8, 2, 2), 
+(2, 'Uso de CPU', 80.0, 2, 1), 
+(1, 'Uso de Disco', 75.0, 2, 3),
+(2, 'Uso de RAM', 85.5, 3, 2), 
+(2, 'Uso de CPU', 80.0, 3, 1), 
+(3, 'Uso de Disco', 99.0, 3, 3);
+
+INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente, fk_status, inicio, fim) VALUES
+(1,1, 3, '2024-01-10 08:00:00', '2024-01-10 08:30:00'), 
+(1,2, 3, '2024-01-20 14:10:00', '2024-01-20 14:25:00'), 
+
+(2,3, 3, '2024-03-05 11:00:00', '2024-03-05 11:45:00'), 
+(2,1, 3, '2024-03-15 16:20:00', '2024-03-15 17:20:00'), 
+(2,2, 3, '2024-03-25 09:00:00', '2024-03-25 09:12:00'), 
+
+(3,3, 3, '2024-05-18 22:00:00', '2024-05-18 22:18:00'); 
