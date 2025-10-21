@@ -306,11 +306,9 @@ function inicializarDashboard() {
   validarSessao();
   arrumarMenu();
 
-  // Aguardar um pouco mais para garantir que tudo carregou
   setTimeout(() => {
     if (!verificarDependencias()) {
       console.log('Aguardando Chart.js...');
-      // Tentar novamente após 1 segundo
       setTimeout(() => {
         const cargo = analisaCargo();
         atualizar(cargo);
