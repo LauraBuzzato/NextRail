@@ -50,7 +50,7 @@ function buscarDadosAnuais(ano) {
             }
 
             // Pega o número do mês do alerta 0 para Janeiro, 1 para Fevereiro etc.
-            var indiceMes = new Date(alerta.inicio).getMonth();
+            var indiceMes = new Date(alerta.inicio).getMonth();cd 
 
             //Se a caixa não existe a gente cria ela
 

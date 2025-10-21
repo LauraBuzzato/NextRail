@@ -164,9 +164,9 @@ async function atualizar(a) {
     <section class="kpis">
 
       <div class="kpi-box">
-        <span class="kpi-title">MTTR (Tempo Médio de Reparo)</span>
+      <span class="kpi-title">MTTR (Tempo Médio de Reparo)</span>
+      <h2 class="kpi-value">30 min ↑20%</h2>
         
-        <h2 class="kpi-value">30 min ↑20%</h2>
       </div>
 
       <div class="kpi-box">
