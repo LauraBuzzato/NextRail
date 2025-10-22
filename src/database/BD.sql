@@ -1,4 +1,4 @@
-drop database nextrail;
+
 CREATE DATABASE nextrail;
 
 USE nextrail;
@@ -213,8 +213,8 @@ INSERT INTO  endereco (logradouro, cep, numero, complemento, fk_estado) VALUES('
 -- ======================== SERVIDORES ========================
 INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
 VALUES
-('Servidor01', 1, 1, 2, 1),
-('Servidor02', 2, 2, 3, 1),
+('Servidor02', 1, 1, 2, 1),
+('Servidor01', 2, 2, 3, 1),
 ('Servidor03', 1, 3, 1, 1);
 
 -- ======================== GRAVIDADES ========================
@@ -238,15 +238,33 @@ VALUES
 
 INSERT INTO metrica (fk_gravidade, nome, valor, fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente) 
 VALUES
-(3, 'Uso de RAM', 95.5, 1, 2), 
-(2, 'Uso de CPU', 80.0, 1, 1), 
-(3, 'Uso de Disco', 90.0, 1, 3),
-(1, 'Uso de RAM', 70.8, 2, 2), 
-(2, 'Uso de CPU', 80.0, 2, 1), 
-(1, 'Uso de Disco', 75.0, 2, 3),
-(2, 'Uso de RAM', 85.5, 3, 2), 
-(2, 'Uso de CPU', 80.0, 3, 1), 
-(3, 'Uso de Disco', 99.0, 3, 3);
+(3, 'Uso de RAM', 95, 1, 2), 
+(2, 'Uso de RAM', 85, 1, 2), 
+(1, 'Uso de RAM', 75, 1, 2), 
+(2, 'Uso de CPU', 70, 1, 1), 
+(1, 'Uso de CPU', 80, 1, 1), 
+(3, 'Uso de CPU', 90, 1, 1), 
+(3, 'Uso de Disco', 80.0, 1, 3),
+(2, 'Uso de Disco', 70.0, 1, 3),
+(1, 'Uso de Disco', 60.0, 1, 3),
+(1, 'Uso de RAM', 70, 2, 2), 
+(2, 'Uso de RAM', 80, 2, 2), 
+(3, 'Uso de RAM', 90, 2, 2), 
+(2, 'Uso de CPU', 70, 2, 1), 
+(1, 'Uso de CPU', 60, 2, 1), 
+(3, 'Uso de CPU', 80, 2, 1), 
+(1, 'Uso de Disco', 65, 2, 3),
+(2, 'Uso de Disco', 75, 2, 3),
+(3, 'Uso de Disco', 85, 2, 3),
+(2, 'Uso de RAM', 80, 3, 2), 
+(1, 'Uso de RAM', 75, 3, 2), 
+(3, 'Uso de RAM', 85, 3, 2), 
+(2, 'Uso de CPU', 90, 3, 1), 
+(1, 'Uso de CPU', 85, 3, 1), 
+(3, 'Uso de CPU', 95, 3, 1), 
+(3, 'Uso de Disco', 100, 3, 3),
+(2, 'Uso de Disco', 95, 3, 3),
+(1, 'Uso de Disco', 90, 3, 3);
 
 INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente, fk_status, inicio, fim) VALUES
 (1,1, 3, '2024-01-10 08:00:00', '2024-01-10 08:30:00'), 
@@ -257,3 +275,4 @@ INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoCo
 (2,2, 3, '2024-03-25 09:00:00', '2024-03-25 09:12:00'), 
 
 (3,3, 3, '2024-05-18 22:00:00', '2024-05-18 22:18:00'); 
+
