@@ -159,7 +159,9 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
             }
 
             var instrucaoComponentes = `
-                SELECT id, nome FROM componente WHERE fk_servidor = ${servidorId}
+                SELECT id, nome_tipo_componente as nome FROM tipo_componente tc
+                INNER JOIN componente_servidor cs ON tc.id = cs.fk_tipo_componente
+                WHERE fk_servidor = ${servidorId};
             `;
             
             const componentes = await database.executar(instrucaoComponentes);
@@ -174,13 +176,13 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
                 let configComponente;
                 let nomeMetrica;
                 
-                if (componente.nome === 'CPU') {
+                if (componente.nome === 'Cpu') {
                     configComponente = configuracoes.cpu;
                     nomeMetrica = 'Uso de CPU';
-                } else if (componente.nome === 'Memória RAM') {
+                } else if (componente.nome === 'Ram') {
                     configComponente = configuracoes.ram;
                     nomeMetrica = 'Uso de Memória';
-                } else if (componente.nome === 'Disco Rígido') {
+                } else if (componente.nome === 'Disco') {
                     configComponente = configuracoes.disco;
                     nomeMetrica = 'Espaço em Disco';
                 } else {
@@ -191,7 +193,7 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
                     queries.push(`
                         UPDATE metrica 
                         SET valor = ${configComponente.baixo} 
-                        WHERE fk_componente = ${componente.id} 
+                        WHERE fk_componenteServidor_tipoComponente = ${componente.id} 
                         AND fk_gravidade = 1
                         AND nome = '${nomeMetrica}'
                     `);
@@ -201,7 +203,7 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
                     queries.push(`
                         UPDATE metrica 
                         SET valor = ${configComponente.medio} 
-                        WHERE fk_componente = ${componente.id} 
+                        WHERE fk_componenteServidor_tipoComponente = ${componente.id} 
                         AND fk_gravidade = 2
                         AND nome = '${nomeMetrica}'
                     `);
@@ -211,7 +213,7 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
                     queries.push(`
                         UPDATE metrica 
                         SET valor = ${configComponente.alto} 
-                        WHERE fk_componente = ${componente.id} 
+                        WHERE fk_componenteServidor_tipoComponente = ${componente.id} 
                         AND fk_gravidade = 3
                         AND nome = '${nomeMetrica}'
                     `);
@@ -235,15 +237,16 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
 function buscarConfiguracoesServidor(servidorId) {
     var instrucaoSql = `
         SELECT 
-            c.nome as componente,
+            tc.nome_tipo_componente as componente,
             g.id as gravidade_id,
             g.nome as gravidade_nome,
             m.valor
-        FROM componente c
-        INNER JOIN metrica m ON c.id = m.fk_componente
+        FROM tipo_componente tc
+        INNER JOIN componente_servidor cs ON tc.id = cs.fk_tipo_componente
+        INNER JOIN metrica m ON m.fk_componenteServidor_servidor = cs.fk_servidor AND m.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
         INNER JOIN gravidade g ON m.fk_gravidade = g.id
-        WHERE c.fk_servidor = ${servidorId}
-        ORDER BY c.nome, g.id
+        WHERE cs.fk_servidor = ${servidorId}
+        ORDER BY tc.nome_tipo_componente, g.id;
     `;
     
     console.log("Buscando configurações do servidor: \n" + instrucaoSql);
