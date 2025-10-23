@@ -92,6 +92,8 @@ function cadastrarServidor(nome, fk_tipo, fk_so, fk_empresa, logradouro, cep, nu
             throw erro;
         });
 }
+
+
 function criarComponentesServidor(servidorId) {
 
     const componentes = [
@@ -104,7 +106,6 @@ function criarComponentesServidor(servidorId) {
     let promises = [];
 
     componentes.forEach(componente => {
-
         var instrucaoComponente = `
             INSERT INTO componente_servidor (fk_servidor, fk_tipo_componente) 
             VALUES (${servidorId}, ${componente.id});
@@ -116,8 +117,18 @@ function criarComponentesServidor(servidorId) {
                 console.log(`Componente ${componente.nome} (ID ${componente.id}) criado para o Servidor ${servidorId}.`);
 
                 let metricasPromises = [];
+                let nivelRecomend = 0;
 
                 gravidades.forEach(gravidadeId => {
+
+                    if(gravidadeId == 1){
+                        nivelRecomend = 70;
+                    }else if (gravidadeId == 2) {
+                        nivelRecomend = 80;
+                    } else {
+                        nivelRecomend = 90;
+                    }
+
                     var instrucaoMetrica = `
                         INSERT INTO metrica (
                             fk_gravidade, 
@@ -126,8 +137,9 @@ function criarComponentesServidor(servidorId) {
                             fk_componenteServidor_servidor, 
                             fk_componenteServidor_tipoComponente
                         ) 
-                        VALUES (${gravidadeId}, '${componente.metricaNome}', 0, ${servidorId}, ${componente.id});
+                        VALUES (${gravidadeId}, '${componente.metricaNome}', ${nivelRecomend}, ${servidorId}, ${componente.id});
                     `;
+
                     metricasPromises.push(database.executar(instrucaoMetrica));
                 });
                 return Promise.all(metricasPromises);

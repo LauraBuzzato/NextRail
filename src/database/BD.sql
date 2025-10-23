@@ -276,3 +276,21 @@ INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoCo
 
 (3,3, 3, '2024-05-18 22:00:00', '2024-05-18 22:18:00'); 
 
+select * from servidor;
+select * from metrica;
+
+SELECT 
+    m.nome AS Nome_Metrica,
+    m.valor AS Valor_Inicial,
+    tc.nome_tipo_componente AS Componente,
+    g.nome AS Gravidade
+FROM 
+    metrica m
+JOIN 
+    tipo_componente tc ON m.fk_componenteServidor_tipoComponente = tc.id
+JOIN 
+    gravidade g ON m.fk_gravidade = g.id
+WHERE 
+    m.fk_componenteServidor_servidor = 4
+ORDER BY 
+    Componente, Gravidade;
