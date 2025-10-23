@@ -186,16 +186,7 @@ async function atualizar(a) {
     <!-- KPIs -->
     <section class="kpis">
 
-      <div class="kpi-box">
-      <span class="kpi-title">MTTR (Tempo Médio de Reparo)</span>
-      <h2 class="kpi-value">30 min ↑20%</h2>
-        
-      </div>
 
-      <div class="kpi-box">
-        <span class="kpi-title">Servidor com Mais Alertas</span>
-        <h2 class="kpi-value">SERV-001</h2>
-      </div>
 
       <div class="kpi-box">
         <span class="kpi-title">Componente Mais Impactado</span>
