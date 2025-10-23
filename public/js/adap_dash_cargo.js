@@ -139,6 +139,29 @@ async function atualizar(a) {
               <canvas id="graficoSuporteDisco"></canvas>
             </div>
           </div>
+          <div class="container-tabela-dinamica">
+          <div class="tabela-titulo">red hat</div>
+          <div class="tabela-labels">
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+          </div>
+          <div class="tabela-conteudo">
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+            <span class="tabela-label">red hat</span>
+          </div>
+        </div>
         </section>
       </div>`;
 

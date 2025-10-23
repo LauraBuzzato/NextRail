@@ -7,16 +7,17 @@ function buscarDadosAnuais(ano) {
         SELECT 
             alerta.inicio,
             alerta.fim,
-            componente.nome AS nome_componente,
+            tipo_componente.nome_tipo_componente AS nome_componente,
             servidor.nome AS nome_servidor,
             gravidade.nome AS nome_gravidade,
             empresa.razao_social AS nome_empresa
         FROM alerta
-        JOIN componente ON alerta.fk_componente = componente.id
-        JOIN servidor ON componente.fk_servidor = servidor.id
+        JOIN componente_servidor ON alerta.fk_componenteServidor_servidor = componente_servidor.fk_servidor AND alerta.fk_componenteServidor_tipoComponente = componente_servidor.fk_tipo_componente
+        JOIN tipo_componente ON componente_servidor.fk_tipo_componente = tipo_componente.id
+        JOIN servidor ON componente_servidor.fk_servidor = servidor.id
         JOIN empresa on servidor.fk_empresa = empresa.id
-        LEFT JOIN metrica ON metrica.fk_componente = componente.id 
-        LEFT JOIN gravidade ON metrica.fk_gravidade = gravidade.id
+        LEFT JOIN metrica ON metrica.fk_componenteServidor_servidor = componente_servidor.fk_servidor AND metrica.fk_componenteServidor_tipoComponente = componente_servidor.fk_tipo_componente
+        LEFT JOIN gravidade ON metrica.fk_gravidade = gravidade.id 
         WHERE YEAR(alerta.inicio) = ${ano};
     `;
 
@@ -282,14 +283,15 @@ function buscarDadosMensais(ano, mes) {
 
     var instrucaoSql = `
         SELECT 
-            alerta.inicio, alerta.fim, componente.nome AS nome_componente,
+            alerta.inicio, alerta.fim, tipo_componente.nome_tipo_componente AS nome_componente,
             servidor.nome AS nome_servidor, gravidade.nome AS nome_gravidade,
             empresa.razao_social AS nome_empresa
         FROM alerta
-        JOIN componente ON alerta.fk_componente = componente.id
-        JOIN servidor ON componente.fk_servidor = servidor.id
+        JOIN componente_servidor ON alerta.fk_componenteServidor_servidor = componente_servidor.fk_servidor AND alerta.fk_componenteServidor_tipoComponente = componente_servidor.fk_tipo_componente
+        JOIN tipo_componente ON componente_servidor.fk_tipo_componente = tipo_componente.id
+        JOIN servidor ON componente_servidor.fk_servidor = servidor.id
         JOIN empresa on servidor.fk_empresa = empresa.id
-        LEFT JOIN metrica ON metrica.fk_componente = componente.id 
+        LEFT JOIN metrica ON metrica.fk_componenteServidor_servidor = componente_servidor.fk_servidor AND metrica.fk_componenteServidor_tipoComponente = componente_servidor.fk_tipo_componente
         LEFT JOIN gravidade ON metrica.fk_gravidade = gravidade.id
         WHERE YEAR(alerta.inicio) = ${ano} AND MONTH(alerta.inicio) = ${mes}
         ORDER BY alerta.inicio ASC;

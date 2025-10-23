@@ -72,17 +72,22 @@ create table servidor(
 	foreign key (fk_endereco) references endereco(id)
 );
 
+create table tipo_componente (
+id int primary key auto_increment,
+nome_tipo_componente varchar(25)
+);
+
 
 create table status (
 id int primary key auto_increment,
 descricao varchar(30) unique not null
 );
 
-create table  componente (
-id int primary key auto_increment,
-nome varchar(50) not null,
+create table componente_servidor (
 fk_servidor int not null,
-foreign key (fk_servidor) references servidor(id)
+fk_tipo_componente int not null,
+foreign key (fk_servidor) references servidor(id),
+foreign key (fk_tipo_componente) references tipo_componente(id)
 );
 
 create table gravidade(
@@ -91,30 +96,40 @@ create table gravidade(
 );
 
 create table alerta (
-	id int auto_increment,
-	fk_componente int,
+	id int primary key auto_increment,
+	fk_componenteServidor_servidor int not null,
+    fk_componenteServidor_tipoComponente int not null,
 	fk_status int default 1,
     fk_gravidade int,
 	inicio datetime,
 	fim datetime,
 	foreign key (fk_status) references status(id),
-    foreign key (fk_componente) references componente(id),
-    foreign key (fk_gravidade) references gravidade(id),
-    primary key (id,fk_componente)
+    foreign key (fk_componenteServidor_servidor) references componente_servidor(fk_servidor),
+    foreign key (fk_componenteServidor_tipoComponente) references componente_servidor(fk_tipo_componente),
+    foreign key (fk_gravidade) references gravidade(id)
 );
 
 
 
 create table metrica(
 	id int auto_increment,
-	fk_gravidade int,
+	fk_gravidade int not null,
 	nome varchar(50) not null,
-	valor int not null default 0,
-	fk_componente int not null,
-	foreign key (fk_componente) references componente(id),
+	valor int not null,
+	fk_componenteServidor_servidor int not null,
+    fk_componenteServidor_tipoComponente int not null,
+	foreign key (fk_componenteServidor_servidor) references componente_servidor(fk_servidor),
+    foreign key (fk_componenteServidor_tipoComponente) references componente_servidor(fk_tipo_componente),
 	foreign key (fk_gravidade) references gravidade(id),
-	primary key (id,fk_gravidade)
+	primary key (id, fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente)
 );
+
+
+insert into tipo_componente (nome_tipo_componente)
+values ('Cpu'),
+       ('Ram'),
+       ('Disco');
+		
 
 insert into estado (nome, sigla) 
 			VALUES  
@@ -198,22 +213,9 @@ INSERT INTO  endereco (logradouro, cep, numero, complemento, fk_estado) VALUES('
 -- ======================== SERVIDORES ========================
 INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
 VALUES
-('Servidor01', 1, 1, 2, 1),
-('Servidor02', 2, 2, 3, 1),
+('Servidor02', 1, 1, 2, 1),
+('Servidor01', 2, 2, 3, 1),
 ('Servidor03', 1, 3, 1, 1);
-
--- ======================== COMPONENTES ========================
-INSERT INTO componente (nome, fk_servidor)
-VALUES
-('CPU', 1),
-('Memória RAM', 1),
-('Disco Rígido', 1),
-('CPU', 2),
-('Memória RAM', 2),
-('Disco Rígido', 2),
-('CPU', 3),
-('Memória RAM', 3),
-('Disco Rígido', 3);
 
 -- ======================== GRAVIDADES ========================
 INSERT INTO gravidade (nome)
@@ -222,76 +224,55 @@ VALUES
 ('Médio'),
 ('Alto');
 
--- ======================== MÉTRICAS ========================
--- Servidor 1
-INSERT INTO metrica (fk_gravidade, nome, valor, fk_componente)
+INSERT INTO componente_servidor (fk_servidor, fk_tipo_componente) 
 VALUES
-(1, 'Uso de CPU', 20, 1),
-(2, 'Uso de CPU', 50, 1),
-(3, 'Uso de CPU', 80, 1),
-(1, 'Uso de Memória', 30, 2),
-(2, 'Uso de Memória', 60, 2),
-(3, 'Uso de Memória', 90, 2),
-(1, 'Espaço em Disco', 40, 3),
-(2, 'Espaço em Disco', 70, 3),
-(3, 'Espaço em Disco', 95, 3);
+(1,1),
+(1,2),
+(1,3),
+(2,1),
+(2,2),
+(2,3),
+(3,1),
+(3,2),
+(3,3);
 
--- Servidor 2
-INSERT INTO metrica (fk_gravidade, nome, valor, fk_componente)
+INSERT INTO metrica (fk_gravidade, nome, valor, fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente) 
 VALUES
-(1, 'Uso de CPU', 15, 4),
-(2, 'Uso de CPU', 45, 4),
-(3, 'Uso de CPU', 85, 4),
-(1, 'Uso de Memória', 25, 5),
-(2, 'Uso de Memória', 55, 5),
-(3, 'Uso de Memória', 90, 5),
-(1, 'Espaço em Disco', 35, 6),
-(2, 'Espaço em Disco', 65, 6),
-(3, 'Espaço em Disco', 90, 6);
+(3, 'Uso de RAM', 95, 1, 2), 
+(2, 'Uso de RAM', 85, 1, 2), 
+(1, 'Uso de RAM', 75, 1, 2), 
+(2, 'Uso de CPU', 70, 1, 1), 
+(1, 'Uso de CPU', 80, 1, 1), 
+(3, 'Uso de CPU', 90, 1, 1), 
+(3, 'Uso de Disco', 80.0, 1, 3),
+(2, 'Uso de Disco', 70.0, 1, 3),
+(1, 'Uso de Disco', 60.0, 1, 3),
+(1, 'Uso de RAM', 70, 2, 2), 
+(2, 'Uso de RAM', 80, 2, 2), 
+(3, 'Uso de RAM', 90, 2, 2), 
+(2, 'Uso de CPU', 70, 2, 1), 
+(1, 'Uso de CPU', 60, 2, 1), 
+(3, 'Uso de CPU', 80, 2, 1), 
+(1, 'Uso de Disco', 65, 2, 3),
+(2, 'Uso de Disco', 75, 2, 3),
+(3, 'Uso de Disco', 85, 2, 3),
+(2, 'Uso de RAM', 80, 3, 2), 
+(1, 'Uso de RAM', 75, 3, 2), 
+(3, 'Uso de RAM', 85, 3, 2), 
+(2, 'Uso de CPU', 90, 3, 1), 
+(1, 'Uso de CPU', 85, 3, 1), 
+(3, 'Uso de CPU', 95, 3, 1), 
+(3, 'Uso de Disco', 100, 3, 3),
+(2, 'Uso de Disco', 95, 3, 3),
+(1, 'Uso de Disco', 90, 3, 3);
 
--- Servidor 3
-INSERT INTO metrica (fk_gravidade, nome, valor, fk_componente)
-VALUES
-(1, 'Uso de CPU', 10, 7),
-(2, 'Uso de CPU', 40, 7),
-(3, 'Uso de CPU', 75, 7),
-(1, 'Uso de Memória', 20, 8),
-(2, 'Uso de Memória', 50, 8),
-(3, 'Uso de Memória', 85, 8),
-(1, 'Espaço em Disco', 30, 9),
-(2, 'Espaço em Disco', 60, 9),
-(3, 'Espaço em Disco', 90, 9);
+INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente, fk_status, inicio, fim) VALUES
+(1,1, 3, '2024-01-10 08:00:00', '2024-01-10 08:30:00'), 
+(1,2, 3, '2024-01-20 14:10:00', '2024-01-20 14:25:00'), 
 
--- ======================== MÉTRICAS DE MEMÓRIA RAM ========================
--- Servidor 1
-INSERT INTO metrica (fk_gravidade, nome, valor, fk_componente)
-VALUES
-(1, 'Uso de Memória', 30, 2),  -- Baixo
-(2, 'Uso de Memória', 60, 2),  -- Médio
-(3, 'Uso de Memória', 90, 2);  -- Alto
+(2,3, 3, '2024-03-05 11:00:00', '2024-03-05 11:45:00'), 
+(2,1, 3, '2024-03-15 16:20:00', '2024-03-15 17:20:00'), 
+(2,2, 3, '2024-03-25 09:00:00', '2024-03-25 09:12:00'), 
 
--- Servidor 2
-INSERT INTO metrica (fk_gravidade, nome, valor, fk_componente)
-VALUES
-(1, 'Uso de Memória', 25, 5),  -- Baixo
-(2, 'Uso de Memória', 55, 5),  -- Médio
-(3, 'Uso de Memória', 90, 5);  -- Alto
+(3,3, 3, '2024-05-18 22:00:00', '2024-05-18 22:18:00'); 
 
--- Servidor 3
-INSERT INTO metrica (fk_gravidade, nome, valor, fk_componente)
-VALUES
-(1, 'Uso de Memória', 20, 8),  -- Baixo
-(2, 'Uso de Memória', 50, 8),  -- Médio
-(3, 'Uso de Memória', 85, 8);  -- Alto
-
-select * from alerta;
-
-
-SELECT sv.nome AS servidor,tipo.nome AS tipo,so.descricao AS so,es.sigla AS estado,en.logradouro,en.numero,en.complemento 
-        FROM servidor sv 
-        INNER JOIN tipo ON tipo.id=sv.fk_tipo 
-        INNER JOIN sistema_operacional so ON so.id=sv.fk_so 
-        INNER JOIN endereco en ON en.id=sv.fk_endereco 
-        INNER JOIN estado es ON es.id=en.fk_estado 
-        WHERE fk_empresa=1
-        ORDER BY servidor;

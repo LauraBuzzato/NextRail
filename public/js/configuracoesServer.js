@@ -175,7 +175,7 @@ function criarContainerServidor(servidor, numero, tipo) {
 
 function gerarOpcoesPercentual() {
     let options = '';
-    for (let i = 10; i <= 100; i += 10) {
+    for (let i = 5; i <= 100; i += 5) {
         options += `<option value="${i}">${i}%</option>`;
     }
     return options;
@@ -300,9 +300,9 @@ function preencherSelects(servidorId, configuracoes) {
         configPorComponente[config.componente][config.gravidade_id] = config.valor;
     });
 
-    preencherSelectComponente(servidorId, 'CPU', configPorComponente['CPU']);
-    preencherSelectComponente(servidorId, 'Memória RAM', configPorComponente['Memória RAM']);
-    preencherSelectComponente(servidorId, 'Disco Rígido', configPorComponente['Disco Rígido']);
+    preencherSelectComponente(servidorId, 'CPU', configPorComponente['Cpu']);
+    preencherSelectComponente(servidorId, 'Memória RAM', configPorComponente['Ram']);
+    preencherSelectComponente(servidorId, 'Disco Rígido', configPorComponente['Disco']);
 }
 
 function preencherSelectComponente(servidorId, componente, valores) {

@@ -289,7 +289,58 @@ body {
 .container-tabela-dinamica{
   height: 50%;
   width: 80%;
+  display: flex; 
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 1rem; 
+  margin-top: 3.5%;
+  text-align: center;
+  font-weight: 700;
+  border-radius: 13px;
+}
 
+.tabela-titulo{
+  height: 20%;
+  width: 100%;
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tabela-labels{
+  height: 20%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tabela-label{
+  height: 100%;
+  width: 25%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tabela-conteudo{
+  height: 60%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  grid-template-rows: 50% 50% 50%;
+}
+
+.tabela-conteudo .tabela-label{
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* ================== RESPONSIVIDADE ================== */

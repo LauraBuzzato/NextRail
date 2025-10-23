@@ -218,7 +218,7 @@
                 if (resposta.ok) {
                     return resposta.json();
                 } else {
-                    containerDoRelatorio.innerHTML = `<h3>Erro ao buscar dados.</h3><button onclick="voltar()" class="btn-voltar">Voltar</button>`;
+                    containerDoRelatorio.innerHTML = `<h3>Erro ao buscar dados.</h3><button onclick="voltar('ano')" class="btn-voltar">Voltar</button>`;
                 }
             })
             .then(function (dados) {
@@ -325,7 +325,7 @@
             <p>Durante o ano de ${dados.ano}, o sistema registrou <strong>${dados.totalAlertsAnual} alertas</strong> com um MTTR médio de <strong>${dados.mttrMedioAnual} minutos</strong> e uma disponibilidade média de <strong>${dados.disponibilidadeMediaAnual.toFixed(2)}%</strong>. O mês mais crítico foi <strong>${dados.mesMaisCritico}</strong>, enquanto <strong>${dados.mesMaisEstavel}</strong> se destacou como o mais estável. O componente mais afetado foi <strong>${dados.componenteMaisAfetadoAno}</strong> e o servidor mais impactado foi <strong>${dados.servidorMaisAfetadoAno}</strong>, indicando focos para inspeção preventiva.</p>
         </div>
             <div style="text-align: center;">
-                <button onclick="voltar()" class="btn-voltar">Voltar</button>
+                <button onclick="voltar('ano')" class="btn-voltar">Voltar</button>
             </div>
         </div>`;
                 // Junta tudo e exibe de uma vez
@@ -334,7 +334,7 @@
             })
             .catch(function (erro) {
                 console.error('Ocorreu um erro:', erro);
-                containerDoRelatorio.innerHTML = `<h3>Falha na comunicação com o servidor.</h3><button onclick="voltar()" class="btn-voltar">Voltar</button>`;
+                containerDoRelatorio.innerHTML = `<h3>Falha na comunicação com o servidor.</h3><button onclick="voltar('ano')" class="btn-voltar">Voltar</button>`;
             });
     }
 
@@ -353,7 +353,7 @@
                 if (resposta.ok) {
                     return resposta.json();
                 } else {
-                    containerDoRelatorio.innerHTML = `<h3>Erro ao buscar dados.</h3><button onclick="voltar()" class="btn-voltar">Voltar</button>`;
+                    containerDoRelatorio.innerHTML = `<h3>Erro ao buscar dados.</h3><button onclick="voltar('mes')" class="btn-voltar">Voltar</button>`;
                 }
             })
             .then(function (dados) {
@@ -437,7 +437,7 @@
 
                 htmlFinal += `
                 <div style="text-align: center; margin-top: 30px;">
-                    <button onclick="voltar()" class="btn-voltar">Voltar</button>
+                    <button onclick="voltar('mes')" class="btn-voltar">Voltar</button>
                 </div>
             </div>`;
 
@@ -445,12 +445,12 @@
             })
             .catch(function (erro) {
                 console.error('Ocorreu um erro:', erro);
-                containerDoRelatorio.innerHTML = `<h3>Falha na comunicação com o servidor.</h3><button onclick="voltar()" class="btn-voltar">Voltar</button>`;
+                containerDoRelatorio.innerHTML = `<h3>Falha na comunicação com o servidor.</h3><button onclick="voltar('mes')" class="btn-voltar">Voltar</button>`;
             });
     }
-    function voltar() {
+    function voltar(paginaVoltar) {
         //Tira todo o html e css montado da pagina
-        var selecaoAnoDiv = document.querySelector('.selecao-ano');
+        var selecaoAnoDiv = document.querySelector(`.selecao-${paginaVoltar}`);
         var containerDoRelatorio = document.getElementById('relatorio-container');
         selecaoAnoDiv.style.display = 'block';
         containerDoRelatorio.innerHTML = "<h3>Selecione um ano para ver o relatório</h3>";
