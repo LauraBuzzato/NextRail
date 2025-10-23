@@ -186,8 +186,8 @@ async function atualizar(a) {
     <!-- KPIs -->
     <section class="kpis">
 
-
-
+      
+      
       <div class="kpi-box">
         <span class="kpi-title">Componente Mais Impactado</span>
         <h2 class="kpi-value">RAM</h2>
