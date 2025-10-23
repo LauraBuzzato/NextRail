@@ -140,7 +140,7 @@ async function atualizar(a) {
             </div>
           </div>
           <div class="container-tabela-dinamica">
-            <div class="tabela-titulo">red hat</div>
+            <div class="tabela-titulo">Histórico de alertas da última semana</div>
             <div class="tabela-labels">
               <span class="tabela-label">#</span>
               <span class="tabela-label">Componente</span>
@@ -150,15 +150,15 @@ async function atualizar(a) {
             </div>
             <div class="tabela-conteudo">
               <span class="tabela-celula">1</span>
-              <span class="tabela-celula">red hat</span>
-              <span class="tabela-celula">red hat</span>
-              <span class="tabela-celula">red hat</span>
-              <span class="tabela-celula">red hat</span>
+              <span class="tabela-celula">CPU</span>
+              <span class="tabela-celula">89%</span>
+              <span class="tabela-celula">médio</span>
+              <span class="tabela-celula">2025-03-17-18:25:08</span>
               <span class="tabela-celula">2</span>
-              <span class="tabela-celula">red hat</span>
-              <span class="tabela-celula">red hat</span>
-              <span class="tabela-celula">red hat</span>
-              <span class="tabela-celula">red hat</span>
+              <span class="tabela-celula">RAM</span>
+              <span class="tabela-celula">98%</span>
+              <span class="tabela-celula">alto</span>
+              <span class="tabela-celula">2025-03-17-18:25:08</span>
            </div>
         </div>
         </section>
