@@ -199,10 +199,10 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
                     nomeMetrica = 'Uso de CPU';
                 } else if (componente.nome === 'Ram') {
                     configComponente = configuracoes.ram;
-                    nomeMetrica = 'Uso de Memória';
+                    nomeMetrica = 'Uso de RAM';
                 } else if (componente.nome === 'Disco') {
                     configComponente = configuracoes.disco;
-                    nomeMetrica = 'Espaço em Disco';
+                    nomeMetrica = 'Uso de Disco';
                 } else {
                     return;
                 }
