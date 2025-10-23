@@ -180,3 +180,8 @@ input{
     padding: 10px;
 }
 
+.aviso{
+  margin-top: 3%;
+  font-size: 0.8rem;
+  text-align: center;
+}
