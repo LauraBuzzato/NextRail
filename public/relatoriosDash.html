@@ -103,7 +103,7 @@
         var containerAnos = document.getElementById('containerAnos');
         containerAnos.innerHTML = '<h4>Carregando anos com relatórios...</h4>';
 
-        fetch(`http://localhost:8080/relatorio/anos`)
+        fetch(`http://localhost:3333/relatorio/anos`)
             .then(function (resposta) {
                 if (resposta.ok) {
                     return resposta.json();
@@ -138,7 +138,7 @@
         var containerMeses = document.getElementById('containerMeses');
         containerMeses.innerHTML = '<h4>Carregando meses com relatórios...</h4>';
 
-        fetch(`http://localhost:8080/relatorio/meses`)
+        fetch(`http://localhost:3333/relatorio/meses`)
             .then(function (resposta) {
                 if (resposta.ok) {
                     return resposta.json();
@@ -213,7 +213,7 @@
         containerDoRelatorio.innerHTML = `<h3>Buscando dados do relatório de ${ano}...</h3>`;
 
 
-        fetch(`http://localhost:8080/relatorio/anual/${ano}`)
+        fetch(`http://localhost:3333/relatorio/anual/${ano}`)
             .then(function (resposta) {
                 if (resposta.ok) {
                     return resposta.json();
@@ -223,6 +223,8 @@
             })
             .then(function (dados) {
 
+                console.log(empresa);
+                
 
                 // Cabeçalho 
                 var cabecalhoHtml = `
@@ -361,7 +363,7 @@
                 var htmlFinal = `
                 <div class="relatorio-gerado">
                     <div style="text-align: center; margin-bottom: 40px;">
-                        <h2 style="font-size: 1.8rem; font-weight: bold; color: #ffe066;">${kpis.empresa}</h2>
+                        <h2 style="font-size: 1.8rem; font-weight: bold; color: #ffe066;">${kpis.nomeEmpresa}</h2>
                         <p style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;">Relatório Mensal — ${nomeDoMes} de ${ano}</p>
                     </div>
                     <div class="kpi-grid">
