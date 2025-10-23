@@ -93,36 +93,30 @@ function cadastrarServidor(nome, fk_tipo, fk_so, fk_empresa, logradouro, cep, nu
         });
 }
 function criarComponentesServidor(servidorId) {
-    // Mapeamento dos componentes para os IDs da tabela tipo_componente
-    // 1: 'Cpu', 2: 'Ram', 3: 'Disco'
+
     const componentes = [
         { nome: 'CPU', id: 1, metricaNome: 'Uso de CPU' },
         { nome: 'Memória RAM', id: 2, metricaNome: 'Uso de Memória' },
         { nome: 'Disco Rígido', id: 3, metricaNome: 'Espaço em Disco' }
     ];
-
-    // IDs de gravidade, conforme a tabela gravidade
-    // 1: 'Baixo', 2: 'Médio', 3: 'Alto'
     const gravidades = [1, 2, 3];
 
     let promises = [];
 
     componentes.forEach(componente => {
-        // 1. INSERIR NA TABELA componente_servidor
-        // A inserção é feita uma vez para cada tipo de componente (CPU, RAM, Disco)
+
         var instrucaoComponente = `
             INSERT INTO componente_servidor (fk_servidor, fk_tipo_componente) 
             VALUES (${servidorId}, ${componente.id});
         `;
 
-        // A Promise agora faz a inserção do componente E, em seguida, as métricas
+
         const componentePromise = database.executar(instrucaoComponente)
             .then(() => {
                 console.log(`Componente ${componente.nome} (ID ${componente.id}) criado para o Servidor ${servidorId}.`);
 
                 let metricasPromises = [];
 
-                // 2. INSERIR NA TABELA metrica
                 gravidades.forEach(gravidadeId => {
                     var instrucaoMetrica = `
                         INSERT INTO metrica (
@@ -132,8 +126,7 @@ function criarComponentesServidor(servidorId) {
                             fk_componenteServidor_servidor, 
                             fk_componenteServidor_tipoComponente
                         ) 
-                        VALUES (${gravidadeId}, '${componente.metricaNome}', 0, ${servidorId}, ${componente.id}
-                        );
+                        VALUES (${gravidadeId}, '${componente.metricaNome}', 0, ${servidorId}, ${componente.id});
                     `;
                     metricasPromises.push(database.executar(instrucaoMetrica));
                 });
