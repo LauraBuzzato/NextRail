@@ -335,7 +335,7 @@ body {
   width: 98%;
   display: grid;
   grid-template-columns: 12% 22% 22% 22% 22%;
-  grid-template-rows: 25% 25%;
+  grid-template-rows: 25% 25% 25% 25% 25% 25%;
   overflow-y: auto;
 }
 

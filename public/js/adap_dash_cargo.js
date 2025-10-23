@@ -148,18 +148,7 @@ async function atualizar(a) {
               <span class="tabela-label">Grau</span>
               <span class="tabela-label">Timestamp</span>
             </div>
-            <div class="tabela-conteudo">
-              <span class="tabela-celula">1</span>
-              <span class="tabela-celula">CPU</span>
-              <span class="tabela-celula">89%</span>
-              <span class="tabela-celula">médio</span>
-              <span class="tabela-celula">2025-03-17-18:25:08</span>
-              <span class="tabela-celula">2</span>
-              <span class="tabela-celula">RAM</span>
-              <span class="tabela-celula">98%</span>
-              <span class="tabela-celula">alto</span>
-              <span class="tabela-celula">2025-03-17-18:25:08</span>
-           </div>
+            <div id="tabela-conteudo" class="tabela-conteudo"></div>
         </div>
         </section>
       </div>`;

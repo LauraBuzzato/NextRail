@@ -479,4 +479,35 @@ function inicializarGraficos() {
     atualizarGrafico(graficoCPU, tamanho);
     atualizarGrafico(graficoRAM, tamanho);
     atualizarGrafico(graficoDisco, tamanho);
+    criarTabela();
+}
+
+function criarTabela(){
+    const conteudo = document.getElementById('tabela-conteudo');
+
+    for (var i = 1; i <= 6; i++){
+        var leitura = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
+        
+        if (leitura >= 90){
+            conteudo.innerHTML += `<span class="tabela-celula">${i}</span>
+            <span class="tabela-celula">CPU</span>
+            <span class="tabela-celula">${leitura}%</span>
+            <span class="tabela-celula">alto</span>
+            <span class="tabela-celula">2025-03-17-18:25:08</span>`
+        }
+        else if (leitura < 90 && leitura >= 80){
+            conteudo.innerHTML += `<span class="tabela-celula">${i}</span>
+            <span class="tabela-celula">RAM</span>
+            <span class="tabela-celula">${leitura}%</span>
+            <span class="tabela-celula">médio</span>
+            <span class="tabela-celula">2025-03-17-18:25:08</span>`
+        }
+        else if (leitura < 80 && leitura >= 70){
+            conteudo.innerHTML += `<span class="tabela-celula">${i}</span>
+            <span class="tabela-celula">disco</span>
+            <span class="tabela-celula">${leitura}%</span>
+            <span class="tabela-celula">baixo</span>
+            <span class="tabela-celula">2025-03-17-18:25:08</span>`
+        }
+    }
 }
