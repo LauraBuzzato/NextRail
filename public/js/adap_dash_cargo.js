@@ -141,13 +141,6 @@ async function atualizar(a) {
           </div>
           <div class="container-tabela-dinamica">
             <div class="tabela-titulo">Histórico de alertas da última semana</div>
-            <div class="tabela-labels">
-              <span class="tabela-label">#</span>
-              <span class="tabela-label">Componente</span>
-              <span class="tabela-label">leitura</span>
-              <span class="tabela-label">Grau</span>
-              <span class="tabela-label">Timestamp</span>
-            </div>
             <div id="tabela-conteudo" class="tabela-conteudo"></div>
         </div>
         </section>

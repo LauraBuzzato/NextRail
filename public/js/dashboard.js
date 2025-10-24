@@ -483,8 +483,15 @@ function inicializarGraficos() {
 function criarTabela(){
     const conteudo = document.getElementById('tabela-conteudo');
 
+    conteudo.innerHTML += `<span class="tabela-label">#</span>
+          <span class="tabela-label">Componente</span>
+          <span class="tabela-label">leitura</span>
+          <span class="tabela-label">Grau</span>
+          <span class="tabela-label">Timestamp</span>`
+          
     for (var i = 1; i <= 6; i++){
         var leitura = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
+
         
         if (leitura >= 90){
             conteudo.innerHTML += `<span class="tabela-celula">${i}</span>

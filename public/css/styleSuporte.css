@@ -305,19 +305,19 @@ body {
 .tabela-titulo{
   height: 20%;
   width: 100%;
-  font-size: 2rem;
+  font-size: 2.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
   color: var(--amarelo);
 }
 
-.tabela-labels{
+/*.tabela-labels{
   height: 10%;
   width: 98%;
   display: grid;
   grid-template-columns: 12% 22% 22% 22% 22%;
-}
+}*/
 
 .tabela-label{
   height: 100%;
@@ -335,7 +335,7 @@ body {
   width: 98%;
   display: grid;
   grid-template-columns: 12% 22% 22% 22% 22%;
-  grid-template-rows: 25% 25% 25% 25% 25% 25%;
+  grid-template-rows: 25% 25% 25% 25% 25% 25% 25%;
   overflow-y: auto;
 }
 
