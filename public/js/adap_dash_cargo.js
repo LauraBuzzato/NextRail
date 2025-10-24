@@ -185,18 +185,15 @@ async function atualizar(a) {
         <span class="kpi-title">MTTR</span>
         <h2 class="kpi-value">60 min</h2>
       </div>
-      
+
       <div class="kpi-box">
         <span class="kpi-title">Gravidade mais frequente do Mês</span>
         <h2 class="kpi-value">Média</h2>
       </div>
-
-  
-
     </section>
     
     <section class="analise-direita">
-      
+
       <div class="grafico-box">
         <h3 class="grafico-titulo">Alertas divididos por Gravidades deste Mês</h3>
         <canvas id="alertasServidorChart"></canvas>

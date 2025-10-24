@@ -1,6 +1,6 @@
 function dash_analista() {
     console.log('Executando dash_analista...');
-    
+
     // Verificar se Chart está disponível
     if (typeof Chart === 'undefined') {
         console.error('Chart.js não disponível em dash_analista');
@@ -14,7 +14,7 @@ function dash_analista() {
     const tempoComponenteCanvas = document.getElementById('tempoResolucaoComponenteChart');
     const alertasServidorCanvas = document.getElementById('alertasServidorChart');
     const tempoServidorCanvas = document.getElementById('tempoResolucaoServidorChart');
-    
+
     if (!frequenciaCanvas) {
         console.error('Elemento frequenciaSemanalChart não encontrado');
         setTimeout(dash_analista, 200);
@@ -22,7 +22,7 @@ function dash_analista() {
     }
 
     console.log('Criando gráficos do analista...');
-  
+
     var labels = ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'];
 
     //Dados de 30 dias dentro de um objeto  
@@ -184,11 +184,19 @@ function dash_analista() {
             },
             scales: {
                 x: {
+                    title: {
+                        display: true,
+                        text: 'Dias'
+                    },
                     ticks: { color: '#fff' },
                     grid: { color: 'rgba(255,255,255,0.1)' }
                 },
                 y: {
                     beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Alertas'
+                    },
                     ticks: { color: '#fff' },
                     grid: { color: 'rgba(255,255,255,0.1)' }
                 }
@@ -225,6 +233,9 @@ function dash_analista() {
                     legend: { display: false },
                     title: { display: false },
                     tooltip: {
+                        bodyColor: '#fff',
+                        titleColor: '#fff',
+                        backgroundColor: '#333',
                         callbacks: {
                             label: labelAlerta => `${labelAlerta.parsed.y} alertas`
                         }
@@ -234,7 +245,7 @@ function dash_analista() {
                     y: {
                         beginAtZero: true,
                         title: { display: true, text: 'Quantidade de Alertas', color: '#fff' },
-                        ticks: { color: '#ccc' },
+                        ticks: { color: '#fff' },
                         grid: { color: '#333' }
                     },
                     x: {
@@ -242,9 +253,9 @@ function dash_analista() {
                             display: true,
                             text: 'Componente'
                         },
-                        ticks: { color: '#ccc' },
+                        ticks: { color: '#fff' },
                         grid: { display: false }
-                        
+
                     }
                 }
             }
@@ -346,10 +357,10 @@ function dash_analista() {
                         grid: { color: '#333' }
                     },
                     x: {
-                         title: {
+                        title: {
                             display: true,
                             text: 'Gravidades'
-                        }                        
+                        }
                     }
                 }
             }
@@ -415,8 +426,8 @@ function dash_suporte() {
         console.error('Elementos de gráfico do suporte não encontrados');
         return;
     }
-        
-    
+
+
     //nome_usuario_span.innerHTML = sessionStorage.NOME_USUARIO;
     gerarDadoAleatorio();
     inicializarGraficos();
@@ -452,7 +463,7 @@ function inicializarGraficos() {
                 '00:00:00', '02:00:00', '04:00:00', '06:00:00',
                 '08:00:00', '10:00:00', '12:00:00', '14:00:00',
                 '16:00:00'
-        ],
+            ],
 
             datasets: [{
                 label: '',
@@ -462,7 +473,7 @@ function inicializarGraficos() {
                 tension: 0.4,
                 fill: true
             },
-        {
+            {
                 label: '',
                 data: [],
                 borderColor: 'rgba(56,189,248,1)',
@@ -470,7 +481,7 @@ function inicializarGraficos() {
                 tension: 0.4,
                 fill: true
             },
-        {
+            {
                 label: '',
                 data: [],
                 borderColor: 'rgba(138, 99, 0, 1)',
@@ -478,7 +489,7 @@ function inicializarGraficos() {
                 tension: 0.4,
                 fill: true
             },
-        {
+            {
                 label: '',
                 data: [],
                 borderColor: 'rgba(255, 57, 57, 0.4)',
@@ -493,9 +504,9 @@ function inicializarGraficos() {
             maintainAspectRatio: false,
             animation: { duration: 800 },
             plugins: { legend: { display: true } },
-            scales: { 
-                y: { 
-                    beginAtZero: true, 
+            scales: {
+                y: {
+                    beginAtZero: true,
                     max: 100,
                     ticks: { color: '#fff' },
                     grid: { color: 'rgba(255,255,255,0.1)' }
@@ -534,7 +545,7 @@ function inicializarGraficos() {
     criarTabela();
 }
 
-function criarTabela(){
+function criarTabela() {
     const conteudo = document.getElementById('tabela-conteudo');
 
     conteudo.innerHTML += `<span class="tabela-label">#</span>
@@ -542,26 +553,26 @@ function criarTabela(){
           <span class="tabela-label">leitura</span>
           <span class="tabela-label">Grau</span>
           <span class="tabela-label">Timestamp</span>`
-          
-    for (var i = 1; i <= 6; i++){
+
+    for (var i = 1; i <= 6; i++) {
         var leitura = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
 
-        
-        if (leitura >= 90){
+
+        if (leitura >= 90) {
             conteudo.innerHTML += `<span class="tabela-celula">${i}</span>
             <span class="tabela-celula">CPU</span>
             <span class="tabela-celula">${leitura}%</span>
             <span class="tabela-celula">alto</span>
             <span class="tabela-celula">2025-03-17-18:25:08</span>`
         }
-        else if (leitura < 90 && leitura >= 80){
+        else if (leitura < 90 && leitura >= 80) {
             conteudo.innerHTML += `<span class="tabela-celula">${i}</span>
             <span class="tabela-celula">RAM</span>
             <span class="tabela-celula">${leitura}%</span>
             <span class="tabela-celula">médio</span>
             <span class="tabela-celula">2025-03-17-18:25:08</span>`
         }
-        else if (leitura < 80 && leitura >= 70){
+        else if (leitura < 80 && leitura >= 70) {
             conteudo.innerHTML += `<span class="tabela-celula">${i}</span>
             <span class="tabela-celula">disco</span>
             <span class="tabela-celula">${leitura}%</span>
