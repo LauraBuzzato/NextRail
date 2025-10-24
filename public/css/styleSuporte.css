@@ -380,7 +380,7 @@ body {
 
 .bem-vindo {
   grid-column: 1 / -1;     
-  text-align: flex-start;      
+  text-align: center;      
   color: #ffe066; 
   margin-bottom: 1rem;     
 }
