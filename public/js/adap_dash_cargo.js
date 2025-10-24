@@ -100,33 +100,33 @@ async function atualizar(a) {
     dash_suporte.innerHTML = `
       <div class="container-pagina">
         <h1 class="bem-vindo">Bem-vindo(a) <span>${sessionStorage.NOME_USUARIO}</span></h1>
-        <h2 class="desempenho" id="subtitulo-destaque">Servidor-001</h2>
+        <h2 class="desempenho" id="subtitulo-destaque">${localStorage.NOME_SERVIDOR}</h2>
         <section class="conteudo-principal">
           <div class="kpi-container">
             <div class="kpi-1">
               <div class="kpi-titulo">Uso de memória RAM atual</div>
               <div class="kpi-conteudo">
-                <span style="color: red;">82%</span>
+                <span style="color: rgb(255, 57, 57);">82%</span>
               </div>
-              <div class="kpi-passado">Última leitura: <br> 78%</div>
+              <div class="kpi-passado">Última leitura: 78%</div>
             </div>
             <div class="kpi-2">
               <div class="kpi-titulo">Uso de CPU atual</div>
               <div class="kpi-conteudo">
                 <span style="color: yellow;">75%</span>
               </div>
-              <div class="kpi-passado">Última leitura: <br> 88%</div>
+              <div class="kpi-passado">Última leitura: 88%</div>
             </div>
             <div class="kpi-3">
               <div class="kpi-titulo">Uso de DISCO atual</div>
               <div class="kpi-conteudo">
-                <span style="color: green;">53%</span>
+                <span style="color: rgb(24, 216, 24);">53%</span>
               </div>
-              <div class="kpi-passado">Última leitura: <br> 48%</div>
+              <div class="kpi-passado">Última leitura: 48%</div>
             </div>
           </div>
           <div class="graficos-container">
-            <div class="grafico-box">
+            <!--<div class="grafico-box">
               <h3>Uso de RAM nas últimas 24 horas</h3>
               <canvas id="graficoSuporteRAM"></canvas>
             </div>
@@ -137,12 +137,16 @@ async function atualizar(a) {
             <div class="grafico-box">
               <h3>Uso de Disco nas últimas 24 horas</h3>
               <canvas id="graficoSuporteDisco"></canvas>
+            </div>-->
+            <div class="grafico-box">
+              <h3>Uso dos componentes nas últimas 24 horas</h3>
+              <canvas id="graficoSuporte"></canvas>
             </div>
+            <div class="container-tabela-dinamica">
+              <div class="tabela-titulo">Histórico de alertas da última semana</div>
+              <div id="tabela-conteudo" class="tabela-conteudo"></div>
           </div>
-          <div class="container-tabela-dinamica">
-            <div class="tabela-titulo">Histórico de alertas da última semana</div>
-            <div id="tabela-conteudo" class="tabela-conteudo"></div>
-        </div>
+          </div>
         </section>
       </div>`;
 
@@ -163,7 +167,7 @@ async function atualizar(a) {
       <div class="dashboard-grid">
       <h1 class="bem-vindo">Bem-vindo(a) ${sessionStorage.NOME_USUARIO}</span></h1>
 
-    <h2 class="desempenho">Desempenho Serv-001</h2>
+    <h2 class="desempenho">Desempenho ${localStorage.NOME_SERVIDOR}</h2>
     <!-- KPIs -->
     <section class="kpis">
 
