@@ -391,14 +391,14 @@ function dash_analista() {
 // dash suporte ------------------------------------------------------------------------------------------------------------------
 function dash_suporte() {
     // Verificar se os elementos existem
-    const cpuCanvas = document.getElementById('graficoSuporteCPU');
+    //const cpuCanvas = document.getElementById('graficoSuporteCPU');
     const ramCanvas = document.getElementById('graficoSuporteRAM');
-    const discoCanvas = document.getElementById('graficoSuporteDisco');
+    //const discoCanvas = document.getElementById('graficoSuporteDisco');
     
-    if (!cpuCanvas || !ramCanvas || !discoCanvas) {
+    /*if (!cpuCanvas || !ramCanvas || !discoCanvas) {
         console.error('Elementos de gráfico do suporte não encontrados');
         return;
-    }
+    }*/
     
     //nome_usuario_span.innerHTML = sessionStorage.NOME_USUARIO;
     gerarDadoAleatorio();
@@ -417,9 +417,9 @@ function atualizarGrafico(grafico, tamanho) {
 }
 
 function inicializarGraficos() {
-    const cpuCtx = document.getElementById('graficoSuporteCPU').getContext('2d');
+    //const cpuCtx = document.getElementById('graficoSuporteCPU').getContext('2d');
     const ramCtx = document.getElementById('graficoSuporteRAM').getContext('2d');
-    const discoCtx = document.getElementById('graficoSuporteDisco').getContext('2d');
+    //const discoCtx = document.getElementById('graficoSuporteDisco').getContext('2d');
 
     const tamanho = 13;
 
@@ -465,18 +465,18 @@ function inicializarGraficos() {
     Chart.defaults.color = 'white';
     Chart.defaults.borderColor = '#383838';
 
-    const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
-    graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
+    //const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
+    //graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
 
     const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
     graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
 
-    const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
-    graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
+    //const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
+    //graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
 
-    atualizarGrafico(graficoCPU, tamanho);
+    //atualizarGrafico(graficoCPU, tamanho);
     atualizarGrafico(graficoRAM, tamanho);
-    atualizarGrafico(graficoDisco, tamanho);
+    //atualizarGrafico(graficoDisco, tamanho);
     criarTabela();
 }
 
