@@ -100,7 +100,7 @@ async function atualizar(a) {
     dash_suporte.innerHTML = `
       <div class="container-pagina">
         <h1 class="bem-vindo">Bem-vindo(a) <span>${sessionStorage.NOME_USUARIO}</span></h1>
-        <h2 class="desempenho" id="subtitulo-destaque">Servidor-001</h2>
+        <h2 class="desempenho" id="subtitulo-destaque">${localStorage.NOME_SERVIDOR}</h2>
         <section class="conteudo-principal">
           <div class="kpi-container">
             <div class="kpi-1">
@@ -163,7 +163,7 @@ async function atualizar(a) {
       <div class="dashboard-grid">
       <h1 class="bem-vindo">Bem-vindo(a) ${sessionStorage.NOME_USUARIO}</span></h1>
 
-    <h2 class="desempenho">Desempenho Serv-001</h2>
+    <h2 class="desempenho">Desempenho ${localStorage.NOME_SERVIDOR}</h2>
     <!-- KPIs -->
     <section class="kpis">
 

@@ -1,4 +1,5 @@
-function direcionaDash() {
+function direcionaDash(nomeServidor) {
+    localStorage.NOME_SERVIDOR = nomeServidor
     if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
         window.location = "./dashboard.html"
     } else {
@@ -26,7 +27,7 @@ function listarServidor() {
             let servidor = servidores[i];
             if(servidor.complemento == null){
                 listaServidores += `
-                <div class="card_servidor" onclick="direcionaDash()">
+                <div class="card_servidor" onclick="direcionaDash('${servidor.servidor}')">
                     <h3>${servidor.servidor}</h3>
                     <div class="carac_servidor">
                         <p>Quantidade de alertas:</p>
@@ -48,7 +49,7 @@ function listarServidor() {
             `;
             }else{
                 listaServidores += `
-                <div class="card_servidor" onclick="direcionaDash()">
+                <div class="card_servidor" onclick="direcionaDash('${servidor.servidor}')">
                     <h3>${servidor.servidor}</h3>
                     <div class="carac_servidor">
                         <p>Quantidade de alertas:</p>
