@@ -300,7 +300,7 @@ function dash_analista() {
         new Chart(alertasServidorCanvas, {
             type: 'bar',
             data: {
-                labels: ['Servidor A', 'Servidor B', 'Servidor C'],
+                labels: ['Baixo', 'Médio', 'Alta'],
                 datasets: [{
                     label: 'Alertas Registrados',
                     data: [45, 38, 25],

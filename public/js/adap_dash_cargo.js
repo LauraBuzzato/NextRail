@@ -167,22 +167,25 @@ async function atualizar(a) {
     <!-- KPIs -->
     <section class="kpis">
 
-      
-      
       <div class="kpi-box">
-        <span class="kpi-title">Componente Mais Impactado</span>
+        <span class="kpi-title">Quantidade total de Alertas no Mês</span>
+        <h2 class="kpi-value">12</h2>
+      </div>
+
+      <div class="kpi-box">
+        <span class="kpi-title">Componente Mais Impactado no mês</span>
         <h2 class="kpi-value">RAM</h2>
       </div>
 
       <div class="kpi-box">
-        <span class="kpi-title">Alertas no Mês</span>
-        <h2 class="kpi-value">12</h2>
+        <span class="kpi-title">Gravidade mais frequente do Mês</span>
+        <h2 class="kpi-value">Média</h2>
       </div>
 
     </section>
     
     <section class="tendencia-semanal">
-      <div class="grafico-box grande">
+      <div class="grafico-box-grande">
         <h3 class="grafico-titulo">Frequência Semanal de Alertas</h3>
         <canvas id="frequenciaSemanalChart"></canvas>
       </div>
@@ -191,14 +194,11 @@ async function atualizar(a) {
     <section class="analise-direita">
       <!-- Servidores: Linha 1 da Coluna Direita -->
       <div class="grafico-box">
-        <h3 class="grafico-titulo">Alertas por Servidor (Top 3)</h3>
+        <h3 class="grafico-titulo">Alertas por Gravidade no Mês</h3>
         <canvas id="alertasServidorChart"></canvas>
       </div>
-      <div class="grafico-box">
-        <h3 class="grafico-titulo">Tempo Médio de Resolução por Servidor</h3>
-        <canvas id="tempoResolucaoServidorChart"></canvas>
-      </div>
 
+      
       <div class="grafico-box">
         <h3 class="grafico-titulo">Alertas por Componente</h3>
         <canvas id="alertasComponenteChart"></canvas>

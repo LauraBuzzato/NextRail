@@ -908,104 +908,10 @@ footer {
 
 
 
-/*Graficos*/
-/*
-.container-geral {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-
-.graficos-container {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between; 
-  align-items: stretch;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding: 0 1rem;
-}
-
-
-.grafico-box {
-  background: #1a1a2e;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px #0002;
-  flex: 1 0 250px ;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.grafico-titulo {
-  margin-top: 1rem;
-  color: #fff;
-  font-weight: 500;
-  font-size: 1.1rem;
-}
-
-
-
-Kpis
-.kpi-geral-container {
-    display: flex; 
-    justify-content: space-between;
-    gap: 1rem; 
-    width: 100%;
-}
-
-.bloco-kpi-grafico {
-    display: flex;
-    flex-direction: column; 
-    flex: 1; 
-}
-
-/*.kpi-box {
-    background: #a8a8d2;
-    border-radius: 12px;
-    padding: 1rem 1.5rem; 
-    width: 100%; 
-    height: auto;
-    display: flex;
-    align-items: center; 
-    justify-content: center; 
-    text-align: center;    
-    margin-bottom: 1rem; 
-}
-
-
-.grafico-alertas {
-  margin-top: 1.5rem;
-}
-
-.kpi-geral-container {
-  align-items: flex-start;
-}
-
-.grafico-alertas-semana {
-  margin-top: 1.5rem;
-}
-
-
-
-.grafico-box {
-  background: #1a1a2e;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px #0002;
-  flex: 1 0 250px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}*/
-
 
 .bem-vindo {
   grid-column: 1 / -1;     
-  text-align: flex-start;      
+  text-align: center;      
   color: #ffe066; 
   margin-bottom: 1rem;     
 }
@@ -1043,7 +949,7 @@ Kpis
 .kpis {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-bottom: 1.8rem;
   
@@ -1083,13 +989,15 @@ Kpis
 
 
 .analise-direita {
-  grid-column: 7 / -1;
+  
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 1fr;
-  gap: 15px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 1.8rem;
 }
 
+/*
 
 .grafico-box {
   background-color: #1a1a2e;
@@ -1101,6 +1009,17 @@ Kpis
   justify-content: flex-start;
   align-items: stretch;
 
+}*/
+
+.grafico-box-grande{
+  background-color: #1a1a2e;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0002;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
 }
 
 .grafico-titulo {
