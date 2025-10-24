@@ -928,10 +928,12 @@ footer {
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 5% 5% 10% 28% 20%;
   gap: 16px;
   padding: 10px 20px;
   background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
   padding-bottom: 40px;
+  justify-items: center;
 }
 
 
@@ -939,7 +941,7 @@ footer {
   grid-column: 1 / -1;
   color: #ffe066;
   font-size: 1.4rem;
-  font-weight: 600;
+  font-weight: 600px;
   border-left: 4px solid #7c3aed;
   padding-left: 0.6rem;
   margin: 1.5rem 0 0.8rem 0;
@@ -950,8 +952,9 @@ footer {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 1.8rem;
+  gap: 20px;
+  width: 90%;
+  
   
 }
 
@@ -965,6 +968,7 @@ footer {
   box-shadow: 0 2px 8px #0003;
   display: flex;
   flex-direction: column;
+
   
 }
 
@@ -973,27 +977,32 @@ footer {
 }
 
 
-.tendencia-semanal {
-  grid-column: 1 / 7;
+ .tendencia-semanal {
+  grid-column: 1 / 13;
   display: flex;
-  flex-direction: column;
-  justify-content: stretch;
+  flex-direction: row;
+  justify-content: center;
   align-items: stretch;
   gap: 10px;
-}
+  width: 90%;
+  height: 60%;
+  
+  
+}  
 
-.tendencia-semanal .grafico-box {
+
+.tendencia-semanal .grafico-box-grande {
   height: 100%;
   min-height: 350px;
+  width: 100%;
 }
 
 
 .analise-direita {
-  
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 22px;
   margin-bottom: 1.8rem;
 }
 
@@ -1011,16 +1020,31 @@ footer {
 
 }*/
 
-.grafico-box-grande{
+ .grafico-box-grande{
   background-color: #1a1a2e;
   border-radius: 12px;
   box-shadow: 0 2px 8px #0002;
-  padding: 1.2rem;
+  padding: 0rem 2rem 1rem 2rem;
   display: flex;
+  flex: 1 0 550px; 
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-}
+  width: fit-content;
+  height: fit-content;
+}  
+
+/* .grafico-box-grande canvas{
+  height: 20%;
+} */
+ 
+#frequenciaSemanalChart{
+    display: flex;
+    box-sizing: border-box;
+    height: auto;
+    width: auto;
+    
+}  
 
 .grafico-titulo {
   color: #ffe066;
@@ -1030,9 +1054,13 @@ footer {
   margin-bottom: 10px;
 }
 
-.grafico-box canvas {
+.grafico-box-grande canvas {
   flex: 1;
   width: 100% !important;
-  height: 220px !important;
+  height: 20px !important;
   display: block;
+}
+
+.fundo-escuro{
+  padding: 0;
 }
