@@ -297,6 +297,7 @@ body {
   text-align: center;
   font-weight: 700;
   background-color: var(--grafico);
+  border-radius: 13px;
   /*position: absolute;
   left: 13vw;*/
 }
@@ -304,7 +305,7 @@ body {
 .tabela-titulo{
   height: 20%;
   width: 100%;
-  font-size: 2.5rem;
+  font-size: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;

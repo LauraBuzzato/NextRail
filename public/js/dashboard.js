@@ -392,13 +392,19 @@ function dash_analista() {
 function dash_suporte() {
     // Verificar se os elementos existem
     //const cpuCanvas = document.getElementById('graficoSuporteCPU');
-    const ramCanvas = document.getElementById('graficoSuporteRAM');
+    //const ramCanvas = document.getElementById('graficoSuporteRAM');
     //const discoCanvas = document.getElementById('graficoSuporteDisco');
-    
+    const canvas = document.getElementById('graficoSuporte');
+
     /*if (!cpuCanvas || !ramCanvas || !discoCanvas) {
         console.error('Elementos de gráfico do suporte não encontrados');
         return;
     }*/
+    if (!canvas) {
+        console.error('Elementos de gráfico do suporte não encontrados');
+        return;
+    }
+        
     
     //nome_usuario_span.innerHTML = sessionStorage.NOME_USUARIO;
     gerarDadoAleatorio();
@@ -412,14 +418,17 @@ function gerarDadoAleatorio() {
 function atualizarGrafico(grafico, tamanho) {
     for (var i = 0; i < tamanho; i++) {
         grafico.data.datasets[0].data.push(gerarDadoAleatorio());
+        grafico.data.datasets[1].data.push(gerarDadoAleatorio());
+        grafico.data.datasets[2].data.push(gerarDadoAleatorio());
     }
     grafico.update();
 }
 
 function inicializarGraficos() {
     //const cpuCtx = document.getElementById('graficoSuporteCPU').getContext('2d');
-    const ramCtx = document.getElementById('graficoSuporteRAM').getContext('2d');
+    //const ramCtx = document.getElementById('graficoSuporteRAM').getContext('2d');
     //const discoCtx = document.getElementById('graficoSuporteDisco').getContext('2d');
+    const ramCtx = document.getElementById('graficoSuporte').getContext('2d');
 
     const tamanho = 13;
 
@@ -436,8 +445,24 @@ function inicializarGraficos() {
             datasets: [{
                 label: '',
                 data: [],
-                borderColor: '#4e79a7',
-                backgroundColor: 'rgba(78,121,167,0.2)',
+                borderColor: 'rgba(167,139,250,0.3)',
+                backgroundColor: 'rgba(167,139,250,0.3)',
+                tension: 0.4,
+                fill: true
+            },
+        {
+                label: '',
+                data: [],
+                borderColor: 'rgba(56,189,248,0.3)',
+                backgroundColor: 'rgba(56,189,248,0.3)',
+                tension: 0.4,
+                fill: true
+            },
+        {
+                label: '',
+                data: [],
+                borderColor: 'rgba(251,191,36,0.3)',
+                backgroundColor: 'rgba(251,191,36,0.3)',
                 tension: 0.4,
                 fill: true
             }]
@@ -468,15 +493,21 @@ function inicializarGraficos() {
     //const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
     //graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
 
-    const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
-    graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
+    //const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
+    //graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
 
     //const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
     //graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
 
+    const grafico = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
+    grafico.data.datasets[0].label = 'Uso de CPU (%)';
+    grafico.data.datasets[1].label = 'Uso de RAM (%)';
+    grafico.data.datasets[2].label = 'Uso de Disco (%)';
+
     //atualizarGrafico(graficoCPU, tamanho);
-    atualizarGrafico(graficoRAM, tamanho);
+    //atualizarGrafico(graficoRAM, tamanho);
     //atualizarGrafico(graficoDisco, tamanho);
+    atualizarGrafico(grafico, tamanho);
     criarTabela();
 }
 
