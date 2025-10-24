@@ -182,7 +182,7 @@ async function atualizar(a) {
       </div>
 
       <div class="kpi-box">
-        <span class="kpi-title">MTTR</span>
+        <span class="kpi-title">MTTR (Tempo Médio de Reparo)</span>
         <h2 class="kpi-value">60 min</h2>
       </div>
 
