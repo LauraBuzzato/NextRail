@@ -134,7 +134,7 @@ function dash_analista() {
     new Chart(frequenciaCanvas, {
         type: 'line',
         data: {
-            labels: ['01/10', '02/10', '03/10', '04/10', '05/10', '06/10', '07/10'],
+            labels: ['29/10', '30/10', '31/10', '01/11', '02/11', '03/11', '04/11'],
             datasets: [
                 {
                     label: 'CPU',
@@ -238,8 +238,13 @@ function dash_analista() {
                         grid: { color: '#333' }
                     },
                     x: {
+                        title: {
+                            display: true,
+                            text: 'Componente'
+                        },
                         ticks: { color: '#ccc' },
                         grid: { display: false }
+                        
                     }
                 }
             }
@@ -256,7 +261,11 @@ function dash_analista() {
                     label: 'Tempo médio (minutos)',
                     data: [20, 30, 5],
                     borderWidth: 1,
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                    backgroundColor: [
+                        'rgba(147, 112, 219, 0.8)',
+                        'rgba(0, 191, 255, 0.8)',
+                        'rgba(255, 165, 0, 0.8)'
+                    ]
                 }]
             },
             options: {
@@ -273,13 +282,12 @@ function dash_analista() {
                         title: {
                             display: true,
                             text: 'Componente'
-                        }
+                        },
                     }
                 },
                 plugins: {
                     title: {
-                        display: true,
-                        text: 'Tempo Médio de Resolução de Alertas por Componente'
+                        display: true
                     },
                     legend: {
                         display: false
@@ -306,9 +314,9 @@ function dash_analista() {
                     label: 'Alertas Registrados',
                     data: [45, 38, 25],
                     backgroundColor: [
-                        'rgba(147, 112, 219, 0.8)',
-                        'rgba(0, 191, 255, 0.8)',
-                        'rgba(255, 165, 0, 0.8)'
+                        'rgba(255, 255, 0, 1)',
+                        'rgba(255, 165, 0, 1)',
+                        'rgba(255, 0, 0, 2.0)'
                     ],
                     borderColor: [
                         '#9370DB',
@@ -338,8 +346,10 @@ function dash_analista() {
                         grid: { color: '#333' }
                     },
                     x: {
-                        ticks: { color: '#ccc' },
-                        grid: { display: false }
+                         title: {
+                            display: true,
+                            text: 'Componente'
+                        }                        
                     }
                 }
             }
@@ -366,7 +376,7 @@ function dash_analista() {
                 scales: {
                     x: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Tempo (min)', color: '#fff' },
+                        title: { display: true, text: 'TempoAAA (min)', color: '#fff' },
                         ticks: { color: '#ccc' },
                         grid: { color: '#333' }
                     },

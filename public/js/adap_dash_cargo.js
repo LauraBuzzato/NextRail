@@ -167,7 +167,7 @@ async function atualizar(a) {
       <div class="dashboard-grid">
       <h1 class="bem-vindo">Bem-vindo(a) ${sessionStorage.NOME_USUARIO}</span></h1>
 
-    <h2 class="desempenho">Desempenho ${localStorage.NOME_SERVIDOR}</h2>
+    <h2 class="desempenho">Alertas do ${localStorage.NOME_SERVIDOR}</h2>
     <!-- KPIs -->
     <section class="kpis">
 
@@ -177,7 +177,7 @@ async function atualizar(a) {
       </div>
 
       <div class="kpi-box">
-        <span class="kpi-title">Componente Mais Impactado no mês</span>
+        <span class="kpi-title">Componente Mais Impactado no Mês</span>
         <h2 class="kpi-value">RAM</h2>
       </div>
 
@@ -198,17 +198,17 @@ async function atualizar(a) {
     <section class="analise-direita">
       <!-- Servidores: Linha 1 da Coluna Direita -->
       <div class="grafico-box">
-        <h3 class="grafico-titulo">Alertas por Gravidade no Mês</h3>
+        <h3 class="grafico-titulo">Alertas divididos por Gravidades deste Mês</h3>
         <canvas id="alertasServidorChart"></canvas>
       </div>
 
       
       <div class="grafico-box">
-        <h3 class="grafico-titulo">Alertas por Componente</h3>
+        <h3 class="grafico-titulo">Alertas por Componente deste Mês  </h3>
         <canvas id="alertasComponenteChart"></canvas>
       </div>
       <div class="grafico-box">
-        <h3 class="grafico-titulo">Tempo Médio de Resolução por Componente</h3>
+        <h3 class="grafico-titulo">Tempo Médio de Resolução por Componente deste Mês</h3>
         <canvas id="tempoResolucaoComponenteChart"></canvas>
       </div>
     </section>`;
