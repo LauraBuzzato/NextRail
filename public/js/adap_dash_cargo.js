@@ -108,21 +108,21 @@ async function atualizar(a) {
               <div class="kpi-conteudo">
                 <span style="color: red;">82%</span>
               </div>
-              <div class="kpi-passado">Última leitura: <br> 78%</div>
+              <div class="kpi-passado">Última leitura: 78%</div>
             </div>
             <div class="kpi-2">
               <div class="kpi-titulo">Uso de CPU atual</div>
               <div class="kpi-conteudo">
                 <span style="color: yellow;">75%</span>
               </div>
-              <div class="kpi-passado">Última leitura: <br> 88%</div>
+              <div class="kpi-passado">Última leitura: 88%</div>
             </div>
             <div class="kpi-3">
               <div class="kpi-titulo">Uso de DISCO atual</div>
               <div class="kpi-conteudo">
                 <span style="color: green;">53%</span>
               </div>
-              <div class="kpi-passado">Última leitura: <br> 48%</div>
+              <div class="kpi-passado">Última leitura: 48%</div>
             </div>
           </div>
           <div class="graficos-container">
@@ -130,19 +130,19 @@ async function atualizar(a) {
               <h3>Uso de RAM nas últimas 24 horas</h3>
               <canvas id="graficoSuporteRAM"></canvas>
             </div>
-            <div class="grafico-box">
+            <!--<div class="grafico-box">
               <h3>Uso de CPU nas últimas 24 horas</h3>
               <canvas id="graficoSuporteCPU"></canvas>
             </div>
             <div class="grafico-box">
               <h3>Uso de Disco nas últimas 24 horas</h3>
               <canvas id="graficoSuporteDisco"></canvas>
-            </div>
+            </div>-->
+            <div class="container-tabela-dinamica">
+              <div class="tabela-titulo">Histórico de alertas da última semana</div>
+              <div id="tabela-conteudo" class="tabela-conteudo"></div>
           </div>
-          <div class="container-tabela-dinamica">
-            <div class="tabela-titulo">Histórico de alertas da última semana</div>
-            <div id="tabela-conteudo" class="tabela-conteudo"></div>
-        </div>
+          </div>
         </section>
       </div>`;
 
