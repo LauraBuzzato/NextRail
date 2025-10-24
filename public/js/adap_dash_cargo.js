@@ -172,17 +172,17 @@ async function atualizar(a) {
     <section class="kpis">
 
       <div class="kpi-box">
-        <span class="kpi-title">Quantidade total de Alertas no Mês</span>
+        <span class="kpi-title">Quantidade total de Alertas do Mês</span>
         <h2 class="kpi-value">12</h2>
       </div>
 
       <div class="kpi-box">
-        <span class="kpi-title">Componente Mais Impactado no Mês</span>
+        <span class="kpi-title">Componente Mais Impactado do Mês</span>
         <h2 class="kpi-value">RAM</h2>
       </div>
 
       <div class="kpi-box">
-        <span class="kpi-title">MTTR (Tempo Médio de Reparo)</span>
+        <span class="kpi-title">MTTR (Tempo Médio de Reparo) do Mês</span>
         <h2 class="kpi-value">60 min</h2>
       </div>
 
@@ -195,7 +195,7 @@ async function atualizar(a) {
     <section class="analise-direita">
 
       <div class="grafico-box">
-        <h3 class="grafico-titulo">Alertas divididos por Gravidades deste Mês</h3>
+        <h3 class="grafico-titulo">Alertas divididos por Gravidade deste Mês</h3>
         <canvas id="alertasServidorChart"></canvas>
       </div>
 
@@ -210,7 +210,7 @@ async function atualizar(a) {
     
     <section class="tendencia-semanal">
       <div class="grafico-box-grande">
-        <h3 class="grafico-titulo">Frequência Semanal de Alertas</h3>
+        <h3 class="grafico-titulo">Frequência Mensal de Alertas</h3>
         <canvas id="frequenciaSemanalChart"></canvas>
       </div>
     </section>
