@@ -1004,6 +1004,8 @@ footer {
   grid-template-columns: repeat(3, 1fr);
   gap: 22px;
   margin-bottom: 1.8rem;
+  margin-top: 50px;
+  width: 90%;
 }
 
 /*
