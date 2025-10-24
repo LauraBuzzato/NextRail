@@ -309,7 +309,7 @@ function dash_analista() {
         new Chart(alertasServidorCanvas, {
             type: 'bar',
             data: {
-                labels: ['Baixo', 'Médio', 'Alta'],
+                labels: ['Baixa', 'Média', 'Alta'],
                 datasets: [{
                     label: 'Alertas Registrados',
                     data: [45, 38, 25],
@@ -319,9 +319,9 @@ function dash_analista() {
                         'rgba(255, 0, 0, 2.0)'
                     ],
                     borderColor: [
-                        '#9370DB',
-                        '#00BFFF',
-                        '#FFA500'
+                        'rgba(255, 255, 0, 1)',
+                        'rgba(3, 2, 0, 1)',
+                        'rgba(255, 0, 0, 2.0)'
                     ],
                     borderWidth: 1,
                     borderRadius: 8
@@ -348,7 +348,7 @@ function dash_analista() {
                     x: {
                          title: {
                             display: true,
-                            text: 'Componente'
+                            text: 'Gravidades'
                         }                        
                     }
                 }

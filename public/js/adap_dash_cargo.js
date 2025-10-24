@@ -182,21 +182,21 @@ async function atualizar(a) {
       </div>
 
       <div class="kpi-box">
+        <span class="kpi-title">MTTR</span>
+        <h2 class="kpi-value">60 min</h2>
+      </div>
+      
+      <div class="kpi-box">
         <span class="kpi-title">Gravidade mais frequente do Mês</span>
         <h2 class="kpi-value">Média</h2>
       </div>
 
+  
+
     </section>
     
-    <section class="tendencia-semanal">
-      <div class="grafico-box-grande">
-        <h3 class="grafico-titulo">Frequência Semanal de Alertas</h3>
-        <canvas id="frequenciaSemanalChart"></canvas>
-      </div>
-    </section>
-
     <section class="analise-direita">
-      <!-- Servidores: Linha 1 da Coluna Direita -->
+      
       <div class="grafico-box">
         <h3 class="grafico-titulo">Alertas divididos por Gravidades deste Mês</h3>
         <canvas id="alertasServidorChart"></canvas>
@@ -207,11 +207,18 @@ async function atualizar(a) {
         <h3 class="grafico-titulo">Alertas por Componente deste Mês  </h3>
         <canvas id="alertasComponenteChart"></canvas>
       </div>
-      <div class="grafico-box">
-        <h3 class="grafico-titulo">Tempo Médio de Resolução por Componente deste Mês</h3>
-        <canvas id="tempoResolucaoComponenteChart"></canvas>
+
+
+    </section>
+    
+    <section class="tendencia-semanal">
+      <div class="grafico-box-grande">
+        <h3 class="grafico-titulo">Frequência Semanal de Alertas</h3>
+        <canvas id="frequenciaSemanalChart"></canvas>
       </div>
-    </section>`;
+    </section>
+    
+    `;
 
     dash_analista.style.display = "block";
     dash_suporte.style.display = "none";
