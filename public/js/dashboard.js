@@ -432,8 +432,6 @@ function atualizarGrafico(grafico, tamanho) {
         grafico.data.datasets[1].data.push(gerarDadoAleatorio());
         grafico.data.datasets[2].data.push(gerarDadoAleatorio());
         grafico.data.datasets[3].data.push(70);
-        grafico.data.datasets[4].data.push(80);
-        grafico.data.datasets[5].data.push(90);
     }
     grafico.update();
 }
@@ -460,43 +458,25 @@ function inicializarGraficos() {
                 label: '',
                 data: [],
                 borderColor: 'rgba(167,139,250,1)',
-                backgroundColor: 'rgba(167,139,250,1)',
+                backgroundColor: 'rgba(167,139,250,0.2)',
                 tension: 0.4,
-                fill: false
+                fill: true
             },
         {
                 label: '',
                 data: [],
                 borderColor: 'rgba(56,189,248,1)',
-                backgroundColor: 'rgba(56,189,248,1)',
+                backgroundColor: 'rgba(56,189,248,0.2)',
                 tension: 0.4,
-                fill: false
+                fill: true
             },
         {
                 label: '',
                 data: [],
-                borderColor: 'rgba(251,191,36,1)',
-                backgroundColor: 'rgba(251,191,36,1)',
+                borderColor: 'rgba(138, 99, 0, 1)',
+                backgroundColor: 'rgba(251,191,36,0.2)',
                 tension: 0.4,
-                fill: false
-            },
-        {
-                label: '',
-                data: [],
-                borderColor: 'rgba(24, 216, 24, 0.4)',
-                backgroundColor: 'rgba(24, 216, 24, 0.4)',
-                tension: 0.4,
-                fill: false,
-                pointRadius: 0
-            },
-        {
-                label: '',
-                data: [],
-                borderColor: 'rgba(255, 255, 0, 0.4)',
-                backgroundColor: 'rgba(255, 255, 0, 0.4)',
-                tension: 0.4,
-                fill: false,
-                pointRadius: 0
+                fill: true
             },
         {
                 label: '',
@@ -544,9 +524,8 @@ function inicializarGraficos() {
     grafico.data.datasets[0].label = 'Uso de CPU (%)';
     grafico.data.datasets[1].label = 'Uso de RAM (%)';
     grafico.data.datasets[2].label = 'Uso de Disco (%)';
-    grafico.data.datasets[3].label = 'Baixo';
-    grafico.data.datasets[4].label = 'Médio';
-    grafico.data.datasets[5].label = 'Alto';
+
+
 
     //atualizarGrafico(graficoCPU, tamanho);
     //atualizarGrafico(graficoRAM, tamanho);
