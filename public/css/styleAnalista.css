@@ -928,7 +928,7 @@ footer {
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 5% 5% 10% 28% 20%;
+  grid-template-rows: 2.6% 3% 10% 23.2% 20%;
   gap: 16px;
   padding: 10px 20px;
   background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
@@ -954,7 +954,7 @@ footer {
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   width: 90%;
-  
+  grid-template-rows: 60% 50%;
 }
 
 .kpi-box {
@@ -963,7 +963,7 @@ footer {
   border-radius: 10px;
   text-align: center;
   font-weight: bold;
-  padding: 1.2rem;
+  padding: 3.3rem;
   box-shadow: 0 2px 8px #0003;
   flex-direction: column;
   
@@ -1003,7 +1003,7 @@ footer {
   grid-template-columns: repeat(2, 1fr);
   gap: 22px;
   margin-bottom: 20rem;
-  margin-top: 110px;
+  margin-top: 4%;
   width: 90%;
 }
 
@@ -1033,6 +1033,7 @@ footer {
   align-items: stretch;
   width: fit-content;
   height: fit-content;
+  margin-top: 2.5%;
 }  
 
 /* .grafico-box-grande canvas{
