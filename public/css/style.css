@@ -730,6 +730,26 @@ main {
   margin-bottom: 15px;
 }
 
+.legenda {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #ffe066;
+  font-weight: bold;
+  width: 60%;
+  justify-content: space-evenly;
+}
+.bloco_cor {
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+}
+.carac_alerta {
+  border: 1px solid #ffe066;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
 .linha_card_serv {
     display: grid;
     width: 100%;

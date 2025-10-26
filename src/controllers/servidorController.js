@@ -27,6 +27,16 @@ function listarSO(req, res) {
     });
 }
 
+function listarAlertas(req, res) {
+  var fkEmpresa = req.body.idempresa;
+  servidorModel.listarAlertas(fkEmpresa)
+    .then(resultado => res.json(resultado))
+    .catch(erro => {
+      console.log(erro);
+      res.status(500).json(erro.sqlMessage);
+    });
+}
+
 function selecionarServidores(req, res) {
   var fkEmpresa = req.body.idempresa;
   servidorModel.selecionarServidores(fkEmpresa)
@@ -151,6 +161,7 @@ module.exports = {
   listarEmpresas,
   listarTipos,
   listarSO,
+  listarAlertas,
   selecionarServidores,
   listarServidores,
   cadastrarServidor,
