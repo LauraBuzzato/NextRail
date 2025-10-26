@@ -276,9 +276,6 @@ INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoCo
 
 (3,3, 3, '2024-05-18 22:00:00', '2024-05-18 22:18:00'); 
 
-select * from servidor;
-select * from metrica;
-
 SELECT 
     m.nome AS Nome_Metrica,
     m.valor AS Valor_Inicial,
@@ -294,3 +291,44 @@ WHERE
     m.fk_componenteServidor_servidor = 4
 ORDER BY 
     Componente, Gravidade;
+
+-- ====================== ALERTAS ======================
+INSERT INTO alerta (fk_componenteServidor_servidor, 
+					fk_componenteServidor_tipoComponente, 
+                    fk_status, 
+                    fk_gravidade, 
+                    inicio,
+                    fim) VALUES
+(1,1, 3, 3,'2024-05-10 06:00:00', '2024-05-10 12:00:00'),
+(1,1, 1, 3,'2024-05-10 08:00:00', null), 
+(1,1, 2, 3,'2024-05-15 08:00:00', null),
+(1,2, 2, 2,'2024-05-10 06:00:00', null),
+(2,2, 1, 2,'2024-05-10 08:00:00', null), 
+(2,2, 2, 2,'2024-05-15 08:00:00', null),
+(3,3, 1, 1,'2024-06-10 08:00:00', null), 
+(3,3, 2, 1,'2024-06-15 08:00:00', null);
+
+SELECT 
+	emp.razao_social AS empresa,
+	srv.nome AS servidor,
+    tc.nome_tipo_componente AS componente,
+    status.descricao AS status,
+    gv.nome AS gravidade,
+    inicio,
+    fim
+FROM
+	alerta
+JOIN
+	status ON status.id = fk_status
+JOIN
+	gravidade gv ON gv.id = fk_gravidade
+JOIN
+	servidor srv ON srv.id = fk_componenteServidor_servidor
+JOIN
+	tipo_componente tc ON tc.id = fk_componenteServidor_tipoComponente
+JOIN
+	empresa emp ON emp.id = srv.fk_empresa
+WHERE 
+	emp.id = 1
+ORDER BY
+	srv.nome;

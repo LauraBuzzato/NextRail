@@ -24,6 +24,23 @@ function listarSO() {
     return database.executar(instrucaoSql);
 }
 
+function listarAlertas(fkEmpresa) {
+    var instrucaoSql = `
+        SELECT emp.razao_social AS empresa,	srv.nome AS servidor, tc.nome_tipo_componente AS componente, 
+               status.descricao AS status, gv.nome AS gravidade, inicio, fim
+        FROM alerta
+        JOIN status ON status.id = fk_status
+        JOIN gravidade gv ON gv.id = fk_gravidade
+        JOIN servidor srv ON srv.id = fk_componenteServidor_servidor
+        JOIN tipo_componente tc ON tc.id = fk_componenteServidor_tipoComponente
+        JOIN empresa emp ON emp.id = srv.fk_empresa
+        WHERE emp.id = ${fkEmpresa}
+        ORDER BY srv.nome;
+    `;
+    console.log("Executando SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 function selecionarServidores(fkEmpresa) {
     var instrucaoSql = `
         SELECT sv.nome AS servidor,tipo.nome AS tipo,so.descricao AS so,es.sigla AS estado,en.logradouro,en.numero,en.complemento 
@@ -280,6 +297,7 @@ module.exports = {
     listarEmpresas,
     listarTipos,
     listarSO,
+    listarAlertas,
     selecionarServidores,
     listarServidores,
     cadastrarServidor,
