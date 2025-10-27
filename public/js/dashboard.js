@@ -460,8 +460,6 @@ function dash_suporte() {
         graficoSuporte = null;
     }
 
-    const canvasContainer = canvas.parentElement;
-
     try {
         canvas.width = 600;
         canvas.height = 350;
@@ -558,7 +556,7 @@ function dash_suporte() {
                             }
                         },
                         grid: {
-                            color: 'rgba(255,255,255,0.1)'
+                            color: 'rgba(255, 255, 255, 0.1)'
                         }
                     }
                 }
