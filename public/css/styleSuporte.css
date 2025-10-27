@@ -417,3 +417,64 @@ body {
 .container-pagina{
   padding-bottom: 0px;
 }
+
+
+.grafico-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.carrossel-botoes button {
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  margin-left: 5px;
+}
+
+
+.grafico-header {
+  position: relative;
+  height: 80px; 
+  width: 100%;
+  margin-bottom: 28px; 
+}
+
+
+.grafico-btn {
+  position: absolute;
+  font-size: 28px;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  width: 40px;
+  height: 40px;
+  transform: none; 
+}
+
+.btn-esquerda {
+  left: 10px;
+  top: 10px; 
+}
+
+.btn-direita {
+  right: 10px;
+  top: 10px; 
+}
+
+
+.grafico-titulo {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  margin: 0;
+  font-size: 16px;
+  color: white;
+  white-space: nowrap;
+}

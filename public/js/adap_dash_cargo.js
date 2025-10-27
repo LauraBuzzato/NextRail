@@ -26,6 +26,25 @@ function habilitarCSSPrincipal() {
   }
 }
 
+function inicializarDashboard() {
+  validarSessao();
+  arrumarMenu();
+
+  setTimeout(() => {
+    if (!verificarDependencias()) {
+      console.log('Aguardando Chart.js...');
+      setTimeout(() => {
+        const cargo = analisaCargo();
+        atualizar(cargo);
+      }, 1000);
+      return;
+    }
+
+    const cargo = analisaCargo();
+    atualizar(cargo);
+  }, 300);
+}
+
 function inicializarGraficosSuporte() {
   setTimeout(() => {
     if (typeof dash_suporte === 'function') {
@@ -93,73 +112,68 @@ async function atualizar(a) {
   dash_analista.innerHTML = '';
   dash_suporte.innerHTML = '';
 
-  if (a == true) { // SUPORTE TÉCNICO
-    // Desabilitar CSS principal para o suporte
+  if (a === true) { // SUPORTE TÉCNICO
+    // Desabilitar CSS principal
     desabilitarCSSPrincipal();
 
+    // Inserir HTML do suporte
     dash_suporte.innerHTML = `
-      <div class="container-pagina">
-        <h1 class="bem-vindo">Bem-vindo(a) <span>${sessionStorage.NOME_USUARIO}</span></h1>
-        <h2 class="desempenho" id="subtitulo-destaque">${localStorage.NOME_SERVIDOR}</h2>
-        <section class="conteudo-principal">
-          <div class="kpi-container">
-            <div class="kpi-1">
-              <div class="kpi-titulo">Uso de memória RAM atual</div>
-              <div class="kpi-conteudo">
-                <span style="color: rgb(255, 57, 57);">82%</span>
-              </div>
-              <div class="kpi-passado">Última leitura: 78%</div>
-            </div>
-            <div class="kpi-2">
-              <div class="kpi-titulo">Uso de CPU atual</div>
-              <div class="kpi-conteudo">
-                <span style="color: yellow;">75%</span>
-              </div>
-              <div class="kpi-passado">Última leitura: 88%</div>
-            </div>
-            <div class="kpi-3">
-              <div class="kpi-titulo">Uso de DISCO atual</div>
-              <div class="kpi-conteudo">
-                <span style="color: rgb(24, 216, 24);">53%</span>
-              </div>
-              <div class="kpi-passado">Última leitura: 48%</div>
-            </div>
+    <div class="container-pagina">
+      <h1 class="bem-vindo">Bem-vindo(a) <span>${sessionStorage.NOME_USUARIO}</span></h1>
+      <h2 class="desempenho" id="subtitulo-destaque">${localStorage.NOME_SERVIDOR}</h2>
+      <section class="conteudo-principal">
+        <div class="kpi-container">
+          <div class="kpi-1">
+            <div class="kpi-titulo">Uso de memória RAM atual</div>
+            <div class="kpi-conteudo"><span style="color: rgb(255, 57, 57);">82%</span></div>
+            <div class="kpi-passado">Última leitura: 78%</div>
           </div>
+          <div class="kpi-2">
+            <div class="kpi-titulo">Uso de CPU atual</div>
+            <div class="kpi-conteudo"><span style="color: yellow;">75%</span></div>
+            <div class="kpi-passado">Última leitura: 88%</div>
+          </div>
+          <div class="kpi-3">
+            <div class="kpi-titulo">Uso de DISCO atual</div>
+            <div class="kpi-conteudo"><span style="color: rgb(24, 216, 24);">53%</span></div>
+            <div class="kpi-passado">Última leitura: 48%</div>
+          </div>
+        </div>
+
           <div class="graficos-container">
-            <!--<div class="grafico-box">
-              <h3>Uso de RAM nas últimas 24 horas</h3>
-              <canvas id="graficoSuporteRAM"></canvas>
-            </div>
             <div class="grafico-box">
-              <h3>Uso de CPU nas últimas 24 horas</h3>
-              <canvas id="graficoSuporteCPU"></canvas>
+              <div class="grafico-header">
+              <button id="btnPrev" class="grafico-btn btn-esquerda">←</button>
+              <h3 class="grafico-titulo">Uso dos componentes nas últimas 24 horas</h3>
+              <button id="btnNext" class="grafico-btn btn-direita">→</button>
             </div>
-            <div class="grafico-box">
-              <h3>Uso de Disco nas últimas 24 horas</h3>
-              <canvas id="graficoSuporteDisco"></canvas>
-            </div>-->
-            <div class="grafico-box">
-              <h3>Uso dos componentes nas últimas 24 horas</h3>
-              <canvas id="graficoSuporte"></canvas>
-            </div>
-            <div class="container-tabela-dinamica">
-              <div class="tabela-titulo">Histórico de alertas da última semana</div>
-              <div id="tabela-conteudo" class="tabela-conteudo"></div>
+            <canvas id="graficoSuporte"></canvas>
+              </div>
+
+          <div class="container-tabela-dinamica">
+            <div class="tabela-titulo">Histórico de alertas da última semana</div>
+            <div id="tabela-conteudo" class="tabela-conteudo"></div>
           </div>
-          </div>
-        </section>
-      </div>`;
+        </div>
+      </section>
+    </div>`;
 
     dash_suporte.style.display = "block";
     dash_analista.style.display = "none";
 
-    // Carregar CSS específico do suporte
     carregarCSS('./css/styleSuporte.css');
 
-    // Inicializar gráficos do suporte
-    inicializarGraficosSuporte();
+    setTimeout(() => {
+      inicializarGraficosSuporte();
+      criarTabela()
+
+      setTimeout(() => {
+        configurarCarrosselSuporte();
+      }, 300);
+    }, 200);
 
   } else { // ANALISTA DE INFRAESTRUTURA
+    // ... (o resto do código do analista permanece igual)
     // IMPORTANTE: Primeiro habilitar o CSS principal
     habilitarCSSPrincipal();
 
@@ -220,12 +234,11 @@ async function atualizar(a) {
     dash_analista.style.display = "block";
     dash_suporte.style.display = "none";
 
-    // Carregar CSS específico do analista APÓS habilitar o principal
     setTimeout(() => {
       carregarCSS('./css/styleAnalista.css');
     }, 100);
 
-    // Inicializar gráficos do analista com mais delay para garantir CSS
+
     setTimeout(() => {
       inicializarGraficosAnalista();
     }, 300);
@@ -305,21 +318,74 @@ function analisaCargo() {
   return mudanca;
 }
 
-function inicializarDashboard() {
-  validarSessao();
-  arrumarMenu();
 
-  setTimeout(() => {
-    if (!verificarDependencias()) {
-      console.log('Aguardando Chart.js...');
-      setTimeout(() => {
-        const cargo = analisaCargo();
-        atualizar(cargo);
-      }, 1000);
-      return;
-    }
 
-    const cargo = analisaCargo();
-    atualizar(cargo);
-  }, 300);
+function configurarCarrosselSuporte() {
+  const btnNext = document.getElementById('btnNext');
+  const btnPrev = document.getElementById('btnPrev');
+
+  if (!btnNext || !btnPrev) {
+    console.error('Botões do carrossel não encontrados. Tentando novamente em 100ms...');
+
+    return;
+  }
+
+  const newBtnNext = btnNext.cloneNode(true);
+  const newBtnPrev = btnPrev.cloneNode(true);
+
+  btnNext.parentNode.replaceChild(newBtnNext, btnNext);
+  btnPrev.parentNode.replaceChild(newBtnPrev, btnPrev);
+
+  newBtnNext.addEventListener('click', () => {
+    indiceAtual = (indiceAtual + 1) % 4;
+    atualizarVisibilidadeSuporte();
+  });
+
+  newBtnPrev.addEventListener('click', () => {
+    indiceAtual = (indiceAtual - 1 + 4) % 4;
+    atualizarVisibilidadeSuporte();
+  });
+
+  console.log('Carrossel do suporte configurado com sucesso');
+}
+
+function atualizarVisibilidadeSuporte() {
+  if (!graficoSuporte) {
+    console.error('Gráfico do suporte não inicializado');
+    return;
+  }
+
+  const datasets = graficoSuporte.data.datasets;
+  const legendas = ['Todos os Componentes', 'CPU', 'RAM', 'Disco'];
+
+  const tituloGrafico = document.querySelector('.grafico-box h3');
+  if (tituloGrafico) {
+    tituloGrafico.textContent = `Uso de ${legendas[indiceAtual]} nas últimas 24 horas`;
+  }
+
+  // Controlar visibilidade dos datasets
+  switch (indiceAtual) {
+    case 0: // Todos
+      datasets[0].hidden = false;
+      datasets[1].hidden = false;
+      datasets[2].hidden = false;
+      break;
+    case 1: // CPU
+      datasets[0].hidden = false;
+      datasets[1].hidden = true;
+      datasets[2].hidden = true;
+      break;
+    case 2: // RAM
+      datasets[0].hidden = true;
+      datasets[1].hidden = false;
+      datasets[2].hidden = true;
+      break;
+    case 3: // Disco
+      datasets[0].hidden = true;
+      datasets[1].hidden = true;
+      datasets[2].hidden = false;
+      break;
+  }
+
+  graficoSuporte.update();
 }

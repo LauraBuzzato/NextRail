@@ -430,27 +430,9 @@ function dash_analista() {
 }
 
 // dash suporte ------------------------------------------------------------------------------------------------------------------
-function dash_suporte() {
-    // Verificar se os elementos existem
-    //const cpuCanvas = document.getElementById('graficoSuporteCPU');
-    //const ramCanvas = document.getElementById('graficoSuporteRAM');
-    //const discoCanvas = document.getElementById('graficoSuporteDisco');
-    const canvas = document.getElementById('graficoSuporte');
 
-    /*if (!cpuCanvas || !ramCanvas || !discoCanvas) {
-        console.error('Elementos de gráfico do suporte não encontrados');
-        return;
-    }*/
-    if (!canvas) {
-        console.error('Elementos de gráfico do suporte não encontrados');
-        return;
-    }
-
-
-    //nome_usuario_span.innerHTML = sessionStorage.NOME_USUARIO;
-    gerarDadoAleatorio();
-    inicializarGraficos();
-}
+let graficoSuporte;
+let indiceAtual = 0;
 
 function gerarDadoAleatorio() {
     return Math.floor(Math.random() * 100);
@@ -458,145 +440,176 @@ function gerarDadoAleatorio() {
 
 function atualizarGrafico(grafico, tamanho) {
     for (var i = 0; i < tamanho; i++) {
-        grafico.data.datasets[0].data.push(gerarDadoAleatorio());
-        grafico.data.datasets[1].data.push(gerarDadoAleatorio());
-        grafico.data.datasets[2].data.push(gerarDadoAleatorio());
-        grafico.data.datasets[3].data.push(70);
     }
     grafico.update();
 }
 
-function inicializarGraficos() {
-    //const cpuCtx = document.getElementById('graficoSuporteCPU').getContext('2d');
-    //const ramCtx = document.getElementById('graficoSuporteRAM').getContext('2d');
-    //const discoCtx = document.getElementById('graficoSuporteDisco').getContext('2d');
-    const ramCtx = document.getElementById('graficoSuporte').getContext('2d');
+function dash_suporte() {
+    console.log('Inicializando gráficos do suporte...');
+    const canvas = document.getElementById('graficoSuporte');
 
-    const tamanho = 13;
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js não carregado');
+        setTimeout(inicializarGraficosSuporte, 500);
+        return;
+    }
 
-    const configLine = {
-        type: 'line',
-        data: {
-            labels: [
-                '16:00:00', '18:00:00', '20:00:00', '22:00:00',
-                '00:00:00', '02:00:00', '04:00:00', '06:00:00',
-                '08:00:00', '10:00:00', '12:00:00', '14:00:00',
-                '16:00:00'
-            ],
+    if (graficoSuporte) {
+        console.log('Destruindo gráfico anterior...');
+        graficoSuporte.destroy();
+        graficoSuporte = null;
+    }
 
-            datasets: [{
-                label: '',
-                data: [],
-                borderColor: 'rgba(167,139,250,1)',
-                backgroundColor: 'rgba(167,139,250,0.2)',
-                tension: 0.4,
-                fill: true
+    const canvasContainer = canvas.parentElement;
+
+    try {
+        canvas.width = 600;
+        canvas.height = 350;
+
+        const ctx = canvas.getContext('2d');
+
+        const configLine = {
+            type: 'line',
+            data: {
+                labels: ['16:00', '18:00', '20:00', '22:00',
+                    '00:00', '02:00', '04:00', '06:00',
+                    '08:00', '10:00', '12:00', '14:00', '16:00'
+                ],
+                datasets: [
+                    {
+                        label: 'Uso de CPU (%)',
+                        data: [65, 59, 80, 81, 56, 55, 40, 45, 60, 70, 75, 80, 85],
+                        borderColor: 'rgba(167,139,250,1)',
+                        backgroundColor: 'rgba(167,139,250,0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Uso de RAM (%)',
+                        data: [28, 48, 40, 19, 86, 27, 90, 45, 60, 35, 50, 65, 70],
+                        borderColor: 'rgba(56,189,248,1)',
+                        backgroundColor: 'rgba(56,189,248,0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Uso de Disco (%)',
+                        data: [45, 35, 50, 60, 40, 55, 65, 50, 45, 60, 55, 50, 45],
+                        borderColor: 'rgba(251,191,36,1)',
+                        backgroundColor: 'rgba(251,191,36,0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '',
+                        data: Array(13).fill(70),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    }
+                ]
             },
-            {
-                label: '',
-                data: [],
-                borderColor: 'rgba(56,189,248,1)',
-                backgroundColor: 'rgba(56,189,248,0.2)',
-                tension: 0.4,
-                fill: true
-            },
-            {
-                label: '',
-                data: [],
-                borderColor: 'rgba(138, 99, 0, 1)',
-                backgroundColor: 'rgba(251,191,36,0.2)',
-                tension: 0.4,
-                fill: true
-            },
-            {
-                label: '',
-                data: [],
-                borderColor: 'rgba(255, 57, 57, 0.4)',
-                backgroundColor: 'rgba(255, 57, 57, 0.4)',
-                tension: 0.4,
-                fill: false,
-                pointRadius: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: { duration: 800 },
-            plugins: { legend: { display: true } },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    ticks: { color: '#fff' },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    onComplete: function () {
+                        console.log('Gráfico renderizado com sucesso!');
+                    }
                 },
-                x: {
-                    ticks: { color: '#fff' },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 12 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff',
+                            maxRotation: 0
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    }
                 }
             }
-        }
-    };
+        };
 
-    Chart.defaults.color = 'white';
-    Chart.defaults.borderColor = '#383838';
+        graficoSuporte = new Chart(ctx, configLine);
+        console.log('Gráfico criado com sucesso!');
 
-    //const graficoCPU = new Chart(cpuCtx, JSON.parse(JSON.stringify(configLine)));
-    //graficoCPU.data.datasets[0].label = 'Uso de CPU (%)';
+        indiceAtual = 0;
+        atualizarVisibilidadeSuporte();
 
-    //const graficoRAM = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
-    //graficoRAM.data.datasets[0].label = 'Uso de RAM (%)';
-
-    //const graficoDisco = new Chart(discoCtx, JSON.parse(JSON.stringify(configLine)));
-    //graficoDisco.data.datasets[0].label = 'Uso de Disco (%)';
-
-    const grafico = new Chart(ramCtx, JSON.parse(JSON.stringify(configLine)));
-    grafico.data.datasets[0].label = 'Uso de CPU (%)';
-    grafico.data.datasets[1].label = 'Uso de RAM (%)';
-    grafico.data.datasets[2].label = 'Uso de Disco (%)';
-
-
-
-    //atualizarGrafico(graficoCPU, tamanho);
-    //atualizarGrafico(graficoRAM, tamanho);
-    //atualizarGrafico(graficoDisco, tamanho);
-    atualizarGrafico(grafico, tamanho);
-    criarTabela();
+    } catch (error) {
+        console.error('Erro ao criar gráfico:', error);
+    }
 }
+
 
 function criarTabela() {
     const conteudo = document.getElementById('tabela-conteudo');
+    if (!conteudo) return;
 
-    conteudo.innerHTML += `<span class="tabela-label">#</span>
-          <span class="tabela-label">Componente</span>
-          <span class="tabela-label">leitura</span>
-          <span class="tabela-label">Grau</span>
-          <span class="tabela-label">Timestamp</span>`
+    conteudo.innerHTML = `
+        <span class="tabela-label">#</span>
+        <span class="tabela-label">Componente</span>
+        <span class="tabela-label">Leitura</span>
+        <span class="tabela-label">Grau</span>
+        <span class="tabela-label">Timestamp</span>
+    `;
 
     for (var i = 1; i <= 6; i++) {
         var leitura = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
-
+        var componente, grau;
 
         if (leitura >= 90) {
-            conteudo.innerHTML += `<span class="tabela-celula">${i}</span>
-            <span class="tabela-celula">CPU</span>
-            <span class="tabela-celula">${leitura}%</span>
-            <span class="tabela-celula">alto</span>
-            <span class="tabela-celula">2025-03-17-18:25:08</span>`
+            componente = "CPU";
+            grau = "alto";
+        } else if (leitura < 90 && leitura >= 80) {
+            componente = "RAM";
+            grau = "médio";
+        } else {
+            componente = "Disco";
+            grau = "baixo";
         }
-        else if (leitura < 90 && leitura >= 80) {
-            conteudo.innerHTML += `<span class="tabela-celula">${i}</span>
-            <span class="tabela-celula">RAM</span>
+
+        conteudo.innerHTML += `
+            <span class="tabela-celula">${i}</span>
+            <span class="tabela-celula">${componente}</span>
             <span class="tabela-celula">${leitura}%</span>
-            <span class="tabela-celula">médio</span>
-            <span class="tabela-celula">2025-03-17-18:25:08</span>`
-        }
-        else if (leitura < 80 && leitura >= 70) {
-            conteudo.innerHTML += `<span class="tabela-celula">${i}</span>
-            <span class="tabela-celula">disco</span>
-            <span class="tabela-celula">${leitura}%</span>
-            <span class="tabela-celula">baixo</span>
-            <span class="tabela-celula">2025-03-17-18:25:08</span>`
-        }
+            <span class="tabela-celula">${grau}</span>
+            <span class="tabela-celula">2025-03-17-18:25:08</span>
+        `;
     }
 }
