@@ -133,7 +133,7 @@
                 <div class="relatorio-gerado">
                     <div style="text-align: center; margin-bottom: 40px;">
                         <h2 style="font-size: 1.8rem; font-weight: bold; color: #ffe066;">${dados.empresa}</h2>
-                        <p style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;">Relatório Anual — ${dados.ano}</p>
+                        <p style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;margin-left:17%;">Relatório Anual — ${dados.ano}</p>
                     </div>
                     <div class="kpi-grid">
                         <div class="kpi-card-gerado"><ion-icon name="alert-circle-outline" style="color: #eab308;"></ion-icon><div><div class="kpi-value">${dados.totalAlertsAnual}</div><div class="kpi-label">Total Alertas</div></div></div>
@@ -267,7 +267,7 @@
                 <div class="relatorio-gerado">
                     <div style="text-align: center; margin-bottom: 40px;">
                         <h2 style="font-size: 1.8rem; font-weight: bold; color: #ffe066;">${kpis.empresa}</h2>
-                        <p style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;">Relatório Mensal — ${nomeDoMes} de ${ano}</p>
+                        <p style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;margin-left:17%;">Relatório Mensal — ${nomeDoMes} de ${ano}</p>
                     </div>
                     <div class="kpi-grid">
                         <div class="kpi-card-gerado"><ion-icon name="alert-circle-outline" style="color: #eab308;"></ion-icon><div><div class="kpi-value">${kpis.totalAlerts}</div><div class="kpi-label">Total Alertas</div></div></div>

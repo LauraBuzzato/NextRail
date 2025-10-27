@@ -243,12 +243,14 @@ main {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(10px);
     transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+     font-size: 2.5rem;
 }
 
 .caixa-info:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
     background: rgba(255, 255, 255, 0.08);
+     font-size: 2.5rem;
 }
 
 /* Ícones*/
@@ -560,8 +562,9 @@ footer {
 
 .footer-icons li a span {
     margin-top: 6px;
-    font-size: 0.8rem;
+    font-size: 1.6rem;
     color: white;
+
 }
 
 .footer-icons li a:hover {
@@ -1075,6 +1078,7 @@ footer {
     background-color: #3f3f46;
     padding: 5px 10px;
     border-radius: 6px;
+    font-size: 1.8rem;
 }
 
 /* Estilo da tabela de alertas */
@@ -1104,4 +1108,37 @@ footer {
 
 .tabela-alertas tbody tr:nth-child(even) {
     background-color: #303033;
+}
+
+
+.relatorio-gerado span {
+  font-size: 1.3rem;
+}
+
+
+.mes-card-gerado span,
+.semana-card span {
+  font-size: 1.3rem;
+}
+
+
+.kpi-card-gerado .kpi-label {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.kpi-card-gerado .kpi-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+
+.gravidade-distribuicao span {
+  font-size: 1.3rem;
+}
+
+.tabela-alertas td, 
+.tabela-alertas th {
+  font-size: 1.2rem;
+  padding: 8px 10px;
 }

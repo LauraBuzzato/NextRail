@@ -126,17 +126,17 @@ async function atualizar(a) {
           <div class="kpi-1">
             <div class="kpi-titulo">Uso de memória RAM atual</div>
             <div class="kpi-conteudo"><span style="color: rgba(255, 0, 0, 1);">82%</span></div>
-            <div class="kpi-passado">Última leitura: 78%</div>
+            <div class="kpi-passado">Leitura anterior: 78%</div>
           </div>
           <div class="kpi-2">
             <div class="kpi-titulo">Uso de CPU atual</div>
             <div class="kpi-conteudo"><span style="color: yellow;">75%</span></div>
-            <div class="kpi-passado">Última leitura: 88%</div>
+            <div class="kpi-passado">Leitura anterior: 88%</div>
           </div>
           <div class="kpi-3">
             <div class="kpi-titulo">Uso de DISCO atual</div>
             <div class="kpi-conteudo"><span style="color: rgb(24, 216, 24);">53%</span></div>
-            <div class="kpi-passado">Última leitura: 48%</div>
+            <div class="kpi-passado">Leitura anterior: 48%</div>
           </div>
         </div>
 
@@ -222,7 +222,7 @@ async function atualizar(a) {
 
       <div class="kpi-box">
         <span class="kpi-title">Gravidade mais frequente do Mês</span>
-        <h2 class="kpi-value">Média</h2>
+        <h2 class="kpi-value">Médio</h2>
       </div>
     </section>
     
