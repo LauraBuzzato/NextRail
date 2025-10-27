@@ -789,6 +789,7 @@ footer {
   .grafico-box {
     width: 100%;
     max-width: 90vw;
+    
   }
 }
 
@@ -964,7 +965,7 @@ footer {
   text-align: center;
   font-weight: bold;
   padding: 3.3rem;
-  box-shadow: 0 2px 8px #0003;
+  box-shadow: 0 8px 7px #ffffff33;
   flex-direction: column;
   
 }
@@ -994,6 +995,7 @@ footer {
   height: 100%;
   min-height: 350px;
   width: 100%;
+  box-shadow: 0 8px 7px #ffffff33
 }
 
 
@@ -1078,4 +1080,8 @@ footer {
 .kpi-value{
   color: white;
   font-size: xx-large;
+}
+
+.grafico-box{
+  box-shadow: 0 8px 7px #ffffff33
 }

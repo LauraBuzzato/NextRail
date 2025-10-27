@@ -125,7 +125,7 @@ async function atualizar(a) {
         <div class="kpi-container">
           <div class="kpi-1">
             <div class="kpi-titulo">Uso de memória RAM atual</div>
-            <div class="kpi-conteudo"><span style="color: rgb(255, 57, 57);">82%</span></div>
+            <div class="kpi-conteudo"><span style="color: rgba(255, 0, 0, 1);">82%</span></div>
             <div class="kpi-passado">Última leitura: 78%</div>
           </div>
           <div class="kpi-2">

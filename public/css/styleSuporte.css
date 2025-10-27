@@ -205,7 +205,7 @@ body {
   width: 83%;
   background-color: var(--grafico);
   border-radius: 13px;
-  box-shadow: 0 2px 8px #0002;
+  box-shadow: 0 8px 7px #ffffff33
 }
 
 .kpi-1 .kpi-titulo, .kpi-2 .kpi-titulo, .kpi-3 .kpi-titulo {
@@ -270,7 +270,7 @@ body {
   background: var(--grafico);
   border-radius: 12px;
   padding: 0rem 0.5rem 4rem 0.5rem;
-  box-shadow: 0 2px 8px #0002;
+  box-shadow: 0 8px 7px #ffffff33;
   flex: 1 0 250px ;
   display: flex;
   flex-direction: column;
@@ -298,6 +298,7 @@ body {
   font-weight: 700;
   background-color: var(--grafico);
   border-radius: 13px;
+  box-shadow: 0 8px 7px #ffffff33;
   /*position: absolute;
   left: 13vw;*/
 }

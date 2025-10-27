@@ -194,7 +194,10 @@ function dash_analista() {
                 legend: {
                     position: 'top',
                     labels: {
-                        color: '#fff'
+                        color: '#fff',
+                        font: {
+                            size: 15
+                        }
                     }
                 },
                 title: {
@@ -205,18 +208,34 @@ function dash_analista() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Dias'
+                        text: 'Dias',
+                        font: {
+                            size: 24
+                        }
                     },
-                    ticks: { color: '#fff' },
+                    ticks: {
+                        color: '#fff',
+                        font: {
+                            size: 18
+                        }
+                    },
                     grid: { color: 'rgba(255,255,255,0.1)' }
                 },
                 y: {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Alertas'
+                        text: 'Alertas',
+                        font: {
+                            size: 24
+                        }
                     },
-                    ticks: { color: '#fff' },
+                    ticks: {
+                        color: '#fff',
+                        font: {
+                            size: 18
+                        }
+                    },
                     grid: { color: 'rgba(255,255,255,0.1)' }
                 }
             }
@@ -263,16 +282,27 @@ function dash_analista() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Quantidade de Alertas', color: '#fff' },
-                        ticks: { color: '#fff' },
+                        title: { display: true, text: 'Quantidade de Alertas', color: '#fff', font: { size: 22} },
+                        ticks: {
+                            color: '#fff',
+                            font: {
+                                size: 18
+                            }
+                        },
                         grid: { color: '#333' }
                     },
                     x: {
                         title: {
                             display: true,
-                            text: 'Componente'
+                            text: 'Componente',
+                            font: { size : 22}
                         },
-                        ticks: { color: '#fff' },
+                        ticks: {
+                            color: '#fff',
+                            font: {
+                                size: 18
+                            }
+                        },
                         grid: { display: false }
 
                     }
@@ -305,14 +335,30 @@ function dash_analista() {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Tempo (min)'
+                            text: 'Tempo (min)',
+                            font: {
+                                size: 2
+                            }
+                        },
+                        ticks: {
+                            color: '#ccc',
+                            font: {
+                                size: 18
+                            }
                         }
+
                     },
                     x: {
                         title: {
                             display: true,
-                            text: 'Componente'
+                            text: 'Componente',
                         },
+                        ticks: {
+                            color: '#ccc',
+                            font: {
+                                size: 18
+                            }
+                        }
                     }
                 },
                 plugins: {
@@ -371,14 +417,34 @@ function dash_analista() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Quantidade de Alertas', color: '#fff' },
-                        ticks: { color: '#ccc' },
+                        title: {
+                            display: true,
+                            text: 'Quantidade de Alertas',
+                            color: '#fff',
+                            font: {
+                                size: 22
+                            }
+                        },
+                        ticks: {
+                            color: '#ccc',
+                            font: {
+                                size: 18
+                            }
+                        },
                         grid: { color: '#333' }
                     },
                     x: {
                         title: {
                             display: true,
-                            text: 'Gravidades'
+                            text: 'Gravidades',
+                            font: {
+                                size: 22
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 18
+                            }
                         }
                     }
                 }
@@ -525,7 +591,7 @@ function dash_suporte() {
                         position: 'top',
                         labels: {
                             color: '#fff',
-                            font: { size: 12 },
+                            font: { size: 14 },
                             filter: function (legendItem, chart) {
                                 return legendItem.text !== '';
                             }
@@ -540,7 +606,10 @@ function dash_suporte() {
                     x: {
                         ticks: {
                             color: '#fff',
-                            maxRotation: 0
+                            maxRotation: 0,
+                            font: {
+                                size: 14
+                            }
                         },
                         grid: {
                             color: 'rgba(255,255,255,0.1)'
@@ -553,6 +622,9 @@ function dash_suporte() {
                             color: '#fff',
                             callback: function (value) {
                                 return value + '%';
+                            },
+                            font: {
+                                size: 14
                             }
                         },
                         grid: {
