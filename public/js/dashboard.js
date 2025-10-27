@@ -609,7 +609,7 @@ function criarTabela() {
             <span class="tabela-celula">${componente}</span>
             <span class="tabela-celula">${leitura}%</span>
             <span class="tabela-celula">${grau}</span>
-            <span class="tabela-celula">2025-03-17-18:25:08</span>
+            <span class="tabela-celula">2025-03-17 18:25:08</span>
         `;
     }
 }
