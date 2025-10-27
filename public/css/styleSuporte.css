@@ -462,6 +462,28 @@ body {
   top: 10px; 
 }
 
+.icon {
+  width: 50px;
+  height: 30px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.icon #primary {
+  fill: #ffffff;
+  transition: fill 0.3s ease;
+}
+
+.icon #secondary {
+  fill: #1a1a2e;
+  transition: fill 0.3s ease;
+}
+
+.icon:hover #primary {
+  fill: #ffe066;
+}
+
+
 .btn-direita {
   right: 10px;
   top: 10px; 

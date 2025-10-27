@@ -143,9 +143,29 @@ async function atualizar(a) {
           <div class="graficos-container">
             <div class="grafico-box">
               <div class="grafico-header">
-              <button id="btnPrev" class="grafico-btn btn-esquerda">←</button>
+              <button id="btnPrev" class="grafico-btn btn-esquerda"><svg fill="#000000" width="50px" height="30px" viewBox="0 0 24 24"
+     id="left-circle" data-name="Flat Color"
+     xmlns="http://www.w3.org/2000/svg"
+     class="icon flat-color">
+  <g id="SVGRepo_iconCarrier">
+    <circle id="primary" cx="12" cy="12" r="10"></circle>
+    <path id="secondary"
+          d="M13,16a1,1,0,0,1-.71-.29l-3-3a1,1,0,0,1,0-1.42l3-3a1,1,0,0,1,1.42,1.42L11.41,12l2.3,2.29a1,1,0,0,1,0,1.42A1,1,0,0,1,13,16Z">
+    </path>
+  </g>
+</svg></button>
               <h3 class="grafico-titulo">Uso dos componentes nas últimas 24 horas</h3>
-              <button id="btnNext" class="grafico-btn btn-direita">→</button>
+              <button id="btnNext" class="grafico-btn btn-direita"><svg fill="#000000" width="50px" height="30px" viewBox="0 0 24 24"
+     id="right-circle" data-name="Flat Color"
+     xmlns="http://www.w3.org/2000/svg"
+     class="icon flat-color">
+  <g id="SVGRepo_iconCarrier">
+    <circle id="primary" cx="12" cy="12" r="10"></circle>
+    <path id="secondary"
+          d="M11,16a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.42L12.59,12l-2.3-2.29a1,1,0,0,1,1.42-1.42l3,3a1,1,0,0,1,0,1.42l-3,3A1,1,0,0,1,11,16Z">
+    </path>
+  </g>
+</svg></button>
             </div>
             <canvas id="graficoSuporte"></canvas>
               </div>
