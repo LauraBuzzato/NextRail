@@ -929,12 +929,13 @@ footer {
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 2.6% 3% 10% 23.2% 20%;
+  grid-template-rows: 2.6% 3% 13% 23.2%;
   gap: 16px;
   padding: 10px 20px;
   background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
   padding-bottom: 40px;
   justify-items: center;
+  max-height: 240vh;
 }
 
 
@@ -955,7 +956,8 @@ footer {
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   width: 90%;
-  grid-template-rows: 60% 50%;
+  grid-template-rows: 60% 40%;
+  
 }
 
 .kpi-box {
