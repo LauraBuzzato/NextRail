@@ -205,19 +205,19 @@ Insert into status(descricao)
 				  ('Andamento'),
 				  ('Fechado');
 select * from estado;
-
-
+-- ======================== ENDEREÇOS ========================
 INSERT INTO  endereco (logradouro, cep, numero, complemento, fk_estado) VALUES('Rua das Margaridas', '69309550', '500', 'Bloco C', 23),
 ('Rua Brisa do Amanhecer', '53404355', '105', NULL, 17),
 ('Avenida Cidade Jardim', '01454900', '280', NULL, 25);
 
-
+-- ======================== SERVIDORES ========================
 INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
 VALUES
 ('Servidor01', 2, 2, 3, 1),
 ('Servidor02', 1, 1, 2, 1),
 ('Servidor03', 1, 3, 1, 1);
 
+-- ======================== GRAVIDADES ========================
 INSERT INTO gravidade (nome)
 VALUES
 ('Baixo'),
@@ -266,15 +266,13 @@ VALUES
 (2, 'Uso de Disco', 95, 3, 3),
 (1, 'Uso de Disco', 90, 3, 3);
 
-INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente, fk_status, inicio, fim) VALUES
-(1,1, 3, '2024-01-10 08:00:00', '2024-01-10 08:30:00'), 
-(1,2, 3, '2024-01-20 14:10:00', '2024-01-20 14:25:00'), 
-
-(2,3, 3, '2024-03-05 11:00:00', '2024-03-05 11:45:00'), 
-(2,1, 3, '2024-03-15 16:20:00', '2024-03-15 17:20:00'), 
-(2,2, 3, '2024-03-25 09:00:00', '2024-03-25 09:12:00'), 
-
-(3,3, 3, '2024-05-18 22:00:00', '2024-05-18 22:18:00'); 
+INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente, fk_status, fk_gravidade, inicio, fim) VALUES
+(1,1, 3, 3, '2024-01-10 08:00:00', '2024-01-10 08:30:00'), 
+(1,2, 3, 2, '2024-01-20 14:10:00', '2024-01-20 14:25:00'), 
+(2,3, 3, 1, '2024-03-05 11:00:00', '2024-03-05 11:45:00'), 
+(2,1, 3, 3, '2024-03-15 16:20:00', '2024-03-15 17:20:00'), 
+(2,2, 3, 3, '2024-03-25 09:00:00', '2024-03-25 09:12:00'), 
+(3,3, 3, 2, '2024-05-18 22:00:00', '2024-05-18 22:18:00'); 
 
 
 
@@ -294,17 +292,76 @@ WHERE
 ORDER BY 
     Componente, Gravidade;
 
+-- ====================== ALERTAS ======================
+INSERT INTO alerta (fk_componenteServidor_servidor, 
+					fk_componenteServidor_tipoComponente, 
+                    fk_status, 
+                    fk_gravidade, 
+                    inicio,
+                    fim) VALUES
+(1,1, 3, 3,'2024-05-10 06:00:00', '2024-05-10 06:20:00'),
+(1,1, 1, 3,'2024-05-10 08:00:00', '2024-05-10 08:05:00'), 
+(1,1, 2, 3,'2024-05-15 08:08:00', '2024-05-15 08:15:00'),
+(1,2, 2, 2,'2024-05-21 07:00:00', '2024-05-21 07:20:00'),
+(2,2, 1, 2,'2024-05-10 18:00:00', '2024-05-10 18:35:00'), 
+(2,2, 2, 2,'2024-05-15 08:40:00', '2024-05-15 08:45:00'),
+(3,3, 1, 1,'2024-06-10 16:00:00', '2024-06-10 16:45:00'), 
+(3,3, 2, 1,'2024-06-15 15:00:00', '2024-06-15 15:15:00');
 
-INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente, 
-fk_status, fk_gravidade, inicio,fim) VALUES
-(1,1, 3, 3,'2024-05-10 06:00:00', '2024-05-10 12:00:00'),
-(1,1, 1, 3,'2024-05-10 08:00:00', null), 
-(1,1, 2, 3,'2024-05-15 08:00:00', null),
-(1,2, 2, 2,'2024-05-10 06:00:00', null),
-(2,2, 1, 2,'2024-05-10 08:00:00', null), 
-(2,2, 2, 2,'2024-05-15 08:00:00', null),
-(3,3, 1, 1,'2024-06-10 08:00:00', null), 
-(3,3, 2, 1,'2024-06-15 08:00:00', null);
+
+INSERT INTO alerta (fk_componenteServidor_servidor, 
+					fk_componenteServidor_tipoComponente, 
+                    fk_status, 
+                    fk_gravidade, 
+                    inicio,
+                    fim) VALUES
+(1,1, 3, 3,'2024-02-10 06:00:00', '2024-02-10 06:20:00'),
+(2,2, 1, 3,'2024-02-10 08:00:00', '2024-02-10 08:05:00'), 
+(1,2, 2, 3,'2024-04-15 08:08:00', '2024-04-15 08:15:00'),
+(1,3, 2, 2,'2024-04-21 07:00:00', '2024-04-21 07:20:00'),
+(2,3, 1, 2,'2024-07-10 18:00:00', '2024-07-10 18:35:00'), 
+(2,1, 2, 2,'2024-08-15 08:40:00', '2024-08-15 08:45:00'),
+(3,1, 1, 1,'2024-08-10 16:00:00', '2024-08-10 16:45:00'), 
+(3,1, 2, 1,'2024-09-15 15:00:00', '2024-09-15 15:15:00'),
+(3,2, 3, 1,'2024-09-10 16:00:00', '2024-09-10 16:45:00'),
+(3,1, 3, 1,'2024-10-10 16:00:00', '2024-10-10 16:45:00'),
+(3,1, 3, 2,'2024-10-10 16:00:00', '2024-10-10 16:45:00'),
+(3,2, 1, 2,'2024-10-10 16:00:00', '2024-10-10 16:45:00'),
+(3,1, 2, 1,'2024-11-10 16:00:00', '2024-11-10 16:45:00'),
+(3,2, 2, 1,'2024-11-10 16:00:00', '2024-11-10 16:45:00'),
+(3,2, 1, 3,'2024-12-10 17:30:00', '2024-12-10 17:45:00'),
+(3,2, 1, 2,'2024-12-10 16:00:00', '2024-12-10 16:45:00');
+
+
+
+select * from alerta;
+	
+SELECT 
+    alerta.inicio,
+    alerta.fim,
+    tipo_componente.nome_tipo_componente AS nome_componente,
+    servidor.nome AS nome_servidor,
+    alerta.fk_gravidade,
+    gravidade.nome AS nome_gravidade,
+    empresa.razao_social AS nome_empresa
+FROM alerta
+JOIN componente_servidor 
+    ON alerta.fk_componenteServidor_servidor = componente_servidor.fk_servidor 
+    AND alerta.fk_componenteServidor_tipoComponente = componente_servidor.fk_tipo_componente
+JOIN tipo_componente 
+    ON componente_servidor.fk_tipo_componente = tipo_componente.id
+JOIN servidor 
+    ON componente_servidor.fk_servidor = servidor.id
+JOIN empresa 
+    ON servidor.fk_empresa = empresa.id
+LEFT JOIN gravidade 
+    ON alerta.fk_gravidade = gravidade.id
+WHERE YEAR(alerta.inicio) = 2024;
+
+
+
+
+
 
 
 
@@ -345,3 +402,5 @@ ORDER BY
         JOIN empresa emp ON emp.id = srv.fk_empresa
         WHERE emp.id = 1
         ORDER BY srv.nome;	
+		
+-- drop database nextrail;
