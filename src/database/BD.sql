@@ -295,12 +295,8 @@ ORDER BY
     Componente, Gravidade;
 
 
-INSERT INTO alerta (fk_componenteServidor_servidor, 
-					fk_componenteServidor_tipoComponente, 
-                    fk_status, 
-                    fk_gravidade, 
-                    inicio,
-                    fim) VALUES
+INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente, 
+fk_status, fk_gravidade, inicio,fim) VALUES
 (1,1, 3, 3,'2024-05-10 06:00:00', '2024-05-10 12:00:00'),
 (1,1, 1, 3,'2024-05-10 08:00:00', null), 
 (1,1, 2, 3,'2024-05-15 08:00:00', null),
