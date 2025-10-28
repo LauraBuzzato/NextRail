@@ -5,10 +5,8 @@ function buscarDadosAnuais(ano) {
 
     var instrucaoSql = `
         SELECT 
-            alerta.inicio,
-            alerta.fim,
-            tipo_componente.nome_tipo_componente AS nome_componente,
-            servidor.nome AS nome_servidor,
+            alerta.inicio, alerta.fim, tipo_componente.nome_tipo_componente AS nome_componente,
+            servidor.nome AS nome_servidor, 
             gravidade.nome AS nome_gravidade,
             empresa.razao_social AS nome_empresa
         FROM alerta
@@ -16,9 +14,9 @@ function buscarDadosAnuais(ano) {
         JOIN tipo_componente ON componente_servidor.fk_tipo_componente = tipo_componente.id
         JOIN servidor ON componente_servidor.fk_servidor = servidor.id
         JOIN empresa on servidor.fk_empresa = empresa.id
-        LEFT JOIN metrica ON metrica.fk_componenteServidor_servidor = componente_servidor.fk_servidor AND metrica.fk_componenteServidor_tipoComponente = componente_servidor.fk_tipo_componente
-        LEFT JOIN gravidade ON metrica.fk_gravidade = gravidade.id 
-        WHERE YEAR(alerta.inicio) = ${ano};
+        LEFT JOIN gravidade ON alerta.fk_gravidade = gravidade.id 
+        WHERE YEAR(alerta.inicio) = ${ano} 
+        ORDER BY alerta.inicio ASC;
     `;
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
@@ -58,6 +56,7 @@ function buscarDadosAnuais(ano) {
             if (!mesesComAlertas[indiceMes]) {
 
                 var nomeDoMes = new Date(ano, indiceMes).toLocaleString('pt-BR', { month: 'long' });
+            console.log("Gravidade recebida:", alerta.nome_gravidade);
 
                 mesesComAlertas[indiceMes] = {
                     nome: nomeDoMes,
@@ -70,6 +69,7 @@ function buscarDadosAnuais(ano) {
                 };
                 console.log(`CRIANDO a caixinha para o mês: ${nomeDoMes}`);
             }
+console.log("Gravidade recebida:", alerta.nome_gravidade);
 
             var mesParaAtualizar = mesesComAlertas[indiceMes];
 
@@ -116,8 +116,10 @@ function buscarDadosAnuais(ano) {
 
             // Contar Gravidades para o MÊS
 
-            if (mesParaAtualizar.gravidades[alerta.nome_gravidade] != undefined) {
-                mesParaAtualizar.gravidades[alerta.nome_gravidade]++;
+            if (mesParaAtualizar.gravidades[alerta.nome_gravidade] == undefined) {
+                mesParaAtualizar.gravidades[alerta.nome_gravidade] = 1;
+            } else{
+                mesParaAtualizar.gravidades[alerta.nome_gravidade]++
             }
 
 
@@ -291,8 +293,7 @@ function buscarDadosMensais(ano, mes) {
         JOIN tipo_componente ON componente_servidor.fk_tipo_componente = tipo_componente.id
         JOIN servidor ON componente_servidor.fk_servidor = servidor.id
         JOIN empresa on servidor.fk_empresa = empresa.id
-        LEFT JOIN metrica ON metrica.fk_componenteServidor_servidor = componente_servidor.fk_servidor AND metrica.fk_componenteServidor_tipoComponente = componente_servidor.fk_tipo_componente
-        LEFT JOIN gravidade ON metrica.fk_gravidade = gravidade.id
+        LEFT JOIN gravidade ON alerta.fk_gravidade = gravidade.id
         WHERE YEAR(alerta.inicio) = ${ano} AND MONTH(alerta.inicio) = ${mes}
         ORDER BY alerta.inicio ASC;
     `;
@@ -306,19 +307,19 @@ function buscarDadosMensais(ano, mes) {
         var semanas = {};
 
         var diasNoMes = new Date(ano, mes, 0).getDate();
-        
+
         var numeroDeSemanas = Math.ceil(diasNoMes / 7);
 
         for (var i = 1; i <= numeroDeSemanas; i++) {
-        semanas[i] = {
-            numero: i,
-            alertas: [],
-            totalAlerts: 0,
-            totalMinutosParado: 0,
-            contagemServidores: {},
-            contagemComponentes: {}
-        };
-    }
+            semanas[i] = {
+                numero: i,
+                alertas: [],
+                totalAlerts: 0,
+                totalMinutosParado: 0,
+                contagemServidores: {},
+                contagemComponentes: {}
+            };
+        }
 
 
         function acharMaisFrequente(objetoDeContagem) {
