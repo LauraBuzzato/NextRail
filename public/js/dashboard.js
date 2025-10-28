@@ -247,7 +247,7 @@ function dash_analista() {
         new Chart(alertasComponenteCanvas, {
             type: 'bar',
             data: {
-                labels: ['CPU', 'RAM', 'DISCO'],
+                labels: ['Cpu', 'Ram', 'Disco'],
                 datasets: [{
                     label: 'Total de Alertas',
                     data: [7, 10, 1],
@@ -294,7 +294,7 @@ function dash_analista() {
                     x: {
                         title: {
                             display: true,
-                            text: 'Componente',
+                            text: 'Componentes',
                             font: { size : 22}
                         },
                         ticks: {
@@ -316,7 +316,7 @@ function dash_analista() {
         new Chart(tempoComponenteCanvas, {
             type: 'bar',
             data: {
-                labels: ['CPU', 'RAM', 'Disco'],
+                labels: ['Cpu', 'Ram', 'Disco'],
                 datasets: [{
                     label: 'Tempo médio (minutos)',
                     data: [20, 30, 5],
