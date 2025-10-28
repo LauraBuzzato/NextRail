@@ -963,6 +963,11 @@ footer {
     border-radius: 10px;
     padding: 15px;
 }
+
+.mes-stats strong{
+    font-size: 18px;
+}
+
 .severity-badge {
     padding: 4px 12px;
     border-radius: 9999px;
@@ -979,27 +984,28 @@ footer {
     padding-top: 5px;
 }
 
-.critico {
+.alto {
     background-color: #ef4444;
 }
-.alto {
+.medio {
     background-color: #f97316;
 }
-.medio {
+.baixo {
     background-color: #eab308;
 }
 
 
-.gravidade-distribuicao .critico {
-    color: #ef4444;
+.gravidade-distribuicao .baixo {
+    color: #eab308;
     background-color: transparent;
 }
 .gravidade-distribuicao .alto {
-    color: #f97316;
+    
+    color: #ef4444;
     background-color: transparent;
 }
 .gravidade-distribuicao .medio {
-    color: #eab308;
+    color: #f97316;
     background-color: transparent;
 }
 

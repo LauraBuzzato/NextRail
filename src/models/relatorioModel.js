@@ -65,7 +65,7 @@ function buscarDadosAnuais(ano) {
                     totalMinutosParado: 0,
                     servidores: {},
                     componentes: {},
-                    gravidades: { 'Crítico': 0, 'Alto': 0, 'Médio': 0 },
+                    gravidades: { 'Baixo': 0, 'Médio': 0, 'Alto': 0 },
                     serverBreakdown: {}
                 };
                 console.log(`CRIANDO a caixinha para o mês: ${nomeDoMes}`);

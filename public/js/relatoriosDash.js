@@ -156,8 +156,8 @@
                     // Só pra exibir na de kpi
                     var classeDaGravidade = '';
 
-                    if (mes.gravidadePredominante == 'Crítico') {
-                        classeDaGravidade = 'critico';
+                    if (mes.gravidadePredominante == 'Baixo') {
+                        classeDaGravidade = 'baixo';
                     } else if (mes.gravidadePredominante == 'Alto') {
                         classeDaGravidade = 'alto';
                     } else if (mes.gravidadePredominante == 'Médio') {
@@ -206,9 +206,9 @@
         <div>
             <h5 class="mes-section-title">Distribuição de Gravidade</h5>
                 <div class="gravidade-distribuicao">
-                    <span><span class="critico">Crítico:</span> <strong>${mes.gravidades['Crítico']}</strong></span>
-                    <span><span class="alto">Alto:</span> <strong>${mes.gravidades['Alto']}</strong></span>
-                    <span><span class="medio">Médio:</span> <strong>${mes.gravidades['Médio']}</strong></span>
+                <span><span class="alto">Alto:</span> <strong>${mes.gravidades['Alto']}</strong></span>
+                <span><span class="medio">Médio:</span> <strong>${mes.gravidades['Médio']}</strong></span>
+                <span><span class="baixo">Baixo:</span> <strong>${mes.gravidades['Baixo']}</strong></span>
                 </div>
         </div>
         
