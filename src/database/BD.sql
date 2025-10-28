@@ -86,7 +86,6 @@ descricao varchar(30) unique not null
 create table componente_servidor (
 fk_servidor int not null,
 fk_tipo_componente int not null,
-primary key (fk_servidor, fk_tipo_componente),
 foreign key (fk_servidor) references servidor(id),
 foreign key (fk_tipo_componente) references tipo_componente(id)
 );
