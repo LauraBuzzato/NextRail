@@ -36,28 +36,60 @@ async function listarServidor() {
             let statusCor = 'green';
             let statusDesc = '';
 
+            let cpuAlertas = 0;
+            let ramAlertas = 0;
+            let discoAlertas = 0;
+
             for (let j = 0; j < alertas.length; j++) {
                 let alerta = alertas[j]
                 if (alerta.servidor == servidor.servidor && alerta.status != 'Fechado') {
                     status = '<p>Alertas não resolvidos:</p>';
-                    if (alerta.gravidade == "Alto") {
-                        statusCor = 'red'
-                        statusDesc += '<div class="carac_alerta"><div><b>'+alerta.componente+'</b> - Gravidade Alta<br>Status - '+alerta.status+'</div></div>'
-                    } 
-                    if (alerta.gravidade == "Médio") {
-                        if (statusCor != 'red') {
-                            statusCor = 'darkorange'
-                        }
-                        statusDesc += '<div class="carac_alerta"><div><b>'+alerta.componente+'</b> - Gravidade Média<br>Status - '+alerta.status+'</div></div>'
-                    } 
-                    if (alerta.gravidade == "Baixo") {
-                        if (statusCor != 'darkorange') {
-                            statusCor = 'yellow'
-                        }
-                        statusDesc += '<div class="carac_alerta"><div><b>'+alerta.componente+'</b> - Gravidade Baixa<br>Status - '+alerta.status+'</div></div>'
+
+
+                   if (alerta.gravidade == "Alto") {
+                        statusCor = 'red';
+                    } else if (alerta.gravidade == "Médio" && statusCor != 'red') {
+                        statusCor = 'darkorange';
+                    } else if (alerta.gravidade == "Baixo" && statusCor != 'red' && statusCor != 'darkorange') {
+                        statusCor = 'yellow';
+                    }
+
+                    if (alerta.componente == 'Cpu') {
+                        cpuAlertas++;
+                    } else if (alerta.componente == 'Ram') {
+                        ramAlertas++;
+                    } else if (alerta.componente == 'Disco') {
+                        discoAlertas++;
                     }
                 }
             }
+
+
+            //Novo
+            if (status != '<p>Sem Alertas</p>') {
+
+                let textoCpu = 'alertas';
+                let textoRam = 'alertas';
+                let textoDisco = 'alertas';
+
+
+                if (cpuAlertas == 1) {
+                    textoCpu = 'alerta';
+                }
+                if (ramAlertas == 1) {
+                    textoRam = 'alerta';
+                }
+                if (discoAlertas == 1) {
+                    textoDisco = 'alerta';
+                }
+
+                statusDesc = `
+                    <div class="carac_alerta"><div><b>Cpu:</b> ${cpuAlertas} ${textoCpu}</div></div>
+                    <div class="carac_alerta"><div><b>Ram:</b> ${ramAlertas} ${textoRam}</div></div>
+                    <div class="carac_alerta"><div><b>Disco:</b> ${discoAlertas} ${textoDisco}</div></div>
+                `;
+            }
+
 
             if(servidor.complemento == null){
                 listaServidores += `
