@@ -247,10 +247,10 @@ function dash_analista() {
         new Chart(alertasComponenteCanvas, {
             type: 'bar',
             data: {
-                labels: ['CPU', 'RAM', 'Disco'],
+                labels: ['CPU', 'RAM', 'DISCO'],
                 datasets: [{
                     label: 'Total de Alertas',
-                    data: [32, 50, 8],
+                    data: [7, 10, 1],
                     backgroundColor: [
                         'rgba(147, 112, 219, 0.8)',
                         'rgba(0, 191, 255, 0.8)',
@@ -388,7 +388,7 @@ function dash_analista() {
                 labels: ['Baixa', 'Média', 'Alta'],
                 datasets: [{
                     label: 'Alertas Registrados',
-                    data: [45, 38, 25],
+                    data: [5, 9, 4],
                     backgroundColor: [
                         'rgba(255, 255, 0, 1)',
                         'rgba(255, 165, 0, 1)',

@@ -207,7 +207,7 @@ async function atualizar(a) {
 
       <div class="kpi-box">
         <span class="kpi-title">Quantidade total de Alertas do Mês</span>
-        <h2 class="kpi-value">12</h2>
+        <h2 class="kpi-value">18</h2>
       </div>
 
       <div class="kpi-box">
@@ -217,12 +217,12 @@ async function atualizar(a) {
 
       <div class="kpi-box">
         <span class="kpi-title">MTTR (Tempo Médio de Reparo) do Mês</span>
-        <h2 class="kpi-value">60 min</h2>
+        <h2 class="kpi-value">20 min</h2>
       </div>
 
       <div class="kpi-box">
         <span class="kpi-title">Gravidade mais frequente do Mês</span>
-        <h2 class="kpi-value">Médio</h2>
+        <h2 class="kpi-value">Média</h2>
       </div>
     </section>
     
