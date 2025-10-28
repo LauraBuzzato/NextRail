@@ -145,7 +145,7 @@
                         <div class="kpi-card-gerado"><ion-icon name="server-outline" style="color: #2dd4bf;"></ion-icon><div><div class="kpi-value">${dados.servidorMaisAfetadoAno}</div><div class="kpi-label">Servidor Afetado</div></div></div>
                         <div class="kpi-card-gerado"><ion-icon name="construct-outline" style="color: #06b6d4;"></ion-icon><div><div class="kpi-value">${dados.componenteMaisAfetadoAno}</div><div class="kpi-label">Comp. Afetado</div></div></div>
                     </div>
-                    <h3 style="text-align: center; font-size: 1.8rem; font-weight: bold; margin-bottom: 20px;">Evolução Mensal</h3>
+                    <h3 style="text-align: center; font-size: 1.8rem; font-weight: bold; margin-bottom: 20px;">Análise Mensal</h3>
             `;
 
                 // Cria os cards de cada mês usando for
