@@ -205,19 +205,19 @@ Insert into status(descricao)
 				  ('Andamento'),
 				  ('Fechado');
 select * from estado;
--- ======================== ENDEREÇOS ========================
+
 INSERT INTO  endereco (logradouro, cep, numero, complemento, fk_estado) VALUES('Rua das Margaridas', '69309550', '500', 'Bloco C', 23),
 ('Rua Brisa do Amanhecer', '53404355', '105', NULL, 17),
 ('Avenida Cidade Jardim', '01454900', '280', NULL, 25);
 
--- ======================== SERVIDORES ========================
+
 INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
 VALUES
 ('Servidor01', 2, 2, 3, 1),
 ('Servidor02', 1, 1, 2, 1),
 ('Servidor03', 1, 3, 1, 1);
 
--- ======================== GRAVIDADES ========================
+
 INSERT INTO gravidade (nome)
 VALUES
 ('Baixo'),
@@ -357,10 +357,6 @@ JOIN empresa
 LEFT JOIN gravidade 
     ON alerta.fk_gravidade = gravidade.id
 WHERE YEAR(alerta.inicio) = 2024;
-
-
-
-
 
 
 
