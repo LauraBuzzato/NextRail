@@ -205,19 +205,19 @@ Insert into status(descricao)
 				  ('Andamento'),
 				  ('Fechado');
 select * from estado;
--- ======================== ENDEREÇOS ========================
+
 INSERT INTO  endereco (logradouro, cep, numero, complemento, fk_estado) VALUES('Rua das Margaridas', '69309550', '500', 'Bloco C', 23),
 ('Rua Brisa do Amanhecer', '53404355', '105', NULL, 17),
 ('Avenida Cidade Jardim', '01454900', '280', NULL, 25);
 
--- ======================== SERVIDORES ========================
+
 INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
 VALUES
 ('Servidor01', 2, 2, 3, 1),
 ('Servidor02', 1, 1, 2, 1),
 ('Servidor03', 1, 3, 1, 1);
 
--- ======================== GRAVIDADES ========================
+
 INSERT INTO gravidade (nome)
 VALUES
 ('Baixo'),
@@ -292,13 +292,9 @@ WHERE
 ORDER BY 
     Componente, Gravidade;
 
--- ====================== ALERTAS ======================
-INSERT INTO alerta (fk_componenteServidor_servidor, 
-					fk_componenteServidor_tipoComponente, 
-                    fk_status, 
-                    fk_gravidade, 
-                    inicio,
-                    fim) VALUES
+
+INSERT INTO alerta (fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente, fk_status, 
+                    fk_gravidade, inicio,fim) VALUES
 (1,1, 3, 3,'2024-05-10 06:00:00', '2024-05-10 06:20:00'),
 (1,1, 1, 3,'2024-05-10 08:00:00', '2024-05-10 08:05:00'), 
 (1,1, 2, 3,'2024-05-15 08:08:00', '2024-05-15 08:15:00'),
@@ -361,10 +357,6 @@ WHERE YEAR(alerta.inicio) = 2024;
 
 
 
-
-
-
-
 SELECT 
 	emp.razao_social AS empresa,
 	srv.nome AS servidor,
@@ -403,4 +395,3 @@ ORDER BY
         WHERE emp.id = 1
         ORDER BY srv.nome;	
 		
--- drop database nextrail;
