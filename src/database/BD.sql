@@ -292,7 +292,7 @@ WHERE
 ORDER BY 
     Componente, Gravidade;
 
--- ====================== ALERTAS ======================
+
 INSERT INTO alerta (fk_componenteServidor_servidor, 
 					fk_componenteServidor_tipoComponente, 
                     fk_status, 
@@ -401,4 +401,4 @@ ORDER BY
 
 
 
--- drop database nextrail;
+
