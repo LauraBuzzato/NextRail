@@ -389,21 +389,28 @@ function atualizarVisibilidadeSuporte() {
       datasets[0].hidden = false;
       datasets[1].hidden = false;
       datasets[2].hidden = false;
+      datasets[3].hidden = true;
       break;
     case 1: // CPU
       datasets[0].hidden = false;
       datasets[1].hidden = true;
       datasets[2].hidden = true;
+      datasets[3].hidden = false;
+      datasets[3].data = Array(13).fill(70)
       break;
     case 2: // RAM
       datasets[0].hidden = true;
       datasets[1].hidden = false;
       datasets[2].hidden = true;
+      datasets[3].hidden = false;
+      datasets[3].data = Array(13).fill(60)
       break;
     case 3: // Disco
       datasets[0].hidden = true;
       datasets[1].hidden = true;
       datasets[2].hidden = false;
+      datasets[3].hidden = false;
+      datasets[3].data = Array(13).fill(65)
       break;
   }
 
