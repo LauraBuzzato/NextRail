@@ -745,9 +745,30 @@ main {
   border-radius: 5px;
 }
 .carac_alerta {
-  border: 1px solid #ffe066;
-  border-radius: 5px;
-  margin-bottom: 5px;
+  text-align: center;
+  display: flex;
+  justify-content: start;
+  margin-left: 36%;
+}
+
+.carac_alerta div{
+  display: flex;
+  flex-direction: row;
+}
+
+.circulo1{
+  margin-left: 16.5%;
+  margin-top: 13%;
+}
+
+.circulo2{
+  margin-left: 8.9%;
+  margin-top: 10%;
+}
+
+.circulo3{
+  margin-left: 5%;
+  margin-top: 10%;
 }
 
 .linha_card_serv {

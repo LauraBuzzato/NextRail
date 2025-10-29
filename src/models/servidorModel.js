@@ -34,8 +34,8 @@ function listarAlertas(fkEmpresa) {
         JOIN servidor srv ON srv.id = fk_componenteServidor_servidor
         JOIN tipo_componente tc ON tc.id = fk_componenteServidor_tipoComponente
         JOIN empresa emp ON emp.id = srv.fk_empresa
-        WHERE emp.id = ${fkEmpresa}
-        ORDER BY srv.nome;
+        WHERE emp.id = ${fkEmpresa} and (fk_status = 2 or fk_status = 1)
+        ORDER BY srv.nome, inicio;
     `;
     console.log("Executando SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
