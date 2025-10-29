@@ -542,7 +542,7 @@ function dash_suporte() {
                 datasets: [
                     {
                         label: 'Uso de CPU (%)',
-                        data: [65, 59, 80, 81, 56, 55, 40, 45, 60, 70, 75, 80, 85],
+                        data: [65, 59, 80, 81, 56, 55, 40, 45, 60, 70, 75, 88, 75],
                         borderColor: 'rgba(167,139,250,1)',
                         backgroundColor: 'rgba(167,139,250,0.2)',
                         tension: 0.4,
@@ -550,7 +550,7 @@ function dash_suporte() {
                     },
                     {
                         label: 'Uso de RAM (%)',
-                        data: [28, 48, 40, 19, 86, 27, 90, 45, 60, 35, 50, 65, 70],
+                        data: [28, 48, 40, 19, 86, 27, 90, 45, 60, 35, 50, 78, 82],
                         borderColor: 'rgba(56,189,248,1)',
                         backgroundColor: 'rgba(56,189,248,0.2)',
                         tension: 0.4,
@@ -558,7 +558,7 @@ function dash_suporte() {
                     },
                     {
                         label: 'Uso de Disco (%)',
-                        data: [45, 35, 50, 60, 40, 55, 65, 50, 45, 60, 55, 50, 45],
+                        data: [45, 35, 50, 60, 40, 55, 65, 50, 45, 60, 55, 48, 53],
                         borderColor: 'rgba(251,191,36,1)',
                         backgroundColor: 'rgba(251,191,36,0.2)',
                         tension: 0.4,
