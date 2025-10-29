@@ -130,7 +130,7 @@ function dash_analista() {
     Chart.defaults.color = '#fff';
     Chart.defaults.font.weight = 'bold';
 
-    // Gráfico de Frequência Semanal
+    // Gráfico de Frequência Mensal
     new Chart(frequenciaCanvas, {
         type: 'line',
         data: {
@@ -146,9 +146,9 @@ function dash_analista() {
                 {
                     label: 'CPU',
                     data: [0, 0, 1, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0,
-                        1, 0, 0, 0, 2, 0, 0,
-                        2, 0, 0, 1, 0, 0, 0,
+                        0, 0, 0, 3, 0, 0, 0,
+                        1, 0, 1, 0, 2, 0, 0,
+                        2, 0, 0, 0, 0, 1, 0,
                         0, 0, 0],
                     borderColor: '#a78bfa',
                     backgroundColor: 'rgba(167,139,250,0.2)',
@@ -161,8 +161,8 @@ function dash_analista() {
                     label: 'RAM',
                     data: [0, 0, 0, 0, 0, 0, 0,
                         1, 0, 2, 0, 0, 0, 0,
-                        1, 0, 0, 3, 0, 0, 0,
-                        3, 0, 0, 0, 0, 0, 0,
+                        1, 0, 0, 6, 0, 0, 3,
+                        0, 0, 0, 0, 0, 0, 0,
                         0, 0, 0],
                     borderColor: '#38bdf8',
                     backgroundColor: 'rgba(56,189,248,0.2)',
@@ -250,7 +250,7 @@ function dash_analista() {
                 labels: ['Cpu', 'Ram', 'Disco'],
                 datasets: [{
                     label: 'Total de Alertas',
-                    data: [7, 10, 1],
+                    data: [11, 13, 1],
                     backgroundColor: [
                         'rgba(147, 112, 219, 0.8)',
                         'rgba(0, 191, 255, 0.8)',
