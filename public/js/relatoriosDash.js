@@ -57,7 +57,7 @@
                     return;
                 }
 
-                // 3. Array para traduzir o número do mês (ex: 3) para o nome ("Março")
+                // Array para traduzir o número do mês (ex: 3) para o nome ("Março")
                 var nomesDosMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
                 var htmlCompleto = "";
@@ -133,17 +133,17 @@
                 <div class="relatorio-gerado">
                     <div style="text-align: center; margin-bottom: 40px;">
                         <h2 style="font-size: 1.8rem; font-weight: bold; color: #ffe066;">${dados.empresa}</h2>
-                        <p style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;margin-left:17%;">Relatório Anual — ${dados.ano}</p>
+                        <p style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;margin-left:17%;">Relatório Anual de ${dados.ano}</p>
                     </div>
                     <div class="kpi-grid">
                         <div class="kpi-card-gerado"><ion-icon name="alert-circle-outline" style="color: #eab308;"></ion-icon><div><div class="kpi-value">${dados.totalAlertsAnual}</div><div class="kpi-label">Total Alertas</div></div></div>
                         <div class="kpi-card-gerado"><ion-icon name="time-outline" style="color: #3b82f6;"></ion-icon><div><div class="kpi-value">${dados.mttrMedioAnual} min</div><div class="kpi-label">MTTR Médio</div></div></div>
                         <div class="kpi-card-gerado"><ion-icon name="shield-checkmark-outline" style="color: #22c55e;"></ion-icon><div><div class="kpi-value">${dados.disponibilidadeMediaAnual.toFixed(2)}%</div><div class="kpi-label">Disponibilidade</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="pulse-outline" style="color: #f97316;"></ion-icon><div><div class="kpi-value">${dados.gravidadeMaisComumAno}</div><div class="kpi-label">Gravidade Comum</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="flame-outline" style="color: #ef4444;"></ion-icon><div><div class="kpi-value">${dados.mesMaisCritico}</div><div class="kpi-label">Mês Crítico</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="leaf-outline" style="color: #a3e635;"></ion-icon><div><div class="kpi-value">${dados.mesMaisEstavel}</div><div class="kpi-label">Mês Estável</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="server-outline" style="color: #2dd4bf;"></ion-icon><div><div class="kpi-value">${dados.servidorMaisAfetadoAno}</div><div class="kpi-label">Servidor Afetado</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="construct-outline" style="color: #06b6d4;"></ion-icon><div><div class="kpi-value">${dados.componenteMaisAfetadoAno}</div><div class="kpi-label">Comp. Afetado</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="pulse-outline" style="color: #f97316;"></ion-icon><div><div class="kpi-value">${dados.gravidadeMaisComumAno}</div><div class="kpi-label">Gravidade Mais Frequente</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="flame-outline" style="color: #ef4444;"></ion-icon><div><div class="kpi-value">${dados.mesMaisCritico}</div><div class="kpi-label">Mês Mais Crítico</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="leaf-outline" style="color: #a3e635;"></ion-icon><div><div class="kpi-value">${dados.mesMaisEstavel}</div><div class="kpi-label">Mês Mais Estável</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="server-outline" style="color: #2dd4bf;"></ion-icon><div><div class="kpi-value">${dados.servidorMaisAfetadoAno}</div><div class="kpi-label">Servidor Mais Afetado</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="construct-outline" style="color: #06b6d4;"></ion-icon><div><div class="kpi-value">${dados.componenteMaisAfetadoAno}</div><div class="kpi-label">Componente Mais Afetado</div></div></div>
                     </div>
                     <h3 style="text-align: center; font-size: 1.8rem; font-weight: bold; margin-bottom: 20px;">Análise Mensal</h3>
             `;
@@ -189,7 +189,7 @@
                     mesesHtml += `
     <div class="mes-card-gerado">
         <div class="mes-header" style="display:flex; justify-content: space-between; align-items: center;">
-            <h4>${mes.nome}</h4>
+            <h4>${mes.nome.charAt(0).toUpperCase() + mes.nome.slice(1)}</h4> 
             <span class="severity-badge ${classeDaGravidade}">${mes.gravidadePredominante}</span>
         </div>
         
@@ -224,7 +224,7 @@
                 var conclusaoHtml = `
         <div class="conclusion">
             <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 15px;">Conclusão</h3>
-            <p>Durante o ano de ${dados.ano}, o sistema registrou <strong>${dados.totalAlertsAnual} alertas</strong> com um MTTR médio de <strong>${dados.mttrMedioAnual} minutos</strong> e uma disponibilidade média de <strong>${dados.disponibilidadeMediaAnual.toFixed(2)}%</strong>. O mês mais crítico foi <strong>${dados.mesMaisCritico}</strong>, enquanto <strong>${dados.mesMaisEstavel}</strong> se destacou como o mais estável. O componente mais afetado foi <strong>${dados.componenteMaisAfetadoAno}</strong> e o servidor mais impactado foi <strong>${dados.servidorMaisAfetadoAno}</strong>, indicando focos para inspeção preventiva.</p>
+            <p>Durante o ano de ${dados.ano}, o sistema registrou <strong>${dados.totalAlertsAnual} alertas</strong> com um MTTR médio de <strong>${dados.mttrMedioAnual} minutos</strong> e uma disponibilidade média de <strong>${dados.disponibilidadeMediaAnual.toFixed(2)}%</strong>. O mês mais crítico foi <strong>${dados.mesMaisCritico}</strong>, enquanto <strong>${dados.mesMaisEstavel}</strong> se destacou como o mais estável. O componente mais afetado foi <strong>${dados.componenteMaisAfetadoAno}</strong> e o servidor mais impactado foi o <strong>${dados.servidorMaisAfetadoAno}</strong>.</p>
         </div>
             <div style="text-align: center;">
                 <button onclick="voltar('ano')" class="btn-voltar">Voltar</button>
@@ -267,17 +267,17 @@
                 <div class="relatorio-gerado">
                     <div style="text-align: center; margin-bottom: 40px;">
                         <h2 style="font-size: 1.8rem; font-weight: bold; color: #ffe066;">${kpis.empresa}</h2>
-                        <p style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;margin-left:17%;">Relatório Mensal — ${nomeDoMes} de ${ano}</p>
+                        <p style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;margin-left:17%;">Relatório Mensal de ${nomeDoMes} de ${ano}</p>
                     </div>
                     <div class="kpi-grid">
                         <div class="kpi-card-gerado"><ion-icon name="alert-circle-outline" style="color: #eab308;"></ion-icon><div><div class="kpi-value">${kpis.totalAlerts}</div><div class="kpi-label">Total Alertas</div></div></div>
                         <div class="kpi-card-gerado"><ion-icon name="time-outline" style="color: #3b82f6;"></ion-icon><div><div class="kpi-value">${Math.round(kpis.mttrMedio)} min</div><div class="kpi-label">MTTR Médio</div></div></div>
                         <div class="kpi-card-gerado"><ion-icon name="shield-checkmark-outline" style="color: #22c55e;"></ion-icon><div><div class="kpi-value">${kpis.disponibilidade.toFixed(2)}%</div><div class="kpi-label">Disponibilidade</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="flame-outline" style="color: #ef4444;"></ion-icon><div><div class="kpi-value">${kpis.semanaMaisCritica}</div><div class="kpi-label">Semana Crítica</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="leaf-outline" style="color: #a3e635;"></ion-icon><div><div class="kpi-value">${kpis.semanaMaisEstavel}</div><div class="kpi-label">Semana Estável</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="server-outline" style="color: #2dd4bf;"></ion-icon><div><div class="kpi-value">${kpis.servidorMaisAfetado}</div><div class="kpi-label">Servidor Destaque</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="construct-outline" style="color: #06b6d4;"></ion-icon><div><div class="kpi-value">${kpis.componenteMaisAfetado}</div><div class="kpi-label">Comp. Destaque</div></div></div>
-                        <div class="kpi-card-gerado"><ion-icon name="pulse-outline" style="color: #f97316;"></ion-icon><div><div class="kpi-value">${kpis.gravidadePredominante}</div><div class="kpi-label">Gravidade Comum</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="flame-outline" style="color: #ef4444;"></ion-icon><div><div class="kpi-value">${kpis.semanaMaisCritica}</div><div class="kpi-label">Semana Mais Crítica</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="leaf-outline" style="color: #a3e635;"></ion-icon><div><div class="kpi-value">${kpis.semanaMaisEstavel}</div><div class="kpi-label">Semana Mais Estável</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="server-outline" style="color: #2dd4bf;"></ion-icon><div><div class="kpi-value">${kpis.servidorMaisAfetado}</div><div class="kpi-label">Servidor Mais Afetado</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="construct-outline" style="color: #06b6d4;"></ion-icon><div><div class="kpi-value">${kpis.componenteMaisAfetado}</div><div class="kpi-label">Comp Mais Afetado</div></div></div>
+                        <div class="kpi-card-gerado"><ion-icon name="pulse-outline" style="color: #f97316;"></ion-icon><div><div class="kpi-value">${kpis.gravidadePredominante}</div><div class="kpi-label">Gravidade Mais Comum</div></div></div>
                     </div>
                     <h3 style="text-align: center; font-size: 1.8rem; font-weight: bold; margin: 40px 0 20px 0;">Análise Semanal</h3>
                 `;

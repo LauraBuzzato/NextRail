@@ -202,7 +202,7 @@ console.log("Gravidade recebida:", alerta.nome_gravidade);
                 minAlertas = mes.totalAlerts;
                 mesMaisEstavel = mes.nome;
             }
-
+            //console.log(mes)
             arrayMesesFinal.push(mes);
         }
 
@@ -224,11 +224,11 @@ console.log("Gravidade recebida:", alerta.nome_gravidade);
             mttrMedioAnual: Math.round(mttrMedioAnual),
             disponibilidadeMediaAnual: disponibilidadeMediaAnual,
             gravidadeMaisComumAno: gravidadeMaisComumAno,
-            mesMaisCritico: mesMaisCritico,
-            mesMaisEstavel: mesMaisEstavel,
+            mesMaisCritico: mesMaisCritico.charAt(0).toUpperCase() + mesMaisCritico.slice(1),
+            mesMaisEstavel: mesMaisEstavel.charAt(0).toUpperCase() + mesMaisEstavel.slice(1),
             servidorMaisAfetadoAno: servidorMaisAfetadoAno,
             componenteMaisAfetadoAno: componenteMaisAfetadoAno,
-            dadosMensais: arrayMesesFinal
+            dadosMensais: arrayMesesFinal,
         };
 
         console.log("Objeto final pronto para ser enviado:", resultadoFinal);
