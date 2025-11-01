@@ -1,4 +1,4 @@
-const URL = "http://54.152.70.223:3333"
+const URL_SITE = "http://54.152.70.223:3333"
     window.onload = function () {
         mudarVisualizacao("anual")
     };
@@ -7,7 +7,7 @@ const URL = "http://54.152.70.223:3333"
         var containerAnos = document.getElementById('containerAnos');
         containerAnos.innerHTML = '<h4>Carregando anos com relatórios...</h4>';
 
-        fetch(`${API_URL}/relatorio/anos`)
+        fetch(`${URL_SITE}/relatorio/anos`)
             .then(function (resposta) {
                 if (resposta.ok) {
                     return resposta.json();
@@ -42,7 +42,7 @@ const URL = "http://54.152.70.223:3333"
         var containerMeses = document.getElementById('containerMeses');
         containerMeses.innerHTML = '<h4>Carregando meses com relatórios...</h4>';
 
-        fetch(`${API_URL}/relatorio/meses`)
+        fetch(`${URL_SITE}/relatorio/meses`)
             .then(function (resposta) {
                 if (resposta.ok) {
                     return resposta.json();
@@ -117,7 +117,7 @@ const URL = "http://54.152.70.223:3333"
         containerDoRelatorio.innerHTML = `<h3>Buscando dados do relatório de ${ano}...</h3>`;
 
 
-        fetch(`${API_URL}/relatorio/anual/${ano}`)
+        fetch(`${URL_SITE}/relatorio/anual/${ano}`)
             .then(function (resposta) {
                 if (resposta.ok) {
                     return resposta.json();
