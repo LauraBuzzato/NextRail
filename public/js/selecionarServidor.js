@@ -167,3 +167,72 @@ async function listarServidor() {
         console.error("Erro ao buscar servidores:", erro);
     };
 }
+
+function carregarGraficos(){
+  const ctx = document.getElementById('topservidoresalertas');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Servidor01', 'Servidor02', 'Servidor03'],
+      datasets: [{
+        label: 'Alertas Registrados',
+        data: [10, 9, 4],
+        backgroundColor: [
+          'rgba(255, 255, 0, 1)',
+          'rgba(255, 165, 0, 1)',
+          'rgba(255, 0, 0, 2.0)'
+        ],
+        borderColor: [
+          'rgba(255, 255, 0, 1)',
+          'rgba(3, 2, 0, 1)',
+          'rgba(255, 0, 0, 2.0)'
+        ],
+        borderWidth: 1,
+        borderRadius: 8
+      }]
+    },
+    options: {
+
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: { display: true },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.parsed.y} alertas`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Quantidade de alertas',
+            color: '#fff',
+            font: {
+              size: 22
+            }
+          },
+          ticks: {
+            color: '#fff',
+            font: {
+              size: 18
+            }
+          },
+          grid: { color: '#333' }
+        },
+        x: {
+
+          ticks: {
+            color: '#fff',
+            font: {
+              size: 18
+            }
+          }
+        }
+      }
+    }
+  });
+}

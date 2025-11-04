@@ -3,7 +3,7 @@
     justify-content: space-around;
     text-align: center;
     width: 100%;
-    margin-bottom: 1%;
+    margin-top: 1.5%;
 }
 
 .KPI {
@@ -27,4 +27,8 @@
 .KPI h4 {
     font-size: 1.2rem;
     margin-top: 4%;
+}
+
+.KPI canvas {
+    margin-top: 3%;
 }

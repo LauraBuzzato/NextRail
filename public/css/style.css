@@ -728,6 +728,7 @@ main {
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
   align-self: flex-start;
   margin-bottom: 15px;
+  margin-top: 2%;
 }
 
 .legenda {

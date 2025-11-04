@@ -17,9 +17,11 @@
   <link rel="stylesheet" href="css/servidor.css">
   <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
   <link rel="preconnect" href="https://fonts.gstatic.com">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body onload="validarSessao(), analisaCargo(), listarServidor(), arrumarMenu()">
+<body onload="validarSessao(), analisaCargo(), listarServidor(), arrumarMenu(), carregarGraficos()">
   <!-- Menu lateral -->
   <div class="menu" id="DIVmenu">
 
@@ -35,7 +37,7 @@
   <main class="selecionar_servidor">
     <div class="container-KPIS">
       <div class="KPI">
-        <h2>Qtd servidores em alerta::</h2>
+        <h2>Qtd servidores em alerta:</h2>
         <h1>1</h1>
       </div>
       <div class="KPI">
@@ -44,7 +46,7 @@
       </div>
       <div class="KPI">
         <h2>Top 3 servidores com mais alertas:</h2>
-        <canvas id="alertasComponenteChart"></canvas>
+        <canvas id="topservidoresalertas"></canvas>
       </div>
     </div>
 
