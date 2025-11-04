@@ -114,9 +114,9 @@ function cadastrarServidor(nome, fk_tipo, fk_so, fk_empresa, logradouro, cep, nu
 function criarComponentesServidor(servidorId) {
 
     const componentes = [
-        { nome: 'CPU', id: 1, metricaNome: 'Uso de CPU' },
-        { nome: 'Memória RAM', id: 2, metricaNome: 'Uso de Memória' },
-        { nome: 'Disco Rígido', id: 3, metricaNome: 'Espaço em Disco' }
+        { nome: 'CPU', id: 1},
+        { nome: 'Memória RAM', id: 2 },
+        { nome: 'Disco Rígido', id: 3}
     ];
     const gravidades = [1, 2, 3];
 
@@ -149,12 +149,11 @@ function criarComponentesServidor(servidorId) {
                     var instrucaoMetrica = `
                         INSERT INTO metrica (
                             fk_gravidade, 
-                            nome, 
                             valor, 
                             fk_componenteServidor_servidor, 
                             fk_componenteServidor_tipoComponente
                         ) 
-                        VALUES (${gravidadeId}, '${componente.metricaNome}', ${nivelRecomend}, ${servidorId}, ${componente.id});
+                        VALUES (${gravidadeId}, ${nivelRecomend}, ${servidorId}, ${componente.id});
                     `;
 
                     metricasPromises.push(database.executar(instrucaoMetrica));
@@ -162,7 +161,7 @@ function criarComponentesServidor(servidorId) {
                 return Promise.all(metricasPromises);
             })
             .catch(erro => {
-                console.error(`Erro ao criar componente ou métricas para ${componente.nome} no Servidor ${servidorId}:`, erro);
+                console.error(`Erro ao criar componente ou métricas para ${componente.id} no Servidor ${servidorId}:`, erro);
                 throw erro;
             });
 
@@ -218,13 +217,10 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
 
                 if (componente.nome === 'Cpu') {
                     configComponente = configuracoes.cpu;
-                    nomeMetrica = 'Uso de CPU';
                 } else if (componente.nome === 'Ram') {
                     configComponente = configuracoes.ram;
-                    nomeMetrica = 'Uso de RAM';
                 } else if (componente.nome === 'Disco') {
                     configComponente = configuracoes.disco;
-                    nomeMetrica = 'Uso de Disco';
                 } else {
                     return;
                 }
@@ -235,7 +231,7 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
                         SET valor = ${configComponente.baixo} 
                         WHERE fk_componenteServidor_tipoComponente = ${componente.id} 
                         AND fk_gravidade = 1
-                        AND nome = '${nomeMetrica}'
+                        AND fk_componenteServidor_servidor = ${servidorId}
                     `);
                 }
 
@@ -245,7 +241,7 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
                         SET valor = ${configComponente.medio} 
                         WHERE fk_componenteServidor_tipoComponente = ${componente.id} 
                         AND fk_gravidade = 2
-                        AND nome = '${nomeMetrica}'
+                        AND fk_componenteServidor_servidor = ${servidorId}
                     `);
                 }
 
@@ -255,7 +251,7 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
                         SET valor = ${configComponente.alto} 
                         WHERE fk_componenteServidor_tipoComponente = ${componente.id} 
                         AND fk_gravidade = 3
-                        AND nome = '${nomeMetrica}'
+                        AND fk_componenteServidor_servidor = ${servidorId}
                     `);
                 }
             });
