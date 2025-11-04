@@ -13,5 +13,6 @@ router.post("/cadastrar", servidorController.cadastrarServidor);
 router.post("/criarComponentesServidor", servidorController.criarComponentesServidor);
 router.post("/atualizarConfiguracaoAlerta", servidorController.atualizarConfiguracaoAlerta);
 router.get("/configuracoes/:servidorId", servidorController.buscarConfiguracoesServidor);
+router.post("/carregarComponentes", servidorController.carregarComponentes);
 
 module.exports = router;

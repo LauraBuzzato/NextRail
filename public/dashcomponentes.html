@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="./css/menu.css">
     <link rel="stylesheet" href="./css/dashcomponentes.css">
     <script src="js/adap_dash_cargo.js"></script>
+    <script src="js/dashcomponentes.js"></script>
     
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -20,7 +21,7 @@
 
 </head>
 
-<body onload="">
+<body onload="carregarComponentes()">
     <div class="menu">
         <ul class="link-items">
             <div class="logo-container">
@@ -67,14 +68,12 @@
 
             </div>
             <div class="filtros-componente">
-                <select name="" id="" onchange="mudarVisualizacao()">
-                    <option value="cpu">cpu</option>
-                    <option value="ram">ram</option>
-                    <option value="disco">disco</option>
+                <select name="" id="selectComponentes" onchange="mudarVisualizacao()">
+                    
                 </select>
             </div>
 
-            <div class="container-geral">
+            <div class="container-geral" id="containerGeral">
                 <div class="container-KPIS">
                     <div class="KPI">
                         <h2>Frequência em estado de alerta:</h2>

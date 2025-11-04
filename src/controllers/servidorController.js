@@ -156,6 +156,23 @@ function buscarConfiguracoesServidor(req, res) {
         });
 }
 
+function carregarComponentes(req, res){
+    servidorModel.carregarComponentes()
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao procurar componentes! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
 
 module.exports = {
   listarEmpresas,
@@ -167,5 +184,6 @@ module.exports = {
   cadastrarServidor,
   criarComponentesServidor,
   atualizarConfiguracaoAlerta,
-  buscarConfiguracoesServidor
+  buscarConfiguracoesServidor,
+  carregarComponentes
 };

@@ -289,6 +289,13 @@ function buscarConfiguracoesServidor(servidorId) {
     return database.executar(instrucaoSql);
 }
 
+function carregarComponentes() {
+    var instrucaoSql = `
+        select id, nome_tipo_componente as nome from tipo_componente;`
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarEmpresas,
     listarTipos,
@@ -299,5 +306,6 @@ module.exports = {
     cadastrarServidor,
     criarComponentesServidor,
     atualizarConfiguracaoAlerta,
-    buscarConfiguracoesServidor
+    buscarConfiguracoesServidor,
+    carregarComponentes
 };
