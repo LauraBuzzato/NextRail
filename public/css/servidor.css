@@ -1,0 +1,30 @@
+.container-KPIS {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1%;
+}
+
+.KPI {
+    background: #1f1f2e;
+    color: #fff;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    padding: 1rem;
+    box-shadow: 0 8px 7px #ffffff33;
+    flex-direction: column;
+    width: 30%;
+    padding-top: 1.5rem;
+}
+
+.KPI h1 {
+    margin-top: 13%;
+    font-size: 3.5rem;
+}
+
+.KPI h4 {
+    font-size: 1.2rem;
+    margin-top: 4%;
+}

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <title>NextRail | Selecionar Servidor</title>
 
   <script src="./js/sessao.js"></script>
@@ -14,6 +14,7 @@
 
   <link rel="stylesheet" href="./css/menu.css">
   <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="css/servidor.css">
   <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
   <link rel="preconnect" href="https://fonts.gstatic.com">
 </head>
@@ -21,7 +22,7 @@
 <body onload="validarSessao(), analisaCargo(), listarServidor(), arrumarMenu()">
   <!-- Menu lateral -->
   <div class="menu" id="DIVmenu">
-    
+
   </div>
 
   <!-- Menu hamburger -->
@@ -32,6 +33,21 @@
   </div>
 
   <main class="selecionar_servidor">
+    <div class="container-KPIS">
+      <div class="KPI">
+        <h2>Qtd servidores em alerta::</h2>
+        <h1>1</h1>
+      </div>
+      <div class="KPI">
+        <h2>Total de alertas do dia:</h2>
+        <h1>3</h1>
+      </div>
+      <div class="KPI">
+        <h2>Top 3 servidores com mais alertas:</h2>
+        <canvas id="alertasComponenteChart"></canvas>
+      </div>
+    </div>
+
     <h1>Selecionar Servidor</h1>
 
     <div class="legenda">
@@ -56,4 +72,5 @@
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script src="./js/script.js"></script>
 </body>
+
 </html>
