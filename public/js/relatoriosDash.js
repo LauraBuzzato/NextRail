@@ -1,4 +1,4 @@
-const URL_SITE = "http://54.152.70.223:3333"
+const URL_SITE = "http://localhost:3333"
     window.onload = function () {
         mudarVisualizacao("anual")
     };

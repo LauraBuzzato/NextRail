@@ -201,7 +201,7 @@ async function atualizar(a) {
       <div class="dashboard-grid">
       <h1 class="bem-vindo">Bem-vindo(a) ${sessionStorage.NOME_USUARIO}</span></h1>
 
-    <h2 class="desempenho">Alertas do ${localStorage.NOME_SERVIDOR}</h2>
+    <h2 class="desempenho">Alertas do ${localStorage.NOME_SERVIDOR} AAAAAAAAAAAAAAAAAAAAAAA</h2>
     <!-- KPIs -->
     <section class="kpis">
 
