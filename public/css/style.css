@@ -777,6 +777,7 @@ main {
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
     justify-content: space-evenly;
+    min-height: 35rem;
 }
 
 .card_servidor {
@@ -792,6 +793,7 @@ main {
     margin-left: 25px;
     margin-bottom: 20px;
     cursor: pointer;
+    height: 500px;
 }
 .card_servidor>h3 {
     margin-bottom: 20px;

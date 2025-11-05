@@ -53,17 +53,28 @@
     <h1>Selecionar Servidor</h1>
 
     <div class="legenda">
-      <div class="bloco_cor" style="background-color:green"></div>
-      <p>Sem Alerta </p>
+      <div class="opcaoLegenda" onclick="listarServidorEspecifico('green')">
+        <div class="bloco_cor" style="background-color:green"></div>
+        <p>Sem Alerta </p>
+      </div>
       <p>|</p>
-      <div class="bloco_cor" style="background-color:yellow"></div>
-      <p>Alerta Baixo</p>
+      <div class="opcaoLegenda" onclick="listarServidorEspecifico('yellow')">
+        <div class="bloco_cor" style="background-color:yellow"></div>
+        <p>Alerta Baixo</p>
+      </div>
       <p>|</p>
-      <div class="bloco_cor" style="background-color:darkorange"></div>
-      <p>Alerta Médio</p>
+      <div class="opcaoLegenda" onclick="listarServidorEspecifico('darkorange')">
+        <div class="bloco_cor" style="background-color:darkorange"></div>
+        <p>Alerta Médio</p>
+      </div>
       <p>|</p>
-      <div class="bloco_cor" style="background-color:red"></div>
-      <p>Alerta Alto</p>
+      <div class="opcaoLegenda" onclick="listarServidorEspecifico('red')">
+        <div class="bloco_cor" style="background-color:red"></div>
+        <p>Alerta Alto</p>
+      </div>
+      <p class="mostrarTodosTraco" id="mostrarTodosTraco">|</p>
+      <div class="opcaoLegenda" id="mostrarTodos" onclick="listarServidorTodos()">
+      </div>
     </div>
 
     <div class="linha_card_serv" id="linha_card_serv">

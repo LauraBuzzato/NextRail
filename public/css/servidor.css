@@ -32,3 +32,16 @@
 .KPI canvas {
     margin-top: 3%;
 }
+
+.opcaoLegenda{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    gap: 15%;
+    cursor: pointer;
+}
+
+.mostrarTodosTraco{
+    display: none;
+}
