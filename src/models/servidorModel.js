@@ -296,6 +296,27 @@ function carregarComponentes() {
     return database.executar(instrucaoSql);
 }
 
+function listartop3(fkEmpresa) {
+    var instrucaoSql = `
+        select count(alerta.id) as totalAlerta, ser.nome from alerta 
+inner join servidor ser on alerta.fk_componenteServidor_servidor = ser.id
+where fk_empresa = ${fkEmpresa}
+group by fk_componenteServidor_servidor 
+order by totalAlerta 
+desc limit 3;`
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function contarAlertas(fkEmpresa) {
+    var instrucaoSql = `
+        select count(*) as totalAlerta from alerta 
+inner join servidor ser on alerta.fk_componenteServidor_servidor = ser.id
+where (DATE(inicio) = CURDATE()) or (DATE(inicio)<CURDATE() and fim is null) or(DATE(fim) = CURDATE()) and fk_empresa = ${fkEmpresa};`
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarEmpresas,
     listarTipos,
@@ -307,5 +328,7 @@ module.exports = {
     criarComponentesServidor,
     atualizarConfiguracaoAlerta,
     buscarConfiguracoesServidor,
-    carregarComponentes
+    carregarComponentes,
+    listartop3,
+    contarAlertas
 };

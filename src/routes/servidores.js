@@ -14,5 +14,7 @@ router.post("/criarComponentesServidor", servidorController.criarComponentesServ
 router.post("/atualizarConfiguracaoAlerta", servidorController.atualizarConfiguracaoAlerta);
 router.get("/configuracoes/:servidorId", servidorController.buscarConfiguracoesServidor);
 router.post("/carregarComponentes", servidorController.carregarComponentes);
+router.post("/listartop3", servidorController.listartop3);
+router.post("/contarAlertas", servidorController.contarAlertas);
 
 module.exports = router;

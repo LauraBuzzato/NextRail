@@ -174,6 +174,46 @@ function carregarComponentes(req, res){
             );
 }
 
+function listartop3(req, res){
+    var fkEmpresa = req.body.idempresa
+
+    servidorModel.listartop3(fkEmpresa)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao procurar servidores! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
+
+function contarAlertas(req, res){
+    var fkEmpresa = req.body.idempresa
+
+    servidorModel.contarAlertas(fkEmpresa)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao contar alertas! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -185,5 +225,7 @@ module.exports = {
   criarComponentesServidor,
   atualizarConfiguracaoAlerta,
   buscarConfiguracoesServidor,
-  carregarComponentes
+  carregarComponentes,
+  listartop3,
+  contarAlertas
 };

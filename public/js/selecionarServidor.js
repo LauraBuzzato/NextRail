@@ -7,6 +7,8 @@ function direcionaDash(nomeServidor) {
     }
 }
 
+let corescards = []
+
 async function listarServidor() {
     try {
         const [alertas, servidores] = await Promise.all([
@@ -26,6 +28,7 @@ async function listarServidor() {
             }).then(res => res.json())
         ])
         let listaServidores = '';
+        let totalEmAlerta = 0
 
         console.log(servidores);
         console.log(alertas);
@@ -113,6 +116,12 @@ async function listarServidor() {
                 }
             }
 
+            if (statusCor != 'green') {
+                totalEmAlerta++
+            }
+            servidorNome = servidor.servidor
+            corescards.push({servidorNome, statusCor})
+
 
             if (servidor.complemento == null) {
                 listaServidores += `
@@ -163,79 +172,150 @@ async function listarServidor() {
         }
         const linha_serv = document.getElementById("linha_card_serv");
         linha_serv.innerHTML = listaServidores;
+        const numero_quantidade = document.getElementById("numQtd");
+        if (totalEmAlerta == 0) {
+            numero_quantidade.innerHTML = `<h1 style="color: green;">${totalEmAlerta}</h1>`
+        } else {
+            numero_quantidade.innerHTML = `<h1 style="color: red;">${totalEmAlerta}</h1>`
+        }
     } catch (erro) {
         console.error("Erro ao buscar servidores:", erro);
     };
 }
 
-function carregarGraficos() {
-    const ctx = document.getElementById('topservidoresalertas');
+async function contarAlertas() {
+    try {
+        const [qtdAlertas] = await Promise.all([
+            fetch('/servidores/contarAlertas', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    idempresa: sessionStorage.ID_EMPRESA
+                })
+            }).then(res => res.json())
+        ]);
 
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Servidor01', 'Servidor02', 'Servidor03'],
-            datasets: [{
-                label: 'Alertas Registrados',
-                data: [10, 9, 4],
-                backgroundColor: [
-                    'rgba(255, 255, 0, 1)',
-                    'rgba(255, 165, 0, 1)',
-                    'rgba(255, 0, 0, 2.0)'
-                ],
-                borderColor: [
-                    'rgba(255, 255, 0, 1)',
-                    'rgba(3, 2, 0, 1)',
-                    'rgba(255, 0, 0, 2.0)'
-                ],
-                borderWidth: 1,
-                borderRadius: 8
-            }]
-        },
-        options: {
+        if(qtdAlertas[0].totalAlerta == 0){
+            numAlertas.innerHTML=`<h1 style="color: green;">${qtdAlertas[0].totalAlerta}</h1>`
+        }else{
+            numAlertas.innerHTML=`<h1 style="color: red;">${qtdAlertas[0].totalAlerta}</h1>`
+        }
 
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                title: { display: true },
-                tooltip: {
-                    callbacks: {
-                        label: ctx => `${ctx.parsed.y} alertas`
+
+    } catch (erro) {
+        console.error("Erro ao carregar gráficos:", erro);
+    }
+}
+
+let grafico;
+
+
+
+async function carregarGraficos(cores = []) {
+    try {
+        const [servidores] = await Promise.all([
+            fetch('/servidores/listartop3', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    idempresa: sessionStorage.ID_EMPRESA
+                })
+            }).then(res => res.json())
+        ]);
+
+        let nomes = [];
+        let quantidades = [];
+        let coresGraficos = [];
+
+        for (let i = 0; i < servidores.length; i++) {
+            nomes.push(servidores[i].nome);
+            quantidades.push(servidores[i].totalAlerta);
+        }
+
+        if (cores.length === 0) {
+            for (let i = 0; i < nomes.length; i++) {
+                coresGraficos.push('#555');
+            }
+        } else {
+            for (let i = 0; i < nomes.length; i++) {
+                let corEncontrada = '#555';
+                for (let j = 0; j < cores.length; j++) {
+                    if (cores[j].servidorNome === nomes[i]) {
+                        corEncontrada = cores[j].statusCor;
+                        break;
                     }
                 }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Quantidade de alertas',
-                        color: '#fff',
-                        font: {
-                            size: 22
-                        }
-                    },
-                    ticks: {
-                        color: '#fff',
-                        font: {
-                            size: 18
-                        }
-                    },
-                    grid: { color: '#333' }
-                },
-                x: {
+                coresGraficos.push(corEncontrada);
+            }
+        }
 
-                    ticks: {
-                        color: '#fff',
-                        font: {
-                            size: 18
+        const ctx = document.getElementById('topservidoresalertas');
+
+        if (grafico) grafico.destroy();
+
+        grafico = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: nomes,
+                datasets: [{
+                    label: 'Alertas Registrados',
+                    data: quantidades,
+                    backgroundColor: coresGraficos,
+                    borderColor: coresGraficos,
+                    borderWidth: 1,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => `${ctx.parsed.y} alertas`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Quantidade de alertas',
+                            color: '#fff',
+                            font: { size: 22 }
+                        },
+                        ticks: {
+                            color: '#fff',
+                            font: { size: 18 }
+                        },
+                        grid: { color: '#333' }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#fff',
+                            font: { size: 18 }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    } catch (erro) {
+        console.error("Erro ao carregar gráficos:", erro);
+    }
 }
+
+(async function iniciarPagina() {
+    await listarServidor();
+    carregarGraficos(corescards);
+})();
+
+
 
 async function listarServidorEspecifico(estado) {
     try {

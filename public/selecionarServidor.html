@@ -21,7 +21,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body onload="validarSessao(), analisaCargo(), listarServidor(), arrumarMenu(), carregarGraficos()">
+<body onload="listarServidor(), carregarGraficos(), validarSessao(), analisaCargo(), arrumarMenu(), contarAlertas()">
   <!-- Menu lateral -->
   <div class="menu" id="DIVmenu">
 
@@ -38,14 +38,14 @@
     <div class="container-KPIS">
       <div class="KPI">
         <h2>Qtd servidores em alerta:</h2>
-        <h1>1</h1>
+        <div id="numQtd"></div>
       </div>
       <div class="KPI">
         <h2>Total de alertas do dia:</h2>
-        <h1>3</h1>
+        <div id="numAlertas"></div>
       </div>
       <div class="KPI">
-        <h2>Top 3 servidores com mais alertas:</h2>
+        <h2>Top servidores com mais alertas:</h2>
         <canvas id="topservidoresalertas"></canvas>
       </div>
     </div>
