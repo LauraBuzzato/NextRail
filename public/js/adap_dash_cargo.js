@@ -284,6 +284,12 @@ function arrumarMenu() {
         </a>
       </li>
       <li class="link-item">
+        <a href="testePrevisoes.html" class="link">
+          <ion-icon name="analytics-outline"></ion-icon>
+          <span style="--i: 4">Previsões</span>
+        </a>
+      </li>
+      <li class="link-item">
         <a onclick="limparSessao()" class="link">
           <ion-icon name="log-out-outline"></ion-icon>
           <span style="--i: 4">Sair</span>
