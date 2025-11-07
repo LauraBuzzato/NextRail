@@ -442,7 +442,7 @@ async function listarServidorEspecifico(estado) {
                     </div>
                     <div class="carac_servidor">
                         <p>Endereço:</p>
-                        <div>${servidor.estado} - ${servidor.logradouro} ${servidor.numero}</div>
+                        <div>${servidor.estado} - ${servidor.logradouro}, ${servidor.numero}</div>
                     </div>
                 </div>
             `;
@@ -464,7 +464,7 @@ async function listarServidorEspecifico(estado) {
                     </div>
                     <div class="carac_servidor">
                         <p>Endereço:</p>
-                        <div>${servidor.estado} - ${servidor.logradouro} ${servidor.numero} - ${servidor.complemento}</div>
+                        <div>${servidor.estado} - ${servidor.logradouro}, ${servidor.numero} - ${servidor.complemento}</div>
                     </div>
                 </div>
             `;
