@@ -141,7 +141,7 @@ async function listarServidor() {
                     </div>
                     <div class="carac_servidor">
                         <p>Endereço:</p>
-                        <div>${servidor.estado} - ${servidor.logradouro} ${servidor.numero}</div>
+                        <div>${servidor.estado} - ${servidor.logradouro}, ${servidor.numero}</div>
                     </div>
                 </div>
             `;
@@ -163,7 +163,7 @@ async function listarServidor() {
                     </div>
                     <div class="carac_servidor">
                         <p>Endereço:</p>
-                        <div>${servidor.estado} - ${servidor.logradouro} ${servidor.numero} - ${servidor.complemento}</div>
+                        <div>${servidor.estado} - ${servidor.logradouro}, ${servidor.numero} - ${servidor.complemento}</div>
                     </div>
                 </div>
             `;
@@ -610,7 +610,7 @@ async function listarServidorTodos() {
                     </div>
                     <div class="carac_servidor">
                         <p>Endereço:</p>
-                        <div>${servidor.estado} - ${servidor.logradouro} ${servidor.numero}</div>
+                        <div>${servidor.estado} - ${servidor.logradouro}, ${servidor.numero}</div>
                     </div>
                 </div>
             `;
@@ -632,7 +632,7 @@ async function listarServidorTodos() {
                     </div>
                     <div class="carac_servidor">
                         <p>Endereço:</p>
-                        <div>${servidor.estado} - ${servidor.logradouro} ${servidor.numero} - ${servidor.complemento}</div>
+                        <div>${servidor.estado} - ${servidor.logradouro}, ${servidor.numero} - ${servidor.complemento}</div>
                     </div>
                 </div>
             `;
