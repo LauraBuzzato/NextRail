@@ -1,0 +1,28 @@
+.fundo-escuro {
+    background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
+    min-height: 100vh;
+    color: #180c0c;
+    font-family: "Poppins", sans-serif;
+    padding: 40px 0;
+    box-sizing: border-box;
+}
+
+main {
+    border-top: solid #ffe066;
+
+}
+
+
+main {
+
+    padding: 40px;
+    background-color: 180c0c;
+    min-height: 100vh;
+    color:#180c0c ;
+}
+
+.container-pagina {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
