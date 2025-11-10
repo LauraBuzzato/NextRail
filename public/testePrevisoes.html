@@ -14,8 +14,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
 
     <script src="./js/sessao.js"></script>
-    
-
 </head>
 
 <body onload="validarSessao()">
@@ -55,21 +53,59 @@
         </ul>
     </div>
 
-    <!-- Menu hamburger -->
     <div class="hamburger" id="hamburger">
         <span></span>
         <span></span>
         <span></span>
     </div>
 
-    <main class="fundo-escuro" class="container-pagina">
-        
+    <main class="fundo-escuro" class=   "container-pagina">
+        <section class="header-previsoes">
+            <h1>Previsões de Desempenho</h1>
+        </section>
+
+        <div class="filtros-dashboard">
+            <h1>TESTE</h1>
+            <label>Servidor:</label>
+            <select id="servidorSelect">
+                <option value="geral">Geral</option>
+                <option value="CTC-01">CTC-01</option>
+                <option value="CTC-02">CTC-02</option>
+                <option value="Regulador-01">Regulador-01</option>
+            </select>
+
+            <label>Período:</label>
+            <select id="periodoSelect">
+                <option value="semanal">Semanal</option>
+                <option value="mensal">Mensal</option>
+                <option value="anual">Anual</option>
+            </select>
+        </div>
+
+        <div class="container-KPIS" id="kpisContainer"></div>
+
+        <section class="graficos-previsoes">
+            <div class="grafico">
+                <h3>Uso de Recursos</h3>
+                <button class="btn-troca" id="btnPrev"><span>‹</span></button>
+                <button class="btn-troca" id="btnNext"><span>›</span></button>
+                <canvas id="graficoSuporte"></canvas>
+                <p id="valorAtualLegenda">CPU atual: 0%</p>
+            </div>
+
+    
+            <div class="grafico">
+                <h3>Latência Média</h3>
+                <canvas id="graficoLatencia"></canvas>
+            </div>
+        </section>
     </main>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="./js/previsoes.js"></script>
 </body>
-
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
-<script src="./js/script.js"></script>
 
 </html>
