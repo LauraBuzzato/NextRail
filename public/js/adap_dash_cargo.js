@@ -199,9 +199,9 @@ async function atualizar(a) {
 
     dash_analista.innerHTML = `
       <div class="dashboard-grid">
-      <h1 class="bem-vindo">Bem-vindo(a) ${sessionStorage.NOME_USUARIO}</span></h1>
 
-    <h2 class="desempenho">Alertas do ${localStorage.NOME_SERVIDOR} AAAAAAAAAAAAAAAAAAAAAAA</h2>
+
+    <h2 class="desempenho">Alertas do ${localStorage.NOME_SERVIDOR} </h2>
     <!-- KPIs -->
     <section class="kpis">
 
@@ -226,7 +226,15 @@ async function atualizar(a) {
       </div>
     </section>
     
-    <section class="analise-direita">
+    
+    
+    <section class="tendencia-semanal">
+      <div class="grafico-box-grande">
+        <h3 class="grafico-titulo">Frequência Mensal de Alertas</h3>
+        <canvas id="frequenciaSemanalChart"></canvas>
+      </div>
+
+      <section class="analise-direita">
 
       <div class="grafico-box">
         <h3 class="grafico-titulo">Alertas divididos por Gravidade deste Mês</h3>
@@ -241,12 +249,6 @@ async function atualizar(a) {
 
 
     </section>
-    
-    <section class="tendencia-semanal">
-      <div class="grafico-box-grande">
-        <h3 class="grafico-titulo">Frequência Mensal de Alertas</h3>
-        <canvas id="frequenciaSemanalChart"></canvas>
-      </div>
     </section>
     
     `;
