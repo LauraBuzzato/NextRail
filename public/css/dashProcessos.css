@@ -140,7 +140,6 @@ select:focus {
     font-size: 3.5rem;
 }
 
-/* CORRIGIR FUNDO BRANCO */
 body {
   background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
   margin: 0;
