@@ -282,7 +282,7 @@ function dash_analista() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Quantidade de Alertas', color: '#fff', font: { size: 22} },
+                        title: { display: true, text: 'Quantidade', color: '#fff', font: { size: 22} },
                         ticks: {
                             color: '#fff',
                             font: {
@@ -380,7 +380,7 @@ function dash_analista() {
         });
     }
 
-    // Gráfico de Alertas por Servidor
+    // Gráfico de Alertas por gravidade
     if (alertasServidorCanvas) {
         new Chart(alertasServidorCanvas, {
             type: 'bar',
@@ -419,7 +419,7 @@ function dash_analista() {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Quantidade de Alertas',
+                            text: 'Quantidade',
                             color: '#fff',
                             font: {
                                 size: 22
