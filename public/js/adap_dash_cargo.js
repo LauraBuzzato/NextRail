@@ -280,21 +280,24 @@ async function atualizar(a) {
       <div class="kpi-box">
         <span class="kpi-title">Quantidade total de Alertas do Mês</span>
         <h2 class="kpi-value">25</h2>
+        <h4 class="seta">(30% <ion-icon name="arrow-up-outline" style="color: red";> </ion-icon> vs. Mês Anterior)</h4>
+
       </div>
 
       <div class="kpi-box">
         <span class="kpi-title">Componente Mais Impactado do Mês</span>
-        <h2 class="kpi-value">RAM</h2>
+        <h2 class="kpi-value" style="color: #00BFFF";>RAM</h2>
       </div>
 
       <div class="kpi-box">
         <span class="kpi-title">MTTR (Tempo Médio de Reparo) do Mês</span>
-        <h2 class="kpi-value">20 min</h2>
+        <h2 class="kpi-value"> 20 min <ion-icon name="arrow-up-outline" style="color: red";></ion-icon></h2>
+        <h>(SLA: < 15 min)</h4>
       </div>
 
       <div class="kpi-box">
         <span class="kpi-title">Gravidade mais frequente do Mês</span>
-        <h2 class="kpi-value">Média</h2>
+        <h2 class="kpi-value" style="color: #FFA500";>Média</h2>
       </div>
     </section>
     

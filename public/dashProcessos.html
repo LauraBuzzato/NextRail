@@ -17,6 +17,8 @@
 
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
 
 
 </head>
@@ -65,7 +67,7 @@
         <h2>Acompanhamento diário dos Processos</h2>
       </div>
 
-      <h1 id="indicador_hora">Dados das ultimas 24h</h1>
+      <h1 id="indicador_hora">Dados das últimas 24h</h1>
 
       <div class="container-geral" id="containerGeral">
         <div class="container-KPIS">
@@ -87,7 +89,14 @@
             <h2>Quantidade dos processos das últimas 24h:</h2>
             <canvas id="varicaoUso"></canvas>
           </div>
+
+          <div class="KPI">
+            <h2>Frequência dos processos:</h2>
+            <canvas id="frequenciaProcessosChart"></canvas>
+          </div>
+
         </div>
+
       </div>
     </div>
 
@@ -104,15 +113,14 @@
 </body>
 
 <script>
-  const ctx = document.getElementById('alertasProcessoChart');
+  const ctx = document.getElementById('frequenciaProcessosChart');
 
   new Chart(ctx, {
-    type: 'bar',
+    type: 'doughnut',
     data: {
-      labels: ['Baixa', 'Média', 'Alta'],
+      labels: ['script.py', 'teste123', 'algo.exe'],
       datasets: [{
-        label: 'Alertas Registrados',
-        data: [5, 9, 4],
+        data: [50, 25, 25],
         backgroundColor: [
           'rgba(255, 255, 0, 1)',
           'rgba(255, 165, 0, 1)',
@@ -132,43 +140,16 @@
       responsive: true,
       plugins: {
         legend: {display: false},
-        title: {display: true},
-        tooltip: {
-          callbacks: {
-            label: ctx => `${ctx.parsed.y} alertas`
-          }
+        title: {display: false},
+        datalabels: {
+          color: '#fff',
+          font: {size: 16, weight: 'bold'},
+          formatter: (value, ctx) => ctx.chart.data.labels[ctx.dataIndex]
         }
       },
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Quantidade de alertas',
-            color: '#fff',
-            font: {
-              size: 22
-            }
-          },
-          ticks: {
-            color: '#fff',
-            font: {
-              size: 18
-            }
-          },
-          grid: {color: '#333'}
-        },
-        x: {
-
-          ticks: {
-            color: '#fff',
-            font: {
-              size: 18
-            }
-          }
-        }
-      }
-    }
+      cutout: '60%',
+    },
+    plugins: [ChartDataLabels]
   });
 
   const ctx2 = document.getElementById('varicaoUso');
