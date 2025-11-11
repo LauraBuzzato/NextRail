@@ -43,7 +43,7 @@ function listarAlertas(fkEmpresa) {
 
 function selecionarServidores(fkEmpresa) {
     var instrucaoSql = `
-        SELECT sv.id as id sv.nome AS servidor,tipo.nome AS tipo,so.descricao AS so,es.sigla AS estado,en.logradouro,en.numero,en.complemento 
+        SELECT sv.id as id, sv.nome AS servidor,tipo.nome AS tipo,so.descricao AS so,es.sigla AS estado,en.logradouro,en.numero,en.complemento 
         FROM servidor sv 
         INNER JOIN tipo ON tipo.id=sv.fk_tipo 
         INNER JOIN sistema_operacional so ON so.id=sv.fk_so 
