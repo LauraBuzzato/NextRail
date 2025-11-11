@@ -1,4 +1,5 @@
-function direcionaDash(nomeServidor) {
+function direcionaDash(nomeServidor, id) {
+    localStorage.ID_SERVIDOR = id
     localStorage.NOME_SERVIDOR = nomeServidor
     if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
         window.location = "./dashboard.html"
@@ -125,7 +126,7 @@ async function listarServidor() {
 
             if (servidor.complemento == null) {
                 listaServidores += `
-                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}')">
+                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}', '${servidor.id}')">
                     <h3>${servidor.servidor}</h3>
                     <div class="carac_servidor">
                         ${status}

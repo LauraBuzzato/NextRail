@@ -27,8 +27,10 @@ function habilitarCSSPrincipal() {
 }
 
 function inicializarDashboard() {
+
+
   validarSessao();
-  arrumarMenu();
+  arrumarMenuDash();
 
   setTimeout(() => {
     if (!verificarDependencias()) {
@@ -43,6 +45,76 @@ function inicializarDashboard() {
     const cargo = analisaCargo();
     atualizar(cargo);
   }, 300);
+}
+
+function arrumarMenuDash() {
+  if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
+    DIVmenu.innerHTML = `<ul class="link-items">
+      <div class="logo-container">
+        <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
+      </div>
+      <li class="link-item" id="dashboard">
+        <a href="selecionarServidor.html" class="link">
+          <ion-icon name="grid-outline"></ion-icon>
+          <span style="--i: 1">Servidores</span>
+        </a>
+      </li>
+      <li class="link-item active" id="dashboard">
+        <a href="dashboard.html" class="link">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span style="--i: 2">Alertas</span>
+        </a>
+      </li>
+      <li class="link-item" id="relatorios">
+        <a href="relatoriosDash.html" class="link">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          <span style="--i: 3">Relatórios</span>
+        </a>
+      </li>
+      <li class="link-item">
+        <a href="testePrevisoes.html" class="link">
+          <ion-icon name="analytics-outline"></ion-icon>
+          <span style="--i: 4">Previsões</span>
+        </a>
+      </li>
+      <li class="link-item">
+        <a onclick="limparSessao()" class="link">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <span style="--i: 5">Sair</span>
+        </a>
+      </li>
+    </ul>`;
+  } else {
+    DIVmenu.innerHTML = `<ul class="link-items">
+      <div class="logo-container">
+        <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
+      </div>
+      <li class="link-item active" id="dashboard">
+        <a href="selecionarServidor.html" class="link">
+          <ion-icon name="grid-outline"></ion-icon>
+          <span style="--i: 1">Dashboards</span>
+        </a>
+      </li>
+      <li class="link-item" id="cadastroServer">
+        <a href="cadastroServidor.html" class="link">
+          <ion-icon name="construct"></ion-icon>
+          <span style="--i: 3">Cadastrar Servidor</span>
+        </a>
+      </li>
+      <li class="link-item" id="configuracoes">
+        <a href="configAlerta.html" class="link">
+          <ion-icon name="settings-outline"></ion-icon>
+          <span style="--i: 3">Parâmetros</span>
+        </a>
+      </li>
+      <li class="link-item">
+        <a onclick="limparSessao()" class="link">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <span style="--i: 4">Sair</span>
+        </a>
+      </li>
+    </ul>`;
+  }
 }
 
 function inicializarGraficosSuporte() {
@@ -276,13 +348,19 @@ function arrumarMenu() {
       <li class="link-item active" id="dashboard">
         <a href="selecionarServidor.html" class="link">
           <ion-icon name="grid-outline"></ion-icon>
-          <span style="--i: 1">Dashboards</span>
+          <span style="--i: 1">Servidores</span>
+        </a>
+      </li>
+      <li class="link-item" id="dashboard">
+        <a href="dashboard.html" class="link">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span style="--i: 2">Alertas</span>
         </a>
       </li>
       <li class="link-item" id="relatorios">
         <a href="relatoriosDash.html" class="link">
           <ion-icon name="stats-chart-outline"></ion-icon>
-          <span style="--i: 2">Relatórios</span>
+          <span style="--i: 3">Relatórios</span>
         </a>
       </li>
       <li class="link-item">
@@ -294,7 +372,7 @@ function arrumarMenu() {
       <li class="link-item">
         <a onclick="limparSessao()" class="link">
           <ion-icon name="log-out-outline"></ion-icon>
-          <span style="--i: 4">Sair</span>
+          <span style="--i: 5">Sair</span>
         </a>
       </li>
     </ul>`;
