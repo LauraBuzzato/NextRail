@@ -39,7 +39,7 @@
     flex-direction: row;
     width: 100%;
     justify-content: center;
-    gap: 15%;
+    gap: 10%;
     cursor: pointer;
 }
 
