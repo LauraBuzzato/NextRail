@@ -1,11 +1,14 @@
 function direcionaDash(nomeServidor, id) {
     localStorage.ID_SERVIDOR = id
     localStorage.NOME_SERVIDOR = nomeServidor
-    if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
-        window.location = "./dashboard.html"
+    console.log(id);
+    
+    if (id >= 1) {
+            window.location = "./dashboard.html"
     } else {
-        window.location = "./dashboard.html"
+        window.location = "./selecionarServidor.html"
     }
+
 }
 
 let corescards = []
@@ -121,7 +124,7 @@ async function listarServidor() {
                 totalEmAlerta++
             }
             servidorNome = servidor.servidor
-            corescards.push({servidorNome, statusCor})
+            corescards.push({ servidorNome, statusCor })
 
 
             if (servidor.complemento == null) {
@@ -148,7 +151,7 @@ async function listarServidor() {
             `;
             } else {
                 listaServidores += `
-                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}')">
+                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}', '${servidor.id}')">
                     <h3>${servidor.servidor}</h3>
                     <div class="carac_servidor">
                         ${status}
@@ -198,10 +201,10 @@ async function contarAlertas() {
             }).then(res => res.json())
         ]);
 
-        if(qtdAlertas[0].totalAlerta == 0){
-            numAlertas.innerHTML=`<h1 style="color: green;">${qtdAlertas[0].totalAlerta}</h1>`
-        }else{
-            numAlertas.innerHTML=`<h1 style="color: red;">${qtdAlertas[0].totalAlerta}</h1>`
+        if (qtdAlertas[0].totalAlerta == 0) {
+            numAlertas.innerHTML = `<h1 style="color: green;">${qtdAlertas[0].totalAlerta}</h1>`
+        } else {
+            numAlertas.innerHTML = `<h1 style="color: red;">${qtdAlertas[0].totalAlerta}</h1>`
         }
 
 
@@ -473,7 +476,7 @@ async function listarServidorEspecifico(estado) {
             if (estado == statusCor) {
                 if (servidor.complemento == null) {
                     listaServidores += `
-                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}')">
+                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}', '${servidor.id}')">
                     <h3>${servidor.servidor}</h3>
                     <div class="carac_servidor">
                         ${status}
@@ -495,7 +498,7 @@ async function listarServidorEspecifico(estado) {
             `;
                 } else {
                     listaServidores += `
-                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}')">
+                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}', '${servidor.id}')">
                     <h3>${servidor.servidor}</h3>
                     <div class="carac_servidor">
                         ${status}
@@ -641,7 +644,7 @@ async function listarServidorTodos() {
 
             if (servidor.complemento == null) {
                 listaServidores += `
-                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}')">
+                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}', '${servidor.id}')">
                     <h3>${servidor.servidor}</h3>
                     <div class="carac_servidor">
                         ${status}
@@ -663,7 +666,7 @@ async function listarServidorTodos() {
             `;
             } else {
                 listaServidores += `
-                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}')">
+                <div class="card_servidor" style="border: 10px solid ${statusCor}" onclick="direcionaDash('${servidor.servidor}', '${servidor.id}')">
                     <h3>${servidor.servidor}</h3>
                     <div class="carac_servidor">
                         ${status}

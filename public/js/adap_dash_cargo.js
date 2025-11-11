@@ -27,8 +27,7 @@ function habilitarCSSPrincipal() {
 }
 
 function inicializarDashboard() {
-
-
+  if(localStorage.ID_SERVIDOR>=1){
   validarSessao();
   arrumarMenuDash();
 
@@ -45,6 +44,11 @@ function inicializarDashboard() {
     const cargo = analisaCargo();
     atualizar(cargo);
   }, 300);
+  }else{
+    window.location = "./selecionarServidor.html"
+  }
+
+  
 }
 
 function arrumarMenuDash() {
@@ -65,10 +69,10 @@ function arrumarMenuDash() {
           <span style="--i: 2">Alertas</span>
         </a>
       </li>
-      <li class="link-item" id="relatorios">
-        <a href="relatoriosDash.html" class="link">
-          <ion-icon name="stats-chart-outline"></ion-icon>
-          <span style="--i: 3">Relatórios</span>
+      <li class="link-item" id="dashboard">
+        <a href="dashcomponentes.html" class="link">
+          <ion-icon name="hardware-chip-outline"></ion-icon>
+          <span style="--i: 3">Componentes</span>
         </a>
       </li>
       <li class="link-item">
@@ -77,10 +81,16 @@ function arrumarMenuDash() {
           <span style="--i: 4">Previsões</span>
         </a>
       </li>
+      <li class="link-item" id="relatorios">
+        <a href="relatoriosDash.html" class="link">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          <span style="--i: 5">Relatórios</span>
+        </a>
+      </li>
       <li class="link-item">
         <a onclick="limparSessao()" class="link">
           <ion-icon name="log-out-outline"></ion-icon>
-          <span style="--i: 5">Sair</span>
+          <span style="--i: 7">Sair</span>
         </a>
       </li>
     </ul>`;
@@ -360,10 +370,10 @@ function arrumarMenu() {
           <span style="--i: 2">Alertas</span>
         </a>
       </li>
-      <li class="link-item" id="relatorios">
-        <a href="relatoriosDash.html" class="link">
-          <ion-icon name="stats-chart-outline"></ion-icon>
-          <span style="--i: 3">Relatórios</span>
+      <li class="link-item" id="dashboard">
+        <a href="dashcomponentes.html" class="link">
+          <ion-icon name="hardware-chip-outline"></ion-icon>
+          <span style="--i: 3">Componentes</span>
         </a>
       </li>
       <li class="link-item">
@@ -372,10 +382,16 @@ function arrumarMenu() {
           <span style="--i: 4">Previsões</span>
         </a>
       </li>
+      <li class="link-item" id="relatorios">
+        <a href="relatoriosDash.html" class="link">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          <span style="--i: 5">Relatórios</span>
+        </a>
+      </li>
       <li class="link-item">
         <a onclick="limparSessao()" class="link">
           <ion-icon name="log-out-outline"></ion-icon>
-          <span style="--i: 5">Sair</span>
+          <span style="--i: 7">Sair</span>
         </a>
       </li>
     </ul>`;
