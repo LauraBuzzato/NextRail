@@ -1,25 +1,25 @@
 .dashcomponentes {
-    background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
-    min-height: 100vh;
-    color: #ffe066;
-    font-family: "Poppins", sans-serif;
-    padding: 20px 0;
-    box-sizing: border-box;
+  background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
+  min-height: 100vh;
+  color: #ffe066;
+  font-family: "Poppins", sans-serif;
+  padding: 20px 0;
+  box-sizing: border-box;
 }
 
 main {
-    border-top: solid #ffe066;
+  border-top: solid #ffe066;
 }
 
 .texto-secao {
-    color: white;
-    display: flex;
-    justify-content: center;
+  color: white;
+  display: flex;
+  justify-content: center;
 }
 
 .texto-secao h2 {
-    text-align: center;
-    font-size: 2rem;
+  text-align: center;
+  font-size: 2rem;
 }
 
 select {
@@ -47,97 +47,97 @@ select:focus {
 }
 
 .filtros-componente {
-    display: flex;
-    justify-content: end;
-    margin-right: 5%;
+  display: flex;
+  justify-content: end;
+  margin-right: 5%;
 }
 
 .container-KPIS {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 2%;
-    text-align: center;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2%;
+  text-align: center;
 }
 
 .KPI {
-    background: #1f1f2e;
-    color: #fff;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-    padding: 1rem;
-    box-shadow: 0 8px 7px #ffffff33;
-    flex-direction: column;
-    width: 30%;
-    padding-top: 1.5rem;
+  background: #1f1f2e;
+  color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  padding: 1rem;
+  box-shadow: 0 8px 7px #ffffff33;
+  flex-direction: column;
+  width: 30%;
+  padding-top: 1.5rem;
 }
 
 .KPI h1 {
-    margin-top: 13%;
-    font-size: 3.5rem;
+  margin-top: 13%;
+  font-size: 3.5rem;
 }
 
 .KPI h4 {
-    font-size: 1.2rem;
-    margin-top: 4%;
+  font-size: 1.2rem;
+  margin-top: 4%;
 }
 
 .container-KPIS-segunda-linha {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 2%;
-    text-align: center;
-    height: 45%;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2%;
+  text-align: center;
+  height: 45%;
 }
 
 .Container-KPI-2 {
-    display: flex;
-    flex-direction: column;
-    width: 30%;
-    gap: 5%;
-    height: 30rem;
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  gap: 5%;
+  height: 30rem;
 }
 
 .KPI-2 {
-    background: #1f1f2e;
-    color: #fff;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-    padding: 1rem;
-    box-shadow: 0 8px 7px #ffffff33;
-    flex-direction: column;
-    width: 100%;
-    padding-top: 1.5rem;
-    height: 25rem;
+  background: #1f1f2e;
+  color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  padding: 1rem;
+  box-shadow: 0 8px 7px #ffffff33;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 1.5rem;
+  height: 25rem;
 }
 
 .GRAFICO-2 {
-    background: #1f1f2e;
-    color: #fff;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-    padding: 1rem;
-    box-shadow: 0 8px 7px #ffffff33;
-    flex-direction: column;
-    width: 63.5%;
-    padding-top: 1.5rem;
-    height: 30rem;
-    
+  background: #1f1f2e;
+  color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  padding: 1rem;
+  box-shadow: 0 8px 7px #ffffff33;
+  flex-direction: column;
+  width: 63.5%;
+  padding-top: 1.5rem;
+  height: 30rem;
+
 }
 
 .KPI canvas {
-    margin-right: 7%;
+  margin-right: 7%;
 }
 
 .GRAFICO-2 canvas {
-    margin-bottom: 2.5%;
+  margin-bottom: 2.5%;
 }
 
 .KPI-2 h1 {
-    margin-top: 7%;
-    font-size: 3.5rem;
+  margin-top: 7%;
+  font-size: 3.5rem;
 }
 
 body {
@@ -153,4 +153,10 @@ body {
 
 .container-secao {
   background: transparent;
+}
+
+#indicador_hora {
+  color: white;
+  text-align: center;
+  margin-top: 100px;
 }
