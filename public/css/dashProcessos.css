@@ -12,7 +12,7 @@ main {
 }
 
 .texto-secao {
-  color: white;
+  color: #FFE066;
   display: flex;
   justify-content: center;
 }
@@ -61,7 +61,7 @@ select:focus {
 
 .KPI {
   background: #1f1f2e;
-  color: #fff;
+  color: #FFE066;
   border-radius: 10px;
   text-align: center;
   font-weight: bold;
@@ -156,7 +156,21 @@ body {
 }
 
 #indicador_hora {
-  color: white;
+  color: #ffe066;
   text-align: center;
   margin-top: 100px;
+}
+
+#textoProcessoFrequente {
+  color: #ffff00;
+  margin-top: 20px;
+}
+
+#mediaProcessos {
+  color: #00ffff;
+  margin-top: 20px;
+}
+
+#maximoProcessos {
+  color: #9179da;
 }
