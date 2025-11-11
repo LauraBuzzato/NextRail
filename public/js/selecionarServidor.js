@@ -294,10 +294,11 @@ async function carregarGraficos() {
 
         if (nomes.length === 0) {
             const msg = document.createElement('h1');
-            msg.textContent = 'Sem servidores cadastrados';
+            msg.textContent = 'Sem servidores com alertas';
             msg.classList.add('msg-sem-servidores');
             msg.style.textAlign = 'center';
             msg.style.fontSize = '2.0rem';
+            msg.style.color = 'green';
             msg.style.marginTop = '-130px';
             container.appendChild(msg);
             return;

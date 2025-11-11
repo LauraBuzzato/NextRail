@@ -30,8 +30,9 @@
     margin-top: 4%;
 }
 
-.KPI canvas {
-
+.KPI h2{
+    width: 105%;
+    margin-left: -8.5px;
 }
 
 .opcaoLegenda{
@@ -45,4 +46,42 @@
 
 .mostrarTodosTraco{
     display: none;
+}
+
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+.info-icon::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #222;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  max-width: 350px;
+  width: 170px;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+  white-space: normal;
+  z-index: 1000;
+  word-wrap: break-word;
+}
+
+
+.info-icon:hover::after {
+  opacity: 1;
+  visibility: visible;
 }
