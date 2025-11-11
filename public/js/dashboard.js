@@ -178,8 +178,8 @@ function dash_analista() {
                         0, 0, 0, 0, 0, 0, 0,
                         0, 0, 0, 1, 0, 0, 0,
                         0, 0, 0],
-                    borderColor: '#fbbf24',
-                    backgroundColor: 'rgba(251,191,36,0.2)',
+                    borderColor: '#ff89b0',
+                    backgroundColor: 'rgba(255, 137, 176, 0.2)',
                     tension: 0.3,
                     fill: true,
                     pointRadius: 4,
@@ -254,12 +254,12 @@ function dash_analista() {
                     backgroundColor: [
                         'rgba(147, 112, 219, 0.8)',
                         'rgba(0, 191, 255, 0.8)',
-                        'rgba(255, 165, 0, 0.8)'
+                        'rgba(255, 137, 176, 0.8)'
                     ],
                     borderColor: [
                         '#9370DB',
                         '#00BFFF',
-                        '#FFA500'
+                        '#ff89b0'
                     ],
                     borderWidth: 1,
                     borderRadius: 8
@@ -388,7 +388,7 @@ function dash_analista() {
                 labels: ['Baixa', 'Média', 'Alta'],
                 datasets: [{
                     label: 'Alertas Registrados',
-                    data: [5, 9, 4],
+                    data: [8, 13, 4],
                     backgroundColor: [
                         'rgba(255, 255, 0, 1)',
                         'rgba(255, 165, 0, 1)',
