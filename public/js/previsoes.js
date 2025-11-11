@@ -309,25 +309,35 @@ function atualizarKPIs(dados) {
     const latencia = latenciaSimulada[servidor][componenteAtual];
     
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
+
+    
     
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
             <h2>Uso Médio (${nomes[componenteAtual]})</h2>
-            <p class="valor-kpi">${mediaUso}%</p>
+            <p class="valor-kpi" id="1">${mediaUso}%</p>
         </div>
         <div class="KPI">
             <h2>Latência</h2>
-            <p class="valor-kpi">${latencia} ms</p>
+            <p class="valor-kpi" id="" style="color:orange">${latencia} ms</p>
         </div>
         <div class="KPI">
             <h2>Disponibilidade</h2>
-            <p class="valor-kpi">99.7%</p>
-        </div>
-        <div class="KPI">
-            <h2>Alertas</h2>
-            <p class="valor-kpi">3</p>
+            <p class="valor-kpi" style= "color:red">99.7%</p>
         </div>
     `;
+
+    if(latencia) {
+        cor_lat = document.getElementById()
+    }
+
+    if(nomes[componenteAtual] == "RAM") {
+        cor = document.getElementById("1").style = "color:green" 
+    }else if (nomes[componenteAtual] == "Disco") {
+        cor = document.getElementById("1").style = "color:green"
+    }else if(nomes[componenteAtual] == "CPU") {
+        cor = document.getElementById("1").style = "color:orange"
+    }
 }
 
 
