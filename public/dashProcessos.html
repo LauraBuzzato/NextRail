@@ -62,30 +62,31 @@
     <div class="container-secao">
 
       <div class="texto-secao">
-        <h2>Acompanhamento semanal dos Processos</h2>
+        <h2>Acompanhamento diário dos Processos</h2>
       </div>
 
-      <h1 id="indicador_hora">Dados da ultima semana</h1>
+      <h1 id="indicador_hora">Dados das ultimas 24h</h1>
 
       <div class="container-geral" id="containerGeral">
         <div class="container-KPIS">
           <div class="KPI">
             <h2>Número máximo de processos:</h2>
-          </div>
-          <div class="KPI">
-            <h2>Número mínimo de processos:</h2>
+            <h2>700</h2>
           </div>
           <div class="KPI">
             <h2>Média de processos:</h2>
+            <h2>277</h2>
+          </div>
+          <div class="KPI">
+            <h2>Processo mais frequente:</h2>
+            <h2>script.py</h2>
           </div>
         </div>
         <div class="container-KPIS-segunda-linha">
           <div class="GRAFICO-2">
-            <h2>Variação dos processos:</h2>
+            <h2>Quantidade dos processos das últimas 24h:</h2>
             <canvas id="varicaoUso"></canvas>
           </div>
-
-
         </div>
       </div>
     </div>
@@ -176,12 +177,12 @@
     type: 'line',
     data: {
       labels: [
-        'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira',
-        'Sexta-Feira', 'Sábado', 'Domingo'],
+        '00:00', '05:00', '10:00', '15:00',
+        '20:00', '23:59'],
       datasets: [
         {
-          label: 'Média de Processos (por dia)',
-          data: [22, 29, 30, 20, 120, 300, 500],
+          label: 'Quantidade de processos',
+          data: [22, 700, 20, 120, 300, 500],
           borderColor: '#a78bfa',
           backgroundColor: 'rgba(167,139,250,0.2)',
           tension: 0.3,
