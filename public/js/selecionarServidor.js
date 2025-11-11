@@ -334,7 +334,7 @@ async function carregarGraficos() {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Quantidade de alertas',
+                            text: 'Quantidade alertas',
                             color: '#fff',
                             font: { size: 22 }
                         },
