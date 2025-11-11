@@ -104,9 +104,9 @@ function atualizarDashboard() {
 }
 
 function renderGraficoLinha(dados) {
-    const canvas = document.getElementById("graficoSuporte");
+    const canvas = document.getElementById("graficoPrevisaoLinha");
     if (!canvas) {
-        console.error("Canvas graficoSuporte não encontrado!");
+        console.error("Canvas linhas não encontrado!");
         return;
     }
 
@@ -120,7 +120,7 @@ function renderGraficoLinha(dados) {
             ? ["Semana 1", "Semana 2", "Semana 3", "Semana 4"]
             : periodoSelect.value === "mensal"
                 ? ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"]
-                : ["2021", "2022", "2023", "2024", "2025"];
+                : ["2024", "2025", "2026", "2027"];
     
     const ctx = canvas.getContext("2d");
     graficoLinha = new Chart(ctx, {
@@ -150,7 +150,7 @@ function renderGraficoLinha(dados) {
                     labels: {
                         color: '#fff',
                         font: {
-                            size: 12
+                            size: 15
                         }
                     }
                 },
@@ -173,7 +173,7 @@ function renderGraficoLinha(dados) {
                     ticks: { 
                         color: "#fff",
                         font: {
-                            size: 11
+                            size: 15
                         }
                     }
                 },
@@ -185,7 +185,7 @@ function renderGraficoLinha(dados) {
                     ticks: { 
                         color: "#fff",
                         font: {
-                            size: 11
+                            size: 15
                         }
                     }
                 }
@@ -220,7 +220,7 @@ function renderGraficoLatencia() {
         ram = [44, 45, 46, 47, 48, 49, 50];
         disco = [79, 80, 81, 82, 83, 84, 85];
     } else {
-        labels = ["2021", "2022", "2023", "2024", "2025"];
+        labels = ["2024", "2025", "2026", "2027"];
         cpu = [65, 68, 70, 73, 75];
         ram = [42, 44, 45, 47, 48];
         disco = [76, 78, 80, 81, 82];
@@ -242,15 +242,15 @@ function renderGraficoLatencia() {
                 { 
                     label: "RAM", 
                     data: ram, 
-                    backgroundColor: "rgba(0, 191, 255, 0.8)",
-                    borderColor: "rgba(0, 191, 255, 0.8)",
+                    backgroundColor: "rgba(164, 57, 251, 0.8)",
+                    borderColor: "rgba(139, 39, 252, 0.8)",
                     borderWidth: 1
                 },
                 { 
                     label: "Disco", 
                     data: disco, 
-                    backgroundColor: "rgba(255, 165, 0, 0.8)",
-                    borderColor: "rgba(255, 165, 0, 0.8)",
+                    backgroundColor: "rgba(140, 4, 185, 0.8)",
+                    borderColor: "rgba(97, 4, 196, 0.8)",
                     borderWidth: 1
                 }
             ]
@@ -264,7 +264,7 @@ function renderGraficoLatencia() {
                     labels: { 
                         color: "#fff",
                         font: {
-                            size: 12
+                            size: 15
                         }
                     }
                 }
@@ -279,7 +279,7 @@ function renderGraficoLatencia() {
                     ticks: { 
                         color: "#fff",
                         font: {
-                            size: 11
+                            size: 15
                         }
                     }
                 },
@@ -291,7 +291,7 @@ function renderGraficoLatencia() {
                     ticks: { 
                         color: "#fff",
                         font: {
-                            size: 11
+                            size: 15
                         }
                     }
                 }
@@ -310,33 +310,45 @@ function atualizarKPIs(dados) {
     
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
 
+    const disponibilidade = 99.7;
+
     
     
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
-            <h2>Uso Médio (${nomes[componenteAtual]})</h2>
-            <p class="valor-kpi" id="1">${mediaUso}%</p>
+            <h2>Previsão de crescimento anual (${nomes[componenteAtual]})</h2>
+            <p class="valor-kpi" id="1">${(mediaUso/100).toFixed(2)}%</p>
         </div>
         <div class="KPI">
-            <h2>Latência</h2>
-            <p class="valor-kpi" id="" style="color:orange">${latencia} ms</p>
+            <h2>Crescimento de Latência anual</h2>
+            <p class="valor-kpi" id="2" style="color:orange">${latencia/100}%</p>
         </div>
         <div class="KPI">
-            <h2>Disponibilidade</h2>
-            <p class="valor-kpi" style= "color:red">99.7%</p>
+            <h2>Disponibilidade do servidor </h2>
+            <p class="valor-kpi" id="3">${disponibilidade}</p>
         </div>
     `;
 
-    if(latencia) {
-        cor_lat = document.getElementById()
+    if(disponibilidade >=90) {
+        document.getElementById("3").style = "color:green"
+    }
+
+    if(latencia >= 100) {
+        document.getElementById("2").style = "color:red";
+    }else if (latencia >= 80) {
+        document.getElementById("2").style = "color:orange";
+    }else if (latencia >= 60) {
+        document.getElementById("2").style = "cor:yellow";
+    }else {
+        document.getElementById("2").style = "color:green"
     }
 
     if(nomes[componenteAtual] == "RAM") {
-        cor = document.getElementById("1").style = "color:green" 
+        document.getElementById("1").style = "color:green" 
     }else if (nomes[componenteAtual] == "Disco") {
-        cor = document.getElementById("1").style = "color:green"
+        document.getElementById("1").style = "color:green"
     }else if(nomes[componenteAtual] == "CPU") {
-        cor = document.getElementById("1").style = "color:orange"
+        document.getElementById("1").style = "color:orange"
     }
 }
 

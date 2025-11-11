@@ -136,7 +136,7 @@ main {
 }
 
 .grafico h3 {
-  color: #ffe066;
+  color: #ffffff;
   margin-bottom: 15px;
   font-size: 1.2rem;
   font-weight: 600;
@@ -155,7 +155,7 @@ main {
   border: none;
   color: #000;
   font-size: 1.2rem;
-  padding: 5px 10px;
+  padding: 5 px 10px;
   border-radius: 50%;
   height: 30px;
   width: 30px;
@@ -164,6 +164,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 30px;
 }
 
 .btn-troca:hover {
@@ -171,11 +172,11 @@ main {
 }
 
 .btn-troca:first-of-type {
-  left: 10px;
+  left: 20px;
 }
 
 .btn-troca:last-of-type {
-  right: 10px;
+  right: 20px;
 }
 
 .alertas {
@@ -186,7 +187,7 @@ main {
 }
 
 .alertas h3 {
-  color: #ffe066;
+  color: #ffffff;
   margin-bottom: 15px;
 }
 
