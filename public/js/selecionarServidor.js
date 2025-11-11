@@ -213,49 +213,97 @@ let grafico;
 
 
 
-async function carregarGraficos(cores = []) {
+async function carregarGraficos() {
     try {
-        const [servidores] = await Promise.all([
+        const [alertas, servidores, top3] = await Promise.all([
+            fetch('/servidores/listarAlertas', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idempresa: sessionStorage.ID_EMPRESA })
+            }).then(res => res.json()),
+            fetch('/servidores/selecionarServidores', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idempresa: sessionStorage.ID_EMPRESA })
+            }).then(res => res.json()),
             fetch('/servidores/listartop3', {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    idempresa: sessionStorage.ID_EMPRESA
-                })
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idempresa: sessionStorage.ID_EMPRESA })
             }).then(res => res.json())
         ]);
 
-        let nomes = [];
-        let quantidades = [];
-        let coresGraficos = [];
+        const corescards = [];
 
         for (let i = 0; i < servidores.length; i++) {
-            nomes.push(servidores[i].nome);
-            quantidades.push(servidores[i].totalAlerta);
-        }
+            const servidor = servidores[i];
+            let statusCor = 'green';
 
-        if (cores.length === 0) {
-            for (let i = 0; i < nomes.length; i++) {
-                coresGraficos.push('#555');
-            }
-        } else {
-            for (let i = 0; i < nomes.length; i++) {
-                let corEncontrada = '#555';
-                for (let j = 0; j < cores.length; j++) {
-                    if (cores[j].servidorNome === nomes[i]) {
-                        corEncontrada = cores[j].statusCor;
+            for (let j = 0; j < alertas.length; j++) {
+                const alerta = alertas[j];
+                if (alerta.servidor === servidor.servidor && alerta.status !== 'Fechado') {
+                    if (alerta.gravidade === "Alto") {
+                        statusCor = 'red';
                         break;
+                    } else if (alerta.gravidade === "Médio") {
+                        statusCor = 'darkorange';
+                    } else if (alerta.gravidade === "Baixo" && statusCor !== 'darkorange') {
+                        statusCor = 'yellow';
                     }
                 }
-                coresGraficos.push(corEncontrada);
             }
+
+            corescards.push({
+                servidorNome: servidor.servidor,
+                statusCor
+            });
+        }
+
+        let nomes = [];
+        const quantidades = [];
+        const coresGraficos = [];
+
+        for (let i = 0; i < top3.length; i++) {
+            const servidorTop = top3[i];
+            nomes.push(servidorTop.nome);
+            quantidades.push(servidorTop.totalAlerta);
+
+            let corEncontrada = '#555';
+            for (let j = 0; j < corescards.length; j++) {
+                if (corescards[j].servidorNome === servidorTop.nome) {
+                    corEncontrada = corescards[j].statusCor;
+                    break;
+                }
+            }
+            coresGraficos.push(corEncontrada);
         }
 
         const ctx = document.getElementById('topservidoresalertas');
+        const container = ctx.parentElement;
 
-        if (grafico) grafico.destroy();
+
+        if (grafico) {
+            grafico.destroy();
+            grafico = null;
+        }
+
+
+        const msgExistente = container.querySelector('.msg-sem-servidores');
+        if (msgExistente) msgExistente.remove();
+
+
+        if (nomes.length === 0) {
+            const msg = document.createElement('h1');
+            msg.textContent = 'Sem servidores com alertas';
+            msg.classList.add('msg-sem-servidores');
+            msg.style.textAlign = 'center';
+            msg.style.fontSize = '2.0rem';
+            msg.style.color = 'green';
+            msg.style.marginTop = '-130px';
+            container.appendChild(msg);
+            return;
+        }
+
 
         grafico = new Chart(ctx, {
             type: 'bar',
@@ -305,15 +353,13 @@ async function carregarGraficos(cores = []) {
                 }
             }
         });
+
     } catch (erro) {
         console.error("Erro ao carregar gráficos:", erro);
     }
 }
 
-(async function iniciarPagina() {
-    await listarServidor();
-    carregarGraficos(corescards);
-})();
+
 
 
 
@@ -403,7 +449,7 @@ async function listarServidorEspecifico(estado) {
             }
 
 
-            //Novo
+
             if (status != '<p>Sem Alertas</p>') {
 
                 let textoCpu = 'alertas';
