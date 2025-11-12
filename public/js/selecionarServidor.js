@@ -1,10 +1,15 @@
 function direcionaDash(nomeServidor, id) {
-    localStorage.ID_SERVIDOR = id
+    sessionStorage.ID_SERVIDOR = id
     localStorage.NOME_SERVIDOR = nomeServidor
     console.log(id);
     
     if (id >= 1) {
-            window.location = "./dashboard.html"
+        if(sessionStorage.PAGINA_DESEJADA==null){
+            sessionStorage.PAGINA_DESEJADA = "./dashboard.html"
+            window.location = sessionStorage.PAGINA_DESEJADA
+        }else{
+            window.location = sessionStorage.PAGINA_DESEJADA
+        }
     } else {
         window.location = "./selecionarServidor.html"
     }

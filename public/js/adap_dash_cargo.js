@@ -27,7 +27,10 @@ function habilitarCSSPrincipal() {
 }
 
 function inicializarDashboard() {
-  if(localStorage.ID_SERVIDOR>=1){
+  console.log("Oi?");
+  
+  sessionStorage.PAGINA_DESEJADA = "./dashboard.html"
+  if(sessionStorage.ID_SERVIDOR>=1){
   validarSessao();
   arrumarMenuDash();
 
@@ -99,28 +102,40 @@ function arrumarMenuDash() {
       <div class="logo-container">
         <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
       </div>
-      <li class="link-item active" id="dashboard">
+      <li class="link-item" id="dashboard">
         <a href="selecionarServidor.html" class="link">
           <ion-icon name="grid-outline"></ion-icon>
-          <span style="--i: 1">Dashboards</span>
+          <span style="--i: 1">Servidores</span>
+        </a>
+      </li>
+      <li class="link-item active" id="dashboard">
+        <a href="dashcomponentes.html" class="link">
+          <ion-icon name="pulse-outline"></ion-icon>
+          <span style="--i: 2">Uso Componentes</span>
+        </a>
+      </li>
+      <li class="link-item" id="dashboard">
+        <a href="dashProcessos.html" class="link">
+          <ion-icon name="layers-outline"></ion-icon>
+          <span style="--i: 3">Processos</span>
         </a>
       </li>
       <li class="link-item" id="cadastroServer">
         <a href="cadastroServidor.html" class="link">
-          <ion-icon name="construct"></ion-icon>
-          <span style="--i: 3">Cadastrar Servidor</span>
+          <ion-icon name="construct-outline"></ion-icon>
+          <span style="--i: 4">Cadastrar Servidor</span>
         </a>
       </li>
       <li class="link-item" id="configuracoes">
         <a href="configAlerta.html" class="link">
           <ion-icon name="settings-outline"></ion-icon>
-          <span style="--i: 3">Parâmetros</span>
+          <span style="--i: 5">Parâmetros</span>
         </a>
       </li>
       <li class="link-item">
         <a onclick="limparSessao()" class="link">
           <ion-icon name="log-out-outline"></ion-icon>
-          <span style="--i: 4">Sair</span>
+          <span style="--i: 7">Sair</span>
         </a>
       </li>
     </ul>`;
@@ -403,25 +418,37 @@ function arrumarMenu() {
       <li class="link-item active" id="dashboard">
         <a href="selecionarServidor.html" class="link">
           <ion-icon name="grid-outline"></ion-icon>
-          <span style="--i: 1">Dashboards</span>
+          <span style="--i: 1">Servidores</span>
+        </a>
+      </li>
+      <li class="link-item" id="dashboard">
+        <a href="dashcomponentes.html" class="link">
+          <ion-icon name="pulse-outline"></ion-icon>
+          <span style="--i: 2">Uso Componentes</span>
+        </a>
+      </li>
+      <li class="link-item" id="dashboard">
+        <a href="dashProcessos.html" class="link">
+          <ion-icon name="layers-outline"></ion-icon>
+          <span style="--i: 3">Processos</span>
         </a>
       </li>
       <li class="link-item" id="cadastroServer">
         <a href="cadastroServidor.html" class="link">
-          <ion-icon name="construct"></ion-icon>
-          <span style="--i: 3">Cadastrar Servidor</span>
+          <ion-icon name="construct-outline"></ion-icon>
+          <span style="--i: 4">Cadastrar Servidor</span>
         </a>
       </li>
       <li class="link-item" id="configuracoes">
         <a href="configAlerta.html" class="link">
           <ion-icon name="settings-outline"></ion-icon>
-          <span style="--i: 3">Parâmetros</span>
+          <span style="--i: 5">Parâmetros</span>
         </a>
       </li>
       <li class="link-item">
         <a onclick="limparSessao()" class="link">
           <ion-icon name="log-out-outline"></ion-icon>
-          <span style="--i: 4">Sair</span>
+          <span style="--i: 7">Sair</span>
         </a>
       </li>
     </ul>`;
@@ -430,6 +457,7 @@ function arrumarMenu() {
 
 function analisaCargo() {
   var cargo = sessionStorage.CARGO_USUARIO;
+  
   var mudanca;
 
   if (cargo == "Analista de infraestrutura") {

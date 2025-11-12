@@ -1,3 +1,7 @@
+function adicionarNomeServidor(){
+    nomeServidor.innerHTML = localStorage.NOME_SERVIDOR
+}
+
 function mudarVisualizacao() {
     var componente = selectComponentes.value
 

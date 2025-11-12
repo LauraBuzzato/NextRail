@@ -3,7 +3,8 @@
 
 <head>
     <script>
-        if (!(localStorage.ID_SERVIDOR >= 1)) {
+        sessionStorage.PAGINA_DESEJADA = "./dashcomponentes.html"
+        if (!(sessionStorage.ID_SERVIDOR >= 1)) {
             window.location = "./selecionarServidor.html"
         }
     </script>
@@ -26,7 +27,7 @@
 
 </head>
 
-<body onload="carregarComponentes()">
+<body onload="carregarComponentes(), adicionarNomeServidor()">
     <div class="menu">
         <ul class="link-items">
             <div class="logo-container">
@@ -83,7 +84,7 @@
 
             <div class="texto-secao">
 
-                <h2>Acompanhamento Mensal dos Componentes</h2>
+                <h2>Acompanhamento Mensal dos Componentes do <span id="nomeServidor"></span></h2>
 
 
             </div>

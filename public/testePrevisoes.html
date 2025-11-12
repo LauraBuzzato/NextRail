@@ -3,7 +3,8 @@
 
 <head>
     <script>
-        if (!(localStorage.ID_SERVIDOR >= 1)) {
+        sessionStorage.PAGINA_DESEJADA = "./testePrevisoes.html"
+        if (!(sessionStorage.ID_SERVIDOR >= 1)) {
             window.location = "./selecionarServidor.html"
         }
     </script>
