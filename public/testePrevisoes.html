@@ -73,9 +73,31 @@
         <span></span>
     </div>
 
-    <main class="fundo-escuro" class=   "container-pagina">
+    <main class="fundo-escuro" class="container-pagina">
         <section class="header-previsoes">
             <h1>Previsões de Desempenho</h1>
+            
+            <div class="legenda">
+                <div class="opcaoLegenda">
+                    <div class="bloco_cor" style="background-color:green"></div>
+                    <p>Sem Alerta </p>
+                </div>
+                <p>|</p>
+                <div class="opcaoLegenda">
+                    <div class="bloco_cor" style="background-color:yellow"></div>
+                    <p>Alerta Baixo</p>
+                </div>
+                <p>|</p>
+                <div class="opcaoLegenda">
+                    <div class="bloco_cor" style="background-color:darkorange"></div>
+                    <p>Alerta Médio</p>
+                </div>
+                <p>|</p>
+                <div class="opcaoLegenda">
+                    <div class="bloco_cor" style="background-color:red"></div>
+                    <p>Alerta Alto</p>
+                </div>
+            </div>
         </section>
 
         <div class="filtros-dashboard">
@@ -107,7 +129,7 @@
                 <p id="valorAtualLegenda">CPU atual: 0%</p>
             </div>
 
-    
+
             <div class="grafico">
                 <h3>Latência entre os componentes </h3>
                 <canvas id="graficoLatencia"></canvas>

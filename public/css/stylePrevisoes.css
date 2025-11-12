@@ -208,3 +208,38 @@ main {
   margin-right: 10px;
   font-size: 1.2rem;
 }
+
+
+
+.opcaoLegenda{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    gap: 20%;
+    cursor: pointer;
+}
+
+.opcaoLegenda p {
+  margin-left: 8px;
+  font-weight: 500; 
+}
+
+.legenda {
+  margin-right: 100px;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  width: fit-content; 
+}
+
+
+.bloco_cor {
+  margin-left: 20px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+}
