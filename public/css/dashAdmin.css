@@ -1,0 +1,12 @@
+.dashAdmin {
+  display: flex;
+  background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
+  color: #fff;
+  text-align: left;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 10px;
+  width: 100%-85px;
+  height: fit-content;
+}
