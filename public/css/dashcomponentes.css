@@ -90,6 +90,7 @@ select:hover {
     flex-direction: column;
     width: 30%;
     padding-top: 1.5rem;
+    height: 18rem;
 }
 
 .KPI h1 {

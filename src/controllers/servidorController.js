@@ -214,6 +214,52 @@ function contarAlertas(req, res){
             );
 }
 
+function buscarAlertasComponenteEspecifico(req, res){
+    var fkEmpresa = req.body.idempresa
+    var fkComponente = req.body.idComponente
+    var periodo = req.body.periodoAnalisado
+    var fkServidor = req.body.idServidor
+
+    servidorModel.buscarAlertasComponenteEspecifico(fkEmpresa, fkComponente, periodo, fkServidor)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao contar alertas! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
+
+function buscarPosicaoRank(req, res){
+    var fkEmpresa = req.body.idempresa
+    var fkComponente = req.body.idComponente
+    var periodo = req.body.periodoAnalisado
+    var fkServidor = req.body.idServidor
+
+    servidorModel.buscarPosicaoRank(fkEmpresa, fkComponente, periodo, fkServidor)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao pegar rank! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -227,5 +273,7 @@ module.exports = {
   buscarConfiguracoesServidor,
   carregarComponentes,
   listartop3,
-  contarAlertas
+  contarAlertas,
+  buscarAlertasComponenteEspecifico,
+  buscarPosicaoRank
 };

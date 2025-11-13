@@ -16,5 +16,7 @@ router.get("/configuracoes/:servidorId", servidorController.buscarConfiguracoesS
 router.post("/carregarComponentes", servidorController.carregarComponentes);
 router.post("/listartop3", servidorController.listartop3);
 router.post("/contarAlertas", servidorController.contarAlertas);
+router.post("/buscarAlertasComponenteEspecifico", servidorController.buscarAlertasComponenteEspecifico);
+router.post("/buscarPosicaoRank", servidorController.buscarPosicaoRank);
 
 module.exports = router;

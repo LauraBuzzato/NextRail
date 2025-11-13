@@ -317,6 +317,172 @@ where (DATE(inicio) = CURDATE()) or (DATE(inicio)<CURDATE() and fim is null) or(
     return database.executar(instrucaoSql);
 }
 
+function buscarAlertasComponenteEspecifico(fkEmpresa, fkComponente, periodo, fkServidor) {
+    let instrucaoSql = "";
+
+    if (periodo === "Mensal") {
+        instrucaoSql = `
+            SELECT 
+                gra.nome,
+                COUNT(alerta.id) AS total_alertas
+            FROM gravidade gra
+            LEFT JOIN alerta 
+                ON alerta.fk_gravidade = gra.id
+                AND alerta.fk_componenteServidor_tipoComponente = ${fkComponente}
+                AND (
+                    (
+                        -- Alerta começou antes do fim do mês e terminou depois do início do mês
+                        (alerta.inicio <= LAST_DAY(CURDATE())) AND 
+                        (alerta.fim IS NULL OR alerta.fim >= DATE_FORMAT(CURDATE(), '%Y-%m-01'))
+                    )
+                )
+            LEFT JOIN servidor ser 
+                ON alerta.fk_componenteServidor_servidor = ser.id
+            WHERE 
+                ser.fk_empresa = ${fkEmpresa}
+                AND ser.id = ${fkServidor}
+            GROUP BY gra.nome;
+        `;
+    } else { // Anual
+        instrucaoSql = `
+            SELECT 
+                gra.nome,
+                COUNT(alerta.id) AS total_alertas
+            FROM gravidade gra
+            LEFT JOIN alerta 
+                ON alerta.fk_gravidade = gra.id
+                AND alerta.fk_componenteServidor_tipoComponente = ${fkComponente}
+                AND (
+                    (
+                        alerta.inicio <= LAST_DAY(CONCAT(YEAR(CURDATE()), '-12-31')) AND 
+                        (alerta.fim IS NULL OR alerta.fim >= CONCAT(YEAR(CURDATE()), '-01-01'))
+                    )
+                )
+            LEFT JOIN servidor ser 
+                ON alerta.fk_componenteServidor_servidor = ser.id
+            WHERE 
+                ser.fk_empresa = ${fkEmpresa}
+                AND ser.id = ${fkServidor}
+            GROUP BY gra.nome;
+        `;
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function buscarPosicaoRank(fkEmpresa, fkComponente, periodo, fkServidor) {
+    let instrucaoSql = "";
+
+    if (periodo === "Mensal") {
+        instrucaoSql = `
+            SELECT *
+FROM (
+    SELECT 
+        s.id AS id_servidor,
+        s.nome AS nome_servidor,
+        COUNT(a.id) AS total_alertas,
+        COALESCE(SUM(
+            CASE g.nome
+                WHEN 'Alto' THEN 3
+                WHEN 'Médio' THEN 2
+                WHEN 'Baixo' THEN 1
+                ELSE 0
+            END
+        ), 0) AS pontuacao_gravidade,
+        RANK() OVER (
+            ORDER BY 
+                COUNT(a.id) DESC, 
+                COALESCE(SUM(
+                    CASE g.nome
+                        WHEN 'Alto' THEN 3
+                        WHEN 'Médio' THEN 2
+                        WHEN 'Baixo' THEN 1
+                        ELSE 0
+                    END
+                ), 0) DESC
+        ) AS posicao_ranking
+    FROM servidor s
+    JOIN componente_servidor cs 
+        ON s.id = cs.fk_servidor
+    LEFT JOIN alerta a 
+        ON a.fk_componenteServidor_servidor = cs.fk_servidor
+        AND a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+        AND a.fk_componenteServidor_tipoComponente = ${fkComponente}
+        AND (
+            (
+                MONTH(a.inicio) = MONTH(CURDATE()) 
+                AND YEAR(a.inicio) = YEAR(CURDATE())
+            )
+            OR (
+                MONTH(a.fim) = MONTH(CURDATE()) 
+                AND YEAR(a.fim) = YEAR(CURDATE())
+            )
+            OR (a.inicio < CURDATE() AND a.fim IS NULL)
+        )
+    LEFT JOIN gravidade g ON a.fk_gravidade = g.id
+    WHERE s.fk_empresa = ${fkEmpresa}
+    GROUP BY s.id
+) ranking
+WHERE ranking.id_servidor = ${fkServidor};
+        `;
+    } else { // Anual
+        instrucaoSql = `
+            SELECT *
+FROM (
+    SELECT 
+        s.id AS id_servidor,
+        s.nome AS nome_servidor,
+        COUNT(a.id) AS total_alertas,
+        COALESCE(SUM(
+            CASE g.nome
+                WHEN 'Alto' THEN 3
+                WHEN 'Médio' THEN 2
+                WHEN 'Baixo' THEN 1
+                ELSE 0
+            END
+        ), 0) AS pontuacao_gravidade,
+        RANK() OVER (
+            ORDER BY 
+                COUNT(a.id) DESC, 
+                COALESCE(SUM(
+                    CASE g.nome
+                        WHEN 'Alto' THEN 3
+                        WHEN 'Médio' THEN 2
+                        WHEN 'Baixo' THEN 1
+                        ELSE 0
+                    END
+                ), 0) DESC
+        ) AS posicao_ranking
+    FROM servidor s
+    JOIN componente_servidor cs 
+        ON s.id = cs.fk_servidor
+    LEFT JOIN alerta a 
+        ON a.fk_componenteServidor_servidor = cs.fk_servidor
+        AND a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+        AND a.fk_componenteServidor_tipoComponente = ${fkComponente}
+        AND (
+            (
+                YEAR(a.inicio) = YEAR(CURDATE())
+            )
+            OR (
+                YEAR(a.fim) = YEAR(CURDATE())
+            )
+            OR (a.inicio < CURDATE() AND a.fim IS NULL)
+        )
+    LEFT JOIN gravidade g ON a.fk_gravidade = g.id
+    WHERE s.fk_empresa = ${fkEmpresa}
+    GROUP BY s.id
+) ranking
+WHERE ranking.id_servidor = ${fkServidor};
+        `;
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+
 module.exports = {
     listarEmpresas,
     listarTipos,
@@ -330,5 +496,7 @@ module.exports = {
     buscarConfiguracoesServidor,
     carregarComponentes,
     listartop3,
-    contarAlertas
+    contarAlertas,
+    buscarAlertasComponenteEspecifico,
+    buscarPosicaoRank
 };
