@@ -84,14 +84,46 @@
 
             <div class="texto-secao">
 
-                <h2>Acompanhamento Mensal dos Componentes do <span id="nomeServidor"></span></h2>
+                <h2>Acompanhamento <span id="nomePeriodo">Mensal</span> dos Componentes do <span id="nomeServidor"></span></h2>
 
 
             </div>
+            <div class="legenda">
+                <div class="opcaoLegenda" onclick="listarServidorEspecifico('green')">
+                    <div class="bloco_cor" style="background-color:green"></div>
+                    <p>Sem Alerta </p>
+                </div>
+                <p>|</p>
+                <div class="opcaoLegenda" onclick="listarServidorEspecifico('yellow')">
+                    <div class="bloco_cor" style="background-color:yellow"></div>
+                    <p>Alerta Baixo</p>
+                </div>
+                <p>|</p>
+                <div class="opcaoLegenda" onclick="listarServidorEspecifico('darkorange')">
+                    <div class="bloco_cor" style="background-color:darkorange"></div>
+                    <p>Alerta Médio</p>
+                </div>
+                <p>|</p>
+                <div class="opcaoLegenda" onclick="listarServidorEspecifico('red')">
+                    <div class="bloco_cor" style="background-color:red"></div>
+                    <p>Alerta Alto</p>
+                </div>
+            </div>
             <div class="filtros-componente">
-                <select name="" id="selectComponentes" onchange="mudarVisualizacao()">
+                <div class="linhaSelect">
+                    <label for="selectComponentes">Componente:</label>
+                    <select name="" id="selectComponentes" onchange="mudarVisualizacao()">
 
-                </select>
+                    </select>
+                </div>
+
+                <div class="linhaSelect">
+                    <label for="selectPeriodo">Período:</label>
+                    <select name="" id="selectPeriodo" onchange="mudarVisualizacao()">
+                        <option value="Mensal">Mensal</option>
+                        <option value="Anual">Anual</option>
+                    </select>
+                </div>
             </div>
 
             <div class="container-geral" id="containerGeral">
