@@ -241,22 +241,29 @@ select:focus {
 }
 
 .legenda {
-  position: static; 
-  margin: 10px auto 0; 
   display: flex;
-  justify-content: center; 
   align-items: center;
-  gap: 15px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  font-size: 14px;
-  width: fit-content;
+  margin-bottom: 20px;
+  color: #ccc;
+  font-weight: 500;
+  width: 70%;
+  justify-content: space-evenly;
+  justify-self: center;
+  margin-top: 1%;
 }
 
 
 
 .bloco_cor {
-  width: 21px;
-  height: 21px;
-  border-radius: 4px;
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+}
+
+.opcaoLegenda {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    gap: 10%;
 }
