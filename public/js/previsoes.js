@@ -2,6 +2,7 @@
 
 console.log(sessionStorage.ID_SERVIDOR)
 const testeServidor = sessionStorage.ID_SERVIDOR;
+var passagem = true;
 
 const dadosSimulados = {
 
@@ -108,7 +109,9 @@ function atualizarDashboard() {
 
     const dados = dadosSimulados[servidor][periodo];
     renderGraficoLinha(dados);
-    renderGraficoLatencia();
+    if (passagem) {
+        renderGraficoLatencia();
+    }
     atualizarKPIs(dados);
 }
 
@@ -208,101 +211,105 @@ function renderGraficoLinha(dados) {
 }
 
 function renderGraficoLatencia() {
-    const canvas = document.getElementById("graficoLatencia");
-    if (!canvas) {
-        console.error("Canvas graficoLatencia não encontrado!");
-        return;
-    }
+    if (passagem) {
 
-    if (graficoLatencia) graficoLatencia.destroy();
 
-    const periodo = periodoSelect.value;
-    let labels, cpu, ram, disco;
+        const canvas = document.getElementById("graficoLatencia");
+        if (!canvas) {
+            console.error("Canvas graficoLatencia não encontrado!");
+            return;
+        }
 
-    if (periodo === "semanal") {
-        labels = ["Semana 1", "Semana 2", "Semana 3", "Semana 4"];
-        cpu = [72, 70, 68, 74];
-        ram = [45, 47, 46, 48];
-        disco = [80, 82, 79, 83];
-    } else if (periodo === "mensal") {
-        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
-        cpu = [69, 71, 72, 74, 76, 78, 79];
-        ram = [44, 45, 46, 47, 48, 49, 50];
-        disco = [79, 80, 81, 82, 83, 84, 85];
-    }
+        if (graficoLatencia) graficoLatencia.destroy();
 
-    const ctx = canvas.getContext("2d");
-    graficoLatencia = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels,
-            datasets: [
-                {
-                    label: "CPU",
-                    data: cpu,
-                    backgroundColor: "rgba(147, 112, 219, 0.8)",
-                    borderColor: "rgba(147, 112, 219, 0.8)",
-                    borderWidth: 1
-                },
-                {
-                    label: "RAM",
-                    data: ram,
-                    backgroundColor: "rgba(164, 57, 251, 0.8)",
-                    borderColor: "rgba(139, 39, 252, 0.8)",
-                    borderWidth: 1
-                },
-                {
-                    label: "Disco",
-                    data: disco,
-                    backgroundColor: "rgba(140, 4, 185, 0.8)",
-                    borderColor: "rgba(97, 4, 196, 0.8)",
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            maintainAspectRatio: false,
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: "top",
-                    labels: {
-                        color: "#fff",
-                        font: {
-                            size: 15
-                        }
+        const periodo = periodoSelect.value;
+        let labels, cpu, ram, disco;
+
+        if (periodo === "semanal") {
+            labels = ["Semana 1", "Semana 2", "Semana 3", "Semana 4"];
+            cpu = [72, 70, 68, 74];
+            ram = [45, 47, 46, 48];
+            disco = [80, 82, 79, 83];
+        } else if (periodo === "mensal") {
+            labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
+            cpu = [69, 71, 72, 74, 76, 78, 79];
+            ram = [44, 45, 46, 47, 48, 49, 50];
+            disco = [79, 80, 81, 82, 83, 84, 85];
+        }
+
+        const ctx = canvas.getContext("2d");
+        graficoLatencia = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "CPU",
+                        data: cpu,
+                        backgroundColor: "rgba(147, 112, 219, 0.8)",
+                        borderColor: "rgba(147, 112, 219, 0.8)",
+                        borderWidth: 1
+                    },
+                    {
+                        label: "RAM",
+                        data: ram,
+                        backgroundColor: "rgba(164, 57, 251, 0.8)",
+                        borderColor: "rgba(139, 39, 252, 0.8)",
+                        borderWidth: 1
+                    },
+                    {
+                        label: "Disco",
+                        data: disco,
+                        backgroundColor: "rgba(140, 4, 185, 0.8)",
+                        borderColor: "rgba(97, 4, 196, 0.8)",
+                        borderWidth: 1
                     }
-                }
+                ]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: "rgba(255,255,255,0.1)",
-                        borderColor: "rgba(255,255,255,0.3)"
-                    },
-                    ticks: {
-                        color: "#fff",
-                        font: {
-                            size: 15
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: "top",
+                        labels: {
+                            color: "#fff",
+                            font: {
+                                size: 15
+                            }
                         }
                     }
                 },
-                x: {
-                    grid: {
-                        color: "rgba(255,255,255,0.1)",
-                        borderColor: "rgba(255,255,255,0.3)"
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: "rgba(255,255,255,0.1)",
+                            borderColor: "rgba(255,255,255,0.3)"
+                        },
+                        ticks: {
+                            color: "#fff",
+                            font: {
+                                size: 15
+                            }
+                        }
                     },
-                    ticks: {
-                        color: "#fff",
-                        font: {
-                            size: 15
+                    x: {
+                        grid: {
+                            color: "rgba(255,255,255,0.1)",
+                            borderColor: "rgba(255,255,255,0.3)"
+                        },
+                        ticks: {
+                            color: "#fff",
+                            font: {
+                                size: 15
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    }
 }
 
 
@@ -380,7 +387,9 @@ function atualizarKPIs(dados) {
 
 function configurarNavegacao() {
     if (btnPrev && btnNext) {
+        
         btnNext.addEventListener("click", () => {
+            passagem = false;
             const ordem = ["cpu", "disco", "ram"];
             const idx = ordem.indexOf(componenteAtual);
             componenteAtual = ordem[(idx + 1) % ordem.length];
@@ -388,6 +397,7 @@ function configurarNavegacao() {
         });
 
         btnPrev.addEventListener("click", () => {
+            passagem = false;
             const ordem = ["cpu", "disco", "ram"];
             const idx = ordem.indexOf(componenteAtual);
             componenteAtual = ordem[(idx - 1 + ordem.length) % ordem.length];
@@ -398,8 +408,11 @@ function configurarNavegacao() {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    
-    periodoSelect.addEventListener("change", atualizarDashboard);
+    passagem = true;
+    periodoSelect.addEventListener("change",() => {
+        passagem = true;
+        atualizarDashboard();
+    });
     configurarNavegacao();
     atualizarDashboard();
 });
