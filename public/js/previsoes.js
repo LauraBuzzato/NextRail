@@ -398,6 +398,7 @@ function configurarNavegacao() {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+    
     periodoSelect.addEventListener("change", atualizarDashboard);
     configurarNavegacao();
     atualizarDashboard();

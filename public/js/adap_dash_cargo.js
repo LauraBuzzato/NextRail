@@ -109,7 +109,7 @@ function arrumarMenuDash() {
         </a>
       </li>
       <li class="link-item active" id="dashboard">
-        <a href="dashcomponentes.html" class="link">
+        <a href="dashboard.html" class="link">
           <ion-icon name="pulse-outline"></ion-icon>
           <span style="--i: 2">Uso Componentes</span>
         </a>
@@ -422,7 +422,7 @@ function arrumarMenu() {
         </a>
       </li>
       <li class="link-item" id="dashboard">
-        <a href="dashcomponentes.html" class="link">
+        <a href="dashboard.html" class="link">
           <ion-icon name="pulse-outline"></ion-icon>
           <span style="--i: 2">Uso Componentes</span>
         </a>
