@@ -20,6 +20,7 @@ main {
 }
 
 .header-previsoes {
+  position: relative;
   text-align: center;
   margin-bottom: 30px;
 }
@@ -211,35 +212,35 @@ main {
 
 
 
-.opcaoLegenda{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-between;
-    gap: 20%;
-    cursor: pointer;
+.opcaoLegenda {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .opcaoLegenda p {
-  margin-left: 8px;
-  font-weight: 500; 
+  margin: 0;
+  font-weight: 500;
 }
 
 .legenda {
-  margin-right: 100px;
+  position: static; 
+  margin: 10px auto 0; 
   display: flex;
-  justify-content: center;
-  margin: 0 auto;
-  width: fit-content; 
+  justify-content: center; 
+  align-items: center;
+  gap: 15px;
+  background: rgba(31, 31, 46, 0.8);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  width: fit-content;
 }
 
 
+
 .bloco_cor {
-  margin-left: 20px;
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  width: 30px;
-  height: 30px;
-  border-radius: 5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
 }
