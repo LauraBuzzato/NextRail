@@ -260,6 +260,51 @@ function buscarPosicaoRank(req, res){
             );
 }
 
+function buscarMetricas(req, res){
+    var fkEmpresa = req.body.idempresa
+    var fkComponente = req.body.idComponente
+    var fkServidor = req.body.idServidor
+
+    servidorModel.buscarMetricas(fkEmpresa, fkComponente, fkServidor)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao pegar rank! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
+
+function pegarFrequencia(req, res){
+    var fkEmpresa = req.body.idempresa
+    var fkComponente = req.body.idComponente
+    var periodo = req.body.periodoAnalisado
+    var fkServidor = req.body.idServidor
+
+    servidorModel.pegarFrequencia(fkEmpresa, fkComponente, periodo, fkServidor)
+            .then(
+                function (resultado) {
+                    res.json(resultado);
+                }
+            ).catch(
+                function (erro) {
+                    console.log(erro);
+                    console.log(
+                        "\nHouve um erro ao pegar rank! Erro: ",
+                        erro.sqlMessage
+                    );
+                    res.status(500).json(erro.sqlMessage);
+                }
+            );
+}
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -275,5 +320,7 @@ module.exports = {
   listartop3,
   contarAlertas,
   buscarAlertasComponenteEspecifico,
-  buscarPosicaoRank
+  buscarPosicaoRank,
+  buscarMetricas,
+  pegarFrequencia
 };

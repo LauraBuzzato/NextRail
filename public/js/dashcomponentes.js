@@ -72,18 +72,86 @@ function mudarVisualizacao() {
         .then(res => res.json())
         .then(posicao => {
 
-            containerGeral.innerHTML = `<div class="container-KPIS">
+            fetch('/servidores/buscarMetricas', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    idempresa: sessionStorage.ID_EMPRESA,
+                    idComponente: componente,
+                    idServidor: sessionStorage.ID_SERVIDOR
+                })
+            })
+                .then(res => res.json())
+                .then(gravidades => {
+
+                    console.log(gravidades);
+
+
+                    fetch('/servidores/pegarFrequencia', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            idempresa: sessionStorage.ID_EMPRESA,
+                            idComponente: componente,
+                            periodoAnalisado: periodo,
+                            idServidor: sessionStorage.ID_SERVIDOR
+                        })
+                    })
+                        .then(res => res.json())
+                        .then(frequencia => {
+
+                            console.log(frequencia);
+                            
+
+                            if (posicao[0].posicao_ranking <= 3) {
+                                corPintar = 'red'
+                            } else {
+                                corPintar = 'green'
+                            }
+
+                            corFrequencia = 'green'
+
+                            if(frequencia.length===0){
+                                freq = 0
+                            }else{
+                                freq = frequencia[0].frequencia_alerta_percentual
+                                for(i=gravidades.length; i<gravidades.length; i--){
+                                if(gravidades[i].valor<= frequencia[0].frequencia_alerta_percentual){
+                                    if(gravidades[i].nome_gravidade == 'Baixo'){
+                                        corFrequencia = 'yellow'
+                                        break
+                                    }else if(gravidades[i].nome_gravidade == 'Alto'){
+                                        corFrequencia = 'red'
+                                        break
+                                    }else{
+                                        corFrequencia = 'orange'
+                                        break
+                                    }
+                                }
+                            }
+                            }
+
+                        
+
+                            containerGeral.innerHTML = `<div class="container-KPIS">
                     <div class="KPI">
                         <h2>Frequência em estado de alerta:</h2>
-                        <h1>80%</h1>
+                        <h1 style="color: ${corFrequencia};">${freq}%</h1>
                     </div>
                     <div class="KPI">
                         <h2>Gravidade dos alertas:</h2>
                         <canvas id="alertasComponenteChart"></canvas>
                     </div>
                     <div class="KPI">
-                        <h2>Relação com os outros servidores:</h2>
-                        <h1 class="texto-grande">${posicao[0].posicao_ranking}º</h1>
+                        <h2 class="titulo-kpi">Relação com os outros servidores:<span class="info-icon" data-tooltip="Os três servidores com maior número de alertas de ${nomeComponente} são destacados em vermelho, indicando atenção prioritária.
+Os demais aparecem em verde por representarem menor nível de criticidade.">
+    <svg fill="#000000" width="20px" height="20px" viewBox="0 0 24 24" id="information-circle" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><line id="secondary-upstroke" x1="12.05" y1="8" x2="11.95" y2="8" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><line id="secondary" x1="12" y1="13" x2="12" y2="16" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><path id="primary" d="M3,12a9,9,0,0,1,9-9h0a9,9,0,0,1,9,9h0a9,9,0,0,1-9,9h0a9,9,0,0,1-9-9Z" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>
+  </span></h2>
+                        <h1 class="texto-grande" style="color: ${corPintar};">${posicao[0].posicao_ranking}º</h1>
                         <h4> Servidor com mais alertas de ${nomeComponente}</h4>
                     </div>
                 </div>
@@ -105,178 +173,190 @@ function mudarVisualizacao() {
                     </div>
                 </div>`
 
-            fetch('/servidores/buscarAlertasComponenteEspecifico', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    idempresa: sessionStorage.ID_EMPRESA,
-                    idComponente: componente,
-                    periodoAnalisado: periodo,
-                    idServidor: sessionStorage.ID_SERVIDOR
-                })
-            })
-                .then(res => res.json())
-                .then(alertas => {
-                    const ctx = document.getElementById('alertasComponenteChart');
-                    const container = ctx.parentElement;
-                    const msgExistente = container.querySelector('.msg-sem-servidores');
-                    if (msgExistente) msgExistente.remove();
-
-
-                    if (alertas.length === 0) {
-                        const msg = document.createElement('h1');
-                        msg.textContent = `Sem alertas ${periodoParaTexto} de ${nomeComponente}`;
-                        msg.classList.add('msg-sem-servidores');
-                        msg.style.textAlign = 'center';
-                        msg.style.fontSize = '2.0rem';
-                        msg.style.color = 'green';
-                        msg.style.marginTop = '-95px';
-                        container.appendChild(msg);
-
-                    } else {
-                        var dataAlertas = [];
-                        for (i = 0; i < alertas.length; i++) {
-                            dataAlertas.push(alertas[i].total_alertas);
-
-                        }
-
-                        meuChart = new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Baixa', 'Média', 'Alta'],
-                                datasets: [{
-                                    label: 'Alertas Registrados',
-                                    data: dataAlertas,
-                                    backgroundColor: [
-                                        'rgba(255, 255, 0, 1)',
-                                        'rgba(255, 165, 0, 1)',
-                                        'rgba(255, 0, 0, 2.0)'
-                                    ],
-                                    borderColor: [
-                                        'rgba(255, 255, 0, 1)',
-                                        'rgba(3, 2, 0, 1)',
-                                        'rgba(255, 0, 0, 2.0)'
-                                    ],
-                                    borderWidth: 1,
-                                    borderRadius: 8
-                                }]
-                            },
-                            options: {
-
-                                responsive: true,
-                                plugins: {
-                                    legend: { display: false },
-                                    title: { display: true },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: ctx => `${ctx.parsed.y} alertas`
-                                        }
-                                    }
+                            fetch('/servidores/buscarAlertasComponenteEspecifico', {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
                                 },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        title: {
-                                            display: true,
-                                            text: 'Quantidade de alertas',
-                                            color: '#fff',
-                                            font: {
-                                                size: 22
-                                            }
-                                        },
-                                        ticks: {
-                                            color: '#fff',
-                                            font: {
-                                                size: 18
-                                            }
-                                        },
-                                        grid: { color: '#333' }
-                                    },
-                                    x: {
+                                body: JSON.stringify({
+                                    idempresa: sessionStorage.ID_EMPRESA,
+                                    idComponente: componente,
+                                    periodoAnalisado: periodo,
+                                    idServidor: sessionStorage.ID_SERVIDOR
+                                })
+                            })
+                                .then(res => res.json())
+                                .then(alertas => {
+                                    const ctx = document.getElementById('alertasComponenteChart');
+                                    const container = ctx.parentElement;
+                                    const msgExistente = container.querySelector('.msg-sem-servidores');
+                                    if (msgExistente) msgExistente.remove();
 
-                                        ticks: {
-                                            color: '#fff',
-                                            font: {
-                                                size: 18
+
+                                    if (alertas.length === 0) {
+                                        const msg = document.createElement('h1');
+                                        msg.textContent = `Sem alertas ${periodoParaTexto} de ${nomeComponente}`;
+                                        msg.classList.add('msg-sem-servidores');
+                                        msg.style.textAlign = 'center';
+                                        msg.style.fontSize = '2.0rem';
+                                        msg.style.color = 'green';
+                                        msg.style.marginTop = '-95px';
+                                        container.appendChild(msg);
+
+                                    } else {
+                                        var dataAlertas = [];
+                                        for (i = 0; i < alertas.length; i++) {
+                                            dataAlertas.push(alertas[i].total_alertas);
+
+                                        }
+
+                                        meuChart = new Chart(ctx, {
+                                            type: 'bar',
+                                            data: {
+                                                labels: ['Baixa', 'Média', 'Alta'],
+                                                datasets: [{
+                                                    label: 'Alertas Registrados',
+                                                    data: dataAlertas,
+                                                    backgroundColor: [
+                                                        'rgba(255, 255, 0, 1)',
+                                                        'rgba(255, 165, 0, 1)',
+                                                        'rgba(255, 0, 0, 2.0)'
+                                                    ],
+                                                    borderColor: [
+                                                        'rgba(255, 255, 0, 1)',
+                                                        'rgba(3, 2, 0, 1)',
+                                                        'rgba(255, 0, 0, 2.0)'
+                                                    ],
+                                                    borderWidth: 1,
+                                                    borderRadius: 8
+                                                }]
+                                            },
+                                            options: {
+
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: { display: false },
+                                                    title: { display: true },
+                                                    tooltip: {
+                                                        callbacks: {
+                                                            label: ctx => `${ctx.parsed.y} alertas`
+                                                        }
+                                                    }
+                                                },
+                                                scales: {
+                                                    y: {
+                                                        beginAtZero: true,
+                                                        title: {
+                                                            display: true,
+                                                            text: 'Quantidade de alertas',
+                                                            color: '#fff',
+                                                            font: {
+                                                                size: 22
+                                                            }
+                                                        },
+                                                        ticks: {
+                                                            color: '#fff',
+                                                            font: {
+                                                                size: 18
+                                                            }
+                                                        },
+                                                        grid: { color: '#333' }
+                                                    },
+                                                    x: {
+
+                                                        ticks: {
+                                                            color: '#fff',
+                                                            font: {
+                                                                size: 18
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
+                                        });
+                                    }
+
+                                })
+                                .catch(erro => {
+                                    console.error("Erro ao buscar alertas:", erro);
+                                });
+
+                            const ctx2 = document.getElementById('varicaoUso');
+
+                            meuChart2 = new Chart(ctx2, {
+                                type: 'line',
+                                data: {
+                                    labels: labelPeriodo,
+                                    datasets: [
+                                        {
+                                            label: nomeComponente,
+                                            data: [0, 0, 1, 0, 0, 0, 0,
+                                                0, 0, 0, 3, 0, 0, 0,
+                                                1, 0, 1, 0, 2, 0, 0,
+                                                2, 0, 0, 0, 0, 1, 0,
+                                                0, 0, 0],
+                                            borderColor: '#a78bfa',
+                                            backgroundColor: 'rgba(167,139,250,0.2)',
+                                            tension: 0.3,
+                                            fill: true,
+                                            pointRadius: 4,
+                                            borderWidth: 2
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: {
+                                            position: 'top',
+                                            labels: {
+                                                color: '#fff',
+                                                font: {
+                                                    size: 15
+                                                }
+                                            }
+                                        },
+                                        title: {
+                                            display: false
+                                        }
+                                    },
+                                    scales: {
+                                        x: {
+
+                                            ticks: {
+                                                color: '#fff',
+                                                font: {
+                                                    size: 18
+                                                }
+                                            },
+                                            grid: { color: 'rgba(255,255,255,0.1)' }
+                                        },
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: {
+                                                color: '#fff',
+                                                font: {
+                                                    size: 18
+                                                }
+                                            },
+                                            grid: { color: 'rgba(255,255,255,0.1)' }
                                         }
                                     }
                                 }
-                            }
+                            });
+
+                        })
+                        .catch(erro => {
+                            console.error("Erro ao buscar posicao:", erro);
                         });
-                    }
 
                 })
                 .catch(erro => {
-                    console.error("Erro ao buscar alertas:", erro);
+                    console.error("Erro ao buscar posicao:", erro);
                 });
 
-            const ctx2 = document.getElementById('varicaoUso');
 
-            meuChart2 = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: labelPeriodo,
-                    datasets: [
-                        {
-                            label: nomeComponente,
-                            data: [0, 0, 1, 0, 0, 0, 0,
-                                0, 0, 0, 3, 0, 0, 0,
-                                1, 0, 1, 0, 2, 0, 0,
-                                2, 0, 0, 0, 0, 1, 0,
-                                0, 0, 0],
-                            borderColor: '#a78bfa',
-                            backgroundColor: 'rgba(167,139,250,0.2)',
-                            tension: 0.3,
-                            fill: true,
-                            pointRadius: 4,
-                            borderWidth: 2
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                color: '#fff',
-                                font: {
-                                    size: 15
-                                }
-                            }
-                        },
-                        title: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-
-                            ticks: {
-                                color: '#fff',
-                                font: {
-                                    size: 18
-                                }
-                            },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: '#fff',
-                                font: {
-                                    size: 18
-                                }
-                            },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
-                        }
-                    }
-                }
-            });
 
 
         })

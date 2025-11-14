@@ -390,7 +390,7 @@ FROM (
                 ELSE 0
             END
         ), 0) AS pontuacao_gravidade,
-        RANK() OVER (
+        ROW_NUMBER() OVER (
             ORDER BY 
                 COUNT(a.id) DESC, 
                 COALESCE(SUM(
@@ -442,7 +442,7 @@ FROM (
                 ELSE 0
             END
         ), 0) AS pontuacao_gravidade,
-        RANK() OVER (
+        ROW_NUMBER() OVER (
             ORDER BY 
                 COUNT(a.id) DESC, 
                 COALESCE(SUM(
@@ -482,6 +482,102 @@ WHERE ranking.id_servidor = ${fkServidor};
     return database.executar(instrucaoSql);
 }
 
+function buscarMetricas(fkEmpresa, fkComponente, fkServidor) {
+    var instrucaoSql = `
+        SELECT 
+    m.id,
+    m.valor,
+    g.nome AS nome_gravidade,
+    s.nome AS nome_servidor,
+    tc.nome_tipo_componente AS nome_componente,
+    e.razao_social AS empresa
+FROM metrica m
+JOIN gravidade g 
+    ON m.fk_gravidade = g.id
+JOIN componente_servidor cs 
+    ON cs.fk_servidor = m.fk_componenteServidor_servidor
+   AND cs.fk_tipo_componente = m.fk_componenteServidor_tipoComponente
+JOIN servidor s 
+    ON s.id = cs.fk_servidor
+JOIN tipo_componente tc
+    ON tc.id = cs.fk_tipo_componente
+JOIN empresa e
+    ON e.id = s.fk_empresa
+WHERE e.id = ${fkEmpresa}
+  AND s.id = ${fkServidor}
+  AND tc.id = ${fkComponente};
+    `;
+
+    console.log("Buscando configurações do servidor: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function pegarFrequencia(fkEmpresa, fkComponente, periodo, fkServidor) {
+    let instrucaoSql = "";
+
+    if (periodo === "Mensal") {
+        instrucaoSql = `
+            SELECT
+    a.fk_componenteServidor_servidor AS servidor,
+    SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW()))) AS tempo_alerta_segundos,
+    ROUND(
+        (
+            SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW())))
+            /
+            (DAY(LAST_DAY(CURDATE())) * 24 * 60 * 60)
+        ) * 100
+    , 2) AS frequencia_alerta_percentual
+FROM alerta a
+JOIN componente_servidor cs
+    ON cs.fk_servidor = a.fk_componenteServidor_servidor
+    AND cs.fk_tipo_componente = a.fk_componenteServidor_tipoComponente
+JOIN servidor s
+    ON s.id = cs.fk_servidor
+WHERE 
+    a.fk_componenteServidor_tipoComponente = ${fkComponente}
+    AND MONTH(a.inicio) = MONTH(CURDATE())
+    AND YEAR(a.inicio) = YEAR(CURDATE())
+    AND s.fk_empresa = ${fkEmpresa}
+    AND s.id = ${fkServidor}
+GROUP BY a.fk_componenteServidor_servidor;
+        `;
+    } else { // Anual
+        instrucaoSql = `
+            SELECT
+    a.fk_componenteServidor_servidor AS servidor,
+    SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW()))) AS tempo_alerta_segundos,
+    ROUND(
+        (
+            SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW())))
+            /
+            ( 
+                -- total de segundos do ano atual
+                (CASE 
+                    WHEN YEAR(CURDATE()) % 400 = 0 OR (YEAR(CURDATE()) % 4 = 0 AND YEAR(CURDATE()) % 100 <> 0)
+                        THEN 366
+                    ELSE 365
+                END) * 24 * 60 * 60
+            )
+        ) * 100
+    , 2) AS frequencia_alerta_percentual
+FROM alerta a
+JOIN componente_servidor cs
+    ON cs.fk_servidor = a.fk_componenteServidor_servidor
+    AND cs.fk_tipo_componente = a.fk_componenteServidor_tipoComponente
+JOIN servidor s
+    ON s.id = cs.fk_servidor
+WHERE 
+    a.fk_componenteServidor_tipoComponente = ${fkComponente}
+    AND YEAR(a.inicio) = YEAR(CURDATE())
+    AND s.fk_empresa = ${fkEmpresa}
+    AND s.id = ${fkServidor}
+GROUP BY a.fk_componenteServidor_servidor;
+        `;
+    }
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
 
 module.exports = {
     listarEmpresas,
@@ -498,5 +594,7 @@ module.exports = {
     listartop3,
     contarAlertas,
     buscarAlertasComponenteEspecifico,
-    buscarPosicaoRank
+    buscarPosicaoRank,
+    buscarMetricas,
+    pegarFrequencia
 };

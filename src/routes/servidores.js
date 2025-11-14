@@ -18,5 +18,7 @@ router.post("/listartop3", servidorController.listartop3);
 router.post("/contarAlertas", servidorController.contarAlertas);
 router.post("/buscarAlertasComponenteEspecifico", servidorController.buscarAlertasComponenteEspecifico);
 router.post("/buscarPosicaoRank", servidorController.buscarPosicaoRank);
+router.post("/buscarMetricas", servidorController.buscarMetricas);
+router.post("/pegarFrequencia", servidorController.pegarFrequencia);
 
 module.exports = router;
