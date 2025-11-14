@@ -201,7 +201,7 @@ select:hover {
   content: attr(data-tooltip);
   position: absolute;
   top: 125%;
-  left: -200%;
+  left: 70%;
   transform: translateX(-50%);
   background-color: #222;
   color: #fff;
@@ -209,7 +209,7 @@ select:hover {
   border-radius: 6px;
   font-size: 13px;
   max-width: 350px;
-  width: 150px;
+  width: 200px;
   text-align: center;
   opacity: 0;
   visibility: hidden;

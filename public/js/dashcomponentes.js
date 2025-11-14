@@ -45,6 +45,7 @@ function mudarVisualizacao() {
             'Maio', 'Junho', 'Julho', 'Agosto',
             'Setembro', 'Outubro', 'Novembro', 'Dezembro']
         periodoParaTexto = "anuais"
+        textoFreqAnterior = 'ano'
     } else {
         labelPeriodo = [
             '01/11', '02/11', '03/11', '04/11',
@@ -55,6 +56,7 @@ function mudarVisualizacao() {
             '21/11', '22/11', '23/11', '24/11',
             '25/11', '26/11', '27/11', '28/11', '29/11', '30/11']
         periodoParaTexto = "mensais"
+        textoFreqAnterior = 'mês'
     }
 
     fetch('/servidores/buscarPosicaoRank', {
@@ -105,7 +107,7 @@ function mudarVisualizacao() {
                         .then(frequencia => {
 
                             console.log(frequencia);
-                            
+
 
                             if (posicao[0].posicao_ranking <= 3) {
                                 corPintar = 'red'
@@ -115,39 +117,57 @@ function mudarVisualizacao() {
 
                             corFrequencia = 'green'
 
-                            if(frequencia.length===0){
+                            if (frequencia.length === 0) {
                                 freq = 0
-                            }else{
+                                diferenca_freq = 0
+                            } else {
                                 freq = frequencia[0].frequencia_alerta_percentual
-                                for(i=gravidades.length; i<gravidades.length; i--){
-                                if(gravidades[i].valor<= frequencia[0].frequencia_alerta_percentual){
-                                    if(gravidades[i].nome_gravidade == 'Baixo'){
-                                        corFrequencia = 'yellow'
-                                        break
-                                    }else if(gravidades[i].nome_gravidade == 'Alto'){
-                                        corFrequencia = 'red'
-                                        break
-                                    }else{
-                                        corFrequencia = 'orange'
-                                        break
+                                for (i = gravidades.length; i < gravidades.length; i--) {
+                                    if (gravidades[i].valor <= frequencia[0].frequencia_alerta_percentual) {
+                                        if (gravidades[i].nome_gravidade == 'Baixo') {
+                                            corFrequencia = 'yellow'
+                                            break
+                                        } else if (gravidades[i].nome_gravidade == 'Alto') {
+                                            corFrequencia = 'red'
+                                            break
+                                        } else {
+                                            corFrequencia = 'orange'
+                                            break
+                                        }
                                     }
                                 }
-                            }
+
+                                diferenca_freq = frequencia[0].diferenca_percentual
+
+                                
                             }
 
-                        
+
+                            if (diferenca_freq < 0) {
+                                textoDiferenca = `↓ ${Math.abs(diferenca_freq)}% que o ${textoFreqAnterior} anterior`
+                                corParaPintar = 'green'
+                            } else if (diferenca_freq > 0) {
+                                textoDiferenca = `↑ ${diferenca_freq}% que o ${textoFreqAnterior} anterior`
+                                corParaPintar = 'red'
+                            } else {
+                                textoDiferenca = `${diferenca_freq}% de diferença do ${textoFreqAnterior} anterior`
+                                corParaPintar = 'green'
+                            }
+
+
 
                             containerGeral.innerHTML = `<div class="container-KPIS">
                     <div class="KPI">
-                        <h2>Frequência em estado de alerta:</h2>
+                        <h2>Tempo em Alerta (%):</h2>
                         <h1 style="color: ${corFrequencia};">${freq}%</h1>
+                        <h4 style="color: ${corParaPintar};">${textoDiferenca}</h4>
                     </div>
                     <div class="KPI">
                         <h2>Gravidade dos alertas:</h2>
                         <canvas id="alertasComponenteChart"></canvas>
                     </div>
                     <div class="KPI">
-                        <h2 class="titulo-kpi">Relação com os outros servidores:<span class="info-icon" data-tooltip="Os três servidores com maior número de alertas de ${nomeComponente} são destacados em vermelho, indicando atenção prioritária.
+                        <h2 class="titulo-kpi">Ranking:<span class="info-icon" data-tooltip="Os três servidores com maior número de alertas de ${nomeComponente} são destacados em vermelho, indicando atenção prioritária.
 Os demais aparecem em verde por representarem menor nível de criticidade.">
     <svg fill="#000000" width="20px" height="20px" viewBox="0 0 24 24" id="information-circle" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><line id="secondary-upstroke" x1="12.05" y1="8" x2="11.95" y2="8" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><line id="secondary" x1="12" y1="13" x2="12" y2="16" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><path id="primary" d="M3,12a9,9,0,0,1,9-9h0a9,9,0,0,1,9,9h0a9,9,0,0,1-9,9h0a9,9,0,0,1-9-9Z" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>
   </span></h2>

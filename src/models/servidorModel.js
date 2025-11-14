@@ -519,14 +519,65 @@ function pegarFrequencia(fkEmpresa, fkComponente, periodo, fkServidor) {
         instrucaoSql = `
             SELECT
     a.fk_componenteServidor_servidor AS servidor,
+
+    -- Tempo total em alerta no mês atual (segundos)
     SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW()))) AS tempo_alerta_segundos,
+
+    -- Frequência (%) do mês atual
     ROUND(
         (
             SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW())))
             /
             (DAY(LAST_DAY(CURDATE())) * 24 * 60 * 60)
         ) * 100
-    , 2) AS frequencia_alerta_percentual
+    , 2) AS frequencia_alerta_percentual,
+
+    -- Frequência do mês anterior
+    COALESCE((
+        SELECT 
+            ROUND(
+                (
+                    SUM(TIMESTAMPDIFF(SECOND, a2.inicio, COALESCE(a2.fim, NOW())))
+                    /
+                    (DAY(LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))) * 24 * 60 * 60)
+                ) * 100
+            , 2)
+        FROM alerta a2
+        WHERE 
+            a2.fk_componenteServidor_servidor = a.fk_componenteServidor_servidor
+            AND a2.fk_componenteServidor_tipoComponente = ${fkComponente}
+            AND MONTH(a2.inicio) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+            AND YEAR(a2.inicio) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+    ), 0) AS freq_alerta_mes_anterior,
+
+    -- Diferença entre os meses
+    (
+    ROUND(
+        (
+            SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW())))
+            /
+            (DAY(LAST_DAY(CURDATE())) * 24 * 60 * 60)
+        ) * 100
+    , 2)
+    -
+    COALESCE((
+        SELECT 
+            ROUND(
+                (
+                    SUM(TIMESTAMPDIFF(SECOND, a2.inicio, COALESCE(a2.fim, NOW())))
+                    /
+                    (DAY(LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))) * 24 * 60 * 60)
+                ) * 100
+            , 2)
+        FROM alerta a2
+        WHERE 
+            a2.fk_componenteServidor_servidor = a.fk_componenteServidor_servidor
+            AND a2.fk_componenteServidor_tipoComponente = ${fkComponente}
+            AND MONTH(a2.inicio) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+            AND YEAR(a2.inicio) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+    ), 0)
+) AS diferenca_percentual
+
 FROM alerta a
 JOIN componente_servidor cs
     ON cs.fk_servidor = a.fk_componenteServidor_servidor
@@ -545,21 +596,91 @@ GROUP BY a.fk_componenteServidor_servidor;
         instrucaoSql = `
             SELECT
     a.fk_componenteServidor_servidor AS servidor,
+
+    -- Tempo em alerta no ano atual (segundos)
     SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW()))) AS tempo_alerta_segundos,
+
+    -- Frequência do ano atual
     ROUND(
         (
             SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW())))
             /
-            ( 
-                -- total de segundos do ano atual
+            (
                 (CASE 
-                    WHEN YEAR(CURDATE()) % 400 = 0 OR (YEAR(CURDATE()) % 4 = 0 AND YEAR(CURDATE()) % 100 <> 0)
-                        THEN 366
+                    WHEN YEAR(CURDATE()) % 400 = 0 
+                        OR (YEAR(CURDATE()) % 4 = 0 AND YEAR(CURDATE()) % 100 <> 0)
+                    THEN 366
                     ELSE 365
                 END) * 24 * 60 * 60
             )
         ) * 100
-    , 2) AS frequencia_alerta_percentual
+    , 2) AS frequencia_alerta_percentual,
+
+    -- Frequência do ano anterior
+    COALESCE((
+        SELECT 
+            ROUND(
+                (
+                    SUM(TIMESTAMPDIFF(SECOND, a2.inicio, COALESCE(a2.fim, NOW())))
+                    /
+                    (
+                        (CASE 
+                            WHEN (YEAR(CURDATE()) - 1) % 400 = 0
+                                OR ((YEAR(CURDATE()) - 1) % 4 = 0 AND (YEAR(CURDATE()) - 1) % 100 <> 0)
+                            THEN 366
+                            ELSE 365
+                        END) * 24 * 60 * 60
+                    )
+                ) * 100
+            , 2)
+        FROM alerta a2
+        WHERE 
+            a2.fk_componenteServidor_servidor = a.fk_componenteServidor_servidor
+            AND a2.fk_componenteServidor_tipoComponente = ${fkComponente}
+            AND YEAR(a2.inicio) = YEAR(CURDATE()) - 1
+    ), 0) AS freq_ano_anterior_percentual,
+
+    -- Diferença ano anterior
+    (
+        ROUND(
+            (
+                SUM(TIMESTAMPDIFF(SECOND, a.inicio, COALESCE(a.fim, NOW())))
+                /
+                (
+                    (CASE 
+                        WHEN YEAR(CURDATE()) % 400 = 0 
+                            OR (YEAR(CURDATE()) % 4 = 0 AND YEAR(CURDATE()) % 100 <> 0)
+                        THEN 366
+                        ELSE 365
+                    END) * 24 * 60 * 60
+                )
+            ) * 100
+        , 2)
+        -
+        COALESCE((
+            SELECT 
+                ROUND(
+                    (
+                        SUM(TIMESTAMPDIFF(SECOND, a2.inicio, COALESCE(a2.fim, NOW())))
+                        /
+                        (
+                            (CASE 
+                                WHEN (YEAR(CURDATE()) - 1) % 400 = 0
+                                    OR ((YEAR(CURDATE()) - 1) % 4 = 0 AND (YEAR(CURDATE()) - 1) % 100 <> 0)
+                                THEN 366
+                                ELSE 365
+                            END) * 24 * 60 * 60
+                        )
+                    ) * 100
+                , 2)
+            FROM alerta a2
+            WHERE 
+                a2.fk_componenteServidor_servidor = a.fk_componenteServidor_servidor
+                AND a2.fk_componenteServidor_tipoComponente = ${fkComponente}
+                AND YEAR(a2.inicio) = YEAR(CURDATE()) - 1
+        ), 0)
+    ) AS diferenca_percentual
+
 FROM alerta a
 JOIN componente_servidor cs
     ON cs.fk_servidor = a.fk_componenteServidor_servidor
