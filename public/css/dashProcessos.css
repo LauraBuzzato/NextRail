@@ -236,3 +236,72 @@ body {
     height: 550px;
   }
 }
+
+.GRAFICO-2 {
+  background: #1f1f2e;
+  color: #fff;
+  border-radius: 15px;
+  text-align: center;
+  font-weight: bold;
+  padding: 2rem;
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+  flex-direction: column;
+  width: 65%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.KPI.com-grafico {
+  background: #1f1f2e;
+  color: #fff;
+  border-radius: 15px;
+  text-align: center;
+  font-weight: bold;
+  padding: 2rem;
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+  flex-direction: column;
+  width: 30%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#frequenciaProcessosChart {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  flex: 1;
+}
+
+#varicaoUso {
+  width: 100% !important;
+  height: 100% !important;
+  flex: 1;
+}
+
+.container-KPIS-segunda-linha .KPI:last-child {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.KPI.com-grafico h2 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.GRAFICO-2 h2 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

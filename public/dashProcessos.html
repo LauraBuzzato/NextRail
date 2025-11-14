@@ -3,11 +3,11 @@
 
 <head>
   <script>
-        sessionStorage.PAGINA_DESEJADA = "./dashProcessos.html"
-        if (!(sessionStorage.ID_SERVIDOR >= 1)) {
-            window.location = "./selecionarServidor.html"
-        }
-    </script>
+    sessionStorage.PAGINA_DESEJADA = "./dashProcessos.html"
+    if (!(sessionStorage.ID_SERVIDOR >= 1)) {
+      window.location = "./selecionarServidor.html"
+    }
+  </script>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,7 +109,7 @@
             <canvas id="varicaoUso"></canvas>
           </div>
 
-          <div class="KPI">
+          <div class="KPI com-grafico">
             <h2>Frequência dos processos:</h2>
             <canvas id="frequenciaProcessosChart"></canvas>
           </div>
@@ -135,7 +135,7 @@
   const ctx = document.getElementById('frequenciaProcessosChart');
 
   new Chart(ctx, {
-    type: 'doughnut',
+    type: 'bar',
     data: {
       labels: ['script.py', 'teste123', 'algo.exe'],
       datasets: [{
@@ -143,32 +143,65 @@
         backgroundColor: [
           'rgba(255, 255, 0, 1)',
           'rgba(255, 165, 0, 1)',
-          'rgba(255, 0, 0, 2.0)'
+          'rgba(255, 0, 0, 1)'
         ],
         borderColor: [
           'rgba(255, 255, 0, 1)',
-          'rgba(3, 2, 0, 1)',
-          'rgba(255, 0, 0, 2.0)'
+          'rgba(255, 165, 0, 1)',
+          'rgba(255, 0, 0, 1)'
         ],
-        borderWidth: 1,
+        borderWidth: 2,
         borderRadius: 8
       }]
     },
     options: {
-
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {display: false},
         title: {display: false},
-        datalabels: {
-          color: '#fff',
-          font: {size: 16, weight: 'bold'},
-          formatter: (value, ctx) => ctx.chart.data.labels[ctx.dataIndex]
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: function (context) {
+              return `${context.parsed.y}%`;
+            }
+          }
         }
       },
-      cutout: '60%',
-    },
-    plugins: [ChartDataLabels]
+      scales: {
+        x: {
+          ticks: {
+            color: '#fff',
+            font: {
+              size: 14
+            }
+          },
+          grid: {
+            color: 'rgba(255,255,255,0.1)',
+            display: false
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: '#fff',
+            font: {
+              size: 14
+            }
+          },
+          grid: {
+            color: 'rgba(255,255,255,0.1)'
+          }
+        }
+      },
+      layout: {
+        padding: {
+          top: 20,
+          bottom: 20
+        }
+      }
+    }
   });
 
   const ctx2 = document.getElementById('varicaoUso');
