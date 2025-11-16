@@ -137,6 +137,11 @@ function criarBotoesComponentes() {
     btnVisaoGeral.className = 'btn-visao-geral';
     btnVisaoGeral.id = 'btnVisaoGeral';
     btnVisaoGeral.textContent = 'Visão Geral';
+    
+    btnVisaoGeral.style.background = "#ffe066";
+    btnVisaoGeral.style.color = "#000";
+    btnVisaoGeral.style.border = "1px solid #ffe066";
+    
     btnVisaoGeral.addEventListener('click', toggleVisaoGeral);
 
     filtrosContainer.appendChild(btnVisaoGeral);
@@ -147,7 +152,7 @@ function criarBotoesComponentes() {
     botoesContainer.innerHTML = `
         <label>Componente:</label>
         <div class="grupo-botoes">
-            <button class="btn-componente active" data-componente="cpu">
+            <button class="btn-componente" data-componente="cpu">
                 <ion-icon name="hardware-chip-outline"></ion-icon>
                 CPU
             </button>
@@ -175,6 +180,13 @@ function criarBotoesComponentes() {
 
             componenteAtual = this.dataset.componente;
             visaoGeralAtiva = false;
+        
+            const btnVisaoGeral = document.getElementById('btnVisaoGeral');
+            btnVisaoGeral.textContent = 'Voltar para Visão Geral';
+            btnVisaoGeral.style.background = "transparent";
+            btnVisaoGeral.style.color = "#ffe066";
+            btnVisaoGeral.style.border = "1px solid #ffe066";
+            
             atualizarDashboard();
         });
     });
@@ -194,11 +206,21 @@ function toggleVisaoGeral() {
     } else {
         btnVisaoGeral.textContent = 'Voltar para Visão Geral';
         botoesComponentes.classList.remove('hidden');
+       
         document.querySelectorAll('.btn-componente').forEach(btn => {
             if (btn.dataset.componente === componenteAtual) {
                 btn.classList.add('active');
             }
         });
+    }
+    if (btnVisaoGeral.textContent == "Voltar para Visão Geral") {
+        btnVisaoGeral.style.background = "transparent";
+        btnVisaoGeral.style.color = "#ffe066";
+        btnVisaoGeral.style.border = "1px solid #ffe066";
+    } else {
+        btnVisaoGeral.style.background = "#ffe066";
+        btnVisaoGeral.style.color = "#000";
+        btnVisaoGeral.style.border = "1px solid #ffe066";
     }
 
     atualizarDashboard();
@@ -734,6 +756,13 @@ function configurarNavegacao() {
                 }
             });
 
+     
+            const btnVisaoGeral = document.getElementById('btnVisaoGeral');
+            btnVisaoGeral.textContent = 'Voltar para Visão Geral';
+            btnVisaoGeral.style.background = "transparent";
+            btnVisaoGeral.style.color = "#ffe066";
+            btnVisaoGeral.style.border = "1px solid #ffe066";
+
             atualizarDashboard();
         });
 
@@ -750,6 +779,13 @@ function configurarNavegacao() {
                     btn.classList.add('active');
                 }
             });
+
+
+            const btnVisaoGeral = document.getElementById('btnVisaoGeral');
+            btnVisaoGeral.textContent = 'Voltar para Visão Geral';
+            btnVisaoGeral.style.background = "transparent";
+            btnVisaoGeral.style.color = "#ffe066";
+            btnVisaoGeral.style.border = "1px solid #ffe066";
 
             atualizarDashboard();
         });
