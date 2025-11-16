@@ -102,7 +102,7 @@
 
         
 
-        <div class="filtros-dashboard">
+        <div class="filtros-dashboard" id="filtrosContainer">
             <label>Período:</label>
             <select id="periodoSelect">
                 <option value="semanal">Semanal</option>
@@ -115,8 +115,6 @@
         <section class="graficos-previsoes">
             <div class="grafico">
                 <h3>Uso de Recursos</h3>
-                <button class="btn-troca" id="btnPrev"><span>‹</span></button>
-                <button class="btn-troca" id="btnNext"><span>›</span></button>
                 <canvas id="graficoPrevisaoLinha"></canvas>
                 <p id="valorAtualLegenda">CPU atual: 0%</p>
             </div>

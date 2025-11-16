@@ -267,3 +267,99 @@ select:focus {
     justify-content: center;
     gap: 10%;
 }
+
+.filtros-dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.botoes-componentes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.botoes-componentes label {
+  color: #fff;
+  font-weight: 500;
+}
+
+.grupo-botoes {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-componente {
+  padding: 8px 16px;
+  border: 1px solid #ffe066;
+  background: transparent;
+  color: #ffe066;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-componente.active {
+  background: #ffe066;
+  color: #000;
+}
+
+.btn-componente:hover {
+  background: #ffe066;
+  color: #000;
+  transform: translateY(-2px);
+}
+
+
+
+.btn-visao-geral {
+  padding: 10px 20px;
+  border: 1px solid #ffe066;
+  background: #ffe066;
+  color: #000;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-left: 20px;
+}
+
+.btn-visao-geral:hover {
+  background: transparent;
+  color: #ffe066;
+  transform: translateY(-2px);
+}
+
+.filtros-dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.botoes-componentes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.botoes-componentes.hidden {
+  display: none;
+}
+
+.grafico-multiplas-linhas canvas {
+  width: 100% !important;
+  height: 300px !important;
+}
