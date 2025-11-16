@@ -1,10 +1,17 @@
 import psutil
 import csv
 import time
+import os
 
 header = ["NOME", "USO_MEMORIA (MB)"]
 data = []
 file_name = "nomeProcessosUso.csv"
+DATA_PATH = "data/"
+
+if not os.path.exists(DATA_PATH):
+    os.mkdir(DATA_PATH)
+
+full_path = os.path.join(DATA_PATH, file_name)
 
 
 print("Coletando dados de uso memória... Aguarde um instante.")
@@ -27,4 +34,6 @@ with open(file_name, 'w', newline='', encoding='utf-8') as csvfile:
 
 print(f"\nArquivo com o nome de {file_name} criado com sucesso!")
 print(f"Total de {len(data)} processos registrados.")
+
+
 
