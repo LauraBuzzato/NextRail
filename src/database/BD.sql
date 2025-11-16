@@ -221,11 +221,11 @@ INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta) VALUES
 (7, 2);
 
 
-INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
+INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa, fk_leitura_script)
 VALUES
-('Servidor01', 2, 2, 3, 1),
-('Servidor02', 1, 1, 2, 1),
-('Servidor03', 1, 3, 1, 1);
+('Servidor01', 2, 2, 3, 1, 1),
+('Servidor02', 1, 1, 2, 1, 2),
+('Servidor03', 1, 3, 1, 1, 3);
 
 
 INSERT INTO gravidade (nome)
