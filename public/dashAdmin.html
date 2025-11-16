@@ -8,27 +8,59 @@
   <script src="./js/sessao.js"></script>
   <script src="js/adap_dash_cargo.js"></script>
   <script src="js/dashAdmin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="./css/menu.css">
   <link rel="stylesheet" href="./css/dashAdmin.css">
   
   <title>NextRail - Equipe</title>
 </head>
-<body onload="validarSessao(), analisaCargo(), arrumarMenu()">
+<body onload="validarSessao(), analisaCargo(), arrumarMenu(), dashAdmin()">
+  <!-- Menu lateral -->
+  <div class="menu" id="DIVmenu">
+
+  </div>
+
+  <!-- Menu hamburger -->
+  <div class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
   <main class="dashAdmin">
-    <!-- Menu lateral -->
-    <div class="menu" id="DIVmenu">
+    <h1>Empresa - Equipe de Suporte</h1>
 
+    <div class="linha">
+      <div class="kpi">
+        <div class="titulo">MTTA</div>
+        <div class="conteudo">5 min.</div>
+      </div>
+      <div class="kpi">
+        <div class="titulo">MTTR</div>
+        <div class="conteudo">1 hora</div>
+      </div>
+      <div class="kpi">
+        <div class="titulo">MTBF</div>
+        <div class="conteudo">8 dias</div>
+      </div>
+      <div class="kpi">
+        <div class="titulo">Alertas resolvidos dentro da Meta</div>
+        <div class="conteudo">98,99%</div>
+      </div>
     </div>
 
-    <!-- Menu hamburger -->
-    <div class="hamburger" id="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="linha">
+      <div class="cardGrafico">
+        <h2>Tempo de Resolução em relação a Meta</h2>
+        <canvas id="tempoSla"></canvas>
+      </div>
+
+      <div class="cardGrafico">
+        <h2>Tickets por Suporte</h2>
+        <canvas id="ticketsSup"></canvas>
+      </div>
     </div>
-
-
   </main>
 </body>
 </html>
