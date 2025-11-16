@@ -57,6 +57,12 @@ create table endereco(
 	foreign key (fk_estado) references estado(id)
 );
 
+create table leitura_script(
+	id int primary key auto_increment,
+    intervalo int default(10),
+    leituras_consecutivas_para_alerta int default(3)
+);
+
 
 create table servidor(
 	id int primary key auto_increment,
@@ -65,10 +71,12 @@ create table servidor(
 	fk_so int,
 	fk_endereco int,
 	fk_empresa int not null,
+    fk_leitura_script int,
 	foreign key(fk_empresa) references empresa(id),
 	foreign key (fk_so) references sistema_operacional(id),
 	foreign key (fk_tipo) references tipo(id),
-	foreign key (fk_endereco) references endereco(id)
+	foreign key (fk_endereco) references endereco(id),
+    foreign key (fk_leitura_script) references leitura_script(id)
 );
 
 create table tipo_componente (
@@ -207,6 +215,10 @@ select * from estado;
 INSERT INTO  endereco (logradouro, cep, numero, complemento, fk_estado) VALUES('Rua das Margaridas', '69309550', '500', 'Bloco C', 23),
 ('Rua Brisa do Amanhecer', '53404355', '105', NULL, 17),
 ('Avenida Cidade Jardim', '01454900', '280', NULL, 25);
+
+INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta) VALUES (10, 3),
+(5, 3),
+(7, 2);
 
 
 INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
