@@ -329,6 +329,20 @@ INSERT INTO alerta (fk_componenteServidor_servidor,
 
 
 
+-- Mes de novembro
+INSERT INTO alerta (fk_componenteServidor_servidor, 
+					fk_componenteServidor_tipoComponente, 
+                    fk_status, 
+                    fk_gravidade, 
+                    inicio,
+                    fim) VALUES
+(3,2, 1, 2,'2025-11-15 16:00:00', '2025-11-15 16:45:00'),
+(3,2, 1, 2,'2025-11-16 11:40:00', '2025-11-16 11:53:00'),
+(3,2, 1, 2,'2025-11-17 18:55:00', '2025-11-17 19:01:00'),
+(3,1, 1, 2,'2025-11-17 12:55:00', '2025-11-17 19:01:00'),
+(3,3, 1, 2,'2025-11-17 18:55:00', '2025-11-17 19:01:00');
+
+
 select * from alerta;
 	
 SELECT 

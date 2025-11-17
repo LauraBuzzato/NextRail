@@ -1,19 +1,20 @@
+
+var chartFreq = null;
+var chartComp = null;
+var chartGrav = null;
+
 function dash_analista() {
     console.log('Executando dash_analista...');
 
-    // Verificar se Chart está disponível
     if (typeof Chart === 'undefined') {
         console.error('Chart.js não disponível em dash_analista');
         setTimeout(dash_analista, 500);
         return;
     }
 
-    // Verificar se os elementos existem antes de criar gráficos
-    const frequenciaCanvas = document.getElementById('frequenciaSemanalChart');
-    const alertasComponenteCanvas = document.getElementById('alertasComponenteChart');
-    const tempoComponenteCanvas = document.getElementById('tempoResolucaoComponenteChart');
-    const alertasServidorCanvas = document.getElementById('alertasServidorChart');
-    const tempoServidorCanvas = document.getElementById('tempoResolucaoServidorChart');
+    var frequenciaCanvas = document.getElementById('frequenciaSemanalChart');
+    var alertasComponenteCanvas = document.getElementById('alertasComponenteChart');
+    var alertasServidorCanvas = document.getElementById('alertasServidorChart');
 
     if (!frequenciaCanvas) {
         console.error('Elemento frequenciaSemanalChart não encontrado');
@@ -23,476 +24,376 @@ function dash_analista() {
 
     console.log('Criando gráficos do analista...');
 
-    var labels = ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'];
-
-    //Dados de 30 dias dentro de um objeto  
-    var dadosDiarios = {
-        cpu: [],
-        ram: [],
-        disco: []
-    }
-
-    for (var i = 0; i < 30; i++) {
-        dadosDiarios.cpu.push(Math.floor(Math.random() * 30) + 40)
-        dadosDiarios.ram.push(Math.floor(Math.random() * 10) + 70)
-        dadosDiarios.disco.push(Math.floor(Math.random() * 0) + 40)
-    }
-
-    //Cpu
-    var somaCpu = 0
-    var picoCpu = dadosDiarios.cpu[0]
-
-    for (var i = 0; i < dadosDiarios.cpu.length; i++) {
-        var cpuAtual = dadosDiarios.cpu[i]
-        somaCpu += cpuAtual
-
-        if (cpuAtual > picoCpu) {
-            picoCpu = cpuAtual
-        }
-    }
-
-    var mediaCpu = (somaCpu / dadosDiarios.cpu.length).toFixed(1)
-    var ultCpu = dadosDiarios.cpu[dadosDiarios.cpu.length - 1]
-
-    //Ram
-    var somaRam = 0
-    var picoRam = dadosDiarios.ram[0]
-
-    for (var i = 0; i < dadosDiarios.ram.length; i++) {
-        var ramAtual = dadosDiarios.ram[i]
-        somaRam += ramAtual
-
-        if (ramAtual > picoRam) {
-            picoRam = ramAtual
-        }
-    }
-
-    var mediaRam = (somaRam / dadosDiarios.ram.length).toFixed(1)
-    var ultRam = dadosDiarios.ram[dadosDiarios.ram.length - 1]
-
-    //Disco
-    var somaDisco = 0
-    var picoDisco = dadosDiarios.disco[0]
-
-    for (var i = 0; i < dadosDiarios.disco.length; i++) {
-        var discoAtual = dadosDiarios.disco[i]
-        somaDisco += discoAtual
-
-        if (discoAtual > picoDisco) {
-            picoDisco = discoAtual
-        }
-    }
-
-    var mediaDisco = (somaDisco / dadosDiarios.disco.length).toFixed(1)
-    var ultDisco = dadosDiarios.disco[dadosDiarios.disco.length - 1]
-
-    //Icones
-    //Cpu
-    var iconeCpu;
-    var iconeRam;
-    var iconeDisco;
-
-    var setaCimaCpu = mediaCpu * 1.05
-    var setaBaixoCpu = mediaCpu * 0.95
-
-    if (ultCpu > setaCimaCpu) {
-        iconeCpu = "↑"
-    } else if (ultCpu < setaBaixoCpu) {
-        iconeCpu = "↓"
-    } else {
-        iconeCpu = "~"
-    }
-
-    //Ram
-    var setaCimaRam = mediaRam * 1.05
-    var setaBaixoRam = mediaRam * 0.95
-
-    if (ultRam > setaCimaRam) {
-        iconeRam = "↑"
-    } else if (ultRam < setaBaixoRam) {
-        iconeRam = "↓"
-    } else {
-        iconeRam = "~"
-    }
-
-    //Disco
-    var setaCimaDisco = mediaDisco * 1.05
-    var setaBaixoDisco = mediaDisco * 0.95
-
-    if (ultDisco > setaCimaDisco) {
-        iconeDisco = "↑"
-    } else if (ultDisco < setaBaixoDisco) {
-        iconeDisco = "↓"
-    } else {
-        iconeDisco = "~"
-    }
-
     Chart.defaults.color = '#fff';
     Chart.defaults.font.weight = 'bold';
 
-    // Gráfico de Frequência Mensal
-    new Chart(frequenciaCanvas, {
-        type: 'line',
-        data: {
-            labels: ['29/10', '30/10', '31/10',
-                '01/11', '02/11', '03/11', '04/11',
-                '05/11', '06/11', '07/11', '08/11',
-                '09/11', '10/11', '11/11', '12/11',
-                '13/11', '14/11', '15/11', '16/11',
-                '17/11', '18/11', '19/11', '20/11',
-                '21/11', '22/11', '23/11', '24/11',
-                '25/11', '26/11', '27/11', '28/11'],
-            datasets: [
-                {
-                    label: 'CPU',
-                    data: [0, 0, 1, 0, 0, 0, 0,
-                        0, 0, 0, 3, 0, 0, 0,
-                        1, 0, 1, 0, 2, 0, 0,
-                        2, 0, 0, 0, 0, 1, 0,
-                        0, 0, 0],
-                    borderColor: '#a78bfa',
-                    backgroundColor: 'rgba(167,139,250,0.2)',
-                    tension: 0.3,
-                    fill: true,
-                    pointRadius: 4,
-                    borderWidth: 2
-                },
-                {
-                    label: 'RAM',
-                    data: [0, 0, 0, 0, 0, 0, 0,
-                        1, 0, 2, 0, 0, 0, 0,
-                        1, 0, 0, 6, 0, 0, 3,
-                        0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0],
-                    borderColor: '#38bdf8',
-                    backgroundColor: 'rgba(56,189,248,0.2)',
-                    tension: 0.3,
-                    fill: true,
-                    pointRadius: 4,
-                    borderWidth: 2
-                },
-                {
-                    label: 'Disco',
-                    data: [0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 1, 0, 0, 0,
-                        0, 0, 0],
-                    borderColor: '#ff89b0',
-                    backgroundColor: 'rgba(255, 137, 176, 0.2)',
-                    tension: 0.3,
-                    fill: true,
-                    pointRadius: 4,
-                    borderWidth: 2
+
+    // pegar ano e mês atuais 
+    var hojeData = new Date();
+    var anoEscolhido = hojeData.getFullYear();
+    var mesEscolhido = hojeData.getMonth() + 1; // 1..12
+
+    var caminhoRelatorio = '/relatorio/mensal-detalhado/' + anoEscolhido + '/' + mesEscolhido;
+
+    fetch(caminhoRelatorio)
+        .then(function (res) {
+            if (!res.ok) {
+                console.error('Erro ao buscar relatorio mensal-detalhado. Status:', res.status);
+                return null;
+            }
+            return res.json();
+        })
+        .then(function (payload) {
+            if (payload === null) {
+                return;
+            }
+
+            var porDia = {}; 
+            var contagemComponentes = {}; 
+            var contagemGravidades = {}; 
+
+            var kpis = payload.kpisGerais;
+            if (kpis !== undefined && kpis !== null) {
+                var totalAlertsMes = 0;
+                if (kpis.totalAlerts !== undefined && kpis.totalAlerts !== null) {
+                    totalAlertsMes = kpis.totalAlerts;
                 }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: '#fff',
-                        font: {
-                            size: 15
+
+                var componenteMaisImpactado = 'N/A';
+                if (kpis.componenteMaisAfetado !== undefined && kpis.componenteMaisAfetado !== null) {
+                    componenteMaisImpactado = kpis.componenteMaisAfetado;
+                }
+
+                var mttrMedioMes = 0;
+                if (kpis.mttrMedio !== undefined && kpis.mttrMedio !== null) {
+                    mttrMedioMes = Math.round(kpis.mttrMedio);
+                }
+
+                var gravidadeMaisFrequente = 'N/A';
+                if (kpis.gravidadePredominante !== undefined && kpis.gravidadePredominante !== null) {
+                    gravidadeMaisFrequente = kpis.gravidadePredominante;
+                }
+
+                var elTotal = document.getElementById('kpi-total-alertas');
+                if (elTotal){ 
+                    elTotal.innerText = totalAlertsMes; 
+                } else { 
+                    console.log('KPI totalAlerts:', totalAlertsMes); 
+                }
+
+
+                var elComp = document.getElementById('kpi-componente-mais-impactado');
+                if (elComp) { 
+                    elComp.innerText = componenteMaisImpactado; 
+                } else { 
+                    console.log('KPI componenteMaisAfetado:', componenteMaisImpactado); 
+                }
+
+                var elMttr = document.getElementById('kpi-mttr-medio');
+                if (elMttr) { 
+                    elMttr.innerText = mttrMedioMes; 
+                } else { 
+                    console.log('KPI mttrMedio:', mttrMedioMes); 
+                }
+
+                var elGrav = document.getElementById('kpi-gravidade-mais-frequente');
+                if (elGrav) { 
+                    elGrav.innerText = gravidadeMaisFrequente; 
+                } else { 
+                    console.log('KPI gravidadePredominante:', gravidadeMaisFrequente); 
+                }
+            } else {
+                console.log('kpisGerais não encontrado no payload');
+            }
+
+            var semanas;
+            if (payload.dadosSemanais === undefined) {
+                semanas = [];
+            } else {
+                semanas = payload.dadosSemanais;
+            }
+
+            for (var i = 0; i < semanas.length; i++) {
+                var semana = semanas[i];
+                var listaAlertas;
+                if (semana.alertas === undefined) {
+                    listaAlertas = [];
+                } else {
+                    listaAlertas = semana.alertas;
+                }
+
+                for (var j = 0; j < listaAlertas.length; j++) {
+                    var alerta = listaAlertas[j];
+
+                    var nomeCompRaw = alerta.nome_componente;
+                    if (nomeCompRaw === undefined || nomeCompRaw === null) {
+                        nomeCompRaw = alerta.componente;
+                        if (nomeCompRaw === undefined || nomeCompRaw === null) {
+                            nomeCompRaw = 'Outro';
                         }
                     }
-                },
-                title: {
-                    display: false
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Dias',
-                        font: {
-                            size: 24
+                    var nomeCompLower = nomeCompRaw.toString().toLowerCase();
+                    var chaveComp;
+
+                    if (nomeCompLower.indexOf('cpu') !== -1) {
+                        chaveComp = 'Cpu';
+                    } else if (nomeCompLower.indexOf('ram') !== -1) {
+                        chaveComp = 'Ram';
+                    } else if (nomeCompLower.indexOf('disco') !== -1) {
+                        chaveComp = 'Disco';
+                    } else {
+                        chaveComp = 'Outro';
+                    }
+
+                    
+                    if (contagemComponentes[chaveComp] === undefined) {
+                        contagemComponentes[chaveComp] = 1;
+                    } else {
+                        contagemComponentes[chaveComp] = contagemComponentes[chaveComp] + 1;
+                    }
+
+    
+                    var nomeGravRaw = alerta.nome_gravidade;
+                    if (nomeGravRaw === undefined || nomeGravRaw === null) {
+                        nomeGravRaw = alerta.gravidade;
+                    }
+                    var chaveGrav;
+                    if (nomeGravRaw === undefined || nomeGravRaw === null) {
+                        chaveGrav = 'indefinida';
+                    } else {
+                        var gravLower = nomeGravRaw.toString().toLowerCase();
+                        if (gravLower.indexOf('alto') !== -1) {
+                            chaveGrav = 'Alto';
+                        } else if (gravLower.indexOf('med') !== -1 || gravLower.indexOf('méd') !== -1) {
+                            chaveGrav = 'Médio';
+                        } else if (gravLower.indexOf('baixo') !== -1) {
+                            chaveGrav = 'Baixo';
+                        } else {
+                            chaveGrav = 'indefinida';
                         }
-                    },
-                    ticks: {
-                        color: '#fff',
-                        font: {
-                            size: 18
+                    }
+
+                    if (contagemGravidades[chaveGrav] === undefined) {
+                        contagemGravidades[chaveGrav] = 1;
+                    } else {
+                        contagemGravidades[chaveGrav] = contagemGravidades[chaveGrav] + 1;
+                    }
+
+                    // por dia por componente (usamos YYYY-MM-DD para ordenar depois) 
+                    var inicioRaw = alerta.inicio;
+                    var dt = new Date(inicioRaw);
+
+                    if (!isNaN(dt.getTime())) {
+                        var y = dt.getFullYear();
+                        var m = dt.getMonth() + 1;
+                        var d = dt.getDate();
+                        var mStr;
+                        if (m < 10) {
+                            mStr = '0' + m;
+                        } else {
+                            mStr = '' + m;
                         }
-                    },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Alertas',
-                        font: {
-                            size: 24
+                        var dStr;
+                        if (d < 10) {
+                            dStr = '0' + d;
+                        } else {
+                            dStr = '' + d;
                         }
-                    },
-                    ticks: {
-                        color: '#fff',
-                        font: {
-                            size: 18
+                        var chaveDia = y + '-' + mStr + '-' + dStr;
+
+                        if (porDia[chaveDia] === undefined) {
+                            porDia[chaveDia] = { 'Cpu': 0, 'Ram': 0, 'Disco': 0, 'Outro': 0 };
                         }
-                    },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
+
+                        porDia[chaveDia][chaveComp] = porDia[chaveDia][chaveComp] + 1;
+                    } else {
+                        console.log("ERRO NA DATAA");
+                        
+                    }
+                } 
+            } 
+
+            // transformar porDia em arrays ordenados para o Chart (labels dd/MM)
+            var chavesDatas = [];
+            for (var k in porDia) {
+                chavesDatas.push(k);
+            }
+
+        
+            // ordenar chavesDatas por data (comparar new Date)
+            chavesDatas.sort(function (a, b) {
+                var da = new Date(a + 'T00:00:00');
+                var db = new Date(b + 'T00:00:00');
+                if (da < db) return -1;
+                if (da > db) return 1;
+                return 0;
+            });
+
+            var labelsDias = [];
+            var cpuPorDia = [];
+            var ramPorDia = [];
+            var discoPorDia = [];
+
+            if (chavesDatas.length === 0) {
+                labelsDias.push('Sem dados');
+                cpuPorDia.push(0);
+                ramPorDia.push(0);
+                discoPorDia.push(0);
+            } else {
+                for (var idx = 0; idx < chavesDatas.length; idx++) {
+                    var chaveAtual = chavesDatas[idx]; // YYYY-MM-DD
+                    var partes = chaveAtual.split('-');
+                    var labelFormat = partes[2] + '/' + partes[1]; // DD/MM
+                    labelsDias.push(labelFormat);
+
+                    var objDia = porDia[chaveAtual];
+                    if (objDia['Cpu'] === undefined) objDia['Cpu'] = 0;
+                    if (objDia['Ram'] === undefined) objDia['Ram'] = 0;
+                    if (objDia['Disco'] === undefined) objDia['Disco'] = 0;
+
+                    cpuPorDia.push(objDia['Cpu']);
+                    ramPorDia.push(objDia['Ram']);
+                    discoPorDia.push(objDia['Disco']);
                 }
             }
-        }
-    });
 
-    // Gráfico de Alertas por Componente
-    if (alertasComponenteCanvas) {
-        new Chart(alertasComponenteCanvas, {
-            type: 'bar',
-            data: {
-                labels: ['Cpu', 'Ram', 'Disco'],
-                datasets: [{
-                    label: 'Total de Alertas',
-                    data: [11, 13, 1],
-                    backgroundColor: [
-                        'rgba(147, 112, 219, 0.8)',
-                        'rgba(0, 191, 255, 0.8)',
-                        'rgba(255, 137, 176, 0.8)'
-                    ],
-                    borderColor: [
-                        '#9370DB',
-                        '#00BFFF',
-                        '#ff89b0'
-                    ],
-                    borderWidth: 1,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    title: { display: false },
-                    tooltip: {
-                        bodyColor: '#fff',
-                        titleColor: '#fff',
-                        backgroundColor: '#333',
-                        callbacks: {
-                            label: labelAlerta => `${labelAlerta.parsed.y} alertas`
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Quantidade', color: '#fff', font: { size: 22} },
-                        ticks: {
-                            color: '#fff',
-                            font: {
-                                size: 18
-                            }
-                        },
-                        grid: { color: '#333' }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Componentes',
-                            font: { size : 22}
-                        },
-                        ticks: {
-                            color: '#fff',
-                            font: {
-                                size: 18
-                            }
-                        },
-                        grid: { display: false }
+            // preparar arrays para componentes (ordem: Cpu, Ram, Disco) 
+            var compCpu = 0;
+            var compRam = 0;
+            var compDisco = 0;
 
-                    }
-                }
+            if (contagemComponentes['Cpu'] !== undefined){ 
+                compCpu = contagemComponentes['Cpu'];
             }
+            if (contagemComponentes['Ram'] !== undefined){ 
+                compRam = contagemComponentes['Ram'];
+            }
+            if (contagemComponentes['Disco'] !== undefined) {
+                compDisco = contagemComponentes['Disco'];
+            }
+
+            //prepara array para gravidade
+            var gravBaixo = 0;
+            var gravMedio = 0;
+            var gravAlto = 0;
+
+            if (contagemGravidades['Baixo'] !== undefined){
+                gravBaixo = contagemGravidades['Baixo'];
+            }
+            if (contagemGravidades['Médio'] !== undefined){
+                gravMedio = contagemGravidades['Médio'];
+            }
+            if (contagemGravidades['Alto'] !== undefined){ 
+                gravAlto = contagemGravidades['Alto'];
+            }
+
+            // Frequência Semanal 
+            if (frequenciaCanvas) {
+                var configFreq = {
+                    type: 'line',
+                    data: {
+                        labels: labelsDias,
+                        datasets: [
+                            {
+                                label: 'CPU',
+                                data: cpuPorDia,
+                                borderColor: '#a78bfa',
+                                backgroundColor: 'rgba(167,139,250,0.2)',
+                                tension: 0.3,
+                                fill: true,
+                                pointRadius: 4,
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'RAM',
+                                data: ramPorDia,
+                                borderColor: '#38bdf8',
+                                backgroundColor: 'rgba(56,189,248,0.2)',
+                                tension: 0.3,
+                                fill: true,
+                                pointRadius: 4,
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Disco',
+                                data: discoPorDia,
+                                borderColor: '#ff89b0',
+                                backgroundColor: 'rgba(255,137,176,0.2)',
+                                tension: 0.3,
+                                fill: true,
+                                pointRadius: 4,
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                };
+
+
+                if (chartFreq !== null) {
+                     chartFreq.destroy(); chartFreq = null; 
+                    }
+                chartFreq = new Chart(frequenciaCanvas, configFreq);
+            }
+
+            // Alertas por Componente 
+            if (alertasComponenteCanvas) {
+                var configComp = {
+                    type: 'bar',
+                    data: {
+                        labels: ['Cpu', 'Ram', 'Disco'],
+                        datasets: [{
+                            label: 'Total de Alertas',
+                            data: [compCpu, compRam, compDisco],
+                            backgroundColor: ['rgba(147, 112, 219, 0.8)', 'rgba(0, 191, 255, 0.8)', 'rgba(255, 137, 176, 0.8)'],
+                            borderColor: ['#9370DB', '#00BFFF', '#ff89b0'],
+                            borderWidth: 1,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                };
+
+                if (chartComp !== null) {
+                    chartComp.destroy(); chartComp = null; 
+                }
+                chartComp = new Chart(alertasComponenteCanvas, configComp);
+            }
+
+            // Alertas por Gravidade 
+            if (alertasServidorCanvas) {
+                var configGrav = {
+                    type: 'bar',
+                    data: {
+                        labels: ['Baixo', 'Médio', 'Alto'],
+                        datasets: [{
+                            label: 'Alertas Registrados',
+                            data: [gravBaixo, gravMedio, gravAlto],
+                            backgroundColor: ['rgba(255, 255, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)'],
+                            borderColor: ['rgba(255, 255, 0, 1)', 'rgba(3, 2, 0, 1)', 'rgba(255, 0, 0, 1)'],
+                            borderWidth: 1,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                };
+
+                if (chartGrav !== null) { chartGrav.destroy(); chartGrav = null; }
+                chartGrav = new Chart(alertasServidorCanvas, configGrav);
+            }
+
+        })
+        .catch(function (err) {
+            console.error('Erro no fetch do relatorio:', err);
         });
-    }
 
-    // Gráfico de Tempo de Resolução por Componente
-    if (tempoComponenteCanvas) {
-        new Chart(tempoComponenteCanvas, {
-            type: 'bar',
-            data: {
-                labels: ['Cpu', 'Ram', 'Disco'],
-                datasets: [{
-                    label: 'Tempo médio (minutos)',
-                    data: [20, 30, 5],
-                    borderWidth: 1,
-                    backgroundColor: [
-                        'rgba(147, 112, 219, 0.8)',
-                        'rgba(0, 191, 255, 0.8)',
-                        'rgba(255, 165, 0, 0.8)'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Tempo (min)',
-                            font: {
-                                size: 2
-                            }
-                        },
-                        ticks: {
-                            color: '#ccc',
-                            font: {
-                                size: 18
-                            }
-                        }
-
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Componente',
-                        },
-                        ticks: {
-                            color: '#ccc',
-                            font: {
-                                size: 18
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    title: {
-                        display: true
-                    },
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return `${context.parsed.y} minutos`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // Gráfico de Alertas por gravidade
-    if (alertasServidorCanvas) {
-        new Chart(alertasServidorCanvas, {
-            type: 'bar',
-            data: {
-                labels: ['Baixa', 'Média', 'Alta'],
-                datasets: [{
-                    label: 'Alertas Registrados',
-                    data: [8, 13, 4],
-                    backgroundColor: [
-                        'rgba(255, 255, 0, 1)',
-                        'rgba(255, 165, 0, 1)',
-                        'rgba(255, 0, 0, 2.0)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 255, 0, 1)',
-                        'rgba(3, 2, 0, 1)',
-                        'rgba(255, 0, 0, 2.0)'
-                    ],
-                    borderWidth: 1,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    title: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => `${ctx.parsed.y} alertas`
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Quantidade',
-                            color: '#fff',
-                            font: {
-                                size: 22
-                            }
-                        },
-                        ticks: {
-                            color: '#ccc',
-                            font: {
-                                size: 18
-                            }
-                        },
-                        grid: { color: '#333' }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Gravidades',
-                            font: {
-                                size: 22
-                            }
-                        },
-                        ticks: {
-                            font: {
-                                size: 18
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // Gráfico de Tempo de Resolução por Servidor
-    if (tempoServidorCanvas) {
-        new Chart(tempoServidorCanvas, {
-            type: 'bar',
-            data: {
-                labels: ['Servidor A', 'Servidor B', 'Servidor C'],
-                datasets: [{
-                    label: 'Tempo Médio de Resolução (min)',
-                    data: [12, 20, 8],
-                    backgroundColor: ['#7c3aed', '#38bdf8', '#fbbf24'],
-                    borderWidth: 1,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'TempoAAA (min)', color: '#fff' },
-                        ticks: { color: '#ccc' },
-                        grid: { color: '#333' }
-                    },
-                    y: {
-                        ticks: { color: '#ccc' },
-                        grid: { display: false }
-                    }
-                },
-                plugins: {
-                    title: { display: false },
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => `${ctx.parsed.x} minutos`
-                        }
-                    }
-                }
-            }
-        });
-    }
 }
 
 // dash suporte ------------------------------------------------------------------------------------------------------------------
