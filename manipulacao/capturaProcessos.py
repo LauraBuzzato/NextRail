@@ -2,38 +2,38 @@ import psutil
 import csv
 import time
 import os
+import pandas as pd
 
 header = ["NOME", "USO_MEMORIA (MB)"]
-data = []
 file_name = "nomeProcessosUso.csv"
-DATA_PATH = "data/"
 
-if not os.path.exists(DATA_PATH):
-    os.mkdir(DATA_PATH)
+DATA_PATH = 'data/'
+CSV_PATH = DATA_PATH + file_name
 
-full_path = os.path.join(DATA_PATH, file_name)
-
-
-print("Coletando dados de uso memória... Aguarde um instante.")
 time.sleep(0.1)
 
+data = []
+
 for proc in psutil.process_iter(['name', 'memory_info']):
-        process_name = proc.info['name']
-        
-        memory_usage_mb = proc.info['memory_info'].rss / (1024 * 1024)
-        
+    try:
+        process_name = proc.info["name"]
+        memory_usage_mb = proc.info["memory_info"].rss / (1024 * 1024)
         data.append([process_name, f"{memory_usage_mb:.1f}"])
+    except (psutil.NoSuchProcess, psutil.AccessDenied):
+        continue
 
 
-with open(file_name, 'w', newline='', encoding='utf-8') as csvfile:
-    writer = csv.writer(csvfile)
+if not os.path.exists(DATA_PATH):
+    os.makedirs(DATA_PATH)
 
-    writer.writerow(header)
 
-    writer.writerows(data)
+df = pd.DataFrame(data, columns=header)
 
-print(f"\nArquivo com o nome de {file_name} criado com sucesso!")
+
+if os.path.exists(CSV_PATH):
+    df.to_csv(CSV_PATH, mode="a", sep=';', encoding='utf-8', index=False, header=False)
+else:
+    df.to_csv(CSV_PATH, mode="w", sep=';', encoding='utf-8', index=False, header=True)
+
+print(f"\nArquivo '{file_name}' criado/atualizado com sucesso!")
 print(f"Total de {len(data)} processos registrados.")
-
-
-

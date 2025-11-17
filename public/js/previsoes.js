@@ -377,6 +377,12 @@ function renderGraficoLinhaUnica(dados) {
         disco: "#81c784"
     };
 
+    const limite = {
+        cpu: 70,
+        ram: 80,
+        disco:90
+    }
+
     const nomes = {
         cpu: "CPU",
         ram: "RAM",
@@ -564,6 +570,8 @@ function renderGraficoAlertas() {
         medio = medio.slice(0, 7);
         baixo = baixo.slice(0, 7);
     }
+
+    document.getElementById("graflat").textContent=`Previsão de alertas para componente ${componenteAtual}`
 
     const ctx = canvas.getContext("2d");
     graficoLatencia = new Chart(ctx, {
