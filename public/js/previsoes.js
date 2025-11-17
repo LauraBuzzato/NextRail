@@ -283,10 +283,10 @@ function renderGraficoLinhasMultiplas(dados) {
         return;
     }
 
-    const cores = {
-        cpu: "#ffe066",
-        ram: "#4fc3f7",
-        disco: "#81c784"
+      const cores = {
+        cpu: "#a78bfa",
+        ram: "#38bdf8",
+        disco: "#ff89b0"
     };
 
     const nomes = {
@@ -296,8 +296,8 @@ function renderGraficoLinhasMultiplas(dados) {
     };
 
     const labels = periodoSelect.value === "semanal"
-        ? ["Semana 1", "Semana 2", "Semana 3", "Semana 4"]
-        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
+        ? ["01/11", "08/11", "09/11", "22/11"]
+        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
 
     const datasets = Object.keys(dados).map(componente => ({
         label: `${nomes[componente]} (%)`,
@@ -372,15 +372,15 @@ function renderGraficoLinhaUnica(dados) {
     }
 
     const cores = {
-        cpu: "#ffe066",
-        ram: "#4fc3f7",
-        disco: "#81c784"
+        cpu: "#a78bfa",
+        ram: "#38bdf8",
+        disco: "#ff89b0"
     };
 
     const limite = {
         cpu: 70,
-        ram: 80,
-        disco:90
+        ram: 70,
+        disco:80
     }
 
     const nomes = {
@@ -389,10 +389,17 @@ function renderGraficoLinhaUnica(dados) {
         disco: "Disco"
     };
 
-    const labels = periodoSelect.value === "semanal"
-        ? ["Semana 1", "Semana 2", "Semana 3", "Semana 4"]
-        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
+    
 
+
+    const labels = periodoSelect.value === "semanal"
+        ? ["01/11", "08/11", "15/11", "22/11"]
+        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+
+    let range = periodoSelect.value === "semanal" ? 4 : 6;
+
+    console.log(limite[componenteAtual]);
+    
     const ctx = canvas.getContext("2d");
     graficoLinha = new Chart(ctx, {
         type: "line",
@@ -409,7 +416,17 @@ function renderGraficoLinhaUnica(dados) {
                     borderWidth: 3,
                     pointRadius: 5,
                     pointBackgroundColor: cores[componenteAtual]
-                }
+                },
+                {
+                        label: 'Limite alerta',
+                        data: Array(Number(range)).fill(Number(limite[componenteAtual])),
+                        borderColor: 'yellow',
+                        backgroundColor: 'rgba(166, 161, 84, 0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    }
             ]
         },
         options: {
@@ -458,6 +475,7 @@ function renderGraficoLinhaUnica(dados) {
     });
 }
 
+
 function renderGraficoLatenciaGeral() {
     const canvas = document.getElementById("graficoLatencia");
     if (!canvas) {
@@ -471,11 +489,11 @@ function renderGraficoLatenciaGeral() {
     let labels, data;
 
     if (periodo === "semanal") {
-        labels = ["Semana 1", "Semana 2", "Semana 3", "Semana 4"];
+        labels = ["01/11", "08/11", "15/11", "22/11"];
         data = [65, 67, 63, 69];
     } else {
-        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
-        data = [62, 65, 63, 68, 70, 67, 72];
+        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+        data = [62, 65, 63, 68, 70, 67];
     }
 
     const ctx = canvas.getContext("2d");
@@ -487,8 +505,8 @@ function renderGraficoLatenciaGeral() {
                 {
                     label: "Latência Média (ms)",
                     data: data,
-                    backgroundColor: "rgba(147, 112, 219, 0.8)",
-                    borderColor: "rgba(147, 112, 219, 1)",
+                    backgroundColor: "rgba(53, 80, 216, 0.8)",
+                    borderColor: "rgba(20, 35, 168, 1)",
                     borderWidth: 2
                 }
             ]
@@ -551,9 +569,9 @@ function renderGraficoAlertas() {
     let labels, alto, medio, baixo;
 
     if (periodo === "semanal") {
-        labels = ["Semana 1", "Semana 2", "Semana 3", "Semana 4"];
+        labels = ["01/11", "08/11", "09/11", "22/11"];
     } else {
-        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
+        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
     }
 
     const alertas = alertasSimulados[servidor]?.[periodo];
@@ -647,6 +665,13 @@ function renderGraficoAlertas() {
     });
 }
 
+
+ const cores = {
+        cpu: "#a78bfa",
+        ram: "#38bdf8",
+        disco: "#ff89b0"
+    };
+
 function atualizarKPIsGerais(dados) {
     const taxas = calcularTaxaCrescimento(dados);
     const maiorCrescimento = encontrarComponenteMaiorCrescimento(taxas);
@@ -656,12 +681,14 @@ function atualizarKPIsGerais(dados) {
 
     const disponibilidade = 99.7;
 
+    
+
     const latenciaMedia = Object.values(latenciaSimulada[servidor]).reduce((a, b) => a + b, 0) / 3;
 
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
             <h2>Componente com Maior Crescimento</h2>
-            <p class="valor-kpi" style="color:#81c784">${nomes[maiorCrescimento.componente]}</p>
+            <p class="valor-kpi" style="color:${cores[maiorCrescimento.componente]}">${nomes[maiorCrescimento.componente]}</p>
             <p class="tendencia">+${maiorCrescimento.taxa}%</p>
         </div>
         <div class="KPI">
@@ -686,6 +713,12 @@ function atualizarKPIs(dados) {
 
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
 
+    const alertas = {
+        baixo: "Baixo",
+        medio: "Medio",
+        alto: "Alto"
+    }
+
     const disponibilidade = 99.7;
 
     if (periodo == "mensal") {
@@ -695,8 +728,8 @@ function atualizarKPIs(dados) {
             <p class="valor-kpi" id="kpi1">${(mediaUso / 100).toFixed(2)}%</p>
         </div>
         <div class="KPI">
-            <h2>Crescimento de Latência Mensal</h2>
-            <p class="valor-kpi" id="kpi2" style="color:orange">${latencia / 100}%</p>
+            <h2>Previsão do alerta mais frêquente:</h2>
+            <p class="valor-kpi" id="kpi2" style="color:yellow">${componenteAtual[alertas.baixo]}</p>
         </div>
         <div class="KPI">
             <h2>Disponibilidade do servidor Mensal </h2>
@@ -710,8 +743,8 @@ function atualizarKPIs(dados) {
             <p class="valor-kpi" id="kpi1">${(mediaUso / 100).toFixed(2)}%</p>
         </div>
         <div class="KPI">
-            <h2>Crescimento de Latência Semanal</h2>
-            <p class="valor-kpi" id="kpi2" style="color:orange">${latencia / 100}%</p>
+            <h2>Previsão do alerta mais frêquente :</h2>
+            <p class="valor-kpi" id="kpi2" style="color:yellow">${alertas.baixo}</p>
         </div>
         <div class="KPI">
             <h2> Disponibilidade do servidor Semanal </h2>
@@ -729,22 +762,14 @@ function atualizarKPIs(dados) {
         kpi3.style.color = "green";
     }
 
-    if (latencia >= 100) {
-        kpi2.style.color = "red";
-    } else if (latencia >= 80) {
-        kpi2.style.color = "orange";
-    } else if (latencia >= 60) {
-        kpi2.style.color = "yellow";
-    } else {
-        kpi2.style.color = "green";
-    }
-
-    if (nomes[componenteAtual] == "RAM") {
-        kpi1.style.color = "green";
-    } else if (nomes[componenteAtual] == "Disco") {
-        kpi1.style.color = "green";
-    } else if (nomes[componenteAtual] == "CPU") {
-        kpi1.style.color = "green";
+    if ((mediaUso / 100).toFixed(2) >= 100) {
+        kpi1.style.color = "red";
+    } else if ((mediaUso / 100).toFixed(2) >= 50) {
+        kpi1.style.color = "orange";
+    } else if ((mediaUso / 100).toFixed(2) >= 20 ) {
+        kpi1.style.color = "yellow";
+    }else if ((mediaUso / 100).toFixed(2) <19) {
+        kpi1.style.color = "green"
     }
 }
 
