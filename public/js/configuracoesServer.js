@@ -1,4 +1,18 @@
-function carregarServidores() {
+var opcao = 0
+
+function alterarPagina(){
+    if (opcao == 0){
+        opcao = 1
+        document.getElementById('tituloPagina').innerHTML = 'Configurar Parâmetros de Script'
+    }
+    else if (opcao == 1){
+        opcao = 0
+        document.getElementById('tituloPagina').innerHTML = 'Configurar Parâmetros de Alerta'
+    }
+    carregarServidores(opcao)
+}
+
+function carregarServidores(opcao) {
     console.log('Iniciando carregamento de servidores...');
     
     fetch('/servidores/listarServidores', {
@@ -18,7 +32,7 @@ function carregarServidores() {
     })
     .then(servidores => {
         console.log('Servidores carregados:', servidores);
-        exibirServidores(servidores);
+        exibirServidores(servidores, opcao);
     })
     .catch(error => {
         console.error('Erro ao carregar servidores:', error);
@@ -33,13 +47,15 @@ function carregarServidores() {
     });
 }
 
-function exibirServidores(servidores) {
+function exibirServidores(servidores, opcao) {
     const container = document.getElementById('configuracaoContainer');
     
-    // Remove o conteúdo existente, mantendo apenas o título
+    // Remove o conteúdo existente, mantendo apenas o título e o botão de troca
     const titulo = container.querySelector('h1');
+    const botao = container.querySelector('button');
     container.innerHTML = '';
     container.appendChild(titulo);
+    container.appendChild(botao);
 
     console.log('Todos os servidores:', servidores);
 
@@ -58,7 +74,7 @@ function exibirServidores(servidores) {
     // Exibe reguladores
     if (reguladores.length > 0) {
         reguladores.forEach((servidor, index) => {
-            const servidorDiv = criarContainerServidor(servidor, index + 1, 'Regulador');
+            const servidorDiv = criarContainerServidor(servidor, index + 1, 'Regulador', opcao);
             container.appendChild(servidorDiv);
         });
     }
@@ -66,7 +82,7 @@ function exibirServidores(servidores) {
     // Exibe CTCs
     if (ctcs.length > 0) {
         ctcs.forEach((servidor, index) => {
-            const servidorDiv = criarContainerServidor(servidor, index + 1, 'CTC');
+            const servidorDiv = criarContainerServidor(servidor, index + 1, 'CTC', opcao);
             container.appendChild(servidorDiv);
         });
     }
@@ -83,9 +99,11 @@ function exibirServidores(servidores) {
     }
 }
 
-function criarContainerServidor(servidor, numero, tipo) {
-    const div = document.createElement('div');
-    div.className = 'container_servidor';
+function criarContainerServidor(servidor, numero, tipo, opcao) {
+    if (opcao == 0){
+
+        const div = document.createElement('div');
+        div.className = 'container_servidor';
     div.id = `servidor-${servidor.id}`;
     
     div.innerHTML = `
@@ -93,84 +111,164 @@ function criarContainerServidor(servidor, numero, tipo) {
             <div class="titulo_servidor">
                 <h2>${servidor.nome}</h2>
                 <span class="tipo_servidor">${servidor.tipo}</span>
-            </div>
+                </div>
             <button class="botao" onclick="salvarConfiguracao(${servidor.id})">Salvar</button>
-        </div>
+            </div>
         <div class="linha_servidor">
-            <div class="alerta_componente">
+        <div class="alerta_componente">
                 CPU:
                 <div class="titulo_select">
-                    <label>Baixo:</label>
+                <label>Baixo:</label>
                     <select name="cpu_min_${servidor.id}" id="cpu_min_${servidor.id}" class="select_alerta">
                         ${gerarOpcoesPercentual()}
                     </select>
-                </div>
-                <div class="titulo_select">
+                    </div>
+                    <div class="titulo_select">
                     <label>Médio:</label>
                     <select name="cpu_alr_${servidor.id}" id="cpu_alr_${servidor.id}">
                         ${gerarOpcoesPercentual()}
-                    </select>
-                </div>
-                <div class="titulo_select">
+                        </select>
+                        </div>
+                        <div class="titulo_select">
                     <label>Alto:</label>
                     <select name="cpu_max_${servidor.id}" id="cpu_max_${servidor.id}">
                         ${gerarOpcoesPercentual()}
                     </select>
-                </div>
+                    </div>
             </div>
-
+            
             <div class="alerta_componente">
                 RAM: 
                 <div class="titulo_select">
                     <label>Baixo:</label>
                     <select name="ram_min_${servidor.id}" id="ram_min_${servidor.id}">
-                        ${gerarOpcoesPercentual()}
+                    ${gerarOpcoesPercentual()}
                     </select>
+                    </div>
+                <div class="titulo_select">
+                <label>Médio:</label>
+                <select name="ram_alr_${servidor.id}" id="ram_alr_${servidor.id}">
+                ${gerarOpcoesPercentual()}
+                </select>
                 </div>
                 <div class="titulo_select">
-                    <label>Médio:</label>
-                    <select name="ram_alr_${servidor.id}" id="ram_alr_${servidor.id}">
-                        ${gerarOpcoesPercentual()}
-                    </select>
+                <label>Alto:</label>
+                <select name="ram_max_${servidor.id}" id="ram_max_${servidor.id}">
+                ${gerarOpcoesPercentual()}
+                </select>
                 </div>
-                <div class="titulo_select">
-                    <label>Alto:</label>
-                    <select name="ram_max_${servidor.id}" id="ram_max_${servidor.id}">
-                        ${gerarOpcoesPercentual()}
-                    </select>
                 </div>
-            </div>
             
-            <div class="alerta_componente">
+                <div class="alerta_componente">
                 Disco: 
                 <div class="titulo_select">
                     <label>Baixo:</label>
                     <select name="disco_min_${servidor.id}" id="disco_min_${servidor.id}">
-                        ${gerarOpcoesPercentual()}
+                    ${gerarOpcoesPercentual()}
                     </select>
                 </div>
                 <div class="titulo_select">
                     <label>Médio:</label>
                     <select name="disco_alr_${servidor.id}" id="disco_alr_${servidor.id}">
                         ${gerarOpcoesPercentual()}
-                    </select>
+                        </select>
                 </div>
                 <div class="titulo_select">
                     <label>Alto:</label>
                     <select name="disco_max_${servidor.id}" id="disco_max_${servidor.id}">
-                        ${gerarOpcoesPercentual()}
+                    ${gerarOpcoesPercentual()}
                     </select>
+                    </div>
+            </div>
+            </div>
+            `;
+            
+            // Carrega as configurações existentes após criar o container
+            setTimeout(() => {
+                carregarConfiguracoesServidor(servidor.id);
+            }, 100);
+            
+            return div;
+        }
+        else if (opcao == 1){
+            const div = document.createElement('div');
+    div.className = 'container_servidor_script';
+    div.id = `servidor-${servidor.id}`;
+    
+    div.innerHTML = `
+        <div class="linha_titulo_script">
+            <div class="titulo_servidor_script">
+                <h2>${servidor.nome}</h2>
+                <span class="tipo_servidor">${servidor.tipo}</span>
+            </div>
+            <button class="botao_script" onclick="salvarConfiguracaoScript(${servidor.id})">Salvar</button>
+        </div>
+        <div class="linha_servidor_script">
+            <div class="alerta_componente_script">
+                <div class="titulo_select_script">
+                    <label>Intervalo de leitura do script em segundos:</label>
+                    <input type="number" id="intervalo_${servidor.id}">
+                </div>
+            </div>
+
+            <div class="alerta_componente_script">
+                <div class="titulo_select_script">
+                    <label>Número de leituras consecutivas para a ocorrência de um alerta:</label>
+                    <input type="number" id="leituras_consecutivas_${servidor.id}">
                 </div>
             </div>
         </div>
     `;
     
     // Carrega as configurações existentes após criar o container
-    setTimeout(() => {
+    /*setTimeout(() => {
         carregarConfiguracoesServidor(servidor.id);
-    }, 100);
+    }, 100);*/
     
     return div;
+        }
+}
+
+function salvarConfiguracaoScript(servidorId) {
+    const config = {
+        servidorId: servidorId,
+        configuracoes: {
+            intervalo: parseInt(document.getElementById(`intervalo_${servidorId}`).value),
+            leitura: parseInt(document.getElementById(`leituras_consecutivas_${servidorId}`).value)
+        }
+    };
+
+    console.log(config)
+
+    if (config.configuracoes.intervalo == null || config.configuracoes.intervalo == null
+        || config.configuracoes.intervalo <= 0 || config.configuracoes.leitura <= 0){
+            console.log('Deu erro ao salvar as configurações.')
+            return;
+    }
+
+    console.log('Salvando configuração para servidor', servidorId, ':', config);
+
+    fetch('/servidores/atualizarConfiguracaoScript', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(config)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Todas as configurações salvas com sucesso!', data);
+            alert(' Configurações salvas com sucesso!');
+        } else {
+            console.error('Erro ao salvar configurações:', data);
+            alert( + data.message); 
+        }
+    })
+    .catch(error => {
+        console.error('Erro na requisição:', error);
+        alert('Erro de conexão ao salvar configurações.');
+    });
 }
 
 function gerarOpcoesPercentual() {
