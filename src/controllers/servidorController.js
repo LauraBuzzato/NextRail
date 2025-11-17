@@ -140,6 +140,39 @@ function atualizarConfiguracaoAlerta(req, res) {
         });
 }
 
+function atualizarConfiguracaoScript(req, res) {
+    var { 
+        servidorId, 
+        configuracoes 
+    } = req.body;
+
+    if (!servidorId || !configuracoes) {
+        res.status(400).json({ 
+            success: false, 
+            message: "Dados incompletos para atualização!" 
+        });
+        return;
+    }
+
+    console.log("Recebendo configurações para servidor:", servidorId, configuracoes);
+
+    servidorModel.atualizarConfiguracaoScript(servidorId, configuracoes)
+        .then(resultado => {
+            res.json({ 
+                success: true, 
+                message: 'Todas as configurações atualizadas com sucesso!',
+                affectedRows: resultado.length
+            });
+        })
+        .catch(erro => {
+            console.log("Erro no controller:", erro);
+            res.status(400).json({ 
+                success: false, 
+                message: erro.message || 'Erro ao atualizar configurações' 
+            });
+        });
+}
+
 function buscarConfiguracoesServidor(req, res) {
     var servidorId = req.params.servidorId;
 
@@ -322,5 +355,6 @@ module.exports = {
   buscarAlertasComponenteEspecifico,
   buscarPosicaoRank,
   buscarMetricas,
-  pegarFrequencia
+  pegarFrequencia,
+  atualizarConfiguracaoScript
 };

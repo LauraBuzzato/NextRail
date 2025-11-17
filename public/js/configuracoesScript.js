@@ -114,9 +114,9 @@ function criarContainerServidor(servidor, numero, tipo) {
     `;
     
     // Carrega as configurações existentes após criar o container
-    setTimeout(() => {
+    /*setTimeout(() => {
         carregarConfiguracoesServidor(servidor.id);
-    }, 100);
+    }, 100);*/
     
     return div;
 }
@@ -133,32 +133,22 @@ function salvarConfiguracao(servidorId) {
     const config = {
         servidorId: servidorId,
         configuracoes: {
-            cpu: {
-                baixo: document.getElementById(`cpu_min_${servidorId}`).value,
-                medio: document.getElementById(`cpu_alr_${servidorId}`).value,
-                alto: document.getElementById(`cpu_max_${servidorId}`).value
-            },
-            ram: {
-                baixo: document.getElementById(`ram_min_${servidorId}`).value,
-                medio: document.getElementById(`ram_alr_${servidorId}`).value,
-                alto: document.getElementById(`ram_max_${servidorId}`).value
-            },
-            disco: {
-                baixo: document.getElementById(`disco_min_${servidorId}`).value,
-                medio: document.getElementById(`disco_alr_${servidorId}`).value,
-                alto: document.getElementById(`disco_max_${servidorId}`).value
-            }
+            intervalo: parseInt(document.getElementById(`intervalo_${servidorId}`).value),
+            leitura: parseInt(document.getElementById(`leituras_consecutivas_${servidorId}`).value)
         }
     };
 
-    console.log('Salvando configuração para servidor', servidorId, ':', config);
+    console.log(config)
 
-
-    if (!validarOrdemFrontend(config.configuracoes)) {
-        return;
+    if (config.configuracoes.intervalo == null || config.configuracoes.intervalo == null
+        || config.configuracoes.intervalo <= 0 || config.configuracoes.leitura <= 0){
+            console.log('Deu erro ao salvar as configurações.')
+            return;
     }
 
-    fetch('/servidores/atualizarConfiguracaoAlerta', {
+    console.log('Salvando configuração para servidor', servidorId, ':', config);
+
+    fetch('/servidores/atualizarConfiguracaoScript', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

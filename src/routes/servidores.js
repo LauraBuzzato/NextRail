@@ -20,5 +20,6 @@ router.post("/buscarAlertasComponenteEspecifico", servidorController.buscarAlert
 router.post("/buscarPosicaoRank", servidorController.buscarPosicaoRank);
 router.post("/buscarMetricas", servidorController.buscarMetricas);
 router.post("/pegarFrequencia", servidorController.pegarFrequencia);
+router.post("/atualizarConfiguracaoScript", servidorController.atualizarConfiguracaoScript);
 
 module.exports = router;
