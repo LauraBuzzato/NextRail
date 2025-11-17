@@ -132,12 +132,6 @@ function arrumarMenuDash() {
           <span style="--i: 5">Parâmetros</span>
         </a>
       </li>
-      <li class="link-item" id="configuracoes">
-        <a href="configScript.html" class="link">
-          <ion-icon name="settings-outline"></ion-icon>
-          <span style="--i: 6">Configurar Script</span>
-        </a>
-      </li>
       <li class="link-item">
         <a onclick="limparSessao()" class="link">
           <ion-icon name="log-out-outline"></ion-icon>
@@ -449,12 +443,6 @@ function arrumarMenu() {
         <a href="configAlerta.html" class="link">
           <ion-icon name="settings-outline"></ion-icon>
           <span style="--i: 5">Parâmetros</span>
-        </a>
-      </li>
-      <li class="link-item" id="configuracoes">
-        <a href="configScript.html" class="link">
-          <ion-icon name="settings-outline"></ion-icon>
-          <span style="--i: 6">Configurar Script</span>
         </a>
       </li>
       <li class="link-item">

@@ -4,10 +4,12 @@ function alterarPagina(){
     if (opcao == 0){
         opcao = 1
         document.getElementById('tituloPagina').innerHTML = 'Configurar Parâmetros de Script'
+        document.getElementById('botaoTroca').innerHTML = 'Configurar Alerta'
     }
     else if (opcao == 1){
         opcao = 0
         document.getElementById('tituloPagina').innerHTML = 'Configurar Parâmetros de Alerta'
+        document.getElementById('botaoTroca').innerHTML = 'Configurar Script'
     }
     carregarServidores(opcao)
 }
@@ -242,7 +244,7 @@ function salvarConfiguracaoScript(servidorId) {
 
     if (config.configuracoes.intervalo == null || config.configuracoes.intervalo == null
         || config.configuracoes.intervalo <= 0 || config.configuracoes.leitura <= 0){
-            console.log('Deu erro ao salvar as configurações.')
+            alert('Deu erro ao salvar as configurações.')
             return;
     }
 

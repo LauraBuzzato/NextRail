@@ -626,6 +626,24 @@ main {
   flex-direction: column;
 }
 
+#botaoTroca {
+  cursor: pointer;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #ffe066;
+  background-color: black;
+  width: 13vw;
+  height: 8vh;
+  align-self: center;
+}
+
+#botaoTroca:hover{
+  background-color: rgb(221, 221, 221);
+  color: black;
+}
+
 .configuracao_script>h1 {
   font-size: 2.8rem;
   font-weight: 800;
@@ -705,6 +723,15 @@ main {
 }
 .titulo_select_script>select option {
   appearance: none;
+}
+
+.titulo_select_script input {
+  padding: 2px;
+  text-align: center;
+  border-radius: 5px;
+  border: solid;
+  border-width: 2px;
+  border-color: black;
 }
 
 /* ================== CONFIGURAÇÃO ALERTAS ================== */
