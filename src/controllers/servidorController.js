@@ -140,6 +140,39 @@ function atualizarConfiguracaoAlerta(req, res) {
         });
 }
 
+function atualizarConfiguracaoScript(req, res) {
+    var { 
+        servidorId, 
+        configuracoes 
+    } = req.body;
+
+    if (!servidorId || !configuracoes) {
+        res.status(400).json({ 
+            success: false, 
+            message: "Dados incompletos para atualização!" 
+        });
+        return;
+    }
+
+    console.log("Recebendo configurações para servidor:", servidorId, configuracoes);
+
+    servidorModel.atualizarConfiguracaoScript(servidorId, configuracoes)
+        .then(resultado => {
+            res.json({ 
+                success: true, 
+                message: 'Todas as configurações atualizadas com sucesso!',
+                affectedRows: resultado.length
+            });
+        })
+        .catch(erro => {
+            console.log("Erro no controller:", erro);
+            res.status(400).json({ 
+                success: false, 
+                message: erro.message || 'Erro ao atualizar configurações' 
+            });
+        });
+}
+
 function buscarConfiguracoesServidor(req, res) {
     var servidorId = req.params.servidorId;
 
@@ -149,6 +182,22 @@ function buscarConfiguracoesServidor(req, res) {
     }
 
     servidorModel.buscarConfiguracoesServidor(servidorId)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
+function buscarScriptServidor(req, res) {
+    var servidorId = req.params.servidorId;
+
+    if (!servidorId) {
+        res.status(400).send("ID do servidor não informado!");
+        return;
+    }
+
+    servidorModel.buscarScriptServidor(servidorId)
         .then(resultado => res.json(resultado))
         .catch(erro => {
             console.log(erro);
@@ -322,5 +371,7 @@ module.exports = {
   buscarAlertasComponenteEspecifico,
   buscarPosicaoRank,
   buscarMetricas,
-  pegarFrequencia
+  pegarFrequencia,
+  atualizarConfiguracaoScript,
+  buscarScriptServidor
 };

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>NextRail | Configuração de Alertas</title>
+  <title>NextRail | Configuração de Parâmetros</title>
 
   <script src="./js/sessao.js"></script>
   <link rel="stylesheet" href="./css/style.css">
@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
 </head>
 
-<body onload="validarSessao(), carregarServidores()">
+<body onload="validarSessao(), carregarServidores(0)">
 
 
   <!-- Menu lateral -->
@@ -70,7 +70,8 @@
   </div>
 
   <main class="configuracao_alerta" id="configuracaoContainer">
-    <h1>Configurar Parâmetros de Alerta</h1>
+    <h1 id="tituloPagina">Configurar Parâmetros de Alerta</h1>
+    <button id="botaoTroca" onclick="alterarPagina()">Configurar Script</button>
   </main>
 
   

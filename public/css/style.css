@@ -616,6 +616,124 @@ main {
   line-height: 1.5;
 }
 
+/* ================== CONFIGURAÇÃO SCRIPT ================== */
+.configuracao_script {
+  display: flex;
+  background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
+  color: #fff;
+  text-align: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#botaoTroca {
+  cursor: pointer;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #ffe066;
+  background-color: black;
+  width: 13vw;
+  height: 8vh;
+  align-self: center;
+}
+
+#botaoTroca:hover{
+  background-color: rgb(221, 221, 221);
+  color: black;
+}
+
+.configuracao_script>h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: #ffe066;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+  margin-bottom: 6vh;
+}
+
+.container_servidor_script {
+  display: flex;
+  flex-direction: column;
+  background-color:#181a20;
+  height: 20%;
+  width: 90%;
+  border-radius: 18px;
+  padding: 20px;
+  align-items: flex-start; 
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  margin-bottom: 3vh;
+  margin-top: 3vh;
+}
+
+.linha_titulo_script {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.linha_titulo_script>h2 {
+  color: #ffe066;
+  margin-bottom: 15px;
+}
+.botao_script {
+  cursor: pointer;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #ffe066;
+  background-color: black;
+  width: 9vw;
+  height: 5vh;
+  align-self: center;
+}
+
+.botao_script:hover{
+  background-color: rgb(221, 221, 221);
+  color: black;
+}
+
+.linha_servidor_script {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.alerta_componente_script {
+  display: flex;
+  color: #ffe066;
+  font-weight: bold;
+  align-items: center;
+}
+.titulo_select_script {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+}
+.titulo_select_script>select {
+  padding: 2px;
+  text-align: center;
+  border-radius: 5px;
+  border: solid;
+  border-width: 2px;
+  border-color: black;
+}
+.titulo_select_script>select option {
+  appearance: none;
+}
+
+.titulo_select_script input {
+  padding: 2px;
+  text-align: center;
+  border-radius: 5px;
+  border: solid;
+  border-width: 2px;
+  border-color: black;
+}
+
 /* ================== CONFIGURAÇÃO ALERTAS ================== */
 .configuracao_alerta {
   display: flex;

@@ -270,6 +270,27 @@ function atualizarConfiguracaoAlerta(servidorId, configuracoes) {
     });
 }
 
+function atualizarConfiguracaoScript(servidorId, configuracoes) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            var instrucaoScript = `
+                UPDATE leitura_script AS l 
+                INNER JOIN servidor AS s ON l.id = s.fk_leitura_script
+                SET l.intervalo = ${configuracoes.intervalo}, l.leituras_consecutivas_para_alerta = ${configuracoes.leitura}
+                WHERE s.id = ${servidorId}
+            `;
+
+                const result = await database.executar(instrucaoScript);
+
+            resolve(result);
+
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 function buscarConfiguracoesServidor(servidorId) {
     var instrucaoSql = `
         SELECT 
@@ -283,6 +304,18 @@ function buscarConfiguracoesServidor(servidorId) {
         INNER JOIN gravidade g ON m.fk_gravidade = g.id
         WHERE cs.fk_servidor = ${servidorId}
         ORDER BY tc.nome_tipo_componente, g.id;
+    `;
+
+    console.log("Buscando configurações do servidor: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function buscarScriptServidor(servidorId) {
+    var instrucaoSql = `
+        SELECT intervalo, leituras_consecutivas_para_alerta AS leituras
+        FROM leitura_script AS l
+        INNER JOIN servidor AS s ON l.id = s.fk_leitura_script
+        WHERE s.id = ${servidorId}
     `;
 
     console.log("Buscando configurações do servidor: \n" + instrucaoSql);
@@ -717,5 +750,7 @@ module.exports = {
     buscarAlertasComponenteEspecifico,
     buscarPosicaoRank,
     buscarMetricas,
-    pegarFrequencia
+    pegarFrequencia,
+    atualizarConfiguracaoScript,
+    buscarScriptServidor
 };
