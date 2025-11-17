@@ -29,7 +29,7 @@ async function dashAdmin() {
         datasets: [
           {
             label: 'Alto',
-            data: [0, 0, 1, 4, 1, 0, 0, 0, 0, 0],
+            data: [0.8, 0.7, 0.9, 1.2, 0.8, 0.9, 0.7, 0.9, 0.8, 0.9],
             borderColor: 'red',
             backgroundColor: 'rgba(255,0,0,0.2)',
             tension: 0.3,
@@ -39,7 +39,17 @@ async function dashAdmin() {
           },
           {
             label: 'Médio',
-            data: [0, 0, 0, 0, 0, 3, 0, 1, 0, 2],
+            data: [],
+            borderColor: 'orange',
+            backgroundColor: 'rgba(255,150,0,0.2)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 4,
+            borderWidth: 2
+          },
+          {
+            label: 'Baixo',
+            data: [0,0,0,0,0,0,0,0,0,0],
             borderColor: 'yellow',
             backgroundColor: 'rgba(255,255,0,0.2)',
             tension: 0.3,
@@ -48,18 +58,8 @@ async function dashAdmin() {
             borderWidth: 2
           },
           {
-            label: 'Baixo',
-            data: [0, 4, 0, 1, 0, 0, 0, 0, 2, 1],
-            borderColor: 'green',
-            backgroundColor: 'rgba(0,255,0,0.2)',
-            tension: 0.3,
-            fill: true,
-            pointRadius: 4,
-            borderWidth: 2
-          },
-          {
               label: 'limite SLA',
-              data: Array(13).fill(3.5),
+              data: Array(13).fill(1),
               borderColor: '#a78bfa',
               backgroundColor: 'rgba(167,139,250,0.2)',
               tension: 0.4,
