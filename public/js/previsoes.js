@@ -571,7 +571,7 @@ function renderGraficoAlertas() {
     if (periodo === "semanal") {
         labels = ["01/11", "08/11", "09/11", "22/11"];
     } else {
-        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"  ];
     }
 
     const alertas = alertasSimulados[servidor]?.[periodo];
@@ -681,13 +681,20 @@ function atualizarKPIsGerais(dados) {
 
     const disponibilidade = 99.7;
 
-    
+    const tempo = {
+        semanal: "semanal",
+        mensal: "mensal"
+    }
+
+    var textTemporal = "";
+    let periodo = periodoSelect.value ===  "semanal" ? "semanal" : "mensal";
+   
 
     const latenciaMedia = Object.values(latenciaSimulada[servidor]).reduce((a, b) => a + b, 0) / 3;
 
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
-            <h2>Componente com Maior Crescimento</h2>
+            <h2>Componente com Maior Crescimento ${periodo}</h2>
             <p class="valor-kpi" style="color:${cores[maiorCrescimento.componente]}">${nomes[maiorCrescimento.componente]}</p>
             <p class="tendencia">+${maiorCrescimento.taxa}%</p>
         </div>
@@ -709,7 +716,6 @@ function atualizarKPIs(dados) {
 
     const servidor = testeServidor;
     const periodo = periodoSelect.value;
-    const latencia = latenciaSimulada[servidor][componenteAtual];
 
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
 
@@ -729,7 +735,7 @@ function atualizarKPIs(dados) {
         </div>
         <div class="KPI">
             <h2>Previsão do alerta mais frêquente:</h2>
-            <p class="valor-kpi" id="kpi2" style="color:yellow">${componenteAtual[alertas.baixo]}</p>
+            <p class="valor-kpi" id="kpi2" style="color:yellow">${alertas.baixo}</p>
         </div>
         <div class="KPI">
             <h2>Disponibilidade do servidor Mensal </h2>
