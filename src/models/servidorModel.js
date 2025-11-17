@@ -277,8 +277,8 @@ function atualizarConfiguracaoScript(servidorId, configuracoes) {
             var instrucaoScript = `
                 UPDATE leitura_script AS l 
                 INNER JOIN servidor AS s ON l.id = s.fk_leitura_script
-                SET l.intervalo = ${configuracoes.configuracoes.intervalo}, l.leituras_consecutivas_para_alerta = ${configuracoes.configuracoes.leitura}
-                WHERE s.id = ${servidorId};
+                SET l.intervalo = ${configuracoes.intervalo}, l.leituras_consecutivas_para_alerta = ${configuracoes.leitura}
+                WHERE s.id = ${servidorId}
             `;
 
                 const result = await database.executar(instrucaoScript);
