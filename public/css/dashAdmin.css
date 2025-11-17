@@ -19,6 +19,41 @@
   margin-top: 10px;
 }
 
+.card_legenda {
+  display: flex;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  border-radius: 18px;
+  height: 150px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #181a20;
+  padding: 10px;
+}
+
+.legenda {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #ccc;
+  font-weight: 500;
+  width: 50%;
+  justify-content: space-between;
+}
+.bloco_cor {
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+}
+.select {
+  padding: 2px;
+  text-align: center;
+  border-radius: 5px;
+  border: solid;
+  border-width: 2px;
+  border-color: black;
+}
+
 .linha {
   display: flex;
   width: 100%;
@@ -27,19 +62,27 @@
 
 .kpi {
   display: flex;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  border-radius: 18px;
+  height: 150px;
   background: #181a20;
   padding: 10px;
   flex-direction: column;
   align-items: center;
   margin-bottom: 15px;
   margin-top: 10px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-  border-radius: 18px;
   margin: 10px;
-  height: 150px;
   flex-grow: 1;
 }
+.kpi_sla {
+  border: 10px solid red;
+  border-radius: 18px;
+  padding: 10px;
+}
 .titulo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.3rem;
   font-weight: 800;
   color: #ffe066;
@@ -49,6 +92,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   font-size: 2.2rem;
   font-weight: 800;
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
