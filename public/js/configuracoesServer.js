@@ -223,9 +223,9 @@ function criarContainerServidor(servidor, numero, tipo, opcao) {
     `;
     
     // Carrega as configurações existentes após criar o container
-    /*setTimeout(() => {
-        carregarConfiguracoesServidor(servidor.id);
-    }, 100);*/
+    setTimeout(() => {
+                carregarScriptServidor(servidor.id);
+            }, 100);
     
     return div;
         }
@@ -440,4 +440,21 @@ function preencherSelectComponente(servidorId, componente, valores) {
             console.log(`Selects disponíveis para servidor ${servidorId}:`, availableIds);
         }
     });
+}
+
+function carregarScriptServidor(servidorId) {
+    fetch(`/servidores/script/${servidorId}`)
+        .then(response => response.json())
+        .then(configuracoes => {
+            console.log('Configurações carregadas para servidor', servidorId, ':', configuracoes);
+            preencherInputs(servidorId, configuracoes);
+        })
+        .catch(error => {
+            console.error('Erro ao carregar configurações:', error);
+        });
+}
+
+function preencherInputs(servidorId, configuracoes) {
+    document.getElementById(`intervalo_${servidorId}`).value = configuracoes[0].intervalo
+    document.getElementById(`leituras_consecutivas_${servidorId}`).value = configuracoes[0].leituras
 }

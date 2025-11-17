@@ -310,6 +310,18 @@ function buscarConfiguracoesServidor(servidorId) {
     return database.executar(instrucaoSql);
 }
 
+function buscarScriptServidor(servidorId) {
+    var instrucaoSql = `
+        SELECT intervalo, leituras_consecutivas_para_alerta AS leituras
+        FROM leitura_script AS l
+        INNER JOIN servidor AS s ON l.id = s.fk_leitura_script
+        WHERE s.id = ${servidorId}
+    `;
+
+    console.log("Buscando configurações do servidor: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 function carregarComponentes() {
     var instrucaoSql = `
         select id, nome_tipo_componente as nome from tipo_componente;`
@@ -739,5 +751,6 @@ module.exports = {
     buscarPosicaoRank,
     buscarMetricas,
     pegarFrequencia,
-    atualizarConfiguracaoScript
+    atualizarConfiguracaoScript,
+    buscarScriptServidor
 };
