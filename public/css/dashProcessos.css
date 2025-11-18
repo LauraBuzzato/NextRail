@@ -305,3 +305,11 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+#UsoMemoriaProcesso {
+  color: #ffe066;
+}
+
+#mensagemQtdProcesso {
+  color: #ffe066;
+}
