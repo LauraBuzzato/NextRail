@@ -160,22 +160,22 @@ function criarBotoesComponentes() {
     botoesContainer.className = 'botoes-componentes hidden';
     botoesContainer.id = 'botoesComponentes';
     botoesContainer.innerHTML = `
-        <label>Componente:</label>
-        <div class="grupo-botoes">
-            <button class="btn-componente" data-componente="cpu">
-                <ion-icon name="hardware-chip-outline"></ion-icon>
-                CPU
-            </button>
-            <button class="btn-componente" data-componente="ram">
-                <ion-icon name="speedometer-outline"></ion-icon>
-                RAM
-            </button>
-            <button class="btn-componente" data-componente="disco">
-                <ion-icon name="save-outline"></ion-icon>
-                Disco
-            </button>
-        </div>
-    `;
+            <label>Componente:</label>
+            <div class="grupo-botoes">
+                <button class="btn-componente" data-componente="cpu">
+                    <ion-icon name="hardware-chip-outline"></ion-icon>
+                    CPU
+                </button>
+                <button class="btn-componente" data-componente="ram">
+                    <ion-icon name="speedometer-outline"></ion-icon>
+                    RAM
+                </button>
+                <button class="btn-componente" data-componente="disco">
+                    <ion-icon name="save-outline"></ion-icon>
+                    Disco
+                </button>
+            </div>
+        `;
 
     filtrosContainer.appendChild(botoesContainer);
 
@@ -238,11 +238,28 @@ function toggleVisaoGeral() {
 
 function calcularTaxaCrescimento(dados) {
     const taxas = {};
+
     for (const componente in dados) {
         const valores = dados[componente];
         if (valores.length >= 2) {
-            const crescimento = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
-            taxas[componente] = crescimento.toFixed(1);
+
+            const crescimentoTotal = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
+
+            let somaCrescimentos = 0;
+            let numComparacoes = 0;
+
+            for (let i = 1; i < valores.length; i++) {
+                const crescimentoPonto = ((valores[i] - valores[i - 1]) / valores[i - 1]) * 100;
+                somaCrescimentos += crescimentoPonto;
+                numComparacoes++;
+            }
+
+            const crescimentoMedio = somaCrescimentos / numComparacoes;
+
+            taxas[componente] = {
+                total: crescimentoTotal.toFixed(2),
+                medio: crescimentoMedio.toFixed(2)
+            };
         }
     }
     return taxas;
@@ -253,13 +270,28 @@ function encontrarComponenteMaiorCrescimento(taxas) {
     let maiorTaxa = -Infinity;
 
     for (const componente in taxas) {
-        if (parseFloat(taxas[componente]) > maiorTaxa) {
-            maiorTaxa = parseFloat(taxas[componente]);
+        const taxaAtual = parseFloat(taxas[componente].total || taxas[componente]);
+
+        if (taxaAtual > maiorTaxa) {
+            maiorTaxa = taxaAtual;
             maiorComponente = componente;
         }
     }
 
-    return { componente: maiorComponente, taxa: maiorTaxa };
+    return { componente: maiorComponente, taxa: maiorTaxa.toFixed(1) };
+}
+
+
+function calcularTaxaCrescimentoTotal(dados) {
+    const taxas = {};
+    for (const componente in dados) {
+        const valores = dados[componente];
+        if (valores.length >= 2) {
+            const crescimento = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
+            taxas[componente] = parseFloat(crescimento.toFixed(2));
+        }
+    }
+    return taxas;
 }
 
 function atualizarDashboard() {
@@ -309,17 +341,21 @@ function renderGraficoLinhasMultiplas(dados) {
         ? ["01/11", "08/11", "09/11", "22/11"]
         : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
 
-    const datasets = Object.keys(dados).map(componente => ({
-        label: `${nomes[componente]} (%)`,
-        data: dados[componente],
-        borderColor: cores[componente],
-        backgroundColor: `${cores[componente]}20`,
-        fill: false,
-        tension: 0.4,
-        borderWidth: 3,
-        pointRadius: 5,
-        pointBackgroundColor: cores[componente]
-    }));
+    const datasets = [];
+
+    for (const componente in dados) {
+        datasets.push({
+            label: `${nomes[componente]} (%)`,
+            data: dados[componente],
+            borderColor: cores[componente],
+            backgroundColor: `${cores[componente]}20`,
+            fill: false,
+            tension: 0.4,
+            borderWidth: 3,
+            pointRadius: 5,
+            pointBackgroundColor: cores[componente]
+        });
+    }
 
     const ctx = canvas.getContext("2d");
     graficoLinha = new Chart(ctx, {
@@ -683,22 +719,13 @@ const cores = {
 };
 
 function atualizarKPIsGerais(dados) {
-    const taxas = calcularTaxaCrescimento(dados);
+    const taxas = calcularTaxaCrescimentoTotal(dados);
     const maiorCrescimento = encontrarComponenteMaiorCrescimento(taxas);
 
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
     const servidor = testeServidor;
-
     const disponibilidade = 99.7;
-
-    const tempo = {
-        semanal: "semanal",
-        mensal: "mensal"
-    }
-
-    var textTemporal = "";
     let periodo = periodoSelect.value === "semanal" ? "semanal" : "mensal";
-
 
     const latenciaMedia = Object.values(latenciaSimulada[servidor]).reduce((a, b) => a + b, 0) / 3;
 
@@ -737,17 +764,27 @@ function atualizarKPIs(dados) {
 
     const disponibilidade = 99.7;
 
-    let medUso = mediaUso / 100;
-    let medUsoFormatado = medUso.toFixed(2);
 
+    let medUsoFormatado = mediaUso;
 
     let iconName, iconColor;
-    if (medUso > 0) {
+
+
+    const primeiroValor = dados[componenteAtual][0];
+    const ultimoValor = dados[componenteAtual][dados[componenteAtual].length - 1];
+    let variacaoPercentual = 0;
+    if (primeiroValor !== 0) {
+        variacaoPercentual = ((ultimoValor - primeiroValor) / primeiroValor) * 100;
+    }
+
+    const tendencia = ultimoValor - primeiroValor;
+
+    if (tendencia > 0) {
         iconName = "arrow-up-outline";
         iconColor = "white";
-    } else if (medUso < 0) {
+    } else if (tendencia < 0) {
         iconName = "arrow-down-outline";
-        iconColor = "green";
+        iconColor = "white";
     } else {
         iconName = "remove-outline";
         iconColor = "gray";
@@ -755,53 +792,48 @@ function atualizarKPIs(dados) {
 
     if (periodo == "mensal") {
         document.getElementById("kpisContainer").innerHTML = `
-    <div class="KPI">
-        <h2>Previsão de uso Mensal (${nomes[componenteAtual]})</h2>
-        <p class="valor-kpi" id="kpi1">
-            <ion-icon name="${iconName}" style="color:${iconColor}"></ion-icon>
-            ${medUsoFormatado}%
-        </p>
-    </div>
-    <div class="KPI">
-        <h2>Previsão do alerta mais frêquente:</h2>
-        <p class="valor-kpi" id="kpi2" style="color:yellow">${alertas.baixo}</p>
-    </div>
-    <div class="KPI">
-        <h2>Disponibilidade do servidor Mensal </h2>
-        <p class="valor-kpi" id="kpi3">${disponibilidade}</p>
-    </div>
-    `;
-
+        <div class="KPI">
+            <h2>Previsão de uso médio Mensal (${nomes[componenteAtual]})</h2>
+            <p class="valor-kpi" id="kpi1"> ${medUsoFormatado}%</p>
+        </div>
+        <div class ="KPI">
+        <h2> Taxa de aumento Percentual Mensal:</h2>
+        <p class="valor-kpi" style="color:white">${variacaoPercentual > 0 ? '+' : ''}${variacaoPercentual.toFixed(1)}%</p>
+        </div>
+        <div class="KPI">
+            <h2>Previsão do alerta mais frequente:</h2>
+            <p class="valor-kpi" id="kpi2" style="color:yellow">${alertas.baixo}</p>
+        </div>
+        <div class="KPI">
+            <h2>Disponibilidade do servidor Mensal</h2>
+            <p class="valor-kpi" id="kpi3" style="color:green">${disponibilidade}%</p>
+        </div>
+        `;
     } else if (periodo == "semanal") {
         document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
-        <h2>Previsão de uso Semanal (${nomes[componenteAtual]})</h2>
-        <p class="valor-kpi" id="kpi1">
-            <ion-icon name="${iconName}" style="color:${iconColor}"></ion-icon>
-            ${medUsoFormatado}%
-        </p>
-    </div>
-    <div class="KPI">
-        <h2>Previsão do alerta mais frêquente:</h2>
-        <p class="valor-kpi" id="kpi2" style="color:yellow">${alertas.baixo}</p>
-    </div>
-    <div class="KPI">
-        <h2>Disponibilidade do servidor Mensal </h2>
-        <p class="valor-kpi" id="kpi3">${disponibilidade}</p>
-    </div>
-    `;
+            <h2>Previsão de uso médio Semanal (${nomes[componenteAtual]})</h2>
+            <p class="valor-kpi" id="kpi1"> ${medUsoFormatado}%</p>
+        </div>
+        <div class ="KPI">
+        <h2> Taxa de aumento Percentual Semanal:</h2>
+        <p class="valor-kpi" style="color:white">${variacaoPercentual > 0 ? '+' : ''}${variacaoPercentual.toFixed(1)}%</p>
+        </div>
+        <div class="KPI">
+            <h2>Previsão do alerta mais frequente:</h2>
+            <p class="valor-kpi" id="kpi2" style="color:yellow">${alertas.baixo}</p>
+        </div>
+        <div class="KPI">
+            <h2>Disponibilidade do servidor Semanal</h2>
+            <p class="valor-kpi" id="kpi3" style="color:green">${disponibilidade}%</p>
+        </div>
+        `;
     }
 
 
     const kpi1 = document.getElementById("kpi1");
     const kpi2 = document.getElementById("kpi2");
     const kpi3 = document.getElementById("kpi3");
-
-    if (disponibilidade >= 90) {
-        kpi3.style.color = "green";
-    }
-
-    console.log(nomes[componenteAtual])
 
     if (nomes[componenteAtual] == "CPU") {
         kpi1.style.color = `${cores.cpu}`;
@@ -810,7 +842,6 @@ function atualizarKPIs(dados) {
     } else if (nomes[componenteAtual] == "Disco") {
         kpi1.style.color = `${cores.disco}`;
     }
-
 }
 
 function configurarNavegacao() {
