@@ -216,8 +216,28 @@ async function atualizar(a) {
     // Inserir HTML do suporte
     dash_suporte.innerHTML = `
     <div class="container-pagina">
-      <h1 class="bem-vindo">Uso dos Componentes</span></h1>
-      <!--<h2 class="desempenho" id="subtitulo-destaque">${localStorage.NOME_SERVIDOR}</h2>-->
+      <h1 class="bem-vindo">Uso dos Componentes: ${localStorage.NOME_SERVIDOR}</span></h1>
+      <div class="legenda">
+      <div class="opcaoLegenda">
+        <div class="bloco_cor" style="background-color:green"></div>
+        <p>Sem Alerta </p>
+      </div>
+      <p>|</p>
+      <div class="opcaoLegenda">
+        <div class="bloco_cor" style="background-color:yellow"></div>
+        <p>Alerta Baixo</p>
+      </div>
+      <p>|</p>
+      <div class="opcaoLegenda">
+        <div class="bloco_cor" style="background-color:darkorange"></div>
+        <p>Alerta Médio</p>
+      </div>
+      <p>|</p>
+      <div class="opcaoLegenda">
+        <div class="bloco_cor" style="background-color:red"></div>
+        <p>Alerta Alto</p>
+      </div>
+    </div>
       <section class="conteudo-principal">
         <div class="kpi-container">
           <div class="kpi-1">
@@ -269,6 +289,7 @@ async function atualizar(a) {
 
           <div class="container-tabela-dinamica">
             <div class="tabela-titulo">Histórico de alertas da última semana</div>
+            <span class="quantidade-alertas">Quantidade de alertas do ${localStorage.NOME_SERVIDOR} na última semana: 6</span>
             <div id="tabela-conteudo" class="tabela-conteudo"></div>
           </div>
         </div>
