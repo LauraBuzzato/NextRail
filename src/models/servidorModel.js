@@ -276,7 +276,7 @@ function atualizarConfiguracaoScript(servidorId, configuracoes) {
 
             var instrucaoScript = `
                 UPDATE leitura_script AS l 
-                INNER JOIN servidor AS s ON l.id = s.fk_leitura_script
+                INNER JOIN servidor AS s ON s.id = l.fk_servidor
                 SET l.intervalo = ${configuracoes.intervalo}, l.leituras_consecutivas_para_alerta = ${configuracoes.leitura}
                 WHERE s.id = ${servidorId}
             `;
@@ -314,7 +314,7 @@ function buscarScriptServidor(servidorId) {
     var instrucaoSql = `
         SELECT intervalo, leituras_consecutivas_para_alerta AS leituras
         FROM leitura_script AS l
-        INNER JOIN servidor AS s ON l.id = s.fk_leitura_script
+        INNER JOIN servidor AS s ON s.id = l.fk_servidor
         WHERE s.id = ${servidorId}
     `;
 

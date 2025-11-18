@@ -57,13 +57,6 @@ create table endereco(
 	foreign key (fk_estado) references estado(id)
 );
 
-create table leitura_script(
-	id int primary key auto_increment,
-    intervalo int default(10),
-    leituras_consecutivas_para_alerta int default(3)
-);
-
-
 create table servidor(
 	id int primary key auto_increment,
 	nome varchar (45) not null,
@@ -71,12 +64,18 @@ create table servidor(
 	fk_so int,
 	fk_endereco int,
 	fk_empresa int not null,
-    fk_leitura_script int,
 	foreign key(fk_empresa) references empresa(id),
 	foreign key (fk_so) references sistema_operacional(id),
 	foreign key (fk_tipo) references tipo(id),
-	foreign key (fk_endereco) references endereco(id),
-    foreign key (fk_leitura_script) references leitura_script(id)
+	foreign key (fk_endereco) references endereco(id)
+);
+
+create table leitura_script(
+	id int primary key auto_increment,
+    intervalo int default(10),
+    leituras_consecutivas_para_alerta int default(3),
+    fk_servidor int,
+    foreign key (fk_servidor) references servidor(id)
 );
 
 create table tipo_componente (
@@ -130,6 +129,17 @@ create table metrica(
 	primary key (id, fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente)
 );
 
+DELIMITER $$
+
+CREATE TRIGGER inserir_novo_parametro_script
+AFTER INSERT ON servidor
+FOR EACH ROW
+BEGIN
+	INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta, fk_servidor)
+    VALUES (10, 3, NEW.id);
+END $$
+
+DELIMITER ;
 
 insert into tipo_componente (nome_tipo_componente)
 values ('Cpu'),
@@ -216,17 +226,15 @@ INSERT INTO  endereco (logradouro, cep, numero, complemento, fk_estado) VALUES('
 ('Rua Brisa do Amanhecer', '53404355', '105', NULL, 17),
 ('Avenida Cidade Jardim', '01454900', '280', NULL, 25);
 
-INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta) VALUES (10, 3),
-(5, 3),
-(7, 2);
-
-
-INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa, fk_leitura_script)
+INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
 VALUES
-('Servidor01', 2, 2, 3, 1, 1),
-('Servidor02', 1, 1, 2, 1, 2),
-('Servidor03', 1, 3, 1, 1, 3);
+('Servidor01', 2, 2, 3, 1),
+('Servidor02', 1, 1, 2, 1),
+('Servidor03', 1, 3, 1, 1);
 
+/*INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta, fk_servidor) VALUES (10, 3, 1),
+(5, 3, 2),
+(7, 2, 3);*/
 
 INSERT INTO gravidade (nome)
 VALUES
