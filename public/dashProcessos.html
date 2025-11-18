@@ -99,18 +99,18 @@
             <h2 id="mediaProcessos">277</h2>
           </div>
           <div class="KPI">
-            <h2>Processo mais frequente:</h2>
+            <h2>Processo com maior uso de memória:</h2>
             <h2 id="textoProcessoFrequente">script.py</h2>
           </div>
         </div>
         <div class="container-KPIS-segunda-linha">
           <div class="GRAFICO-2">
-            <h2>Quantidade dos processos das últimas 24h:</h2>
+            <h2 id="mensagemQtdProcesso">Quantidade dos processos das últimas 24h:</h2>
             <canvas id="varicaoUso"></canvas>
           </div>
 
           <div class="KPI com-grafico">
-            <h2>Frequência dos processos:</h2>
+            <h2 id="UsoMemoriaProcesso">Uso de memória dos processos (Em MB):</h2>
             <canvas id="frequenciaProcessosChart"></canvas>
           </div>
 
@@ -139,7 +139,7 @@
     data: {
       labels: ['script.py', 'teste123', 'algo.exe'],
       datasets: [{
-        label: "% de frequência",
+        label: "MB de memória",
         data: [50, 25, 25],
         backgroundColor: [
           'rgba(36, 184, 191)',

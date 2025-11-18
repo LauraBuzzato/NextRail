@@ -7,7 +7,7 @@ import pandas as pd
 header = ["NOME", "USO_MEMORIA (MB)"]
 file_name = "nomeProcessosUso.csv"
 
-DATA_PATH = 'data/'
+DATA_PATH = '../data/'
 CSV_PATH = DATA_PATH + file_name
 
 time.sleep(0.1)

@@ -48,9 +48,9 @@ function dash_analista() {
                 return;
             }
 
-            var porDia = {}; 
-            var contagemComponentes = {}; 
-            var contagemGravidades = {}; 
+            var porDia = {};
+            var contagemComponentes = {};
+            var contagemGravidades = {};
 
             var kpis = payload.kpisGerais;
             if (kpis !== undefined && kpis !== null) {
@@ -75,32 +75,32 @@ function dash_analista() {
                 }
 
                 var elTotal = document.getElementById('kpi-total-alertas');
-                if (elTotal){ 
-                    elTotal.innerText = totalAlertsMes; 
-                } else { 
-                    console.log('KPI totalAlerts:', totalAlertsMes); 
+                if (elTotal) {
+                    elTotal.innerText = totalAlertsMes;
+                } else {
+                    console.log('KPI totalAlerts:', totalAlertsMes);
                 }
 
 
                 var elComp = document.getElementById('kpi-componente-mais-impactado');
-                if (elComp) { 
-                    elComp.innerText = componenteMaisImpactado; 
-                } else { 
-                    console.log('KPI componenteMaisAfetado:', componenteMaisImpactado); 
+                if (elComp) {
+                    elComp.innerText = componenteMaisImpactado;
+                } else {
+                    console.log('KPI componenteMaisAfetado:', componenteMaisImpactado);
                 }
 
                 var elMttr = document.getElementById('kpi-mttr-medio');
-                if (elMttr) { 
-                    elMttr.innerText = mttrMedioMes; 
-                } else { 
-                    console.log('KPI mttrMedio:', mttrMedioMes); 
+                if (elMttr) {
+                    elMttr.innerText = mttrMedioMes;
+                } else {
+                    console.log('KPI mttrMedio:', mttrMedioMes);
                 }
 
                 var elGrav = document.getElementById('kpi-gravidade-mais-frequente');
-                if (elGrav) { 
-                    elGrav.innerText = gravidadeMaisFrequente; 
-                } else { 
-                    console.log('KPI gravidadePredominante:', gravidadeMaisFrequente); 
+                if (elGrav) {
+                    elGrav.innerText = gravidadeMaisFrequente;
+                } else {
+                    console.log('KPI gravidadePredominante:', gravidadeMaisFrequente);
                 }
             } else {
                 console.log('kpisGerais não encontrado no payload');
@@ -145,14 +145,14 @@ function dash_analista() {
                         chaveComp = 'Outro';
                     }
 
-                    
+
                     if (contagemComponentes[chaveComp] === undefined) {
                         contagemComponentes[chaveComp] = 1;
                     } else {
                         contagemComponentes[chaveComp] = contagemComponentes[chaveComp] + 1;
                     }
 
-    
+
                     var nomeGravRaw = alerta.nome_gravidade;
                     if (nomeGravRaw === undefined || nomeGravRaw === null) {
                         nomeGravRaw = alerta.gravidade;
@@ -208,10 +208,10 @@ function dash_analista() {
                         porDia[chaveDia][chaveComp] = porDia[chaveDia][chaveComp] + 1;
                     } else {
                         console.log("ERRO NA DATAA");
-                        
+
                     }
-                } 
-            } 
+                }
+            }
 
             // transformar porDia em arrays ordenados para o Chart (labels dd/MM)
             var chavesDatas = [];
@@ -219,7 +219,7 @@ function dash_analista() {
                 chavesDatas.push(k);
             }
 
-        
+
             // ordenar chavesDatas por data (comparar new Date)
             chavesDatas.sort(function (a, b) {
                 var da = new Date(a + 'T00:00:00');
@@ -262,10 +262,10 @@ function dash_analista() {
             var compRam = 0;
             var compDisco = 0;
 
-            if (contagemComponentes['Cpu'] !== undefined){ 
+            if (contagemComponentes['Cpu'] !== undefined) {
                 compCpu = contagemComponentes['Cpu'];
             }
-            if (contagemComponentes['Ram'] !== undefined){ 
+            if (contagemComponentes['Ram'] !== undefined) {
                 compRam = contagemComponentes['Ram'];
             }
             if (contagemComponentes['Disco'] !== undefined) {
@@ -277,13 +277,13 @@ function dash_analista() {
             var gravMedio = 0;
             var gravAlto = 0;
 
-            if (contagemGravidades['Baixo'] !== undefined){
+            if (contagemGravidades['Baixo'] !== undefined) {
                 gravBaixo = contagemGravidades['Baixo'];
             }
-            if (contagemGravidades['Médio'] !== undefined){
+            if (contagemGravidades['Médio'] !== undefined) {
                 gravMedio = contagemGravidades['Médio'];
             }
-            if (contagemGravidades['Alto'] !== undefined){ 
+            if (contagemGravidades['Alto'] !== undefined) {
                 gravAlto = contagemGravidades['Alto'];
             }
 
@@ -328,14 +328,53 @@ function dash_analista() {
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Quantidades',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Dias',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                }
+                            }
+                        }
                     }
                 };
 
-
                 if (chartFreq !== null) {
-                     chartFreq.destroy(); chartFreq = null; 
-                    }
+                    chartFreq.destroy(); chartFreq = null;
+                }
                 chartFreq = new Chart(frequenciaCanvas, configFreq);
             }
 
@@ -346,7 +385,6 @@ function dash_analista() {
                     data: {
                         labels: ['Cpu', 'Ram', 'Disco'],
                         datasets: [{
-                            label: 'Total de Alertas',
                             data: [compCpu, compRam, compDisco],
                             backgroundColor: ['rgba(147, 112, 219, 0.8)', 'rgba(0, 191, 255, 0.8)', 'rgba(255, 137, 176, 0.8)'],
                             borderColor: ['#9370DB', '#00BFFF', '#ff89b0'],
@@ -355,12 +393,52 @@ function dash_analista() {
                         }]
                     },
                     options: {
-                        responsive: true
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Quantidades',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 14,
+                                        weight: "bold"
+                                    }
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Componentes',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                }
+                            }
+                        }
                     }
                 };
 
                 if (chartComp !== null) {
-                    chartComp.destroy(); chartComp = null; 
+                    chartComp.destroy(); chartComp = null;
                 }
                 chartComp = new Chart(alertasComponenteCanvas, configComp);
             }
@@ -372,7 +450,6 @@ function dash_analista() {
                     data: {
                         labels: ['Baixo', 'Médio', 'Alto'],
                         datasets: [{
-                            label: 'Alertas Registrados',
                             data: [gravBaixo, gravMedio, gravAlto],
                             backgroundColor: ['rgba(255, 255, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)'],
                             borderColor: ['rgba(255, 255, 0, 1)', 'rgba(3, 2, 0, 1)', 'rgba(255, 0, 0, 1)'],
@@ -381,9 +458,50 @@ function dash_analista() {
                         }]
                     },
                     options: {
-                        responsive: true
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Quantidades',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Gravidades',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                }
+                            }
+                        }
                     }
                 };
+
 
                 if (chartGrav !== null) { chartGrav.destroy(); chartGrav = null; }
                 chartGrav = new Chart(alertasServidorCanvas, configGrav);

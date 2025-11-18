@@ -82,7 +82,7 @@ select:focus {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 80px;
+  gap: 65px;
   margin: 1.5% 0 30px;
 }
 
@@ -102,6 +102,12 @@ select:focus {
 }
 
 .KPI h2 {
+  font-size: 1.2rem;
+  color: #ddd;
+  margin-bottom: 6px;
+}
+
+.KPI span {
   font-size: 1rem;
   color: #ddd;
   margin-bottom: 6px;
