@@ -1,13 +1,48 @@
-const { options } = require("nodemon/lib/config");
+let data = {
+    Alto: {
+        labels: ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'],
+        dados: [0.8, 0.7, 0.9, 1.2, 0.8, 0.9, 0.7, 0.9, 0.8, 0.9],
+        cores: ['rgba(255,0,0)', 'rgba(255,0,0,0.4)'],
+        sla: 1.0
+    },
+    Médio: {
+        labels: ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'],
+        dados: [1.3, 1.5, 1.4, 1.7, 2.1, 1.9, 1.7, 1.5, 1.8, 1.9],
+        cores: ['rgba(255,150,0)', 'rgba(255,150,0,0.4)'],
+        sla: 2.0
+    }
+}
+let atual = "Alto"
 
-async function dashAdmin() {
+let graficoSla = null;
+
+function mudarAlerta() {
+    console.log(atual)
+    if (atual == "Alto") {
+        atual = "Médio"
+    } else if (atual == "Médio") {
+        atual = "Baixo"
+    } else if (atual == "Baixo") {
+        atual = "Alto"
+    }
+    destruirGraficos()
+    criarGraficoSla()
+}
+
+function destruirGraficos() {
+    graficoSla.destroy()
+}
+
+function dashAdmin() {
   console.log("Carregando gráficos...")
 
-  if (typeof Chart === 'undefined') {
-    console.log("erro ao cerregar grafico")
-    setTimeout(dashAdmin(), 500)
-    return
-  }
+  //if (typeof Chart === 'undefined') {
+  //  console.log("erro ao cerregar grafico")
+  //  setTimeout(dashAdmin(), 500)
+  //  return
+ // }
+
+  criarGraficoSla()
 
   try {
     //const [alertas] = await Promise.all([
@@ -20,86 +55,7 @@ async function dashAdmin() {
     //console.log(alertas)
 
     // grafico tempo resolucao x sla
-    const tempoSla = document.getElementById("tempoSla");
-    new Chart(tempoSla,
-    {
-      type: 'line',
-      data: {
-        labels: ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'],
-        datasets: [
-          {
-            label: 'Alto',
-            data: [0.8, 0.7, 0.9, 1.2, 0.8, 0.9, 0.7, 0.9, 0.8, 0.9],
-            borderColor: 'red',
-            backgroundColor: 'rgba(255,0,0,0.2)',
-            tension: 0.3,
-            fill: true,
-            pointRadius: 4,
-            borderWidth: 2
-          },
-          {
-            label: 'Médio',
-            data: [],
-            borderColor: 'orange',
-            backgroundColor: 'rgba(255,150,0,0.2)',
-            tension: 0.3,
-            fill: true,
-            pointRadius: 4,
-            borderWidth: 2
-          },
-          {
-            label: 'Baixo',
-            data: [0,0,0,0,0,0,0,0,0,0],
-            borderColor: 'yellow',
-            backgroundColor: 'rgba(255,255,0,0.2)',
-            tension: 0.3,
-            fill: true,
-            pointRadius: 4,
-            borderWidth: 2
-          },
-          {
-              label: 'limite SLA',
-              data: Array(13).fill(1),
-              borderColor: '#a78bfa',
-              backgroundColor: 'rgba(167,139,250,0.2)',
-              tension: 0.4,
-              fill: false,
-              pointRadius: 0,
-              datalabels: { display: false }
-          }
-        ]
-      },
-      options: {
-        color: 'white',
-          scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Incidentes',
-                        color: 'white',
-                        font: {
-                            size: 20
-                        }
-                    },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Tempo Resolução',
-                        color: 'white',
-                        font: {
-                            size: 20
-                        }
-                    },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
-                }
-          }
-      },
-      borderColor: 'rgb(75, 192, 192)',
-      tension: 0.1
-    })
+    
 
     // grafico ticketsSup
     const ticketsSup = document.getElementById("ticketsSup");
@@ -166,6 +122,107 @@ async function dashAdmin() {
   } catch(err) {
     console.log("Erro ao carregar gráficos")
   }
-
-
 }
+
+
+function criarGraficoSla() {
+    const tempoSla = document.getElementById("tempoSla");
+
+    if (tempoSla && typeof Chart != 'undefined') {
+        graficoSla = new Chart(tempoSla,
+        {
+          type: 'line',
+          data: {
+            labels: data[atual].labels, //LABELS
+            datasets: [
+              {
+                label: atual,
+                data: data[atual].dados,
+                borderColor: data[atual].cores[0],
+                backgroundColor: data[atual].cores[1],
+                tension: 0.3,
+                fill: true,
+                pointRadius: 4,
+                borderWidth: 2
+              },
+              {
+                  label: 'limite SLA',
+                  data: Array(13).fill(data[atual].sla),
+                  borderColor: '#a78bfa',
+                  backgroundColor: 'rgba(167,139,250,0.2)',
+                  tension: 0.4,
+                  fill: false,
+                  pointRadius: 0,
+                  datalabels: { display: false }
+              }
+            ]
+          },
+          options: {
+            color: 'white',
+              scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Incidentes',
+                            color: 'white',
+                            font: {
+                                size: 20
+                            }
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Tempo Resolução',
+                            color: 'white',
+                            font: {
+                                size: 20
+                            }
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+              }
+          },
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        })
+    }
+}
+
+function mudarCor() {
+  let select = document.getElementById("alerta-sla")
+  let kpi = document.getElementById("kpi_sla")
+  let alerta = select.value
+
+  if (alerta == "alto") {
+    kpi.style.borderColor = "red"
+  } else if (alerta == "medio") {
+    kpi.style.borderColor = "orange"
+  } else {
+    kpi.style.borderColor = "yellow"
+  }
+}
+
+
+//{
+//                label: 'Médio',
+//                data: [],
+//                borderColor: 'orange',
+//                backgroundColor: 'rgba(255,150,0,0.2)',
+//                tension: 0.3,
+//                fill: true,
+//                pointRadius: 4,
+//                borderWidth: 2
+//              },
+//              {
+//                label: 'Baixo',
+//                data: [0,0,0,0,0,0,0,0,0,0],
+//                borderColor: 'yellow',
+//                backgroundColor: 'rgba(255,255,0,0.2)',
+//                tension: 0.3,
+//                fill: true,
+//                pointRadius: 4,
+//                borderWidth: 2
+//              },
