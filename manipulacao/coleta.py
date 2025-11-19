@@ -81,17 +81,19 @@ conexao = mysql.connector.connect(
 
 machine_id = 1
 
-select = conexao.cursor()
-query = "SELECT intervalo FROM leitura_script ls INNER JOIN servidor ser on ls.id = ser.fk_leitura_script WHERE ser.id = %s"
+select = conexao.cursor(buffered=True)
+select2 = conexao.cursor(buffered=True)
+query = "SELECT intervalo FROM leitura_script ls INNER JOIN servidor ser on ls.fk_servidor = ser.id WHERE ser.id = %s"
 select.execute(query, (machine_id,))
 
 resultado = select.fetchone()
 
 query2 = "SELECT nome FROM servidor WHERE id = %s"
-select.execute(query2, (machine_id,))
+select2.execute(query2, (machine_id,))
 
-resultadoNome = select.fetchone()
+resultadoNome = select2.fetchone()
 
+select2.close()
 select.close()
 conexao.close()
 
