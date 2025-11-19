@@ -232,7 +232,9 @@ VALUES
 ('Servidor02', 1, 1, 2, 1),
 ('Servidor03', 1, 3, 1, 1);
 
-INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta, fk_servidor) VALUES (10, 3, 1),
+INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta, fk_servidor) 
+VALUES 
+(10, 3, 1),
 (5, 3, 2),
 (7, 2, 3);
 
@@ -449,5 +451,15 @@ ORDER BY
         ORDER BY srv.nome;	
 
 
--- drop database nextrail;
+SELECT 
+    m.valor AS Valor_Metrica,
+    tc.nome_tipo_componente AS Componente,
+    g.nome AS Gravidade,
+    ls.leituras_consecutivas_para_alerta AS Leituras_Necessarias
+FROM metrica m
+JOIN tipo_componente tc ON m.fk_componenteServidor_tipoComponente = tc.id
+JOIN gravidade g ON m.fk_gravidade = g.id
+JOIN leitura_script ls ON ls.fk_servidor = m.fk_componenteServidor_servidor
+WHERE m.fk_componenteServidor_servidor = 1
+ORDER BY Componente, Gravidade;
 

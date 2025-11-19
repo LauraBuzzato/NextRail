@@ -161,7 +161,6 @@ async function buscarDadosReaisAlertas(componente, periodo) {
         return processarDadosParaPrevisao(dadosReais, periodo);
     } catch (error) {
         console.error('Erro ao buscar dados reais:', error);
-        // Retorna dados simulados em caso de erro
         return alertasSimulados[testeServidor]?.[periodo] ||
             (periodo === "semanal"
                 ? { alto: [2, 1, 3, 2], medio: [3, 4, 2, 3], baixo: [5, 4, 6, 5] }
@@ -204,28 +203,24 @@ function processarDadosParaPrevisao(dadosReais, periodo) {
     };
 }
 
-// Função simples para gerar previsões baseadas em tendência
+
 function gerarPrevisaoSimples(dadosHistoricos, periodo) {
     const numPrevisoes = periodo === "semanal" ? 4 : 6;
     const previsoes = [];
 
     if (dadosHistoricos.length < 2) {
-        // Se não há dados suficientes, retorna valores constantes
         const valorBase = dadosHistoricos[0] || 2;
         return Array(numPrevisoes).fill(valorBase);
     }
 
-    // Calcular tendência simples (média móvel)
-    const ultimosValores = dadosHistoricos.slice(-3); // Últimos 3 valores
+    const ultimosValores = dadosHistoricos.slice(-3); 
     const media = ultimosValores.reduce((a, b) => a + b, 0) / ultimosValores.length;
 
-    // Calcular tendência de crescimento
     const crescimento = dadosHistoricos[dadosHistoricos.length - 1] - dadosHistoricos[0];
     const tendencia = crescimento / dadosHistoricos.length;
 
-    // Gerar previsões com tendência e pequena variação aleatória
     for (let i = 0; i < numPrevisoes; i++) {
-        const variacao = (Math.random() - 0.5) * 1.5; // Variação menor
+        const variacao = (Math.random() - 0.5) * 1.5;
         const previsao = Math.max(0, Math.round(media + (tendencia * (i + 1)) + variacao));
         previsoes.push(previsao);
     }
@@ -419,7 +414,7 @@ async function atualizarDashboard() {
         atualizarKPIsGerais(dados);
     } else {
         renderGraficoLinhaUnica(dados);
-        await renderGraficoAlertas(); // Agora é async
+        await renderGraficoAlertas();
         atualizarKPIs(dados);
     }
 }
@@ -806,7 +801,6 @@ async function renderGraficoAlertas() {
                         color: "#fff",
                         font: { size: 12 },
                         callback: function (value, index, values) {
-                            // Destacar linha divisória entre histórico e previsão
                             const divisoriaIndex = periodo === "semanal" ? 3 : 5;
                             if (index === divisoriaIndex) {
                                 return this.getLabelForValue(value) + ' →';
@@ -875,7 +869,6 @@ function atualizarKPIs(dados) {
         variacaoPercentual = ((ultimoValor - primeiroValor) / primeiroValor) * 100;
     }
 
-    // Determinar alerta mais frequente baseado nos dados simulados
     const alertas = alertasSimulados[servidor]?.[periodo];
     let alertaMaisFrequente = "Baixo";
     if (alertas) {
