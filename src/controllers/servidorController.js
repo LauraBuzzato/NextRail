@@ -354,6 +354,20 @@ function pegarFrequencia(req, res){
             );
 }
 
+function buscarAlertasHistorico(req, res) {
+    var fkEmpresa = req.body.idempresa;
+    var fkComponente = req.body.idComponente;
+    var fkServidor = req.body.idServidor;
+    var periodo = req.body.periodo;
+
+    servidorModel.buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -373,5 +387,6 @@ module.exports = {
   buscarMetricas,
   pegarFrequencia,
   atualizarConfiguracaoScript,
-  buscarScriptServidor
+  buscarScriptServidor,
+  buscarAlertasHistorico
 };

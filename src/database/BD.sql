@@ -232,9 +232,9 @@ VALUES
 ('Servidor02', 1, 1, 2, 1),
 ('Servidor03', 1, 3, 1, 1);
 
-/*INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta, fk_servidor) VALUES (10, 3, 1),
+INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta, fk_servidor) VALUES (10, 3, 1),
 (5, 3, 2),
-(7, 2, 3);*/
+(7, 2, 3);
 
 INSERT INTO gravidade (nome)
 VALUES
