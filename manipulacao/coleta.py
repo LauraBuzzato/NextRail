@@ -1,7 +1,7 @@
 #pip install python-dotenv
 from dotenv import load_dotenv
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import psutil as ps
 import pandas as pd
 import time
@@ -14,10 +14,14 @@ import threading
 import mysql.connector
 import boto3
 
+def get_daily_s3_key():
+    today = date.today().strftime("%Y-%m-%d")
+    return f"machine_data_{today}.csv"
+
 load_dotenv(dotenv_path=".env.dev")
 
 BUCKET_NAME = "bucket-teste-python"
-S3_KEY = "machine_data.csv"
+
 
 s3 = boto3.client(
     "s3",
@@ -30,9 +34,9 @@ s3 = boto3.client(
 def download_csv_from_s3(bucket, key, local_path):
     try:
         s3.download_file(bucket, key, local_path)
-        print("Arquivo baixado do S3.")
-    except Exception as e:
-        print("Arquivo não existe no S3, criando novo.")
+        print(f"Arquivo {key} baixado do S3.")
+    except Exception:
+        print(f"Arquivo {key} não existe. Criando novo arquivo diário.")
         df = pd.DataFrame(columns=[
             'id', 'servidor', 'timestamp', 'horario_de_pico',
             'cpu_percent', 'memory_percent', 'memory_available',
@@ -46,10 +50,9 @@ def upload_csv_to_s3(bucket, key, local_path):
             Bucket=bucket,
             Key=key,
             Body=f,
-            ContentType='text/csv',
-            ACL='public-read'
+            ContentType='text/csv'
         )
-    print("Arquivo enviado ao S3 com ACL pública.")
+    print("Arquivo enviado ao S3.")
 
 def delete_local_file(path):
     if os.path.exists(path):
@@ -95,8 +98,6 @@ conexao.close()
 INTERVALO_COLETA = resultado[0]
 nomeServidor = resultadoNome[0]
 
-DATA_PATH = 'data/'
-CSV_PATH = 'data/machine_data.csv'
 
 
 def disk_latency_test():
@@ -165,6 +166,9 @@ def system_latency_media():
 
 while True:
     inicio_ciclo = time.time()
+
+    S3_KEY = get_daily_s3_key()
+    LOCAL_CSV = "temp_machine_data.csv"
     
     cpu_percent = ps.cpu_percent(interval=0.1, percpu=False)
 

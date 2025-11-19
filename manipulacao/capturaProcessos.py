@@ -1,6 +1,6 @@
 import psutil
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import csv
 import time
 import os
@@ -9,12 +9,15 @@ import pandas as pd
 import mysql.connector
 import boto3
 
+def get_daily_s3_key():
+    today = date.today().strftime("%Y-%m-%d")
+    return f"nomeProcessosUso_{today}.csv"
+
 
 load_dotenv(dotenv_path=".env.dev")
 
 
 BUCKET_NAME = "bucket-teste-python"
-S3_KEY = "nomeProcessosUso.csv"
 
 
 s3 = boto3.client(
@@ -33,9 +36,7 @@ def download_csv_from_s3(bucket, key, local_path):
    except Exception as e:
        print("Arquivo não existe no S3, criando novo.")
        df = pd.DataFrame(columns=[
-           'id', 'servidor', 'timestamp', 'horario_de_pico',
-           'cpu_percent', 'memory_percent', 'memory_available',
-           'processos_ativos', 'disk_percent', 'disk_avl', 'latencia_media_ms'
+           "id", "servidor", "timestamp", "NOME", "USO_MEMORIA (MB)"
        ])
        df.to_csv(local_path, sep=';', index=False, encoding='utf-8')
 
@@ -46,10 +47,9 @@ def upload_csv_to_s3(bucket, key, local_path):
            Bucket=bucket,
            Key=key,
            Body=f,
-           ContentType='text/csv',
-           ACL='public-read'
+           ContentType='text/csv'
        )
-   print("Arquivo enviado ao S3 com ACL pública.")
+   print("Arquivo enviado ao S3.")
 
 
 def delete_local_file(path):
@@ -87,7 +87,6 @@ conexao.close()
 
 
 header = ["id", "servidor", "timestamp", "NOME", "USO_MEMORIA (MB)"]
-file_name = "nomeProcessosUso.csv"
 
 
 
@@ -98,8 +97,11 @@ INTERVALO_COLETA = 90
 while True:
     inicio_ciclo = time.time()
 
+    S3_KEY = get_daily_s3_key()
+    file_name = S3_KEY
 
     download_csv_from_s3(BUCKET_NAME, S3_KEY, file_name)
+
 
 
     arquivoAntigo = None
@@ -132,10 +134,11 @@ while True:
     novoArquivo = pd.DataFrame(data, columns=header)
 
 
-    if arquivoAntigo is not None:
+    if arquivoAntigo is not None and not arquivoAntigo.empty:
         arquivoFinal = pd.concat([arquivoAntigo, novoArquivo], ignore_index=True)
     else:
         arquivoFinal = novoArquivo
+
 
 
     arquivoFinal.to_csv(file_name, sep=';', encoding='utf-8', index=False)
