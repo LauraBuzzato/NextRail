@@ -276,7 +276,7 @@ function atualizarConfiguracaoScript(servidorId, configuracoes) {
 
             var instrucaoScript = `
                 UPDATE leitura_script AS l 
-                INNER JOIN servidor AS s ON l.id = s.fk_leitura_script
+                INNER JOIN servidor AS s ON s.id = l.fk_servidor
                 SET l.intervalo = ${configuracoes.intervalo}, l.leituras_consecutivas_para_alerta = ${configuracoes.leitura}
                 WHERE s.id = ${servidorId}
             `;
@@ -314,7 +314,7 @@ function buscarScriptServidor(servidorId) {
     var instrucaoSql = `
         SELECT intervalo, leituras_consecutivas_para_alerta AS leituras
         FROM leitura_script AS l
-        INNER JOIN servidor AS s ON l.id = s.fk_leitura_script
+        INNER JOIN servidor AS s ON s.id = l.fk_servidor
         WHERE s.id = ${servidorId}
     `;
 
@@ -733,6 +733,60 @@ GROUP BY a.fk_componenteServidor_servidor;
     return database.executar(instrucaoSql);
 }
 
+function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
+    let instrucaoSql = "";
+    
+    if (periodo === "semanal") {
+        instrucaoSql = `
+            SELECT 
+                YEARWEEK(inicio) as semana,
+                COUNT(*) as total_alertas,
+                AVG(TIMESTAMPDIFF(HOUR, inicio, COALESCE(fim, NOW()))) as duracao_media_horas,
+                SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
+                SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
+                SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
+            FROM alerta a
+            JOIN componente_servidor cs ON 
+                a.fk_componenteServidor_servidor = cs.fk_servidor AND 
+                a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+            JOIN servidor s ON s.id = cs.fk_servidor
+            WHERE s.fk_empresa = ${fkEmpresa}
+                AND cs.fk_tipo_componente = ${fkComponente}
+                AND cs.fk_servidor = ${fkServidor}
+                AND a.inicio >= DATE_SUB(CURDATE(), INTERVAL 8 WEEK)
+            GROUP BY YEARWEEK(inicio)
+            ORDER BY semana DESC
+            LIMIT 4;
+        `;
+    } else {
+        instrucaoSql = `
+            SELECT 
+                YEAR(inicio) as ano,
+                MONTH(inicio) as mes,
+                COUNT(*) as total_alertas,
+                AVG(TIMESTAMPDIFF(HOUR, inicio, COALESCE(fim, NOW()))) as duracao_media_horas,
+                SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
+                SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
+                SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
+            FROM alerta a
+            JOIN componente_servidor cs ON 
+                a.fk_componenteServidor_servidor = cs.fk_servidor AND 
+                a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+            JOIN servidor s ON s.id = cs.fk_servidor
+            WHERE s.fk_empresa = ${fkEmpresa}
+                AND cs.fk_tipo_componente = ${fkComponente}
+                AND cs.fk_servidor = ${fkServidor}
+                AND a.inicio >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+            GROUP BY YEAR(inicio), MONTH(inicio)
+            ORDER BY ano DESC, mes DESC
+            LIMIT 6;
+        `;
+    }
+
+    console.log("Executando SQL para histórico de alertas: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     listarEmpresas,
     listarTipos,
@@ -752,5 +806,6 @@ module.exports = {
     buscarMetricas,
     pegarFrequencia,
     atualizarConfiguracaoScript,
-    buscarScriptServidor
+    buscarScriptServidor,
+    buscarAlertasHistorico
 };

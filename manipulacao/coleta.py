@@ -1,7 +1,7 @@
 #pip install python-dotenv
 from dotenv import load_dotenv
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import psutil as ps
 import pandas as pd
 import time
@@ -10,13 +10,96 @@ from psutil._common import bytes2human
 import platform
 import hashlib
 import threading
+#pip install mysql-connector-python
+import mysql.connector
+import boto3
+
+def get_daily_s3_key():
+    today = date.today().strftime("%Y-%m-%d")
+    return f"machine_data_{today}.csv"
 
 load_dotenv(dotenv_path=".env.dev")
 
-INTERVALO_COLETA = 10
+BUCKET_NAME = "bucket-teste-python"
 
-DATA_PATH = 'data/'
-CSV_PATH = 'data/machine_data.csv'
+
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    aws_session_token=os.getenv("AWS_SESSION_TOKEN"),
+    region_name=os.getenv("AWS_DEFAULT_REGION")
+)
+
+def download_csv_from_s3(bucket, key, local_path):
+    try:
+        s3.download_file(bucket, key, local_path)
+        print(f"Arquivo {key} baixado do S3.")
+    except Exception:
+        print(f"Arquivo {key} não existe. Criando novo arquivo diário.")
+        df = pd.DataFrame(columns=[
+            'id', 'servidor', 'timestamp', 'horario_de_pico',
+            'cpu_percent', 'memory_percent', 'memory_available',
+            'processos_ativos', 'disk_percent', 'disk_avl', 'latencia_media_ms'
+        ])
+        df.to_csv(local_path, sep=';', index=False, encoding='utf-8')
+
+def upload_csv_to_s3(bucket, key, local_path):
+    with open(local_path, "rb") as f:
+        s3.put_object(
+            Bucket=bucket,
+            Key=key,
+            Body=f,
+            ContentType='text/csv'
+        )
+    print("Arquivo enviado ao S3.")
+
+def delete_local_file(path):
+    if os.path.exists(path):
+        os.remove(path)
+        print("Arquivo local apagado.")
+
+
+
+
+
+conexao = mysql.connector.connect(
+            host=os.getenv("DB_HOST"),
+            database=os.getenv("DB_DATABASE"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            port=os.getenv("DB_PORT")
+        )
+
+# def generate_software_machine_id():
+      #  os_info = platform.platform()
+      #  node_name = platform.node()
+      #  processor_info = platform.processor()
+      #  unique_string = os_info + node_name + processor_info
+      #  machine_id = hashlib.sha256(unique_string.encode()).hexdigest()
+      #  return machine_id
+
+machine_id = 1
+
+select = conexao.cursor(buffered=True)
+select2 = conexao.cursor(buffered=True)
+query = "SELECT intervalo FROM leitura_script ls INNER JOIN servidor ser on ls.fk_servidor = ser.id WHERE ser.id = %s"
+select.execute(query, (machine_id,))
+
+resultado = select.fetchone()
+
+query2 = "SELECT nome FROM servidor WHERE id = %s"
+select2.execute(query2, (machine_id,))
+
+resultadoNome = select2.fetchone()
+
+select2.close()
+select.close()
+conexao.close()
+
+INTERVALO_COLETA = resultado[0]
+nomeServidor = resultadoNome[0]
+
 
 
 def disk_latency_test():
@@ -85,6 +168,9 @@ def system_latency_media():
 
 while True:
     inicio_ciclo = time.time()
+
+    S3_KEY = get_daily_s3_key()
+    LOCAL_CSV = "temp_machine_data.csv"
     
     cpu_percent = ps.cpu_percent(interval=0.1, percpu=False)
 
@@ -111,21 +197,15 @@ while True:
     
     processos = len(ps.pids())
 
-    def generate_software_machine_id():
-        os_info = platform.platform()
-        node_name = platform.node()
-        processor_info = platform.processor()
-        unique_string = os_info + node_name + processor_info
-        machine_id = hashlib.sha256(unique_string.encode()).hexdigest()
-        return machine_id
+    
 
-    machine_id = generate_software_machine_id()
+    
 
     latencia_media = system_latency_media()
 
     new_row = pd.DataFrame({
         'id': [machine_id],
-        'servidor': [platform.node()],
+        'servidor': [nomeServidor],
         'timestamp': [timestamp],
         'horario_de_pico': [validaPico],
         'cpu_percent': [cpu_percent],
@@ -139,13 +219,18 @@ while True:
 
     print(new_row)
 
-    if os.path.exists(DATA_PATH):
-        new_row.to_csv(CSV_PATH, mode="a", sep=';', encoding='utf-8', index=False, header=False)
-    else:
-        os.mkdir(DATA_PATH)
-        new_row.to_csv(CSV_PATH, mode="a", sep=';', encoding='utf-8', index=False, header=True)
+    LOCAL_CSV = "temp_machine_data.csv"
+
+    download_csv_from_s3(BUCKET_NAME, S3_KEY, LOCAL_CSV)
+
+    new_row.to_csv(LOCAL_CSV, mode="a", sep=';', encoding='utf-8', index=False, header=False)
+
+    upload_csv_to_s3(BUCKET_NAME, S3_KEY, LOCAL_CSV)
+
+    delete_local_file(LOCAL_CSV)
 
     fim_ciclo = time.time()
     duracao = fim_ciclo - inicio_ciclo
     if duracao < INTERVALO_COLETA:
         time.sleep(INTERVALO_COLETA - duracao)
+

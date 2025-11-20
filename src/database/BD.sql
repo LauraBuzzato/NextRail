@@ -57,13 +57,6 @@ create table endereco(
 	foreign key (fk_estado) references estado(id)
 );
 
-create table leitura_script(
-	id int primary key auto_increment,
-    intervalo int default(10),
-    leituras_consecutivas_para_alerta int default(3)
-);
-
-
 create table servidor(
 	id int primary key auto_increment,
 	nome varchar (45) not null,
@@ -71,12 +64,18 @@ create table servidor(
 	fk_so int,
 	fk_endereco int,
 	fk_empresa int not null,
-    fk_leitura_script int,
 	foreign key(fk_empresa) references empresa(id),
 	foreign key (fk_so) references sistema_operacional(id),
 	foreign key (fk_tipo) references tipo(id),
-	foreign key (fk_endereco) references endereco(id),
-    foreign key (fk_leitura_script) references leitura_script(id)
+	foreign key (fk_endereco) references endereco(id)
+);
+
+create table leitura_script(
+	id int primary key auto_increment,
+    intervalo int default(10),
+    leituras_consecutivas_para_alerta int default(3),
+    fk_servidor int,
+    foreign key (fk_servidor) references servidor(id)
 );
 
 create table tipo_componente (
@@ -130,6 +129,17 @@ create table metrica(
 	primary key (id, fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente)
 );
 
+DELIMITER $$
+
+CREATE TRIGGER inserir_novo_parametro_script
+AFTER INSERT ON servidor
+FOR EACH ROW
+BEGIN
+	INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta, fk_servidor)
+    VALUES (10, 3, NEW.id);
+END $$
+
+DELIMITER ;
 
 insert into tipo_componente (nome_tipo_componente)
 values ('Cpu'),
@@ -216,17 +226,17 @@ INSERT INTO  endereco (logradouro, cep, numero, complemento, fk_estado) VALUES('
 ('Rua Brisa do Amanhecer', '53404355', '105', NULL, 17),
 ('Avenida Cidade Jardim', '01454900', '280', NULL, 25);
 
-INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta) VALUES (10, 3),
-(5, 3),
-(7, 2);
-
-
-INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa, fk_leitura_script)
+INSERT INTO servidor (nome, fk_tipo, fk_so, fk_endereco, fk_empresa)
 VALUES
-('Servidor01', 2, 2, 3, 1, 1),
-('Servidor02', 1, 1, 2, 1, 2),
-('Servidor03', 1, 3, 1, 1, 3);
+('Servidor01', 2, 2, 3, 1),
+('Servidor02', 1, 1, 2, 1),
+('Servidor03', 1, 3, 1, 1);
 
+INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta, fk_servidor) 
+VALUES 
+(10, 3, 1),
+(5, 3, 2),
+(7, 2, 3);
 
 INSERT INTO gravidade (nome)
 VALUES
@@ -339,6 +349,40 @@ INSERT INTO alerta (fk_componenteServidor_servidor,
 (3,2, 1, 2,'2024-12-10 17:30:00', '2024-12-10 17:45:00'),
 (3,2, 1, 2,'2024-12-10 16:00:00', '2024-12-10 16:45:00');
 
+-- Mes de novembro
+INSERT INTO alerta (fk_componenteServidor_servidor, 
+					fk_componenteServidor_tipoComponente, 
+                    fk_status, 
+                    fk_gravidade, 
+                    inicio,
+                    fim) VALUES
+(3,2, 1, 2,'2025-11-15 16:00:00', '2025-11-15 16:05:00'),
+(3,2, 1, 2,'2025-11-16 11:40:00', '2025-11-16 11:53:00'),
+(3,2, 1, 2,'2025-11-17 18:55:00', '2025-11-17 19:01:00'),
+(3,1, 2, 2,'2025-11-18 08:00:00', '2025-11-18 08:01:00'),
+(3,2, 3, 2,'2025-11-14 13:00:00', '2025-11-14 13:10:00'),
+(3,3, 1, 2,'2025-11-13 14:00:00', '2025-11-13 14:11:00'),
+(2,1, 2, 2,'2025-11-12 19:22:00', '2025-11-12 19:23:00'),
+(1,2, 3, 2,'2025-11-12 17:14:00', '2025-11-12 17:14:00');
+
+
+INSERT INTO alerta (fk_componenteServidor_servidor, 
+					fk_componenteServidor_tipoComponente, 
+                    fk_status, 
+                    fk_gravidade, 
+                    inicio,
+                    fim) VALUES
+(2,1, 3, 3,'2025-11-15 16:00:00', '2025-11-15 16:05:00'),
+(2,1, 3, 2,'2025-11-16 11:40:00', '2025-11-16 11:53:00'),
+(3,1, 3, 1,'2025-11-16 18:55:00', '2025-11-16 19:01:00'),
+(3,2, 3, 2,'2025-11-18 08:00:00', '2025-11-18 08:01:00'),
+(3,3, 3, 3,'2025-11-14 13:00:00', '2025-11-14 13:10:00'),
+(3,2, 3, 3,'2025-11-14 14:00:00', '2025-11-14 14:11:00'),
+(2,2, 3, 2,'2025-11-14 19:22:00', '2025-11-14 19:23:00'),
+(1,1, 3, 1,'2025-11-12 17:14:00', '2025-11-12 17:14:00');
+
+
+
 
 
 select * from alerta;
@@ -407,5 +451,15 @@ ORDER BY
         ORDER BY srv.nome;	
 
 
-
+SELECT 
+    m.valor AS Valor_Metrica,
+    tc.nome_tipo_componente AS Componente,
+    g.nome AS Gravidade,
+    ls.leituras_consecutivas_para_alerta AS Leituras_Necessarias
+FROM metrica m
+JOIN tipo_componente tc ON m.fk_componenteServidor_tipoComponente = tc.id
+JOIN gravidade g ON m.fk_gravidade = g.id
+JOIN leitura_script ls ON ls.fk_servidor = m.fk_componenteServidor_servidor
+WHERE m.fk_componenteServidor_servidor = 1
+ORDER BY Componente, Gravidade;
 

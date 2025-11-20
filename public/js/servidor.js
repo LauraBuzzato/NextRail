@@ -129,7 +129,7 @@ async function cadastrarServidor() {
         cep,
         numero,
         complemento,
-        fk_estado
+        fk_estado,
       })
     });
 

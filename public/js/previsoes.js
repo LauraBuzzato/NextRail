@@ -1,5 +1,6 @@
 console.log(sessionStorage.ID_SERVIDOR)
 const testeServidor = sessionStorage.ID_SERVIDOR;
+const testeEmpresa = sessionStorage.ID_EMPRESA;
 var passagem = true;
 var visaoGeralAtiva = true;
 
@@ -63,41 +64,51 @@ const latenciaSimulada = {
 
 const alertasSimulados = {
     1: {
-        semanal: { alto: [2, 1, 3, 2],
-             medio: [3, 4, 2, 3],
-             baixo: [5, 4, 6, 5] },
-        mensal: { alto: [2, 3, 2, 4, 3, 2, 3],
-             medio: [4, 3, 5, 3, 4, 5, 4],
-             baixo: [6, 7, 5, 6, 5, 6, 7]
-             }
+        semanal: {
+            alto: [2, 1, 3, 2],
+            medio: [3, 4, 2, 3],
+            baixo: [5, 4, 6, 5]
+        },
+        mensal: {
+            alto: [2, 3, 2, 4, 3, 2, 3],
+            medio: [4, 3, 5, 3, 4, 5, 4],
+            baixo: [6, 7, 5, 6, 5, 6, 7]
+        }
     },
     2: {
-        semanal: { alto: [3, 2, 4, 3],
-             medio: [2, 3, 2, 4], 
-             baixo: [4, 5, 3, 4]
-             },
-        mensal: { alto: [3, 4, 3, 5, 4, 3, 4],
-             medio: [5, 4, 6, 4, 5, 6, 5], 
-             baixo: [7, 8, 6, 7, 6, 7, 8] }
+        semanal: {
+            alto: [3, 2, 4, 3],
+            medio: [2, 3, 2, 4],
+            baixo: [4, 5, 3, 4]
+        },
+        mensal: {
+            alto: [3, 4, 3, 5, 4, 3, 4],
+            medio: [5, 4, 6, 4, 5, 6, 5],
+            baixo: [7, 8, 6, 7, 6, 7, 8]
+        }
     },
     3: {
-        semanal: { alto: [1, 2, 1, 2], 
-            medio: [2, 1, 3, 2], 
-            baixo: [3, 4, 2, 3] 
+        semanal: {
+            alto: [1, 2, 1, 2],
+            medio: [2, 1, 3, 2],
+            baixo: [3, 4, 2, 3]
         },
-        mensal: { alto: [1, 2, 1, 3, 2, 1, 2], 
-            medio: [3, 2, 4, 2, 3, 4, 3], 
-            baixo: [5, 6, 4, 5, 4, 5, 6] 
+        mensal: {
+            alto: [1, 2, 1, 3, 2, 1, 2],
+            medio: [3, 2, 4, 2, 3, 4, 3],
+            baixo: [5, 6, 4, 5, 4, 5, 6]
         }
     },
     4: {
-        semanal: { alto: [2, 3, 2, 3], 
-            medio: [3, 2, 4, 3], 
-            baixo: [4, 5, 3, 4] 
+        semanal: {
+            alto: [2, 3, 2, 3],
+            medio: [3, 2, 4, 3],
+            baixo: [4, 5, 3, 4]
         },
-        mensal: { alto: [2, 3, 2, 4, 3, 2, 3], 
-            medio: [4, 3, 5, 3, 4, 5, 4], 
-            baixo: [6, 7, 5, 6, 5, 6, 7] 
+        mensal: {
+            alto: [2, 3, 2, 4, 3, 2, 3],
+            medio: [4, 3, 5, 3, 4, 5, 4],
+            baixo: [6, 7, 5, 6, 5, 6, 7]
         }
     }
 };
@@ -115,13 +126,114 @@ Chart.defaults.color = "#fff";
 Chart.defaults.font.family = "Poppins";
 
 
+async function buscarDadosReaisAlertas(componente, periodo) {
+    const fkEmpresa = testeEmpresa;
+    const fkServidor = testeServidor;
+
+
+    const componentesMap = {
+        'cpu': 1,
+        'ram': 2,
+        'disco': 3
+    };
+
+    const fkComponente = componentesMap[componente];
+
+    try {
+        const response = await fetch('/servidores/buscarAlertasHistorico', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                idempresa: fkEmpresa,
+                idComponente: fkComponente,
+                idServidor: fkServidor,
+                periodo: periodo
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro na resposta do servidor');
+        }
+
+        const dadosReais = await response.json();
+        return processarDadosParaPrevisao(dadosReais, periodo);
+    } catch (error) {
+        console.error('Erro ao buscar dados reais:', error);
+        return alertasSimulados[testeServidor]?.[periodo] ||
+            (periodo === "semanal"
+                ? { alto: [2, 1, 3, 2], medio: [3, 4, 2, 3], baixo: [5, 4, 6, 5] }
+                : { alto: [2, 3, 2, 4, 3, 2, 3], medio: [4, 3, 5, 3, 4, 5, 4], baixo: [6, 7, 5, 6, 5, 6, 7] });
+    }
+}
+
+
+function processarDadosParaPrevisao(dadosReais, periodo) {
+    if (!dadosReais || dadosReais.length === 0) {
+        return periodo === "semanal"
+            ? { alto: [2, 1, 3, 2], medio: [3, 4, 2, 3], baixo: [5, 4, 6, 5] }
+            : { alto: [2, 3, 2, 4, 3, 2, 3], medio: [4, 3, 5, 3, 4, 5, 4], baixo: [6, 7, 5, 6, 5, 6, 7] };
+    }
+
+    console.log('Dados reais processados:', dadosReais);
+
+
+    const dadosOrdenados = [...dadosReais].reverse();
+
+    let alertasAltos = [];
+    let alertasMedios = [];
+    let alertasBaixos = [];
+
+    dadosOrdenados.forEach(item => {
+        alertasAltos.push(item.alertas_altos || 0);
+        alertasMedios.push(item.alertas_medios || 0);
+        alertasBaixos.push(item.alertas_baixos || 0);
+    });
+
+
+    const previsoesAltos = gerarPrevisaoSimples(alertasAltos, periodo);
+    const previsoesMedios = gerarPrevisaoSimples(alertasMedios, periodo);
+    const previsoesBaixos = gerarPrevisaoSimples(alertasBaixos, periodo);
+
+    return {
+        alto: [...alertasAltos, ...previsoesAltos],
+        medio: [...alertasMedios, ...previsoesMedios],
+        baixo: [...alertasBaixos, ...previsoesBaixos]
+    };
+}
+
+
+function gerarPrevisaoSimples(dadosHistoricos, periodo) {
+    const numPrevisoes = periodo === "semanal" ? 4 : 6;
+    const previsoes = [];
+
+    if (dadosHistoricos.length < 2) {
+        const valorBase = dadosHistoricos[0] || 2;
+        return Array(numPrevisoes).fill(valorBase);
+    }
+
+    const ultimosValores = dadosHistoricos.slice(-3); 
+    const media = ultimosValores.reduce((a, b) => a + b, 0) / ultimosValores.length;
+
+    const crescimento = dadosHistoricos[dadosHistoricos.length - 1] - dadosHistoricos[0];
+    const tendencia = crescimento / dadosHistoricos.length;
+
+    for (let i = 0; i < numPrevisoes; i++) {
+        const variacao = (Math.random() - 0.5) * 1.5;
+        const previsao = Math.max(0, Math.round(media + (tendencia * (i + 1)) + variacao));
+        previsoes.push(previsao);
+    }
+
+    return previsoes;
+}
+
 function destruirGrafico(grafico) {
     if (grafico && typeof grafico.destroy === 'function') {
         grafico.destroy();
     }
     return null;
 }
-
 
 function limparTodosGraficos() {
     graficoLinha = destruirGrafico(graficoLinha);
@@ -137,11 +249,11 @@ function criarBotoesComponentes() {
     btnVisaoGeral.className = 'btn-visao-geral';
     btnVisaoGeral.id = 'btnVisaoGeral';
     btnVisaoGeral.textContent = 'Visão Geral';
-    
+
     btnVisaoGeral.style.background = "#ffe066";
     btnVisaoGeral.style.color = "#000";
     btnVisaoGeral.style.border = "1px solid #ffe066";
-    
+
     btnVisaoGeral.addEventListener('click', toggleVisaoGeral);
 
     filtrosContainer.appendChild(btnVisaoGeral);
@@ -150,22 +262,22 @@ function criarBotoesComponentes() {
     botoesContainer.className = 'botoes-componentes hidden';
     botoesContainer.id = 'botoesComponentes';
     botoesContainer.innerHTML = `
-        <label>Componente:</label>
-        <div class="grupo-botoes">
-            <button class="btn-componente" data-componente="cpu">
-                <ion-icon name="hardware-chip-outline"></ion-icon>
-                CPU
-            </button>
-            <button class="btn-componente" data-componente="ram">
-                <ion-icon name="speedometer-outline"></ion-icon>
-                RAM
-            </button>
-            <button class="btn-componente" data-componente="disco">
-                <ion-icon name="save-outline"></ion-icon>
-                Disco
-            </button>
-        </div>
-    `;
+            <label>Componente:</label>
+            <div class="grupo-botoes">
+                <button class="btn-componente" data-componente="cpu">
+                    <ion-icon name="hardware-chip-outline"></ion-icon>
+                    CPU
+                </button>
+                <button class="btn-componente" data-componente="ram">
+                    <ion-icon name="speedometer-outline"></ion-icon>
+                    RAM
+                </button>
+                <button class="btn-componente" data-componente="disco">
+                    <ion-icon name="save-outline"></ion-icon>
+                    Disco
+                </button>
+            </div>
+        `;
 
     filtrosContainer.appendChild(botoesContainer);
 
@@ -180,13 +292,13 @@ function criarBotoesComponentes() {
 
             componenteAtual = this.dataset.componente;
             visaoGeralAtiva = false;
-        
+
             const btnVisaoGeral = document.getElementById('btnVisaoGeral');
             btnVisaoGeral.textContent = 'Voltar para Visão Geral';
             btnVisaoGeral.style.background = "transparent";
             btnVisaoGeral.style.color = "#ffe066";
             btnVisaoGeral.style.border = "1px solid #ffe066";
-            
+
             atualizarDashboard();
         });
     });
@@ -206,7 +318,7 @@ function toggleVisaoGeral() {
     } else {
         btnVisaoGeral.textContent = 'Voltar para Visão Geral';
         botoesComponentes.classList.remove('hidden');
-       
+
         document.querySelectorAll('.btn-componente').forEach(btn => {
             if (btn.dataset.componente === componenteAtual) {
                 btn.classList.add('active');
@@ -228,11 +340,28 @@ function toggleVisaoGeral() {
 
 function calcularTaxaCrescimento(dados) {
     const taxas = {};
+
     for (const componente in dados) {
         const valores = dados[componente];
         if (valores.length >= 2) {
-            const crescimento = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
-            taxas[componente] = crescimento.toFixed(1);
+
+            const crescimentoTotal = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
+
+            let somaCrescimentos = 0;
+            let numComparacoes = 0;
+
+            for (let i = 1; i < valores.length; i++) {
+                const crescimentoPonto = ((valores[i] - valores[i - 1]) / valores[i - 1]) * 100;
+                somaCrescimentos += crescimentoPonto;
+                numComparacoes++;
+            }
+
+            const crescimentoMedio = somaCrescimentos / numComparacoes;
+
+            taxas[componente] = {
+                total: crescimentoTotal.toFixed(2),
+                medio: crescimentoMedio.toFixed(2)
+            };
         }
     }
     return taxas;
@@ -243,16 +372,30 @@ function encontrarComponenteMaiorCrescimento(taxas) {
     let maiorTaxa = -Infinity;
 
     for (const componente in taxas) {
-        if (parseFloat(taxas[componente]) > maiorTaxa) {
-            maiorTaxa = parseFloat(taxas[componente]);
+        const taxaAtual = parseFloat(taxas[componente].total || taxas[componente]);
+
+        if (taxaAtual > maiorTaxa) {
+            maiorTaxa = taxaAtual;
             maiorComponente = componente;
         }
     }
 
-    return { componente: maiorComponente, taxa: maiorTaxa };
+    return { componente: maiorComponente, taxa: maiorTaxa.toFixed(1) };
 }
 
-function atualizarDashboard() {
+function calcularTaxaCrescimentoTotal(dados) {
+    const taxas = {};
+    for (const componente in dados) {
+        const valores = dados[componente];
+        if (valores.length >= 2) {
+            const crescimento = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
+            taxas[componente] = parseFloat(crescimento.toFixed(2));
+        }
+    }
+    return taxas;
+}
+
+async function atualizarDashboard() {
     const servidor = testeServidor;
     const periodo = periodoSelect.value;
 
@@ -271,7 +414,7 @@ function atualizarDashboard() {
         atualizarKPIsGerais(dados);
     } else {
         renderGraficoLinhaUnica(dados);
-        renderGraficoAlertas();
+        await renderGraficoAlertas();
         atualizarKPIs(dados);
     }
 }
@@ -284,9 +427,9 @@ function renderGraficoLinhasMultiplas(dados) {
     }
 
     const cores = {
-        cpu: "#ffe066",
-        ram: "#4fc3f7",
-        disco: "#81c784"
+        cpu: "#a78bfa",
+        ram: "#38bdf8",
+        disco: "#ff89b0"
     };
 
     const nomes = {
@@ -296,20 +439,24 @@ function renderGraficoLinhasMultiplas(dados) {
     };
 
     const labels = periodoSelect.value === "semanal"
-        ? ["Semana 1", "Semana 2", "Semana 3", "Semana 4"]
-        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
+        ? ["01/11", "08/11", "09/11", "22/11"]
+        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
 
-    const datasets = Object.keys(dados).map(componente => ({
-        label: `${nomes[componente]} (%)`,
-        data: dados[componente],
-        borderColor: cores[componente],
-        backgroundColor: `${cores[componente]}20`,
-        fill: false,
-        tension: 0.4,
-        borderWidth: 3,
-        pointRadius: 5,
-        pointBackgroundColor: cores[componente]
-    }));
+    const datasets = [];
+
+    for (const componente in dados) {
+        datasets.push({
+            label: `${nomes[componente]} (%)`,
+            data: dados[componente],
+            borderColor: cores[componente],
+            backgroundColor: `${cores[componente]}20`,
+            fill: false,
+            tension: 0.4,
+            borderWidth: 3,
+            pointRadius: 5,
+            pointBackgroundColor: cores[componente]
+        });
+    }
 
     const ctx = canvas.getContext("2d");
     graficoLinha = new Chart(ctx, {
@@ -372,10 +519,16 @@ function renderGraficoLinhaUnica(dados) {
     }
 
     const cores = {
-        cpu: "#ffe066",
-        ram: "#4fc3f7",
-        disco: "#81c784"
+        cpu: "#a78bfa",
+        ram: "#38bdf8",
+        disco: "#ff89b0"
     };
+
+    const limite = {
+        cpu: 70,
+        ram: 70,
+        disco: 80
+    }
 
     const nomes = {
         cpu: "CPU",
@@ -384,8 +537,10 @@ function renderGraficoLinhaUnica(dados) {
     };
 
     const labels = periodoSelect.value === "semanal"
-        ? ["Semana 1", "Semana 2", "Semana 3", "Semana 4"]
-        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
+        ? ["01/11", "08/11", "15/11", "22/11"]
+        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+
+    let range = periodoSelect.value === "semanal" ? 4 : 6;
 
     const ctx = canvas.getContext("2d");
     graficoLinha = new Chart(ctx, {
@@ -403,6 +558,16 @@ function renderGraficoLinhaUnica(dados) {
                     borderWidth: 3,
                     pointRadius: 5,
                     pointBackgroundColor: cores[componenteAtual]
+                },
+                {
+                    label: 'Limite alerta',
+                    data: Array(Number(range)).fill(Number(limite[componenteAtual])),
+                    borderColor: 'yellow',
+                    backgroundColor: 'rgba(166, 161, 84, 0.2)',
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 0,
+                    datalabels: { display: false }
                 }
             ]
         },
@@ -465,11 +630,11 @@ function renderGraficoLatenciaGeral() {
     let labels, data;
 
     if (periodo === "semanal") {
-        labels = ["Semana 1", "Semana 2", "Semana 3", "Semana 4"];
+        labels = ["01/11", "08/11", "15/11", "22/11"];
         data = [65, 67, 63, 69];
     } else {
-        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
-        data = [62, 65, 63, 68, 70, 67, 72];
+        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+        data = [62, 65, 63, 68, 70, 67];
     }
 
     const ctx = canvas.getContext("2d");
@@ -481,8 +646,8 @@ function renderGraficoLatenciaGeral() {
                 {
                     label: "Latência Média (ms)",
                     data: data,
-                    backgroundColor: "rgba(147, 112, 219, 0.8)",
-                    borderColor: "rgba(147, 112, 219, 1)",
+                    backgroundColor: "rgba(65, 94, 243, 0.8)",
+                    borderColor: "rgba(20, 35, 168, 1)",
                     borderWidth: 2
                 }
             ]
@@ -532,7 +697,7 @@ function renderGraficoLatenciaGeral() {
     });
 }
 
-function renderGraficoAlertas() {
+async function renderGraficoAlertas() {
     const canvas = document.getElementById("graficoLatencia");
     if (!canvas) {
         console.error("Canvas graficoLatencia não encontrado!");
@@ -542,28 +707,29 @@ function renderGraficoAlertas() {
     const servidor = testeServidor;
     const periodo = periodoSelect.value;
 
+
+    const alertasReais = await buscarDadosReaisAlertas(componenteAtual, periodo);
+
     let labels, alto, medio, baixo;
 
     if (periodo === "semanal") {
-        labels = ["Semana 1", "Semana 2", "Semana 3", "Semana 4"];
+        labels = ["Semana 1", "Semana 2", "Semana 3", "Semana 4", "Previsão 1", "Previsão 2", "Previsão 3", "Previsão 4"];
+        alto = alertasReais.alto.slice(0, 8);
+        medio = alertasReais.medio.slice(0, 8);
+        baixo = alertasReais.baixo.slice(0, 8);
     } else {
-        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul"];
+        labels = ["Mês 1", "Mês 2", "Mês 3", "Mês 4", "Mês 5", "Mês 6", "Previsão 1", "Previsão 2", "Previsão 3", "Previsão 4", "Previsão 5", "Previsão 6"];
+        alto = alertasReais.alto.slice(0, 12);
+        medio = alertasReais.medio.slice(0, 12);
+        baixo = alertasReais.baixo.slice(0, 12);
     }
 
-    const alertas = alertasSimulados[servidor]?.[periodo];
-    alto = alertas?.alto || [2, 3, 2, 3];
-    medio = alertas?.medio || [3, 2, 4, 3];
-    baixo = alertas?.baixo || [4, 5, 3, 4];
 
-    if (periodo === "semanal" && alto.length > 4) {
-        alto = alto.slice(0, 4);
-        medio = medio.slice(0, 4);
-        baixo = baixo.slice(0, 4);
-    } else if (periodo === "mensal" && alto.length > 7) {
-        alto = alto.slice(0, 7);
-        medio = medio.slice(0, 7);
-        baixo = baixo.slice(0, 7);
+    if (graficoLatencia) {
+        graficoLatencia.destroy();
     }
+
+    document.getElementById("graflat").textContent = `Previsão de alertas para ${componenteAtual.toUpperCase()}`;
 
     const ctx = canvas.getContext("2d");
     graficoLatencia = new Chart(ctx, {
@@ -602,8 +768,23 @@ function renderGraficoAlertas() {
                     position: "top",
                     labels: {
                         color: "#fff",
-                        font: {
-                            size: 15
+                        font: { size: 15 }
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        line1: {
+                            type: 'line',
+                            xMin: periodo === "semanal" ? 3.5 : 5.5,
+                            xMax: periodo === "semanal" ? 3.5 : 5.5,
+                            borderColor: 'rgba(255, 255, 255, 0.7)',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            label: {
+                                display: true,
+                                content: 'Início Previsão',
+                                position: 'start'
+                            }
                         }
                     }
                 }
@@ -611,26 +792,20 @@ function renderGraficoAlertas() {
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: {
-                        color: "rgba(255,255,255,0.1)",
-                        borderColor: "rgba(255,255,255,0.3)"
-                    },
-                    ticks: {
-                        color: "#fff",
-                        font: {
-                            size: 15
-                        }
-                    }
+                    grid: { color: "rgba(255,255,255,0.1)" },
+                    ticks: { color: "#fff", font: { size: 15 } }
                 },
                 x: {
-                    grid: {
-                        color: "rgba(255,255,255,0.1)",
-                        borderColor: "rgba(255,255,255,0.3)"
-                    },
+                    grid: { color: "rgba(255,255,255,0.1)" },
                     ticks: {
                         color: "#fff",
-                        font: {
-                            size: 15
+                        font: { size: 12 },
+                        callback: function (value, index, values) {
+                            const divisoriaIndex = periodo === "semanal" ? 3 : 5;
+                            if (index === divisoriaIndex) {
+                                return this.getLabelForValue(value) + ' →';
+                            }
+                            return this.getLabelForValue(value);
                         }
                     }
                 }
@@ -639,26 +814,32 @@ function renderGraficoAlertas() {
     });
 }
 
+const cores = {
+    cpu: "#a78bfa",
+    ram: "#38bdf8",
+    disco: "#ff89b0"
+};
+
 function atualizarKPIsGerais(dados) {
-    const taxas = calcularTaxaCrescimento(dados);
+    const taxas = calcularTaxaCrescimentoTotal(dados);
     const maiorCrescimento = encontrarComponenteMaiorCrescimento(taxas);
 
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
     const servidor = testeServidor;
-
     const disponibilidade = 99.7;
+    let periodo = periodoSelect.value === "semanal" ? "semanal" : "mensal";
 
     const latenciaMedia = Object.values(latenciaSimulada[servidor]).reduce((a, b) => a + b, 0) / 3;
 
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
-            <h2>Componente com Maior Crescimento</h2>
-            <p class="valor-kpi" style="color:#81c784">${nomes[maiorCrescimento.componente]}</p>
+            <h2>Componente com Maior Crescimento ${periodo}</h2>
+            <p class="valor-kpi" style="color:${cores[maiorCrescimento.componente]}">${nomes[maiorCrescimento.componente]}</p>
             <p class="tendencia">+${maiorCrescimento.taxa}%</p>
         </div>
         <div class="KPI">
-            <h2>Latência Média Prevista</h2>
-            <p class="valor-kpi" style="color:purple">${latenciaMedia.toFixed(1)}ms</p>
+            <h2>Previsão de latência média ${periodo}</h2>
+            <p class="valor-kpi" style="color:rgba(65, 94, 243, 0.8)">${latenciaMedia.toFixed(1)}ms</p>
         </div>
         <div class="KPI">
             <h2>Disponibilidade do Servidor</h2>
@@ -674,69 +855,70 @@ function atualizarKPIs(dados) {
 
     const servidor = testeServidor;
     const periodo = periodoSelect.value;
-    const latencia = latenciaSimulada[servidor][componenteAtual];
 
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
 
     const disponibilidade = 99.7;
 
+    let medUsoFormatado = mediaUso;
+
+    const primeiroValor = dados[componenteAtual][0];
+    const ultimoValor = dados[componenteAtual][dados[componenteAtual].length - 1];
+    let variacaoPercentual = 0;
+    if (primeiroValor !== 0) {
+        variacaoPercentual = ((ultimoValor - primeiroValor) / primeiroValor) * 100;
+    }
+
+    const alertas = alertasSimulados[servidor]?.[periodo];
+    let alertaMaisFrequente = "Baixo";
+    if (alertas) {
+        const totalAlto = alertas.alto.reduce((a, b) => a + b, 0);
+        const totalMedio = alertas.medio.reduce((a, b) => a + b, 0);
+        const totalBaixo = alertas.baixo.reduce((a, b) => a + b, 0);
+
+        if (totalAlto > totalMedio && totalAlto > totalBaixo) alertaMaisFrequente = "Alto";
+        else if (totalMedio > totalBaixo) alertaMaisFrequente = "Médio";
+    }
+
     if (periodo == "mensal") {
         document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
-            <h2>Previsão de crescimento Mensal (${nomes[componenteAtual]})</h2>
-            <p class="valor-kpi" id="kpi1">${(mediaUso / 100).toFixed(2)}%</p>
+            <h2>Previsão de uso médio Mensal (${nomes[componenteAtual]})</h2>
+            <p class="valor-kpi" id="kpi1"> ${medUsoFormatado}%</p>
+        </div>
+        <div class ="KPI">
+        <h2> Taxa de aumento Percentual Mensal:</h2>
+        <p class="valor-kpi" style="color:white">${variacaoPercentual > 0 ? '+' : ''}${variacaoPercentual.toFixed(1)}%</p>
         </div>
         <div class="KPI">
-            <h2>Crescimento de Latência Mensal</h2>
-            <p class="valor-kpi" id="kpi2" style="color:orange">${latencia / 100}%</p>
+            <h2>Previsão do alerta mais frequente:</h2>
+            <p class="valor-kpi" id="kpi2" style="color:${alertaMaisFrequente === 'Alto' ? 'red' : alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'}">${alertaMaisFrequente}</p>
         </div>
-        <div class="KPI">
-            <h2>Disponibilidade do servidor Mensal </h2>
-            <p class="valor-kpi" id="kpi3">${disponibilidade}</p>
-        </div>
-    `;
+        `;
     } else if (periodo == "semanal") {
         document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
-            <h2>Previsão de crescimento Semanal (${nomes[componenteAtual]})</h2>
-            <p class="valor-kpi" id="kpi1">${(mediaUso / 100).toFixed(2)}%</p>
+            <h2>Previsão de uso médio Semanal (${nomes[componenteAtual]})</h2>
+            <p class="valor-kpi" id="kpi1"> ${medUsoFormatado}%</p>
+        </div>
+        <div class ="KPI">
+        <h2> Taxa de aumento Percentual Semanal:</h2>
+        <p class="valor-kpi" style="color:white">${variacaoPercentual > 0 ? '+' : ''}${variacaoPercentual.toFixed(1)}%</p>
         </div>
         <div class="KPI">
-            <h2>Crescimento de Latência Semanal</h2>
-            <p class="valor-kpi" id="kpi2" style="color:orange">${latencia / 100}%</p>
+            <h2>Previsão do alerta mais frequente:</h2>
+            <p class="valor-kpi" id="kpi2" style="color:${alertaMaisFrequente === 'Alto' ? 'red' : alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'}">${alertaMaisFrequente}</p>
         </div>
-        <div class="KPI">
-            <h2> Disponibilidade do servidor Semanal </h2>
-            <p class="valor-kpi" id="kpi3">${disponibilidade}%</p>
-        </div>
-    `;
+        `;
     }
-
 
     const kpi1 = document.getElementById("kpi1");
-    const kpi2 = document.getElementById("kpi2");
-    const kpi3 = document.getElementById("kpi3");
-
-    if (disponibilidade >= 90) {
-        kpi3.style.color = "green";
-    }
-
-    if (latencia >= 100) {
-        kpi2.style.color = "red";
-    } else if (latencia >= 80) {
-        kpi2.style.color = "orange";
-    } else if (latencia >= 60) {
-        kpi2.style.color = "yellow";
-    } else {
-        kpi2.style.color = "green";
-    }
-
-    if (nomes[componenteAtual] == "RAM") {
-        kpi1.style.color = "green";
+    if (nomes[componenteAtual] == "CPU") {
+        kpi1.style.color = `${cores.cpu}`;
+    } else if (nomes[componenteAtual] == "RAM") {
+        kpi1.style.color = `${cores.ram}`;
     } else if (nomes[componenteAtual] == "Disco") {
-        kpi1.style.color = "green";
-    } else if (nomes[componenteAtual] == "CPU") {
-        kpi1.style.color = "green";
+        kpi1.style.color = `${cores.disco}`;
     }
 }
 
@@ -756,7 +938,6 @@ function configurarNavegacao() {
                 }
             });
 
-     
             const btnVisaoGeral = document.getElementById('btnVisaoGeral');
             btnVisaoGeral.textContent = 'Voltar para Visão Geral';
             btnVisaoGeral.style.background = "transparent";
@@ -779,7 +960,6 @@ function configurarNavegacao() {
                     btn.classList.add('active');
                 }
             });
-
 
             const btnVisaoGeral = document.getElementById('btnVisaoGeral');
             btnVisaoGeral.textContent = 'Voltar para Visão Geral';
