@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <title>NextRail | Configuração de Parâmetros</title>
 
   <script src="./js/sessao.js"></script>
@@ -69,12 +69,22 @@
     <span></span>
   </div>
 
-  <main class="configuracao_alerta" id="configuracaoContainer">
+
+  <main class="configuracao_alerta" id="configuracaoContainerTeste">
     <h1 id="tituloPagina">Configurar Parâmetros de Alerta</h1>
-    <button id="botaoTroca" onclick="alterarPagina()">Configurar Script</button>
+    <div id="botoesTopo" class="botoes-container">  
+      <button onclick="abrirScript()" id="botaoScript">Configurar Script</button>
+      <button onclick="abrirSla()" id="botaoSla">Configurar SLA</button>
+    </div>
+
+    <div id="configuracaoContainer"></div>
+
   </main>
 
-  
+
+
+
+
 
   <!-- Scripts -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
@@ -82,4 +92,5 @@
   <script src="./js/script.js"></script>
   <script src="./js/configuracoesServer.js"></script>
 </body>
+
 </html>
