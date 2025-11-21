@@ -297,7 +297,8 @@ function buscarConfiguracoesServidor(servidorId) {
             tc.nome_tipo_componente as componente,
             g.id as gravidade_id,
             g.nome as gravidade_nome,
-            m.valor
+            m.valor,
+            m.sla
         FROM tipo_componente tc
         INNER JOIN componente_servidor cs ON tc.id = cs.fk_tipo_componente
         INNER JOIN metrica m ON m.fk_componenteServidor_servidor = cs.fk_servidor AND m.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
@@ -787,6 +788,39 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
     return database.executar(instrucaoSql);
 }
 
+function atualizarConfiguracaoSla(dadosSla) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let queries = [
+
+                `UPDATE metrica SET sla = ${dadosSla.baixo} 
+                 WHERE fk_componenteServidor_servidor = ${dadosSla.servidorId} AND fk_gravidade = 1`,
+
+                `UPDATE metrica SET sla = ${dadosSla.medio} 
+                 WHERE fk_componenteServidor_servidor = ${dadosSla.servidorId} AND fk_gravidade = 2`,
+
+                `UPDATE metrica SET sla = ${dadosSla.alto} 
+                 WHERE fk_componenteServidor_servidor = ${dadosSla.servidorId} AND fk_gravidade = 3`
+            ];
+
+            let results = [];
+            for (let query of queries) {
+                console.log("Executando update GLOBAL de SLA: " + query);
+                const result = await database.executar(query);
+                results.push(result);
+            }
+
+            resolve(results);
+
+        } catch (error) {
+            console.error("Erro ao atualizar SLA:", error);
+            reject(error);
+        }
+    });
+}
+
+
 module.exports = {
     listarEmpresas,
     listarTipos,
@@ -807,5 +841,6 @@ module.exports = {
     pegarFrequencia,
     atualizarConfiguracaoScript,
     buscarScriptServidor,
-    buscarAlertasHistorico
+    buscarAlertasHistorico,
+    atualizarConfiguracaoSla
 };

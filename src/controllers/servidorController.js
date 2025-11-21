@@ -368,6 +368,35 @@ function buscarAlertasHistorico(req, res) {
         });
 }
 
+function atualizarConfiguracaoSla(req, res) {
+    var dadosSla = req.body;
+
+    if (!dadosSla.servidorId || !dadosSla.baixo || !dadosSla.medio || !dadosSla.alto) {
+        res.status(400).json({ 
+            success: false, 
+            message: "Preencha todos os campos de tempo (Baixo, Médio e Alto)!" 
+        });
+        return;
+    }
+
+    servidorModel.atualizarConfiguracaoSla(dadosSla)
+        .then(
+            function (resultado) {
+                res.json({
+                    success: true,
+                    message: 'SLA atualizado com sucesso!'
+                });
+            }
+        )
+        .catch(
+            function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
+}
+
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -388,5 +417,6 @@ module.exports = {
   pegarFrequencia,
   atualizarConfiguracaoScript,
   buscarScriptServidor,
-  buscarAlertasHistorico
+  buscarAlertasHistorico,
+  atualizarConfiguracaoSla
 };

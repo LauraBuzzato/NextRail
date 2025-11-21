@@ -21,7 +21,12 @@ router.post("/buscarPosicaoRank", servidorController.buscarPosicaoRank);
 router.post("/buscarMetricas", servidorController.buscarMetricas);
 router.post("/pegarFrequencia", servidorController.pegarFrequencia);
 router.post("/atualizarConfiguracaoScript", servidorController.atualizarConfiguracaoScript);
+
+router.post("/atualizarSla", servidorController.atualizarConfiguracaoSla);
+
+
 router.get("/script/:servidorId", servidorController.buscarScriptServidor);
 router.post("/buscarAlertasHistorico", servidorController.buscarAlertasHistorico);
+
 
 module.exports = router;
