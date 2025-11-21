@@ -671,34 +671,46 @@ function criarTabela() {
     if (!conteudo) return;
 
     conteudo.innerHTML = `
-        <span class="tabela-label">#</span>
-        <span class="tabela-label">Componente</span>
-        <span class="tabela-label">Leitura</span>
-        <span class="tabela-label">Grau</span>
-        <span class="tabela-label">Timestamp</span>
+    <span class="tabela-label">Componente</span>
+    <span class="tabela-label">Leitura</span>
+    <span class="tabela-label">Grau</span>
+    <span class="tabela-label">Status</span>
+    <span class="tabela-label">Timestamp</span>
     `;
 
     for (var i = 1; i <= 6; i++) {
         var leitura = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
-        var componente, grau;
+        var componente, grau, status, corComponente, corLeitura, corStatus;
 
         if (leitura >= 90) {
             componente = "CPU";
             grau = "alto";
+            status = "resolvido";
+            corComponente = "background-color: rgba(167,139,250,1)";
+            corLeitura = "background-color: red";
+            corStatus = "background-color: green";
         } else if (leitura < 90 && leitura >= 80) {
             componente = "RAM";
             grau = "médio";
+            status = "resolvido";
+            corComponente = "background-color: rgba(56,189,248,1)";
+            corLeitura = "background-color: darkorange";
+            corStatus = "background-color: green";
         } else {
             componente = "Disco";
             grau = "baixo";
+            status = "aberto";
+            corComponente = "background-color: rgba(251,191,36,1)"
+            corLeitura = "background-color: rgb(207, 207, 0)";
+            corStatus = "background-color: red";
         }
 
         conteudo.innerHTML += `
-            <span class="tabela-celula">${i}</span>
-            <span class="tabela-celula">${componente}</span>
-            <span class="tabela-celula">${leitura}%</span>
-            <span class="tabela-celula">${grau}</span>
-            <span class="tabela-celula">2025-03-17 18:25:08</span>
+        <span class="tabela-celula" style="${corComponente}">${componente}</span>
+        <span class="tabela-celula" style="${corLeitura}">${leitura}%</span>
+        <span class="tabela-celula" style="${corLeitura}">${grau}</span>
+        <span class="tabela-celula" style="${corStatus}">${status}</span>
+        <span class="tabela-celula">2025-03-17 18:25:08</span>
         `;
     }
 }
