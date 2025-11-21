@@ -316,18 +316,18 @@ function criarContainerServidor(servidor, numero, tipo, opcao) {
             <div style="display: flex; width: 90%; justify-content: space-around; gap: 20px;">
                 
                 <div class="titulo_select" style="flex: 1;">
-                    <label style="color: white; margin-bottom: 10px; font-size: 1.1rem;">Baixo:</label>
-                    <input type="number" id="sla_min_${servidor.id}" placeholder="min">
+                    <label style="color: #ffe066; margin-bottom: 10px; font-size: 1.3rem;">Baixo:</label>
+                    <input type="number" id="sla_min_${servidor.id}" placeholder="min" style="text-align: center;">
                 </div>
 
                 <div class="titulo_select" style="flex: 1;">
-                    <label style="color: white; margin-bottom: 10px; font-size: 1.1rem;">Médio:</label>
-                    <input type="number" id="sla_alr_${servidor.id}" placeholder="min">
+                    <label style="color: #ffe066; margin-bottom: 10px; font-size: 1.3rem;">Médio:</label>
+                    <input type="number" id="sla_alr_${servidor.id}" placeholder="min" style="text-align: center;">
                 </div>
 
                 <div class="titulo_select" style="flex: 1;">
-                    <label style="color: white; margin-bottom: 10px; font-size: 1.1rem;">Alto:</label>
-                    <input type="number" id="sla_max_${servidor.id}" placeholder="min">
+                    <label style="color: #ffe066; margin-bottom: 10px; font-size: 1.3rem;">Alto:</label>
+                    <input type="number" id="sla_max_${servidor.id}" placeholder="min" style="text-align: center;">
                 </div>
 
             </div>
