@@ -129,8 +129,15 @@ create table metrica(
 	primary key (id, fk_componenteServidor_servidor, fk_componenteServidor_tipoComponente)
 );
 
-DELIMITER $$
 
+alter table metrica 
+add column sla int default 0;
+
+select * from metrica;
+
+
+-- Trigger Enrico
+DELIMITER $$
 CREATE TRIGGER inserir_novo_parametro_script
 AFTER INSERT ON servidor
 FOR EACH ROW
@@ -138,8 +145,8 @@ BEGIN
 	INSERT INTO leitura_script (intervalo, leituras_consecutivas_para_alerta, fk_servidor)
     VALUES (10, 3, NEW.id);
 END $$
-
 DELIMITER ;
+
 
 insert into tipo_componente (nome_tipo_componente)
 values ('Cpu'),
@@ -463,3 +470,4 @@ JOIN leitura_script ls ON ls.fk_servidor = m.fk_componenteServidor_servidor
 WHERE m.fk_componenteServidor_servidor = 1
 ORDER BY Componente, Gravidade;
 
+-- drop database nextrail;
