@@ -36,6 +36,7 @@ function dashAdmin() {
 
     criarGraficoSla()
     criarGraficoTicket()
+
     try {
         //const [alertas] = await Promise.all([
         //    fetch('/servidores/listarAlertas', {
