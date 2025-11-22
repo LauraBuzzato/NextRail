@@ -233,7 +233,7 @@ body {
 }
 
 .kpi-1, .kpi-2, .kpi-3 {
-  height: 25vh;
+  height: 42vh;
   width: 83%;
   background-color: var(--grafico);
   border-radius: 13px;
@@ -241,7 +241,7 @@ body {
 }
 
 .kpi-1 .kpi-titulo, .kpi-2 .kpi-titulo, .kpi-3 .kpi-titulo {
-  height: 25%;
+  height: 10%;
   width: 100%;
   display: flex;
   justify-content: center;

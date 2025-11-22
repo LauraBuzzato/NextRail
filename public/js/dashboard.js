@@ -517,6 +517,9 @@ function dash_analista() {
 // dash suporte ------------------------------------------------------------------------------------------------------------------
 
 let graficoSuporte;
+let graficoRam;
+let graficoCpu;
+let graficoDisco;
 let indiceAtual = 0;
 
 function gerarDadoAleatorio() {
@@ -665,6 +668,364 @@ function dash_suporte() {
     }
 }
 
+function kpi_suporte(componente) {
+    const larguraGrafico = 586;
+    
+    if (componente == 'ram') {
+
+        console.log('Inicializando kpi ram');
+        const canvas = document.getElementById('grafico_ram');
+
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js não carregado');
+        setTimeout(kpi_suporte('ram'), 500);
+        return;
+    }
+    
+    if (graficoRam) {
+        console.log('Destruindo gráfico anterior(ram)...');
+        graficoRam.destroy();
+        graficoRam = null;
+    }
+    
+    try {
+        canvas.width = larguraGrafico;
+        canvas.height = 350;
+
+        const ctx = canvas.getContext('2d');
+        
+        const configLine = {
+            type: 'line',
+            data: {
+                labels: [
+                    '16:00:00','16:00:10','16:00:20','16:00:30','16:00:40',
+                    '16:00:50','16:01:00','16:01:10','16:01:20','16:01:30'
+                ],
+
+                datasets: [
+                    {
+                        label: 'Uso de RAM (%)',
+                        data: [28, 48, 40, 19, 86, 27, 90, 45, 60, 35, 50, 78, 82],
+                        borderColor: 'rgba(56,189,248,1)',
+                        backgroundColor: 'rgba(56,189,248,0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '',
+                        data: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    onComplete: function () {
+                        console.log('Gráfico renderizado com sucesso!');
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 14 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff',
+                            maxRotation: 0,
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
+                            },
+                            font: {
+                                size: 14
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                }
+            }
+        };
+
+        graficoRam = new Chart(ctx, configLine);
+        console.log('Gráfico ram criado com sucesso!');
+
+    } catch (error) {
+        console.error('Erro ao criar gráfico ram:', error);
+    }
+}
+    if (componente == 'cpu') {
+
+        console.log('Inicializando kpi cpu');
+        const canvas = document.getElementById('grafico_cpu');
+
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js não carregado');
+        setTimeout(kpi_suporte('cpu'), 500);
+        return;
+    }
+    
+    if (graficoCpu) {
+        console.log('Destruindo gráfico anterior(cpu)...');
+        graficoCpu.destroy();
+        graficoCpu = null;
+    }
+    
+    try {
+        canvas.width = larguraGrafico;
+        canvas.height = 350;
+
+        const ctx = canvas.getContext('2d');
+        
+        const configLine = {
+            type: 'line',
+            data: {
+                labels: [
+                    '16:00:00','16:00:10','16:00:20','16:00:30','16:00:40',
+                    '16:00:50','16:01:00','16:01:10','16:01:20','16:01:30'
+                ],
+
+                datasets: [
+                    {
+                        label: 'Uso de CPU (%)',
+                        data: [65, 59, 80, 81, 56, 55, 40, 45, 60, 70, 75, 88, 75],
+                        borderColor: 'rgba(167,139,250,1)',
+                        backgroundColor: 'rgba(167,139,250,0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '',
+                        data: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    onComplete: function () {
+                        console.log('Gráfico renderizado com sucesso!');
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 14 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff',
+                            maxRotation: 0,
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
+                            },
+                            font: {
+                                size: 14
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                }
+            }
+        };
+
+        graficoCpu = new Chart(ctx, configLine);
+        console.log('Gráfico cpu criado com sucesso!');
+
+    } catch (error) {
+        console.error('Erro ao criar gráfico cpu:', error);
+    }
+}
+    if (componente == 'disco') {
+
+        console.log('Inicializando kpi disco');
+        const canvas = document.getElementById('grafico_disco');
+
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js não carregado');
+        setTimeout(kpi_suporte('disco'), 500);
+        return;
+    }
+    
+    if (graficoDisco) {
+        console.log('Destruindo gráfico anterior(disco)...');
+        graficoDisco.destroy();
+        graficoDisco = null;
+    }
+    
+    try {
+        canvas.width = larguraGrafico;
+        canvas.height = 350;
+
+        const ctx = canvas.getContext('2d');
+        
+        const configLine = {
+            type: 'line',
+            data: {
+                labels: [
+                    '16:00:00','16:00:10','16:00:20','16:00:30','16:00:40',
+                    '16:00:50','16:01:00','16:01:10','16:01:20','16:01:30'
+                ],
+
+                datasets: [
+                    {
+                        label: 'Uso de Disco (%)',
+                        data: [45, 35, 50, 60, 40, 55, 65, 50, 45, 60, 55, 48, 53],
+                        borderColor: 'rgba(251,191,36,1)',
+                        backgroundColor: 'rgba(251,191,36,0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '',
+                        data: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    onComplete: function () {
+                        console.log('Gráfico renderizado com sucesso!');
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 14 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff',
+                            maxRotation: 0,
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
+                            },
+                            font: {
+                                size: 14
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                }
+            }
+        };
+
+        graficoCpu = new Chart(ctx, configLine);
+        console.log('Gráfico disco criado com sucesso!');
+
+    } catch (error) {
+        console.error('Erro ao criar gráfico disco:', error);
+    }
+}
+}
 
 function criarTabela() {
     const conteudo = document.getElementById('tabela-conteudo');

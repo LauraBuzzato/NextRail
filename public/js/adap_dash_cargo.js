@@ -151,6 +151,21 @@ function inicializarGraficosSuporte() {
       } catch (error) {
         console.error('Erro ao inicializar gráficos do suporte:', error);
       }
+      try {
+        kpi_suporte('ram');
+      } catch (error) {
+        console.error("Erro ao inicializar a kpi ram:", error)
+      }
+      try {
+        kpi_suporte('cpu');
+      } catch (error) {
+        console.error("Erro ao inicializar a kpi cpu:", error)
+      }
+      try {
+        kpi_suporte('disco');
+      } catch (error) {
+        console.error("Erro ao inicializar a kpi disco:", error)
+      }
     } else {
       console.error('dash_suporte não disponível');
       setTimeout(() => {
@@ -159,6 +174,21 @@ function inicializarGraficosSuporte() {
             dash_suporte();
           } catch (error) {
             console.error('Erro na segunda tentativa do suporte:', error);
+          }
+          try {
+            kpi_suporte('ram');
+          } catch (error) {
+            console.error('Erro na segunda tentativa da kpi ram:', error);
+          }
+          try {
+            kpi_suporte('cpu');
+          } catch (error) {
+            console.error('Erro na segunda tentativa da kpi cpu:', error);
+          }
+          try {
+            kpi_suporte('disco');
+          } catch (error) {
+            console.error('Erro na segunda tentativa da kpi disco:', error);
           }
         }
       }, 1000);
@@ -242,18 +272,15 @@ async function atualizar(a) {
         <div class="kpi-container">
           <div class="kpi-1">
             <div class="kpi-titulo">Uso de memória RAM atual</div>
-            <div class="kpi-conteudo"><span style="color: rgba(255, 0, 0, 1);">90%</span></div>
-            <div class="kpi-passado">Leitura anterior: 78%</div>
+            <canvas id="grafico_ram"></canvas>
           </div>
           <div class="kpi-2">
             <div class="kpi-titulo">Uso de CPU atual</div>
-            <div class="kpi-conteudo"><span style="color: yellow;">74%</span></div>
-            <div class="kpi-passado">Leitura anterior: 88%</div>
+            <canvas id="grafico_cpu"></canvas>
           </div>
           <div class="kpi-3">
             <div class="kpi-titulo">Uso de DISCO atual</div>
-            <div class="kpi-conteudo"><span style="color: rgb(24, 216, 24);">53%</span></div>
-            <div class="kpi-passado">Leitura anterior: 48%</div>
+            <canvas id="grafico_disco"></canvas>
           </div>
         </div>
 
