@@ -660,9 +660,6 @@ function dash_suporte() {
         graficoSuporte = new Chart(ctx, configLine);
         console.log('Gráfico criado com sucesso!');
 
-        indiceAtual = 0;
-        atualizarVisibilidadeSuporte();
-
     } catch (error) {
         console.error('Erro ao criar gráfico:', error);
     }

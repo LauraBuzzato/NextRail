@@ -41,7 +41,7 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  height: 100vh;
+  height: 85vh;
   width: 100%;
 }
 
@@ -285,7 +285,7 @@ body {
 
 .graficos-container {
   height: 50%;
-  margin-top: 3%;
+  margin-top: 1.5%;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -340,7 +340,7 @@ body {
 }
 
 .tabela-titulo{
-  height: 20%;
+  height: 15%;
   width: 100%;
   font-size: 2.5rem;
   display: flex;
@@ -368,7 +368,7 @@ body {
 }
 
 .tabela-conteudo{
-  height: 60%;
+  height: 69%;
   width: 98%;
   display: grid;
   grid-template-columns: 22% 20% 20% 16% 22%;
@@ -419,8 +419,7 @@ body {
   grid-column: 1 / -1;     
   text-align: center;      
   color: #ffe066; 
-  margin-bottom: 1rem;
-  font-size: 4rem;     
+  font-size: 3rem;     
 }
 
 .desempenho {
@@ -456,14 +455,6 @@ body {
   padding-bottom: 0px;
 }
 
-
-.grafico-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
 .carrossel-botoes button {
   font-size: 20px;
   background: none;
@@ -475,10 +466,14 @@ body {
 
 
 .grafico-header {
-  position: relative;
-  height: 80px; 
+  height: 10%;
   width: 100%;
-  margin-bottom: 28px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--amarelo);
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 
