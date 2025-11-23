@@ -852,7 +852,7 @@ function listarIncidentes(fkEmpresa) {
                       AND tc.id = mt.fk_componenteServidor_tipoComponente
                       AND gv.id = mt.fk_gravidade
        JOIN empresa emp ON emp.id = srv.fk_empresa
-       WHERE emp.id = 1 and fk_status = 3
+       WHERE emp.id = ${fkEmpresa} and fk_status = 3
        ORDER BY srv.nome, inicio;
     `;
   console.log("Executando SQL: \n" + instrucaoSql);
