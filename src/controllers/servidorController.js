@@ -189,6 +189,22 @@ function buscarConfiguracoesServidor(req, res) {
         });
 }
 
+function buscarAlertasDoServidor(req, res) {
+    var servidorId = req.params.servidorId;
+
+    if (!servidorId) {
+        res.status(400).send("ID do servidor não informado!");
+        return;
+    }
+
+    servidorModel.buscarAlertasDoServidor(servidorId)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 function buscarScriptServidor(req, res) {
     var servidorId = req.params.servidorId;
 
@@ -418,5 +434,6 @@ module.exports = {
   atualizarConfiguracaoScript,
   buscarScriptServidor,
   buscarAlertasHistorico,
-  atualizarConfiguracaoSla
+  atualizarConfiguracaoSla,
+  buscarAlertasDoServidor
 };

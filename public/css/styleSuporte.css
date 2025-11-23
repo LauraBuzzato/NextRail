@@ -1,6 +1,7 @@
 :root{
     --amarelo: #ffe066;
     --grafico: #1a1a2e;
+    --linhas-grid: ; /*Variável aterada dinâmicamente pelo javascript (função criarTabela)*/
 }
 
 /* ================== FUNDO PRINCIPAL ================== */
@@ -371,8 +372,8 @@ body {
   height: 69%;
   width: 98%;
   display: grid;
-  grid-template-columns: 22% 20% 20% 16% 22%;
-  grid-template-rows: 25% 25% 25% 25% 25% 25% 25%;
+  grid-template-columns: 25% 25% 25% 25%;
+  grid-template-rows: var(--linhas-grid);
   overflow-y: auto;
 }
 

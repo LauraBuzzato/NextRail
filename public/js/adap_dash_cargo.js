@@ -270,7 +270,7 @@ async function atualizar(a) {
   </div>-->
 
           <div class="container-tabela-dinamica">
-            <div class="tabela-titulo">Histórico de alertas da última semana</div>
+            <div class="tabela-titulo">Histórico de alertas da semana</div>
             <div class="legenda">
       <div class="opcaoLegenda">
         <div class="bloco_cor" style="background-color:green"></div>
