@@ -328,6 +328,21 @@ function buscarAlertasDoServidor(servidorId) {
     return database.executar(instrucaoSql);
 }
 
+function buscarParametrosDoServidor(servidorId, componente) {
+    var instrucaoSql = `
+        SELECT m.valor AS valor
+        FROM metrica AS m
+        INNER JOIN componente_servidor AS cs ON m.fk_componenteServidor_servidor = cs.fk_servidor AND m.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+        INNER JOIN tipo_componente AS tc ON cs.fk_tipo_componente = tc.id
+        INNER JOIN servidor AS s ON s.id = cs.fk_servidor
+        WHERE tc.nome_tipo_componente = '${componente}' AND s.id = ${servidorId}
+        ORDER BY valor ASC;
+    `;
+
+    console.log("Buscando parametros do servidor: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 function buscarScriptServidor(servidorId) {
     var instrucaoSql = `
         SELECT intervalo, leituras_consecutivas_para_alerta AS leituras
@@ -882,5 +897,6 @@ module.exports = {
     buscarAlertasHistorico,
     atualizarConfiguracaoSla,
     listarIncidentes,
-    buscarAlertasDoServidor
+    buscarAlertasDoServidor,
+    buscarParametrosDoServidor
 };

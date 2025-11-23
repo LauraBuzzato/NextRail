@@ -23,6 +23,7 @@ router.post("/pegarFrequencia", servidorController.pegarFrequencia);
 router.post("/atualizarConfiguracaoScript", servidorController.atualizarConfiguracaoScript);
 router.post("/listarIncidentes", servidorController.listarIncidentes);
 router.get("/buscarAlertasDoServidor/:servidorId", servidorController.buscarAlertasDoServidor);
+router.get("/buscarParametrosDoServidor/:servidorId/:componente", servidorController.buscarParametrosDoServidor);
 
 router.post("/atualizarSla", servidorController.atualizarConfiguracaoSla);
 

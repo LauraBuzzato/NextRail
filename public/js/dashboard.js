@@ -665,8 +665,30 @@ function dash_suporte() {
     }
 }
 
-function kpi_suporte(componente) {
+async function kpi_suporte(componente) {
     const larguraGrafico = 586;
+    let parametrosJsonTemp;
+
+    try {
+    const resposta = await fetch(`/servidores/buscarParametrosDoServidor/${sessionStorage.ID_SERVIDOR}/${componente}`);
+
+    if (!resposta.ok) {
+        
+        const erroTexto = await resposta.text();
+        console.error("Erro recebido do servidor:", erroTexto);
+        return; 
+    }
+
+        parametrosJsonTemp = await resposta.json();
+    } 
+    catch (erro) {
+        console.error("Erro de rede ou JSON: ", erro);
+        return;
+    }
+    const parametrosJson = parametrosJsonTemp;
+
+    console.log("Parametros: ", parametrosJson);
+
     
     if (componente == 'ram') {
 
@@ -710,7 +732,7 @@ function kpi_suporte(componente) {
                     },
                     {
                         label: '',
-                        data: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
+                        data: Array(10).fill(parametrosJson[0].valor),
                         borderColor: 'rgba(255,0,0,1)',
                         backgroundColor: 'rgba(255,0,0,0.2)',
                         tension: 0.4,
@@ -828,7 +850,7 @@ function kpi_suporte(componente) {
                     },
                     {
                         label: '',
-                        data: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
+                        data: Array(10).fill(parametrosJson[0].valor),
                         borderColor: 'rgba(255,0,0,1)',
                         backgroundColor: 'rgba(255,0,0,0.2)',
                         tension: 0.4,
@@ -946,7 +968,7 @@ function kpi_suporte(componente) {
                     },
                     {
                         label: '',
-                        data: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
+                        data: Array(10).fill(parametrosJson[0].valor),
                         borderColor: 'rgba(255,0,0,1)',
                         backgroundColor: 'rgba(255,0,0,0.2)',
                         tension: 0.4,
