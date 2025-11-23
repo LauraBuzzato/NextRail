@@ -1,6 +1,6 @@
 
-CREATE DATABASE nextrail;
-USE nextrail;	
+CREATE DATABASE IF NOT EXISTS nextrail;
+USE nextrail;
 
 CREATE TABLE empresa (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -529,5 +529,9 @@ JOIN gravidade g ON m.fk_gravidade = g.id
 JOIN leitura_script ls ON ls.fk_servidor = m.fk_componenteServidor_servidor
 WHERE m.fk_componenteServidor_servidor = 1
 ORDER BY Componente, Gravidade;
+
+CREATE USER 'dbuser'@'%' IDENTIFIED BY '1234';
+GRANT ALL PRIVILEGES ON nextrail.* TO 'dbuser'@'%';
+FLUSH PRIVILEGES;
 
 -- drop database nextrail;

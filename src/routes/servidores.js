@@ -21,6 +21,7 @@ router.post("/buscarPosicaoRank", servidorController.buscarPosicaoRank);
 router.post("/buscarMetricas", servidorController.buscarMetricas);
 router.post("/pegarFrequencia", servidorController.pegarFrequencia);
 router.post("/atualizarConfiguracaoScript", servidorController.atualizarConfiguracaoScript);
+router.post("/listarIncidentes", servidorController.listarIncidentes);
 router.get("/buscarAlertasDoServidor/:servidorId", servidorController.buscarAlertasDoServidor);
 
 router.post("/atualizarSla", servidorController.atualizarConfiguracaoSla);

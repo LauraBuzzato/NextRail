@@ -412,6 +412,15 @@ function atualizarConfiguracaoSla(req, res) {
         );
 }
 
+function listarIncidentes(req, res) {
+  var fkEmpresa = req.body.idempresa;
+  servidorModel.listarIncidentes(fkEmpresa)
+    .then(resultado => res.json(resultado))
+    .catch(erro => {
+      console.log(erro);
+      res.status(500).json(erro.sqlMessage);
+    });
+}
 
 module.exports = {
   listarEmpresas,
@@ -435,5 +444,6 @@ module.exports = {
   buscarScriptServidor,
   buscarAlertasHistorico,
   atualizarConfiguracaoSla,
+  listarIncidentes,
   buscarAlertasDoServidor
 };

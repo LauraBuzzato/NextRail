@@ -1,72 +1,177 @@
-let data = {
-    Alto: {
-        labels: ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'],
-        dados: [0.8, 0.7, 0.9, 1.2, 0.8, 0.8, 0.7, 0.8, 0.8, 0.9],
-        cores: ['rgba(255,0,0)', 'rgba(255,0,0,0.4)'],
-        sla: 1.0
-    },
-    Médio: {
-        labels: ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'],
-        dados: [1.3, 1.5, 1.4, 1.7, 2.1, 1.9, 1.7, 1.5, 1.8, 1.9],
-        cores: ['rgba(255,150,0)', 'rgba(255,150,0,0.4)'],
-        sla: 2.0
-    },
-    Baixo: {
-        labels: ['21/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'],
-        dados: [2.3, 2.5, 2.4, 2.5, 2.1, 2.7, 2.7, 2.5, 2.8, 2.6],
-        cores: ['rgba(255,255,0)', 'rgba(255,255,0,0.4)'],
-        sla: 3.0
-    }
-}
+//let data = {
+//    servidor1: {
+//        Alto: {
+//            labels: ['22/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'],
+//            dados: [0.8, 0.7, 0.9, 1.2, 0.8, 0.8, 0.7, 0.8, 0.8, 0.9],
+//            cores: ['rgba(256,0,0)', 'rgba(255,0,0,0.4)'],
+//            sla: 1.0
+//        },
+//        Médio: {
+//            labels: ['22/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'],
+//            dados: [1.9, 1.5, 1.6, 1.7, 2.1, 1.9, 1.7, 1.5, 1.8, 1.9],
+//            cores: ['rgba(256,150,0)', 'rgba(255,150,0,0.4)'],
+//            sla: 2.0
+//        },
+//        Baixo: {
+//            labels: ['22/10', '22/10', '23/10', '24/10', '25/10', '26/10', '27/10', '28/10', '29/10', '30/10'],
+//            dados: [2.8, 2.5, 2.4, 2.5, 2.1, 2.7, 2.7, 2.5, 2.8, 2.6],
+//            cores: ['rgba(256,255,0)', 'rgba(255,255,0,0.4)'],
+//            sla: 3.0
+//        }
+//    }
+//}
 
-let atual = "Alto"
+let gravidadeSla = "Alto"
+let servidorAtual = null
+let incidentes = null
+
+let dados = {}
+let servidores = []
 
 let graficoSla = null;
 let grafioTicket = null;
 
-function dashAdmin() {
+async function dashAdmin() {
     console.log("Carregando gráficos...")
 
-    if (typeof Chart === 'undefined') {
-        console.log("erro ao cerregar grafico")
-        setTimeout(dashAdmin(), 500)
-        return
-    }
-
-
-    criarGraficoSla()
-    criarGraficoTicket()
-
     try {
-        //const [alertas] = await Promise.all([
-        //    fetch('/servidores/listarAlertas', {
-        //        method: "POST",
-        //        headers: { "Content-Type": "application/json" },
-        //        body: JSON.stringify({ idempresa: sessionStorage.ID_EMPRESA })
-        //    }).then(res => res.json())
-        //]) 
-        //console.log(alertas)
+        [incidentes] = await Promise.all([
+            fetch('/servidores/listarIncidentes', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idempresa: sessionStorage.ID_EMPRESA })
+            }).then(res => res.json())
+        ]) 
+        console.log(incidentes)
 
     } catch(err) {
         console.log("Erro ao carregar gráficos")
     }
+    
+    //var dados = {
+    //    "Servidor1": {
+    //        alto: [],
+    //        medio: [],
+    //        baixo: [],
+    //        slaAlto: null,
+    //        slaMedio: null,
+    //        slaBaixo: null
+    //    },
+    //    "Servidor2": {
+    //        alto: [],
+    //        medio: [],
+    //        baixo: [],
+    //        slaAlto: null,
+    //        slaMedio: null,
+    //        slaBaixo: null
+    //    }
+   // }
+    for (let i = 0; i < incidentes.length; i++) {
+        let incidente = incidentes[i] 
+        let serv = incidente.servidor
+        console.log(serv)
+
+        if (dados[serv] == undefined) {
+            servidores.push(serv)
+            dados[serv] = {
+                alto: [],
+                medio: [],
+                baixo: [],
+                slaAlto: null,
+                slaMedio: null,
+                slaBaixo: null,
+                dataAlto: [],
+                dataMedio: [],
+                dataBaixo: []
+            }
+        } 
+
+        let dataIn = new Date(incidente.inicio).toLocaleDateString('en-GB')
+
+        if (incidente.gravidade == "Alto") {
+            dados[serv].alto.push(incidente.duracao)
+            dados[serv].slaAlto = incidente.sla
+            dados[serv].dataAlto.push(dataIn)
+
+        } 
+        if (incidente.gravidade == "Médio") {
+            dados[serv].medio.push(incidente.duracao)
+            dados[serv].slaMedio = incidente.sla
+            dados[serv].dataMedio.push(dataIn)
+
+        }
+        if (incidente.gravidade == "Baixo") {
+            dados[serv].baixo.push(incidente.duracao)
+            dados[serv].slaBaixo = incidente.sla
+            dados[serv].dataBaixo.push(dataIn)
+
+        }    
+    }
+    // inicializa o servidor atual
+    servidorAtual = Object.keys(dados)[0]
+    
+    console.log("dados tratados:",dados)
+    console.log("lista servidores:",servidores)
+
+    if (typeof Chart === 'undefined') {
+        console.log("erro ao carregar grafico")
+        setTimeout(dashAdmin(), 500)
+        return
+    }
+    criarGraficoSla()
+    criarGraficoTicket()
 }
 
 
 function criarGraficoSla() {
     const tempoSla = document.getElementById("tempoSla");
+    const selectServidor = document.getElementById("muda-servidor")
+
+    // toda essa parte das variaveisAtual vai para o atualizaGraficoSla,
+    // e aqui só comeca pre-selecionado no Alto do primeiro servidor
+    let gravidadeAtual = null
+    let dataAtual = null
+    let slaAtual = null
+    let corAtual = null
+
+    if (gravidadeSla == "Alto") {
+        gravidadeAtual = "alto"
+        dataAtual = "dataAlto"
+        slaAtual = "slaAlto"
+        corAtual = "rgba(255,0,0)"
+
+    } else if (gravidadeSla == "Médio") {
+        gravidadeAtual = "medio"
+        dataAtual = "dataMedio"
+        slaAtual = "slaMedio"
+        corAtual = "rgba(255,150,0)"
+
+    } else if (gravidadeSla == "Baixo") {
+        gravidadeAtual = "baixo"
+        dataAtual = "dataBaixo"
+        slaAtual = "slaBaixo"
+        corAtual = "rgba(255,255,0)"
+
+    }
+
+    selectServidor.innerHTML = null
+    for (let i = 0; i < servidores.length; i++) {
+        selectServidor.innerHTML += `
+          <option value="${servidores[i]}">${servidores[i]}</option>
+        `
+    }
 
     graficoSla = new Chart(tempoSla,
         {
             type: 'line',
             data: {
-                labels: data[atual].labels, //LABELS
+                labels: dados[servidorAtual][dataAtual], 
                 datasets: [
                     {
-                        label: atual,
-                        data: data[atual].dados,
-                        borderColor: data[atual].cores[0],
-                        backgroundColor: data[atual].cores[1],
+                        label: gravidadeSla,
+                        data: dados[servidorAtual][gravidadeAtual],
+                        borderColor: corAtual,
+                        backgroundColor: corAtual,
                         tension: 0.3,
                         fill: true,
                         pointRadius: 4,
@@ -74,7 +179,7 @@ function criarGraficoSla() {
                     },
                     {
                         label: 'limite SLA',
-                        data: Array(13).fill(data[atual].sla),
+                        data: Array(13).fill(slaAtual),
                         borderColor: '#a78bfa',
                         backgroundColor: 'rgba(167,139,250,0.2)',
                         tension: 0.4,
@@ -196,22 +301,38 @@ function mudarCor() {
 }
 
 function mudarAlerta() {
-    console.log(atual)
-    if (atual == "Alto") {
-        atual = "Médio"
-    } else if (atual == "Médio") {
-        atual = "Baixo"
-    } else if (atual == "Baixo") {
-        atual = "Alto"
+    console.log(gravidadeSla)
+    if (gravidadeSla == "Alto") {
+        gravidadeSla = "Médio"
+    } else if (gravidadeSla == "Médio") {
+        gravidadeSla = "Baixo"
+    } else if (gravidadeSla == "Baixo") {
+        gravidadeSla = "Alto"
     }
+
+    let botao = document.getElementById('muda-alerta')
+    botao.innerText = gravidadeSla
+
     destruirGraficos()
     criarGraficoSla()
     criarGraficoTicket()
 }
 
+function mudarServidor() {
+    servidorAtual = document.getElementById('muda-servidor').value
+}
+
 function destruirGraficos() {
     graficoSla.destroy()
     grafioTicket.destroy()
+}
+
+function atualizaGraficoSla() {
+    // inves de destruir e criar denovo, atualizar toda vez que algum elemento for alterado,
+    // como o servidor selecionado, gravidade alterada
+    // Assuming 'myChart' is your Chart.js instance
+    //myChart.data.datasets[0].data[2] = 50; // Updates the third data point of the first dataset
+    //myChart.data.labels[2] = 'New Label'; // Updates the third label
 }
 //{
 //                label: 'Médio',
