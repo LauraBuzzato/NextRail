@@ -66,14 +66,17 @@
 
     <div class="linha">
       <div class="cardGrafico">
-        <h2>Tempo de Resolução em relação a Meta 
-          <button id="muda-alerta" onclick="mudarAlerta()" class="mudaAlerta">></button>
-        </h2>
+        <h2>Tempo de Resolução em relação a Meta</h2>
+          <div class="servidorAlerta">
+            <select name="" id="muda-servidor" onchange="mudarServidor()" class="mudaAlerta"></select>
+            
+            <button id="muda-alerta" onclick="mudarAlerta()" class="mudaAlerta">Alto</button>
+          </div>
         <canvas id="tempoSla"></canvas>
       </div>
 
       <div class="cardGrafico">
-        <h2>Tickets por Suporte</h2>
+        <h2 id="titulo-ticket">Tickets por Suporte</h2>
         <canvas id="ticketsSup"></canvas>
       </div>
     </div>

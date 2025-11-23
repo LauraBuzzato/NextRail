@@ -145,14 +145,27 @@
   font-weight: 800;
   color: #ffe066;
   text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   margin-top: 10px;
+}
+.servidorAlerta {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ccc;
 }
 
 .mudaAlerta {
-  height: 25px;
-  width: 25px;
+  height: fit-content;
+  width: fit-content;
   border: none;
   border-radius: 10px;
   margin-left: 10px;
+  padding: 5px;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+#titulo-ticket {
+  margin-bottom: 45px;
 }

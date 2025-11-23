@@ -820,6 +820,27 @@ function atualizarConfiguracaoSla(dadosSla) {
     });
 }
 
+function listarIncidentes(fkEmpresa) {
+  var instrucaoSql = `
+       SELECT emp.razao_social AS empresa,	srv.nome AS servidor, 
+       status.descricao AS status, gv.nome AS gravidade, inicio, fim,
+       TIMESTAMPDIFF(MINUTE, inicio, fim) AS duracao,
+       mt.sla
+       FROM alerta
+       JOIN status ON status.id = fk_status
+       JOIN gravidade gv ON gv.id = fk_gravidade
+       JOIN servidor srv ON srv.id = fk_componenteServidor_servidor
+       JOIN tipo_componente tc ON tc.id = fk_componenteServidor_tipoComponente
+       JOIN metrica mt ON srv.id = mt.fk_componenteServidor_servidor
+                      AND tc.id = mt.fk_componenteServidor_tipoComponente
+                      AND gv.id = mt.fk_gravidade
+       JOIN empresa emp ON emp.id = srv.fk_empresa
+       WHERE emp.id = 1 and fk_status = 3
+       ORDER BY srv.nome, inicio;
+    `;
+  console.log("Executando SQL: \n" + instrucaoSql);
+  return database.executar(instrucaoSql);
+}
 
 module.exports = {
     listarEmpresas,
@@ -842,5 +863,6 @@ module.exports = {
     atualizarConfiguracaoScript,
     buscarScriptServidor,
     buscarAlertasHistorico,
-    atualizarConfiguracaoSla
+    atualizarConfiguracaoSla,
+    listarIncidentes
 };
