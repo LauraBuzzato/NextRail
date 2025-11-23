@@ -311,6 +311,23 @@ function buscarConfiguracoesServidor(servidorId) {
     return database.executar(instrucaoSql);
 }
 
+function buscarAlertasDoServidor(servidorId) {
+    var instrucaoSql = `
+        SELECT 	tc.nome_tipo_componente AS componente, g.nome AS gravidade, s.descricao AS status_alerta, a.inicio AS inicio
+        FROM alerta AS a
+        INNER JOIN status AS s ON a.fk_status = s.id
+        INNER JOIN gravidade AS g ON a.fk_gravidade = g.id
+        INNER JOIN componente_servidor AS cs ON a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente AND a.fk_componenteServidor_servidor = cs.fk_servidor
+        INNER JOIN tipo_componente AS tc ON cs.fk_tipo_componente = tc.id
+        INNER JOIN servidor AS serv ON cs.fk_servidor = serv.id
+        WHERE serv.id = ${servidorId} AND inicio >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+        ORDER BY inicio DESC;
+    `;
+
+    console.log("Buscando alertas do servidor: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 function buscarScriptServidor(servidorId) {
     var instrucaoSql = `
         SELECT intervalo, leituras_consecutivas_para_alerta AS leituras
@@ -319,7 +336,7 @@ function buscarScriptServidor(servidorId) {
         WHERE s.id = ${servidorId}
     `;
 
-    console.log("Buscando configurações do servidor: \n" + instrucaoSql);
+    console.log("Buscando configurações do script do servidor: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
 
@@ -864,5 +881,6 @@ module.exports = {
     buscarScriptServidor,
     buscarAlertasHistorico,
     atualizarConfiguracaoSla,
-    listarIncidentes
+    listarIncidentes,
+    buscarAlertasDoServidor
 };

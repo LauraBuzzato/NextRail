@@ -660,9 +660,6 @@ function dash_suporte() {
         graficoSuporte = new Chart(ctx, configLine);
         console.log('Gráfico criado com sucesso!');
 
-        indiceAtual = 0;
-        atualizarVisibilidadeSuporte();
-
     } catch (error) {
         console.error('Erro ao criar gráfico:', error);
     }
@@ -1027,51 +1024,62 @@ function kpi_suporte(componente) {
 }
 }
 
-function criarTabela() {
+ async function criarTabela() {
     const conteudo = document.getElementById('tabela-conteudo');
     if (!conteudo) return;
 
     conteudo.innerHTML = `
     <span class="tabela-label">Componente</span>
-    <span class="tabela-label">Leitura</span>
     <span class="tabela-label">Grau</span>
     <span class="tabela-label">Status</span>
     <span class="tabela-label">Timestamp</span>
     `;
 
-    for (var i = 1; i <= 6; i++) {
-        var leitura = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
-        var componente, grau, status, corComponente, corLeitura, corStatus;
+    try {
+        
+        const resposta = await fetch(`/servidores/buscarAlertasDoServidor/${sessionStorage.ID_SERVIDOR}`);
+        const alertasJson = await resposta.json();
 
-        if (leitura >= 90) {
-            componente = "CPU";
-            grau = "alto";
-            status = "resolvido";
-            corComponente = "background-color: rgba(167,139,250,1)";
-            corLeitura = "background-color: red";
-            corStatus = "background-color: green";
-        } else if (leitura < 90 && leitura >= 80) {
-            componente = "RAM";
-            grau = "médio";
-            status = "resolvido";
-            corComponente = "background-color: rgba(56,189,248,1)";
-            corLeitura = "background-color: darkorange";
-            corStatus = "background-color: green";
-        } else {
-            componente = "Disco";
-            grau = "baixo";
-            status = "aberto";
-            corComponente = "background-color: rgba(251,191,36,1)"
-            corLeitura = "background-color: rgb(207, 207, 0)";
-            corStatus = "background-color: red";
-        }
+        console.log(alertasJson)
 
-        conteudo.innerHTML += `
-        <span class="tabela-celula" style="${corComponente}">${componente}</span>
-        <span class="tabela-celula" style="${corLeitura}">${leitura}%</span>
-        <span class="tabela-celula" style="${corLeitura}">${grau}</span>
-        <span class="tabela-celula" style="${corStatus}">${status}</span>
-        <span class="tabela-celula">2025-03-17 18:25:08</span>
+        document.documentElement.style.setProperty('--linhas-grid', `repeat(${alertasJson.length + 1}, 25%)`)
+
+        for (let i = 0; i < alertasJson.length; i++) {
+            
+            if (alertasJson[i].status_alerta != "Andamento") {
+
+                var componente, grau, status, timestamp, corComponente, corLeitura, corStatus;
+                
+                corLeitura = (alertasJson[i].gravidade == "Alto") ? "background-color: red" : 
+                (alertasJson[i].gravidade == "Médio") ? "background-color: darkorange" :
+                (alertasJson[i].gravidade == "Baixo") ? "background-color: rgb(207, 207, 0)" : ""
+                
+                corComponente = (alertasJson[i].componente == "Cpu") ? "background-color: rgba(167,139,250,1)" : 
+                (alertasJson[i].componente == "Ram") ? "background-color: rgba(56,189,248,1)" :
+                (alertasJson[i].componente == "Disco") ? "background-color: rgba(251,191,36,1)" : ""
+        
+                corStatus = (alertasJson[i].status_alerta == "Aberto") ? "background-color: red" : 
+                (alertasJson[i].status_alerta == "Fechado") ? "background-color: green" : ""
+
+                //formatando a data que naturalmente vem em um formato não amigável
+                const dataBruta = new Date(alertasJson[i].inicio);
+        
+                componente = alertasJson[i].componente;
+                grau = alertasJson[i].gravidade;
+                status = alertasJson[i].status_alerta;
+                timestamp = dataBruta.toLocaleString("pt-BR", {
+                    timeZone: "UTC"
+                });
+        
+                conteudo.innerHTML += `
+                <span class="tabela-celula" style="${corComponente}">${componente}</span>
+                <span class="tabela-celula" style="${corLeitura}">${grau}</span>
+                <span class="tabela-celula" style="${corStatus}">${status}</span>
+                <span class="tabela-celula">${timestamp}</span>
         `;
+            }
+        }
+    } catch (erro) {
+        console.log("Erro: ", erro)
     }
 }
