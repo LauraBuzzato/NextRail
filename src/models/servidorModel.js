@@ -774,7 +774,6 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
             SELECT 
                 YEARWEEK(inicio) as semana,
                 COUNT(*) as total_alertas,
-                AVG(TIMESTAMPDIFF(HOUR, inicio, COALESCE(fim, NOW()))) as duracao_media_horas,
                 SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
                 SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
                 SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
@@ -789,7 +788,7 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
                 AND a.inicio >= DATE_SUB(CURDATE(), INTERVAL 8 WEEK)
             GROUP BY YEARWEEK(inicio)
             ORDER BY semana DESC
-            LIMIT 4;
+            LIMIT 6;
         `;
     } else {
         instrucaoSql = `
@@ -797,7 +796,6 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
                 YEAR(inicio) as ano,
                 MONTH(inicio) as mes,
                 COUNT(*) as total_alertas,
-                AVG(TIMESTAMPDIFF(HOUR, inicio, COALESCE(fim, NOW()))) as duracao_media_horas,
                 SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
                 SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
                 SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos

@@ -2,134 +2,22 @@ console.log(sessionStorage.ID_SERVIDOR)
 const testeServidor = sessionStorage.ID_SERVIDOR;
 const testeEmpresa = sessionStorage.ID_EMPRESA;
 var passagem = true;
+var botoesCriados = false;
+var componenteAtual = "cpu";
+var graficoLinha, graficoLatencia;
 var visaoGeralAtiva = true;
 
-const dadosSimulados = {
-    1: {
-        semanal: {
-            cpu: [60, 62, 65, 68],
-            ram: [45, 47, 50, 52],
-            disco: [40, 42, 44, 47]
-        },
-        mensal: {
-            cpu: [58, 60, 62, 65, 67, 69, 71],
-            ram: [42, 44, 46, 48, 50, 52, 54],
-            disco: [38, 40, 42, 44, 46, 48, 50]
-        },
-    },
-    2: {
-        semanal: {
-            cpu: [68, 70, 72, 74],
-            ram: [55, 57, 60, 62],
-            disco: [48, 50, 52, 55]
-        },
-        mensal: {
-            cpu: [65, 67, 70, 72, 75, 77, 79],
-            ram: [52, 54, 56, 58, 61, 62, 64],
-            disco: [45, 47, 50, 51, 53, 55, 57]
-        }
-    },
-    3: {
-        semanal: {
-            cpu: [75, 78, 80, 82],
-            ram: [62, 64, 66, 69],
-            disco: [52, 54, 57, 58]
-        },
-        mensal: {
-            cpu: [72, 74, 76, 78, 81, 83, 84],
-            ram: [60, 62, 63, 65, 67, 68, 70],
-            disco: [50, 51, 53, 54, 56, 58, 59]
-        }
-    },
-    4: {
-        semanal: {
-            cpu: [65, 68, 70, 72],
-            ram: [50, 52, 55, 58],
-            disco: [45, 47, 49, 52]
-        },
-        mensal: {
-            cpu: [62, 65, 68, 70, 72, 74, 76],
-            ram: [48, 50, 52, 54, 56, 58, 60],
-            disco: [42, 44, 46, 48, 50, 52, 54]
-        }
-    }
+const AWS_CONFIG = {
+    bucketName: 'bucket-client-teste-etl',
+    region: 'us-east-1'
 };
-
-const latenciaSimulada = {
-    1: { cpu: 70, ram: 45, disco: 80 },
-    2: { cpu: 60, ram: 42, disco: 75 },
-    3: { cpu: 65, ram: 48, disco: 78 },
-    4: { cpu: 55, ram: 40, disco: 72 }
-};
-
-const alertasSimulados = {
-    1: {
-        semanal: {
-            alto: [2, 1, 3, 2],
-            medio: [3, 4, 2, 3],
-            baixo: [5, 4, 6, 5]
-        },
-        mensal: {
-            alto: [2, 3, 2, 4, 3, 2, 3],
-            medio: [4, 3, 5, 3, 4, 5, 4],
-            baixo: [6, 7, 5, 6, 5, 6, 7]
-        }
-    },
-    2: {
-        semanal: {
-            alto: [3, 2, 4, 3],
-            medio: [2, 3, 2, 4],
-            baixo: [4, 5, 3, 4]
-        },
-        mensal: {
-            alto: [3, 4, 3, 5, 4, 3, 4],
-            medio: [5, 4, 6, 4, 5, 6, 5],
-            baixo: [7, 8, 6, 7, 6, 7, 8]
-        }
-    },
-    3: {
-        semanal: {
-            alto: [1, 2, 1, 2],
-            medio: [2, 1, 3, 2],
-            baixo: [3, 4, 2, 3]
-        },
-        mensal: {
-            alto: [1, 2, 1, 3, 2, 1, 2],
-            medio: [3, 2, 4, 2, 3, 4, 3],
-            baixo: [5, 6, 4, 5, 4, 5, 6]
-        }
-    },
-    4: {
-        semanal: {
-            alto: [2, 3, 2, 3],
-            medio: [3, 2, 4, 3],
-            baixo: [4, 5, 3, 4]
-        },
-        mensal: {
-            alto: [2, 3, 2, 4, 3, 2, 3],
-            medio: [4, 3, 5, 3, 4, 5, 4],
-            baixo: [6, 7, 5, 6, 5, 6, 7]
-        }
-    }
-};
-
-const periodoSelect = document.getElementById("periodoSelect");
-const btnPrev = document.getElementById("btnPrev");
-const btnNext = document.getElementById("btnNext");
-const filtrosContainer = document.getElementById("filtrosContainer");
-
-let graficoLinha, graficoLatencia;
-let componenteAtual = "cpu";
-let botoesCriados = false;
 
 Chart.defaults.color = "#fff";
 Chart.defaults.font.family = "Poppins";
 
-
-async function buscarDadosReaisAlertas(componente, periodo) {
+async function buscarDadosHistoricosAlertas(componente, periodo) {
     const fkEmpresa = testeEmpresa;
     const fkServidor = testeServidor;
-
 
     const componentesMap = {
         'cpu': 1,
@@ -160,73 +48,157 @@ async function buscarDadosReaisAlertas(componente, periodo) {
         const dadosReais = await response.json();
         return processarDadosParaPrevisao(dadosReais, periodo);
     } catch (error) {
-        console.error('Erro ao buscar dados reais:', error);
-        return alertasSimulados[testeServidor]?.[periodo] ||
-            (periodo === "semanal"
-                ? { alto: [2, 1, 3, 2], medio: [3, 4, 2, 3], baixo: [5, 4, 6, 5] }
-                : { alto: [2, 3, 2, 4, 3, 2, 3], medio: [4, 3, 5, 3, 4, 5, 4], baixo: [6, 7, 5, 6, 5, 6, 7] });
+        console.error('Erro ao buscar dados históricos:', error);
+        return null;
     }
 }
 
+async function buscarDadosPrevisaoAWS() {
+    const empresa = sessionStorage.NOME_EMPRESA;
+    const servidor = sessionStorage.NOME_SERVIDOR;
+    const dataAtc = new Date();
+    const dia = ('0' + dataAtc.getDate()).slice(-2);
+    const mes = ('0' + (dataAtc.getMonth() + 1)).slice(-2); 
+    const ano = dataAtc.getFullYear();
+    const dataFormatada = `${dia}/${mes}/${ano}`;
 
-function processarDadosParaPrevisao(dadosReais, periodo) {
-    if (!dadosReais || dadosReais.length === 0) {
-        return periodo === "semanal"
-            ? { alto: [2, 1, 3, 2], medio: [3, 4, 2, 3], baixo: [5, 4, 6, 5] }
-            : { alto: [2, 3, 2, 4, 3, 2, 3], medio: [4, 3, 5, 3, 4, 5, 4], baixo: [6, 7, 5, 6, 5, 6, 7] };
+    try {
+        const url = `https://${AWS_CONFIG.bucketName}.s3.${AWS_CONFIG.region}.amazonaws.com/${empresa}/${servidor}/previsoes/dadosPrev_${dataFormatada}.json`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar dados: ${response.status}`);
+        }
+
+        const dados = await response.json();
+        return dados;
+
+    } catch (error) {
+        console.error('Erro ao buscar dados da AWS:', error);
+        return null;
+    }
+}
+
+function calcularPrevisaoTendencia(dadosHistoricos, numPrevisoes) {
+    const dadosNumericos = [];
+    for (let i = 0; i < dadosHistoricos.length; i++) {
+        dadosNumericos.push(Number(dadosHistoricos[i]) || 0);
+    }
+    
+    console.log('Dados numéricos para previsão:', dadosNumericos);
+
+    if (dadosNumericos.length < 2) {
+        const valorBase = dadosNumericos[0] || 1;
+        const previsoes = [];
+        for (let i = 0; i < numPrevisoes; i++) {
+            previsoes.push(valorBase);
+        }
+        return previsoes;
     }
 
-    console.log('Dados reais processados:', dadosReais);
+    const n = dadosNumericos.length;
+    let sumX = 0;
+    let sumY = 0;
+    let sumXY = 0;
+    let sumX2 = 0;
+    
+    for (let i = 0; i < n; i++) {
+        sumX += i;
+        sumY += dadosNumericos[i];
+        sumXY += i * dadosNumericos[i];
+        sumX2 += i * i;
+    }
+    
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+    
+    console.log('Regressão - Slope:', slope, 'Intercept:', intercept, 'n:', n);
 
+    const previsoes = [];
+    for (let i = 0; i < numPrevisoes; i++) {
+        let previsao = slope * (n + i) + intercept;
+        previsao = Math.max(0, Math.round(previsao));
+        previsoes.push(previsao);
+    }
+    
+    console.log('Previsões finais:', previsoes);
+    return previsoes;
+}
+function processarDadosParaPrevisao(dadosReais, periodo) {
+    if (dadosReais && dadosReais.alto && dadosReais.medio && dadosReais.baixo) {
+        console.log('Dados já processados, retornando diretamente');
+        return dadosReais;
+    }
 
-    const dadosOrdenados = [...dadosReais].reverse();
+    if (!dadosReais || !Array.isArray(dadosReais) || dadosReais.length === 0) {
+        console.log('Dados inválidos para processamento:', dadosReais);
+        return null;
+    }
 
-    let alertasAltos = [];
-    let alertasMedios = [];
-    let alertasBaixos = [];
-
-    dadosOrdenados.forEach(item => {
-        alertasAltos.push(item.alertas_altos || 0);
-        alertasMedios.push(item.alertas_medios || 0);
-        alertasBaixos.push(item.alertas_baixos || 0);
+    const dadosOrdenados = [...dadosReais].sort((a, b) => {
+        if (periodo === "semanal") return a.semana - b.semana;
+        return (a.ano * 100 + a.mes) - (b.ano * 100 + b.mes);
     });
 
+    const alertasAltos = [];
+    const alertasMedios = [];
+    const alertasBaixos = [];
 
-    const previsoesAltos = gerarPrevisaoSimples(alertasAltos, periodo);
-    const previsoesMedios = gerarPrevisaoSimples(alertasMedios, periodo);
-    const previsoesBaixos = gerarPrevisaoSimples(alertasBaixos, periodo);
+    for (let i = 0; i < dadosOrdenados.length; i++) {
+        alertasAltos.push(Number(dadosOrdenados[i].alertas_altos) || 0);
+        alertasMedios.push(Number(dadosOrdenados[i].alertas_medios) || 0);
+        alertasBaixos.push(Number(dadosOrdenados[i].alertas_baixos) || 0);
+    }
+
+    console.log('Alertas altos (numérico):', alertasAltos);
+    console.log('Alertas medios (numérico):', alertasMedios);
+    console.log('Alertas baixos (numérico):', alertasBaixos);
+
+    const numPrevisoes = 4;
+
+    const previsoesAltos = calcularPrevisaoTendencia(alertasAltos, numPrevisoes);
+    const previsoesMedios = calcularPrevisaoTendencia(alertasMedios, numPrevisoes);
+    const previsoesBaixos = calcularPrevisaoTendencia(alertasBaixos, numPrevisoes);
+
+    console.log('Previsões altos:', previsoesAltos);
+    console.log('Previsões medios:', previsoesMedios);
+    console.log('Previsões baixos:', previsoesBaixos);
+
+    const resultadoAlto = [];
+    const resultadoMedio = [];
+    const resultadoBaixo = [];
+
+    for (let i = 0; i < alertasAltos.length; i++) {
+        resultadoAlto.push(alertasAltos[i]);
+    }
+    for (let i = 0; i < previsoesAltos.length; i++) {
+        resultadoAlto.push(previsoesAltos[i]);
+    }
+
+    for (let i = 0; i < alertasMedios.length; i++) {
+        resultadoMedio.push(alertasMedios[i]);
+    }
+    for (let i = 0; i < previsoesMedios.length; i++) {
+        resultadoMedio.push(previsoesMedios[i]);
+    }
+
+    for (let i = 0; i < alertasBaixos.length; i++) {
+        resultadoBaixo.push(alertasBaixos[i]);
+    }
+    for (let i = 0; i < previsoesBaixos.length; i++) {
+        resultadoBaixo.push(previsoesBaixos[i]);
+    }
 
     return {
-        alto: [...alertasAltos, ...previsoesAltos],
-        medio: [...alertasMedios, ...previsoesMedios],
-        baixo: [...alertasBaixos, ...previsoesBaixos]
+        alto: resultadoAlto,
+        medio: resultadoMedio,
+        baixo: resultadoBaixo,
+        historico: dadosOrdenados.length,
+        previsao: numPrevisoes
     };
 }
 
-
-function gerarPrevisaoSimples(dadosHistoricos, periodo) {
-    const numPrevisoes = periodo === "semanal" ? 4 : 6;
-    const previsoes = [];
-
-    if (dadosHistoricos.length < 2) {
-        const valorBase = dadosHistoricos[0] || 2;
-        return Array(numPrevisoes).fill(valorBase);
-    }
-
-    const ultimosValores = dadosHistoricos.slice(-3); 
-    const media = ultimosValores.reduce((a, b) => a + b, 0) / ultimosValores.length;
-
-    const crescimento = dadosHistoricos[dadosHistoricos.length - 1] - dadosHistoricos[0];
-    const tendencia = crescimento / dadosHistoricos.length;
-
-    for (let i = 0; i < numPrevisoes; i++) {
-        const variacao = (Math.random() - 0.5) * 1.5;
-        const previsao = Math.max(0, Math.round(media + (tendencia * (i + 1)) + variacao));
-        previsoes.push(previsao);
-    }
-
-    return previsoes;
-}
 
 function destruirGrafico(grafico) {
     if (grafico && typeof grafico.destroy === 'function') {
@@ -256,7 +228,10 @@ function criarBotoesComponentes() {
 
     btnVisaoGeral.addEventListener('click', toggleVisaoGeral);
 
-    filtrosContainer.appendChild(btnVisaoGeral);
+    const filtrosContainer = document.getElementById('filtrosContainer');
+    if (filtrosContainer) {
+        filtrosContainer.appendChild(btnVisaoGeral);
+    }
 
     const botoesContainer = document.createElement('div');
     botoesContainer.className = 'botoes-componentes hidden';
@@ -279,7 +254,9 @@ function criarBotoesComponentes() {
             </div>
         `;
 
-    filtrosContainer.appendChild(botoesContainer);
+    if (filtrosContainer) {
+        filtrosContainer.appendChild(botoesContainer);
+    }
 
     botoesCriados = true;
 
@@ -338,51 +315,6 @@ function toggleVisaoGeral() {
     atualizarDashboard();
 }
 
-function calcularTaxaCrescimento(dados) {
-    const taxas = {};
-
-    for (const componente in dados) {
-        const valores = dados[componente];
-        if (valores.length >= 2) {
-
-            const crescimentoTotal = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
-
-            let somaCrescimentos = 0;
-            let numComparacoes = 0;
-
-            for (let i = 1; i < valores.length; i++) {
-                const crescimentoPonto = ((valores[i] - valores[i - 1]) / valores[i - 1]) * 100;
-                somaCrescimentos += crescimentoPonto;
-                numComparacoes++;
-            }
-
-            const crescimentoMedio = somaCrescimentos / numComparacoes;
-
-            taxas[componente] = {
-                total: crescimentoTotal.toFixed(2),
-                medio: crescimentoMedio.toFixed(2)
-            };
-        }
-    }
-    return taxas;
-}
-
-function encontrarComponenteMaiorCrescimento(taxas) {
-    let maiorComponente = '';
-    let maiorTaxa = -Infinity;
-
-    for (const componente in taxas) {
-        const taxaAtual = parseFloat(taxas[componente].total || taxas[componente]);
-
-        if (taxaAtual > maiorTaxa) {
-            maiorTaxa = taxaAtual;
-            maiorComponente = componente;
-        }
-    }
-
-    return { componente: maiorComponente, taxa: maiorTaxa.toFixed(1) };
-}
-
 function calcularTaxaCrescimentoTotal(dados) {
     const taxas = {};
     for (const componente in dados) {
@@ -395,34 +327,56 @@ function calcularTaxaCrescimentoTotal(dados) {
     return taxas;
 }
 
-async function atualizarDashboard() {
-    const servidor = testeServidor;
-    const periodo = periodoSelect.value;
+function encontrarComponenteMaiorCrescimento(taxas) {
+    let maiorComponente = '';
+    let maiorTaxa = -Infinity;
 
-    if (!dadosSimulados[servidor] || !dadosSimulados[servidor][periodo]) {
-        console.error(`Dados não encontrados para servidor: ${servidor}, período: ${periodo}`);
-        return;
+    for (const componente in taxas) {
+        const taxaAtual = parseFloat(taxas[componente]);
+
+        if (taxaAtual > maiorTaxa) {
+            maiorTaxa = taxaAtual;
+            maiorComponente = componente;
+        }
     }
 
-    const dados = dadosSimulados[servidor][periodo];
+    return { componente: maiorComponente, taxa: maiorTaxa.toFixed(1) };
+}
+
+async function atualizarDashboard() {
+    const periodo = periodoSelect.value;
 
     limparTodosGraficos();
 
-    if (visaoGeralAtiva) {
-        renderGraficoLinhasMultiplas(dados);
-        renderGraficoLatenciaGeral();
-        atualizarKPIsGerais(dados);
-    } else {
-        renderGraficoLinhaUnica(dados);
+    if (!visaoGeralAtiva) {
         await renderGraficoAlertas();
-        atualizarKPIs(dados);
+    }
+
+    try {
+        const dadosAWS = await buscarDadosPrevisaoAWS();
+        
+        if (dadosAWS) {
+            if (visaoGeralAtiva) {
+                renderGraficoLinhasMultiplas(dadosAWS);
+                renderGraficoLatenciaGeral(dadosAWS);
+                atualizarKPIsGerais(dadosAWS);
+            } else {
+                renderGraficoLinhaUnica(dadosAWS);
+                atualizarKPIs(dadosAWS);
+            }
+        } else {
+            document.getElementById("kpisContainer").innerHTML = '<div class="KPI"><p>Dados de previsão temporariamente indisponíveis</p></div>';
+        }
+    } catch (error) {
+        if (!visaoGeralAtiva) {
+            document.getElementById("kpisContainer").innerHTML = '<div class="KPI"><p>Dados de previsão temporariamente indisponíveis</p></div>';
+        }
     }
 }
 
 function renderGraficoLinhasMultiplas(dados) {
     const canvas = document.getElementById("graficoPrevisaoLinha");
     if (!canvas) {
-        console.error("Canvas linhas não encontrado!");
         return;
     }
 
@@ -439,23 +393,25 @@ function renderGraficoLinhasMultiplas(dados) {
     };
 
     const labels = periodoSelect.value === "semanal"
-        ? ["01/11", "08/11", "09/11", "22/11"]
-        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+        ? ["Semana Passada", "Semana Atual", "Próxima Semana", "Semana +2"]
+        : ["Mês Passado", "Mês Atual", "Próximo Mês", "Mês +2"];
 
     const datasets = [];
 
     for (const componente in dados) {
-        datasets.push({
-            label: `${nomes[componente]} (%)`,
-            data: dados[componente],
-            borderColor: cores[componente],
-            backgroundColor: `${cores[componente]}20`,
-            fill: false,
-            tension: 0.4,
-            borderWidth: 3,
-            pointRadius: 5,
-            pointBackgroundColor: cores[componente]
-        });
+        if (componente !== 'latencia') {
+            datasets.push({
+                label: `${nomes[componente]} (%)`,
+                data: dados[componente].slice(0, 4),
+                borderColor: cores[componente],
+                backgroundColor: `${cores[componente]}20`,
+                fill: false,
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 5,
+                pointBackgroundColor: cores[componente]
+            });
+        }
     }
 
     const ctx = canvas.getContext("2d");
@@ -514,7 +470,6 @@ function renderGraficoLinhasMultiplas(dados) {
 function renderGraficoLinhaUnica(dados) {
     const canvas = document.getElementById("graficoPrevisaoLinha");
     if (!canvas) {
-        console.error("Canvas linhas não encontrado!");
         return;
     }
 
@@ -537,10 +492,8 @@ function renderGraficoLinhaUnica(dados) {
     };
 
     const labels = periodoSelect.value === "semanal"
-        ? ["01/11", "08/11", "15/11", "22/11"]
-        : ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
-
-    let range = periodoSelect.value === "semanal" ? 4 : 6;
+        ? ["Semana Passada", "Semana Atual", "Próxima Semana", "Semana +2"]
+        : ["Mês Passado", "Mês Atual", "Próximo Mês", "Mês +2"];
 
     const ctx = canvas.getContext("2d");
     graficoLinha = new Chart(ctx, {
@@ -550,7 +503,7 @@ function renderGraficoLinhaUnica(dados) {
             datasets: [
                 {
                     label: `${nomes[componenteAtual]} (%)`,
-                    data: dados[componenteAtual],
+                    data: dados[componenteAtual].slice(0, 4),
                     borderColor: cores[componenteAtual],
                     backgroundColor: `${cores[componenteAtual]}20`,
                     fill: true,
@@ -561,7 +514,7 @@ function renderGraficoLinhaUnica(dados) {
                 },
                 {
                     label: 'Limite alerta',
-                    data: Array(Number(range)).fill(Number(limite[componenteAtual])),
+                    data: Array(4).fill(Number(limite[componenteAtual])),
                     borderColor: 'yellow',
                     backgroundColor: 'rgba(166, 161, 84, 0.2)',
                     tension: 0.4,
@@ -617,24 +570,22 @@ function renderGraficoLinhaUnica(dados) {
     });
 }
 
-function renderGraficoLatenciaGeral() {
+function renderGraficoLatenciaGeral(dados) {
     const canvas = document.getElementById("graficoLatencia");
     if (!canvas) {
-        console.error("Canvas graficoLatencia não encontrado!");
         return;
     }
 
-    const servidor = testeServidor;
     const periodo = periodoSelect.value;
 
     let labels, data;
 
     if (periodo === "semanal") {
-        labels = ["01/11", "08/11", "15/11", "22/11"];
+        labels = ["Semana Passada", "Semana Atual", "Próxima Semana", "Semana +2"];
         data = [65, 67, 63, 69];
     } else {
-        labels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
-        data = [62, 65, 63, 68, 70, 67];
+        labels = ["Mês Passado", "Mês Atual", "Próximo Mês", "Mês +2"];
+        data = [62, 65, 63, 68];
     }
 
     const ctx = canvas.getContext("2d");
@@ -700,60 +651,100 @@ function renderGraficoLatenciaGeral() {
 async function renderGraficoAlertas() {
     const canvas = document.getElementById("graficoLatencia");
     if (!canvas) {
-        console.error("Canvas graficoLatencia não encontrado!");
+        console.log('Canvas não encontrado');
         return;
     }
 
-    const servidor = testeServidor;
     const periodo = periodoSelect.value;
+    const alertasReais = await buscarDadosHistoricosAlertas(componenteAtual, periodo);
 
+    console.log('Dados recebidos do banco:', alertasReais);
 
-    const alertasReais = await buscarDadosReaisAlertas(componenteAtual, periodo);
-
-    let labels, alto, medio, baixo;
-
-    if (periodo === "semanal") {
-        labels = ["Semana 1", "Semana 2", "Semana 3", "Semana 4", "Previsão 1", "Previsão 2", "Previsão 3", "Previsão 4"];
-        alto = alertasReais.alto.slice(0, 8);
-        medio = alertasReais.medio.slice(0, 8);
-        baixo = alertasReais.baixo.slice(0, 8);
-    } else {
-        labels = ["Mês 1", "Mês 2", "Mês 3", "Mês 4", "Mês 5", "Mês 6", "Previsão 1", "Previsão 2", "Previsão 3", "Previsão 4", "Previsão 5", "Previsão 6"];
-        alto = alertasReais.alto.slice(0, 12);
-        medio = alertasReais.medio.slice(0, 12);
-        baixo = alertasReais.baixo.slice(0, 12);
+    if (!alertasReais) {
+        document.getElementById("graflat").textContent = "Erro ao carregar dados de alertas";
+        return;
     }
 
+    const dadosProcessados = processarDadosParaPrevisao(alertasReais, periodo);
+
+    console.log('Dados processados:', dadosProcessados);
+
+    if (!dadosProcessados) {
+        document.getElementById("graflat").textContent = "Dados insuficientes para previsão";
+        return;
+    }
+
+
+    if (dadosProcessados.alto.length === 0 || dadosProcessados.medio.length === 0 || dadosProcessados.baixo.length === 0) {
+        console.log('Arrays vazios - sem dados para plotar');
+        document.getElementById("graflat").textContent = "Sem dados suficientes para gerar gráfico";
+        return;
+    }
+
+    let labels = [];
+    const totalPontos = dadosProcessados.historico + dadosProcessados.previsao;
+
+    console.log('Total de pontos:', totalPontos, 'Histórico:', dadosProcessados.historico, 'Previsão:', dadosProcessados.previsao);
+
+    if (periodo === "semanal") {
+        for (let i = 0; i < totalPontos; i++) {
+            if (i < dadosProcessados.historico) {
+                labels.push(`Semana ${i + 1}`);
+            } else {
+                labels.push(`Próxima ${i - dadosProcessados.historico + 1}`);
+            }
+        }
+    } else {
+        for (let i = 0; i < totalPontos; i++) {
+            if (i < dadosProcessados.historico) {
+                labels.push(`Mês ${i + 1}`);
+            } else {
+                labels.push(`Próximo ${i - dadosProcessados.historico + 1}`);
+            }
+        }
+    }
+
+    console.log('Labels gerados:', labels);
+    console.log('Dados altos:', dadosProcessados.alto);
+    console.log('Dados medios:', dadosProcessados.medio);
+    console.log('Dados baixos:', dadosProcessados.baixo);
+
+    if (dadosProcessados.alto.length !== totalPontos || 
+        dadosProcessados.medio.length !== totalPontos || 
+        dadosProcessados.baixo.length !== totalPontos) {
+        console.log('Erro: Arrays de dados com tamanhos diferentes');
+        return;
+    }
 
     if (graficoLatencia) {
         graficoLatencia.destroy();
     }
 
-    document.getElementById("graflat").textContent = `Previsão de alertas para ${componenteAtual.toUpperCase()}`;
+    document.getElementById("graflat").textContent = `Previsão de alertas para ${componenteAtual.toUpperCase()} - ${periodo}`;
 
     const ctx = canvas.getContext("2d");
     graficoLatencia = new Chart(ctx, {
         type: "bar",
         data: {
-            labels,
+            labels: labels,
             datasets: [
                 {
                     label: "Alertas Altos",
-                    data: alto,
+                    data: dadosProcessados.alto,
                     backgroundColor: "rgba(244, 67, 54, 0.8)",
                     borderColor: "rgba(244, 67, 54, 1)",
                     borderWidth: 1
                 },
                 {
                     label: "Alertas Médios",
-                    data: medio,
+                    data: dadosProcessados.medio,
                     backgroundColor: "rgba(255, 152, 0, 0.8)",
                     borderColor: "rgba(255, 152, 0, 1)",
                     borderWidth: 1
                 },
                 {
                     label: "Alertas Baixos",
-                    data: baixo,
+                    data: dadosProcessados.baixo,
                     backgroundColor: "rgba(255, 235, 59, 0.8)",
                     borderColor: "rgba(255, 235, 59, 1)",
                     borderWidth: 1
@@ -770,23 +761,6 @@ async function renderGraficoAlertas() {
                         color: "#fff",
                         font: { size: 15 }
                     }
-                },
-                annotation: {
-                    annotations: {
-                        line1: {
-                            type: 'line',
-                            xMin: periodo === "semanal" ? 3.5 : 5.5,
-                            xMax: periodo === "semanal" ? 3.5 : 5.5,
-                            borderColor: 'rgba(255, 255, 255, 0.7)',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            label: {
-                                display: true,
-                                content: 'Início Previsão',
-                                position: 'start'
-                            }
-                        }
-                    }
                 }
             },
             scales: {
@@ -799,19 +773,14 @@ async function renderGraficoAlertas() {
                     grid: { color: "rgba(255,255,255,0.1)" },
                     ticks: {
                         color: "#fff",
-                        font: { size: 12 },
-                        callback: function (value, index, values) {
-                            const divisoriaIndex = periodo === "semanal" ? 3 : 5;
-                            if (index === divisoriaIndex) {
-                                return this.getLabelForValue(value) + ' →';
-                            }
-                            return this.getLabelForValue(value);
-                        }
+                        font: { size: 12 }
                     }
                 }
             }
         }
     });
+
+    console.log('Gráfico criado com sucesso');
 }
 
 const cores = {
@@ -825,11 +794,10 @@ function atualizarKPIsGerais(dados) {
     const maiorCrescimento = encontrarComponenteMaiorCrescimento(taxas);
 
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
-    const servidor = testeServidor;
     const disponibilidade = 99.7;
     let periodo = periodoSelect.value === "semanal" ? "semanal" : "mensal";
 
-    const latenciaMedia = Object.values(latenciaSimulada[servidor]).reduce((a, b) => a + b, 0) / 3;
+    const latenciaMedia = Object.values(dados.latencia).reduce((a, b) => a + b, 0) / 3;
 
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
@@ -848,33 +816,41 @@ function atualizarKPIsGerais(dados) {
     `;
 }
 
-function atualizarKPIs(dados) {
-    const mediaUso = (
-        dados[componenteAtual].reduce((a, b) => a + b, 0) / dados[componenteAtual].length
-    ).toFixed(1);
+async function atualizarKPIs(dados) {
+    const valores = dados[componenteAtual];
+    let soma = 0;
+    for (let i = 0; i < valores.length; i++) {
+        soma += valores[i];
+    }
+    const mediaUso = (soma / valores.length).toFixed(1);
 
-    const servidor = testeServidor;
     const periodo = periodoSelect.value;
 
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
 
-    const disponibilidade = 99.7;
-
-    let medUsoFormatado = mediaUso;
-
-    const primeiroValor = dados[componenteAtual][0];
-    const ultimoValor = dados[componenteAtual][dados[componenteAtual].length - 1];
+    const primeiroValor = valores[0];
+    const ultimoValor = valores[valores.length - 1];
     let variacaoPercentual = 0;
     if (primeiroValor !== 0) {
         variacaoPercentual = ((ultimoValor - primeiroValor) / primeiroValor) * 100;
     }
 
-    const alertas = alertasSimulados[servidor]?.[periodo];
+    const alertasReais = await buscarDadosHistoricosAlertas(componenteAtual, periodo);
     let alertaMaisFrequente = "Baixo";
-    if (alertas) {
-        const totalAlto = alertas.alto.reduce((a, b) => a + b, 0);
-        const totalMedio = alertas.medio.reduce((a, b) => a + b, 0);
-        const totalBaixo = alertas.baixo.reduce((a, b) => a + b, 0);
+    if (alertasReais) {
+        let totalAlto = 0;
+        let totalMedio = 0;
+        let totalBaixo = 0;
+        
+        for (let i = 0; i < alertasReais.alto.length; i++) {
+            totalAlto += alertasReais.alto[i];
+        }
+        for (let i = 0; i < alertasReais.medio.length; i++) {
+            totalMedio += alertasReais.medio[i];
+        }
+        for (let i = 0; i < alertasReais.baixo.length; i++) {
+            totalBaixo += alertasReais.baixo[i];
+        }
 
         if (totalAlto > totalMedio && totalAlto > totalBaixo) alertaMaisFrequente = "Alto";
         else if (totalMedio > totalBaixo) alertaMaisFrequente = "Médio";
@@ -884,7 +860,7 @@ function atualizarKPIs(dados) {
         document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
             <h2>Previsão de uso médio Mensal (${nomes[componenteAtual]})</h2>
-            <p class="valor-kpi" id="kpi1"> ${medUsoFormatado}%</p>
+            <p class="valor-kpi" id="kpi1"> ${mediaUso}%</p>
         </div>
         <div class ="KPI">
         <h2> Taxa de aumento Percentual Mensal:</h2>
@@ -899,7 +875,7 @@ function atualizarKPIs(dados) {
         document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
             <h2>Previsão de uso médio Semanal (${nomes[componenteAtual]})</h2>
-            <p class="valor-kpi" id="kpi1"> ${medUsoFormatado}%</p>
+            <p class="valor-kpi" id="kpi1"> ${mediaUso}%</p>
         </div>
         <div class ="KPI">
         <h2> Taxa de aumento Percentual Semanal:</h2>
@@ -922,65 +898,17 @@ function atualizarKPIs(dados) {
     }
 }
 
-function configurarNavegacao() {
-    if (btnPrev && btnNext) {
-        btnNext.addEventListener("click", () => {
-            passagem = false;
-            visaoGeralAtiva = false;
-            const ordem = ["cpu", "disco", "ram"];
-            const idx = ordem.indexOf(componenteAtual);
-            componenteAtual = ordem[(idx + 1) % ordem.length];
-
-            document.querySelectorAll('.btn-componente').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.componente === componenteAtual) {
-                    btn.classList.add('active');
-                }
-            });
-
-            const btnVisaoGeral = document.getElementById('btnVisaoGeral');
-            btnVisaoGeral.textContent = 'Voltar para Visão Geral';
-            btnVisaoGeral.style.background = "transparent";
-            btnVisaoGeral.style.color = "#ffe066";
-            btnVisaoGeral.style.border = "1px solid #ffe066";
-
-            atualizarDashboard();
-        });
-
-        btnPrev.addEventListener("click", () => {
-            passagem = false;
-            visaoGeralAtiva = false;
-            const ordem = ["cpu", "disco", "ram"];
-            const idx = ordem.indexOf(componenteAtual);
-            componenteAtual = ordem[(idx - 1 + ordem.length) % ordem.length];
-
-            document.querySelectorAll('.btn-componente').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.componente === componenteAtual) {
-                    btn.classList.add('active');
-                }
-            });
-
-            const btnVisaoGeral = document.getElementById('btnVisaoGeral');
-            btnVisaoGeral.textContent = 'Voltar para Visão Geral';
-            btnVisaoGeral.style.background = "transparent";
-            btnVisaoGeral.style.color = "#ffe066";
-            btnVisaoGeral.style.border = "1px solid #ffe066";
-
-            atualizarDashboard();
-        });
-    }
-}
-
 function inicializar() {
     criarBotoesComponentes();
 
-    periodoSelect.addEventListener("change", () => {
-        passagem = true;
-        atualizarDashboard();
-    });
+    const periodoSelect = document.getElementById("periodoSelect");
+    if (periodoSelect) {
+        periodoSelect.addEventListener("change", () => {
+            passagem = true;
+            atualizarDashboard();
+        });
+    }
 
-    configurarNavegacao();
     atualizarDashboard();
 }
 
