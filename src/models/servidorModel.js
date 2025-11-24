@@ -884,6 +884,20 @@ function listarIncidentes(fkEmpresa) {
     `;
     console.log("Executando SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
+
+}
+
+function paramsNomes(fk_servidor) {
+    var instrucaoSql = `
+    SELECT 
+    servidor.nome AS nome_servidor,
+    empresa.razao_social AS nome_empresa
+    FROM servidor
+    JOIN empresa ON servidor.fk_empresa = empresa.id
+    WHERE servidor.id = ${fk_servidor};
+    `
+    console.log("Executando SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
 // converte vírgula para ponto e transforma em número
@@ -1074,5 +1088,6 @@ module.exports = {
     listarIncidentes,
     buscarAlertasDoServidor,
     buscarParametrosDoServidor,
-    pegarUso
+    pegarUso,
+    paramsNomes
 };
