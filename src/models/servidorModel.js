@@ -313,7 +313,7 @@ function buscarConfiguracoesServidor(servidorId) {
 
 function buscarAlertasDoServidor(servidorId) {
     var instrucaoSql = `
-        SELECT 	tc.nome_tipo_componente AS componente, g.nome AS gravidade, s.descricao AS status_alerta, a.inicio AS inicio
+        SELECT 	tc.nome_tipo_componente AS componente, g.nome AS gravidade, s.descricao AS status_alerta, a.inicio AS inicio, a.fim AS fim
         FROM alerta AS a
         INNER JOIN status AS s ON a.fk_status = s.id
         INNER JOIN gravidade AS g ON a.fk_gravidade = g.id

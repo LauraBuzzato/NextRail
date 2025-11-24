@@ -1054,7 +1054,8 @@ async function kpi_suporte(componente) {
     <span class="tabela-label">Componente</span>
     <span class="tabela-label">Grau</span>
     <span class="tabela-label">Status</span>
-    <span class="tabela-label">Timestamp</span>
+    <span class="tabela-label">Início</span>
+    <span class="tabela-label">Fim</span>
     `;
 
     try {
@@ -1070,7 +1071,7 @@ async function kpi_suporte(componente) {
             
             if (alertasJson[i].status_alerta != "Andamento") {
 
-                var componente, grau, status, timestamp, corComponente, corLeitura, corStatus;
+                var componente, grau, status, inicio, fim, corComponente, corLeitura, corStatus;
                 
                 corLeitura = (alertasJson[i].gravidade == "Alto") ? "background-color: red" : 
                 (alertasJson[i].gravidade == "Médio") ? "background-color: darkorange" :
@@ -1084,12 +1085,18 @@ async function kpi_suporte(componente) {
                 (alertasJson[i].status_alerta == "Fechado") ? "background-color: green" : ""
 
                 //formatando a data que naturalmente vem em um formato não amigável
-                const dataBruta = new Date(alertasJson[i].inicio);
+                const inicioBruto = new Date(alertasJson[i].inicio);
+                const fimBruto = new Date(alertasJson[i].fim);
         
                 componente = alertasJson[i].componente;
                 grau = alertasJson[i].gravidade;
                 status = alertasJson[i].status_alerta;
-                timestamp = dataBruta.toLocaleString("pt-BR", {
+                
+                inicio = (alertasJson[i].inicio === null) ? "NA" : inicioBruto.toLocaleString("pt-BR", {
+                    timeZone: "UTC"
+                });
+
+                fim = (alertasJson[i].fim === null) ? "NA" : fimBruto.toLocaleString("pt-BR", {
                     timeZone: "UTC"
                 });
         
@@ -1097,7 +1104,8 @@ async function kpi_suporte(componente) {
                 <span class="tabela-celula" style="${corComponente}">${componente}</span>
                 <span class="tabela-celula" style="${corLeitura}">${grau}</span>
                 <span class="tabela-celula" style="${corStatus}">${status}</span>
-                <span class="tabela-celula">${timestamp}</span>
+                <span class="tabela-celula">${inicio}</span>
+                <span class="tabela-celula">${fim}</span>
         `;
             }
         }
