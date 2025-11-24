@@ -443,6 +443,22 @@ function listarIncidentes(req, res) {
     });
 }
 
+function paramsNomes(req, res) {
+    var fk_servidor = req.params.fk_servidor;
+    if (!fk_servidor) {
+        res.status(400).send("ID do servidor não informado!");
+        return;
+    }
+    servidorModel.paramsNomes(fk_servidor)
+        .then(resultado => {
+            res.json(resultado);
+        })
+        .catch(erro => {
+            console.log("Erro ao buscar nomes:", erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -467,5 +483,6 @@ module.exports = {
   atualizarConfiguracaoSla,
   listarIncidentes,
   buscarAlertasDoServidor,
-  buscarParametrosDoServidor
+  buscarParametrosDoServidor,
+  paramsNomes
 };
