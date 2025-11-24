@@ -4,9 +4,19 @@ function adicionarNomeServidor() {
     nomeServidor.innerHTML = localStorage.NOME_SERVIDOR
 }
 
+function mostrarLoader() {
+    document.getElementById("loader").style.display = "flex";
+}
+
+function esconderLoader() {
+    document.getElementById("loader").style.display = "none";
+}
+
+
 
 async function mudarVisualizacao() {
     try {
+        mostrarLoader();
         // destruir gráficos anteriores
         if (meuChart) { meuChart.destroy(); meuChart = null; }
         if (meuChart2) { meuChart2.destroy(); meuChart2 = null; }
@@ -23,9 +33,6 @@ async function mudarVisualizacao() {
 
         const palavraAntesComponente = nomeComponente === "Disco" ? "do" : "da";
 
-        const labelPeriodo = periodo === "Anual"
-            ? ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-            : ['01/11', '02/11', '03/11', '04/11', '05/11', '06/11', '07/11', '08/11', '09/11', '10/11', '11/11', '12/11', '13/11', '14/11', '15/11', '16/11', '17/11', '18/11', '19/11', '20/11', '21/11', '22/11', '23/11', '24/11', '25/11', '26/11', '27/11', '28/11', '29/11', '30/11'];
 
         const periodoParaTexto = periodo === "Anual" ? "anuais" : "mensais";
         const textoFreqAnterior = periodo === "Anual" ? "ano" : "mês";
@@ -111,7 +118,8 @@ async function mudarVisualizacao() {
             .then(r => r.json());
 
         let mediaUso = periodo === "Anual" ? dadosUso.mediaAnual : dadosUso.mediaMensal;
-        let taxaVariacao = dadosUso.variancia;
+        let taxaVariacao = dadosUso.taxaVariacao;
+
 
         let listaPeriodos = periodo === "Anual" ? dadosUso.mediasMensais : dadosUso.mediasDiarias;
 
@@ -146,18 +154,34 @@ async function mudarVisualizacao() {
                     </div>
                     <div class="KPI-2">
                         <h2>Taxa de variação:</h2>
-                        <h1>${taxaVariacao.toFixed(2)}</h1>
+<h1>${taxaVariacao.toFixed(2)}%</h1>
                     </div>
                 </div>
             </div>
         `;
 
-        // -------------------------------------------------------
-        //   SOMENTE AGORA O CANVAS EXISTE → criar gráficos
-        // -------------------------------------------------------
+        let labelPeriodo = [];
+        if (periodo === "Anual") {
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            for (let i = 0; i < listaPeriodos.length; i++) {
+                const item = listaPeriodos[i];
+                labelPeriodo.push(meses[item.mes - 1]);
+            }
+        } else {
+            for (let i = 0; i < listaPeriodos.length; i++) {
+                const item = listaPeriodos[i];
+                const data = new Date(item.dia);
+                const dia = String(data.getDate()).padStart(2, '0');
+                const mes = String(data.getMonth() + 1).padStart(2, '0');
+                labelPeriodo.push(dia + "/" + mes);
+            }
+        }
 
-        // gráfico 2 – variação de uso
-        const valoresGrafico = listaPeriodos.map(x => x.media);
+        let valoresGrafico = [];
+        for (let i = 0; i < listaPeriodos.length; i++) {
+            valoresGrafico.push(listaPeriodos[i].media);
+        }
+
         const ctx2 = document.getElementById("varicaoUso");
 
         meuChart2 = new Chart(ctx2, {
@@ -247,8 +271,6 @@ async function mudarVisualizacao() {
         });
 
 
-
-        // agora buscar alertas (depois do canvas renderizado)
         const alertas = await fetch('/servidores/buscarAlertasComponenteEspecifico', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -270,9 +292,15 @@ async function mudarVisualizacao() {
             msg.style.textAlign = "center";
             msg.style.color = "green";
             msg.style.marginTop = "-95px";
+            msg.style.fontSize = "30px";
             pai.appendChild(msg);
         } else {
-            const dataAlertas = alertas.map(a => a.total_alertas);
+            let dataAlertas = [];
+
+            for (let i = 0; i < alertas.length; i++) {
+                dataAlertas.push(alertas[i].total_alertas);
+            }
+
 
             meuChart = new Chart(ctx, {
                 type: "bar",
@@ -292,7 +320,10 @@ async function mudarVisualizacao() {
             });
         }
 
+        esconderLoader();
+
     } catch (erro) {
+        esconderLoader();
         console.error("Erro na visualização:", erro);
     }
 }

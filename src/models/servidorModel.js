@@ -128,9 +128,9 @@ function cadastrarServidor(nome, fk_tipo, fk_so, fk_empresa, logradouro, cep, nu
 function criarComponentesServidor(servidorId) {
 
     const componentes = [
-        { nome: 'CPU', id: 1},
+        { nome: 'CPU', id: 1 },
         { nome: 'Memória RAM', id: 2 },
-        { nome: 'Disco Rígido', id: 3}
+        { nome: 'Disco Rígido', id: 3 }
     ];
     const gravidades = [1, 2, 3];
 
@@ -152,9 +152,9 @@ function criarComponentesServidor(servidorId) {
 
                 gravidades.forEach(gravidadeId => {
 
-                    if(gravidadeId == 1){
+                    if (gravidadeId == 1) {
                         nivelRecomend = 70;
-                    }else if (gravidadeId == 2) {
+                    } else if (gravidadeId == 2) {
                         nivelRecomend = 80;
                     } else {
                         nivelRecomend = 90;
@@ -295,7 +295,7 @@ function atualizarConfiguracaoScript(servidorId, configuracoes) {
                 WHERE s.id = ${servidorId}
             `;
 
-                const result = await database.executar(instrucaoScript);
+            const result = await database.executar(instrucaoScript);
 
             resolve(result);
 
@@ -782,7 +782,7 @@ GROUP BY a.fk_componenteServidor_servidor;
 
 function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
     let instrucaoSql = "";
-    
+
     if (periodo === "semanal") {
         instrucaoSql = `
             SELECT 
@@ -865,7 +865,7 @@ function atualizarConfiguracaoSla(dadosSla) {
 }
 
 function listarIncidentes(fkEmpresa) {
-  var instrucaoSql = `
+    var instrucaoSql = `
        SELECT emp.razao_social AS empresa,	srv.nome AS servidor, 
        status.descricao AS status, gv.nome AS gravidade, inicio, fim,
        TIMESTAMPDIFF(MINUTE, inicio, fim) AS duracao,
@@ -882,13 +882,9 @@ function listarIncidentes(fkEmpresa) {
        WHERE emp.id = ${fkEmpresa} and fk_status = 3
        ORDER BY srv.nome, inicio;
     `;
-  console.log("Executando SQL: \n" + instrucaoSql);
-  return database.executar(instrucaoSql);
+    console.log("Executando SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
-
-// -------------------------------------------
-// Funções auxiliares
-// -------------------------------------------
 
 // converte vírgula para ponto e transforma em número
 function normalizarValor(valor) {
@@ -902,20 +898,55 @@ function normalizarValor(valor) {
     return isFinite(num) ? num : NaN;
 }
 
-// média básica
 function calcularMedia(valores) {
     if (!valores.length) return 0;
-    return valores.reduce((a, b) => a + b, 0) / valores.length;
+
+    let soma = 0;
+    for (let i = 0; i < valores.length; i++) {
+        soma += valores[i];
+    }
+
+    return soma / valores.length;
 }
 
-// variância básica
 function calcularVariancia(valores) {
     if (!valores.length) return 0;
 
     const media = calcularMedia(valores);
-    const diffs = valores.map(v => Math.pow(v - media, 2));
-    return calcularMedia(diffs);
+
+    let soma = 0;
+    for (let i = 0; i < valores.length; i++) {
+        const valor = valores[i] - media;
+        soma += valor * valor;
+    }
+
+    const variancia = soma / valores.length;
+    return Math.sqrt(variancia);
 }
+
+function calcularDesvioPadrao(valores) {
+    if (!valores.length) return 0;
+
+    const media = calcularMedia(valores);
+    let soma = 0;
+
+    for (let i = 0; i < valores.length; i++) {
+        soma += Math.pow(valores[i] - media, 2);
+    }
+
+    return Math.sqrt(soma / valores.length);
+}
+
+
+function calcularTaxaVariacao(valores) {
+    const media = calcularMedia(valores);
+    if (media === 0) return 0;
+
+    const desvio = calcularDesvioPadrao(valores);
+    return (desvio / media) * 100;
+}
+
+
 
 // stream → texto
 async function streamToString(stream) {
@@ -946,42 +977,27 @@ const mapComponentes = {
     7: "latencia_media_ms"
 };
 
-// -------------------------------------------
-// FUNÇÃO PRINCIPAL (pronta para uso no controller)
-// -------------------------------------------
-
 async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
     const campo = mapComponentes[componente];
+    if (!campo) throw new Error(`Componente inválido (${componente}).`);
 
-    if (!campo) {
-        throw new Error(`Componente inválido (${componente}).`);
-    }
-
-    let key = "";
-    if (tipo === "anual") {
-        key = `dadosDashComponentes/${empresa}/${servidor}/anual_${ano}.json`;
-    } else {
-        key = `dadosDashComponentes/${empresa}/${servidor}/mensal_${ano}-${mes}.json`;
-    }
+    let key = tipo === "anual"
+        ? `dadosDashComponentes/${empresa}/${servidor}/anual_${ano}.json`
+        : `dadosDashComponentes/${empresa}/${servidor}/mensal_${ano}-${mes}.json`;
 
     const registros = await lerArquivoS3(BUCKET, key);
 
-    // ----------- Extrair valores ----------------
+    // Extrair valores válidos
     let valores = [];
-
     for (let i = 0; i < registros.length; i++) {
         const valor = normalizarValor(registros[i][campo]);
         if (isFinite(valor)) valores.push(valor);
     }
+    const taxaVariacao = calcularTaxaVariacao(valores);
 
-    const variancia = calcularVariancia(valores);
-
-    // ----------------------------------------------------
-    //     MENSAL → agrupar por dia
-    // ----------------------------------------------------
+    // --- MENSAL → agrupar por dia ---
     if (tipo === "mensal") {
         let dias = {};
-
         for (let i = 0; i < registros.length; i++) {
             const dia = registros[i].timestamp.split(" ")[0];
             const valor = normalizarValor(registros[i][campo]);
@@ -1001,16 +1017,13 @@ async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
 
         return {
             mediaMensal: calcularMedia(valores),
-            variancia: variancia,
+            taxaVariacao: taxaVariacao,
             mediasDiarias: mediasDiarias
         };
     }
 
-    // ----------------------------------------------------
-    //     ANUAL → agrupar por mês
-    // ----------------------------------------------------
+    // --- ANUAL → agrupar por mês ---
     let meses = {};
-
     for (let i = 0; i < registros.length; i++) {
         const mesReg = Number(registros[i].timestamp.substring(5, 7));
         const valor = normalizarValor(registros[i][campo]);
@@ -1030,10 +1043,11 @@ async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
 
     return {
         mediaAnual: calcularMedia(valores),
-        variancia: variancia,
+        taxaVariacao: taxaVariacao,
         mediasMensais: mediasMensais
     };
 }
+
 
 module.exports = {
     listarEmpresas,

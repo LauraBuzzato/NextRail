@@ -84,7 +84,8 @@
 
             <div class="texto-secao">
 
-                <h2>Acompanhamento <span id="nomePeriodo">Mensal</span> dos Componentes do <span id="nomeServidor"></span></h2>
+                <h2>Acompanhamento <span id="nomePeriodo">Mensal</span> dos Componentes do <span
+                        id="nomeServidor"></span></h2>
 
 
             </div>
@@ -126,39 +127,14 @@
                 </div>
             </div>
 
-            <div class="container-geral" id="containerGeral">
-                <div class="container-KPIS">
-                    <div class="KPI">
-                        <h2>Frequência em estado de alerta:</h2>
-                        <h1>80%</h1>
-                    </div>
-                    <div class="KPI">
-                        <h2>Gravidade dos alertas:</h2>
-                        <canvas id="alertasComponenteChart"></canvas>
-                    </div>
-                    <div class="KPI">
-                        <h2>Relação com os outros servidores:</h2>
-                        <h1 class="texto-grande">5º</h1>
-                        <h4> Servidor com mais alertas de CPU</h4>
-                    </div>
-                </div>
-                <div class="container-KPIS-segunda-linha">
-                    <div class="GRAFICO-2">
-                        <h2>Variação do uso:</h2>
-                        <canvas id="varicaoUso"></canvas>
-                    </div>
-                    <div class="Container-KPI-2">
-                        <div class="KPI-2">
-                            <h2>Uso médio da CPU:</h2>
-                            <h1>80%</h1>
-                        </div>
-                        <div class="KPI-2">
-                            <h2>Taxa de variação do uso da CPU:</h2>
-                            <h1>80%</h1>
-                        </div>
+            <div id="loader" class="loader-overlay" style="display:none;">
+                <div class="loader-spinner"></div>
+                <p>Carregando dados...</p>
+            </div>
 
-                    </div>
-                </div>
+
+            <div class="container-geral" id="containerGeral">
+
             </div>
 
         </div>
