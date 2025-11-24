@@ -443,22 +443,6 @@ function listarIncidentes(req, res) {
     });
 }
 
-<<<<<<< HEAD
-function paramsNomes(req, res) {
-    var fk_servidor = req.params.fk_servidor;
-    if (!fk_servidor) {
-        res.status(400).send("ID do servidor não informado!");
-        return;
-    }
-    servidorModel.paramsNomes(fk_servidor)
-        .then(resultado => {
-            res.json(resultado);
-        })
-        .catch(erro => {
-            console.log("Erro ao buscar nomes:", erro);
-            res.status(500).json(erro.sqlMessage);
-        });
-=======
 async function pegarUso(req, res) {
     try {
         const empresa = req.query.empresa;
@@ -496,14 +480,29 @@ async function pegarUso(req, res) {
         return res.status(200).json(resultado);
 
     } catch (erro) {
-        console.error("❌ Erro no pegarUso Controller:", erro);
+        console.error("Erro no pegarUso Controller:", erro);
 
         return res.status(500).json({
             erro: "Erro ao obter dados de uso",
             detalhe: erro.message
         });
     }
->>>>>>> 5d12b4536cbbd36cb6a26b85fab8688a1cc91b42
+}
+
+function paramsNomes(req, res) {
+    var fk_servidor = req.params.fk_servidor;
+    if (!fk_servidor) {
+        res.status(400).send("ID do servidor não informado!");
+        return;
+    }
+    servidorModel.paramsNomes(fk_servidor)
+        .then(resultado => {
+            res.json(resultado);
+        })
+        .catch(erro => {
+            console.log("Erro ao buscar nomes:", erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 module.exports = {
@@ -531,9 +530,6 @@ module.exports = {
   listarIncidentes,
   buscarAlertasDoServidor,
   buscarParametrosDoServidor,
-<<<<<<< HEAD
+  pegarUso,
   paramsNomes
-=======
-  pegarUso
->>>>>>> 5d12b4536cbbd36cb6a26b85fab8688a1cc91b42
 };

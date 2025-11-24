@@ -1073,9 +1073,6 @@ module.exports = {
     listarIncidentes,
     buscarAlertasDoServidor,
     buscarParametrosDoServidor,
-<<<<<<< HEAD
+    pegarUso,
     paramsNomes
-=======
-    pegarUso
->>>>>>> 5d12b4536cbbd36cb6a26b85fab8688a1cc91b42
 };
