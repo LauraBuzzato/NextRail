@@ -1,23 +1,18 @@
-// inicializa o botao de mudar gravidade do grafico
-let gravidadeSla = "Alto"
-// inicializa variavel q recebe os dados do banco
 let incidentes = null
-
-// inicializa var q recebem os dados tratados
 let dados = {}
 let servidores = []
 
-// inicializa as variaveis q definem os dados atualmente selecionados
+let gravidadeSla = "Alto"
+
 let servidorAtual = null
 let gravidadeAtual = "alto"
 let dataAtual = "dataAlto"
 let slaAtual = null
 let corAtual = ["rgba(255,0,0)", "rgba(255,0,0, 0.4)"]
 
-// duracao total
 let duracaoTotal = []
+let listDate = []
 
-// inicializa var dos graficos
 let graficoSla = null;
 let grafioTicket = null;
 
@@ -41,7 +36,7 @@ async function dashAdmin() {
     for (let i = 0; i < incidentes.length; i++) {
         let incidente = incidentes[i] 
         let serv = incidente.servidor
-        console.log(serv)
+        //console.log(serv)
 
         if (dados[serv] == undefined) {
             servidores.push(serv)
@@ -58,7 +53,10 @@ async function dashAdmin() {
             }
         } 
 
-        let dataIn = new Date(incidente.inicio).toLocaleDateString('en-GB')
+        let date = new Date(incidente.inicio)
+        listDate.push(date)
+
+        let dataIn = date.toLocaleDateString('en-GB')
 
         duracaoTotal.push(incidente.duracao)
 
@@ -81,6 +79,16 @@ async function dashAdmin() {
 
         }    
     }
+    // inicializa os valores atuais
+    servidorAtual = Object.keys(dados)[0]
+    dataAtual = "dataAlto"
+    slaAtual =  "slaAlto"
+    corAtual = ["rgba(255,0,0)", "rgba(255,0,0, 0.4)"]
+    
+    //console.log("dados tratados:",dados)
+    //console.log("lista servidores:",servidores)
+
+
     // cria o select para cada servidor
     const selectServidor = document.getElementById("muda-servidor")
     selectServidor.innerHTML = null
@@ -90,33 +98,7 @@ async function dashAdmin() {
         `
     }
 
-    // inicializa os valores atuais
-    servidorAtual = Object.keys(dados)[0]
-    dataAtual = "dataAlto"
-    slaAtual =  "slaAlto"
-    corAtual = ["rgba(255,0,0)", "rgba(255,0,0, 0.4)"]
-    
-    console.log("dados tratados:",dados)
-    console.log("lista servidores:",servidores)
 
-    // kpis
-    const mtta = document.getElementById('mtta')
-    const mttrGeral = document.getElementById('mttr-geral')
-    const mtbf = document.getElementById('mtbf')
-
-    // mttr geral
-    console.log("diracao total: ", duracaoTotal)
-    let total = 0
-    for (let i = 0; i < duracaoTotal.length; i++) {
-        total += duracaoTotal[i]
-    }
-    mttrGeral.innerText = `${Math.round(total/duracaoTotal.length)} min.`
-
-    // mtbf
-
-
-    // fim kpis
-    
 
     if (typeof Chart === 'undefined') {
         console.log("erro ao carregar grafico")
@@ -124,10 +106,35 @@ async function dashAdmin() {
         return
     }
 
+    criarKpis()
     criarGraficoSla()
     criarGraficoTicket()
 }
 
+function criarKpis() {
+    const mtta = document.getElementById('mtta')
+    const mttrGeral = document.getElementById('mttr-geral')
+    const mtbf = document.getElementById('mtbf')
+
+    // mttr geral
+    //console.log("diracao total: ", duracaoTotal)
+    let total = 0
+    for (let i = 0; i < duracaoTotal.length; i++) {
+        total += duracaoTotal[i]
+    }
+    mttrGeral.innerText = `${Math.round(total/duracaoTotal.length)} min.`
+
+    // mtbf
+    console.log("listDate: ",listDate)
+    let diff = []
+    for (let i = 0; i < listDate.length; i++) {
+        if (i > 0) {
+            diff.push(listDate[i-1].getTime() - listDate[i].getTime())
+        }
+    }
+    console.log('diff: ',diff)
+
+}
 
 function criarGraficoSla() {
     const tempoSla = document.getElementById("tempoSla");
