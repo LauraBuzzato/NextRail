@@ -114,14 +114,74 @@ async function mudarVisualizacao() {
                     `0% de diferença`;
 
         // --- Buscar dados do uso real ---
+        const hoje = new Date();
+        const mesAtual = hoje.getMonth() + 1;
+        const diaAtual = hoje.getDate();
+
         const dadosUso = await fetch(`/servidores/uso?empresa=${sessionStorage.NOME_EMPRESA}&servidor=${localStorage.NOME_SERVIDOR}&tipo=${periodo.toLowerCase()}&ano=2025&mes=11&componente=${componente}`)
             .then(r => r.json());
 
-        let mediaUso = periodo === "Anual" ? dadosUso.mediaAnual : dadosUso.mediaMensal;
-        let taxaVariacao = dadosUso.taxaVariacao;
+        let mediaUso;
+        let taxaVariacao;
+        let listaPeriodos;
+
+        if (!dadosUso || (!dadosUso.mediasDiarias && !dadosUso.mediasMensais)) {
+            alert(`O servidor ${localStorage.NOME_SERVIDOR} ainda não possui registros de uso para esse período.`);
+            
+            mediaUso = 0;
+            taxaVariacao = 0;
+
+            if (periodo === "Anual") {
+                listaPeriodos = [];
+                for (let i = 1; i <= mesAtual; i++) {
+                    listaPeriodos.push({ mes: i, media: 0 });
+                }
+            } else {
+                listaPeriodos = [];
+                for (let i = 1; i <= diaAtual; i++) {
+                    listaPeriodos.push({
+                        dia: `2025-11-${String(i).padStart(2, '0')}`,
+                        media: 0
+                    });
+                }
+            }
+        } else {
+            mediaUso = periodo === "Anual" ? dadosUso.mediaAnual : dadosUso.mediaMensal;
+            taxaVariacao = dadosUso.taxaVariacao;
+            listaPeriodos = periodo === "Anual" ? dadosUso.mediasMensais : dadosUso.mediasDiarias;
+        }
 
 
-        let listaPeriodos = periodo === "Anual" ? dadosUso.mediasMensais : dadosUso.mediasDiarias;
+        let corUsoMedio = "green";
+
+        if (!isNaN(mediaUso)) {
+
+            for (let i = gravidades.length - 1; i >= 0; i--) {
+                if (gravidades[i].valor <= mediaUso) {
+                    if (gravidades[i].nome_gravidade === "Baixo") corUsoMedio = "yellow";
+                    else if (gravidades[i].nome_gravidade === "Alto") corUsoMedio = "red";
+                    else corUsoMedio = "orange";
+                    break;
+                }
+            }
+        }
+
+        let corVariacao = "green";
+
+        if (!isNaN(taxaVariacao)) {
+
+            for (let i = gravidades.length - 1; i >= 0; i--) {
+                if (gravidades[i].valor <= taxaVariacao) {
+                    if (gravidades[i].nome_gravidade === "Baixo") corVariacao = "yellow";
+                    else if (gravidades[i].nome_gravidade === "Alto") corVariacao = "red";
+                    else corVariacao = "orange";
+                    break;
+                }
+            }
+        }
+
+
+
 
         // --- Renderizar o HTML ---
         containerGeral.innerHTML = `
@@ -150,11 +210,11 @@ async function mudarVisualizacao() {
                 <div class="Container-KPI-2">
                     <div class="KPI-2">
                         <h2>Uso médio ${palavraAntesComponente} ${nomeComponente}:</h2>
-                        <h1>${mediaUso.toFixed(2)}%</h1>
+                        <h1 style="color: ${corUsoMedio};">${mediaUso.toFixed(2)}%</h1>
                     </div>
                     <div class="KPI-2">
                         <h2>Taxa de variação:</h2>
-<h1>${taxaVariacao.toFixed(2)}%</h1>
+<h1 style="color: ${corVariacao};">${taxaVariacao.toFixed(2)}%</h1>
                     </div>
                 </div>
             </div>
@@ -201,7 +261,7 @@ async function mudarVisualizacao() {
                     },
                     {
                         label: '',
-                        data: Array(13).fill(70),
+                        data: Array(labelPeriodo.length).fill(gravidadeBaixo),
                         borderColor: 'rgba(255,0,0,1)',
                         backgroundColor: 'rgba(255,0,0,0.2)',
                         tension: 0.4,
