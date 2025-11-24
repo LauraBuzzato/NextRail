@@ -128,9 +128,9 @@ function cadastrarServidor(nome, fk_tipo, fk_so, fk_empresa, logradouro, cep, nu
 function criarComponentesServidor(servidorId) {
 
     const componentes = [
-        { nome: 'CPU', id: 1},
+        { nome: 'CPU', id: 1 },
         { nome: 'Memória RAM', id: 2 },
-        { nome: 'Disco Rígido', id: 3}
+        { nome: 'Disco Rígido', id: 3 }
     ];
     const gravidades = [1, 2, 3];
 
@@ -152,9 +152,9 @@ function criarComponentesServidor(servidorId) {
 
                 gravidades.forEach(gravidadeId => {
 
-                    if(gravidadeId == 1){
+                    if (gravidadeId == 1) {
                         nivelRecomend = 70;
-                    }else if (gravidadeId == 2) {
+                    } else if (gravidadeId == 2) {
                         nivelRecomend = 80;
                     } else {
                         nivelRecomend = 90;
@@ -295,7 +295,7 @@ function atualizarConfiguracaoScript(servidorId, configuracoes) {
                 WHERE s.id = ${servidorId}
             `;
 
-                const result = await database.executar(instrucaoScript);
+            const result = await database.executar(instrucaoScript);
 
             resolve(result);
 
@@ -782,7 +782,7 @@ GROUP BY a.fk_componenteServidor_servidor;
 
 function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
     let instrucaoSql = "";
-    
+
     if (periodo === "semanal") {
         instrucaoSql = `
             SELECT 
@@ -865,7 +865,7 @@ function atualizarConfiguracaoSla(dadosSla) {
 }
 
 function listarIncidentes(fkEmpresa) {
-  var instrucaoSql = `
+    var instrucaoSql = `
        SELECT emp.razao_social AS empresa,	srv.nome AS servidor, 
        status.descricao AS status, gv.nome AS gravidade, inicio, fim,
        TIMESTAMPDIFF(MINUTE, inicio, fim) AS duracao,
@@ -882,8 +882,21 @@ function listarIncidentes(fkEmpresa) {
        WHERE emp.id = ${fkEmpresa} and fk_status = 3
        ORDER BY srv.nome, inicio;
     `;
-  console.log("Executando SQL: \n" + instrucaoSql);
-  return database.executar(instrucaoSql);
+    console.log("Executando SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function paramsNomes(fk_servidor) {
+    var instrucaoSql = `
+    SELECT 
+    servidor.nome AS nome_servidor,
+    empresa.razao_social AS nome_empresa
+    FROM servidor
+    JOIN empresa ON servidor.fk_empresa = empresa.id
+    WHERE servidor.id = ${fk_servidor};
+    `
+    console.log("Executando SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
 // -------------------------------------------
@@ -1060,5 +1073,6 @@ module.exports = {
     listarIncidentes,
     buscarAlertasDoServidor,
     buscarParametrosDoServidor,
-    pegarUso
+    pegarUso,
+    paramsNomes
 };

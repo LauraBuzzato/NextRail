@@ -7,10 +7,12 @@ var componenteAtual = "cpu";
 var graficoLinha, graficoLatencia;
 var visaoGeralAtiva = true;
 
+
 const AWS_CONFIG = {
-    bucketName: 'bucket-client-teste-etl',
+    bucketName: 'teste-bucket-joao-pinheiro-client',
     region: 'us-east-1'
 };
+
 
 Chart.defaults.color = "#fff";
 Chart.defaults.font.family = "Poppins";
@@ -53,26 +55,50 @@ async function buscarDadosHistoricosAlertas(componente, periodo) {
     }
 }
 
+
 async function buscarDadosPrevisaoAWS() {
-    const empresa = sessionStorage.NOME_EMPRESA;
-    const servidor = sessionStorage.NOME_SERVIDOR;
-    const dataAtc = new Date();
-    const dia = ('0' + dataAtc.getDate()).slice(-2);
-    const mes = ('0' + (dataAtc.getMonth() + 1)).slice(-2); 
-    const ano = dataAtc.getFullYear();
-    const dataFormatada = `${dia}/${mes}/${ano}`;
-
     try {
-        const url = `https://${AWS_CONFIG.bucketName}.s3.${AWS_CONFIG.region}.amazonaws.com/${empresa}/${servidor}/previsoes/dadosPrev_${dataFormatada}.json`;
-
-        const response = await fetch(url);
+        const response = await fetch(`/servidores/paramsNomes/${testeServidor}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
 
         if (!response.ok) {
-            throw new Error(`Erro ao buscar dados: ${response.status}`);
+            throw new Error('Erro na resposta do servidor');
         }
 
-        const dados = await response.json();
-        return dados;
+        const dadosServidor = await response.json();
+
+        const empresa = dadosServidor[0].nome_empresa;
+        const servidor = dadosServidor[0].nome_servidor;
+
+        const dataAtc = new Date();
+        const dia = ('0' + dataAtc.getDate()).slice(-2);
+        const mes = ('0' + (dataAtc.getMonth() + 1)).slice(-2);
+        const ano = dataAtc.getFullYear();
+        const dataFormatada = `${dia}-${mes}-${ano}`;
+
+        const periodo = periodoSelect.value;
+        const url = `https://${AWS_CONFIG.bucketName}.s3.${AWS_CONFIG.region}.amazonaws.com/${empresa}/${servidor}/previsoes/dadosPrev_${dataFormatada}_${periodo}.json`;
+
+        const responseAWS = await fetch(url);
+
+        if (!responseAWS.ok) {
+            throw new Error(`Erro ao buscar dados: ${responseAWS.status}`);
+        }
+
+        const dadosNovos = await responseAWS.json();
+        
+        console.log('Dados recebidos do bucket:', dadosNovos);
+        
+        return {
+            cpu: dadosNovos.previsoes.cpu,
+            ram: dadosNovos.previsoes.ram,
+            disco: dadosNovos.previsoes.disco,
+            latencia: dadosNovos.previsoes.latencia
+        };
 
     } catch (error) {
         console.error('Erro ao buscar dados da AWS:', error);
@@ -85,7 +111,7 @@ function calcularPrevisaoTendencia(dadosHistoricos, numPrevisoes) {
     for (let i = 0; i < dadosHistoricos.length; i++) {
         dadosNumericos.push(Number(dadosHistoricos[i]) || 0);
     }
-    
+
     console.log('Dados numéricos para previsão:', dadosNumericos);
 
     if (dadosNumericos.length < 2) {
@@ -102,17 +128,17 @@ function calcularPrevisaoTendencia(dadosHistoricos, numPrevisoes) {
     let sumY = 0;
     let sumXY = 0;
     let sumX2 = 0;
-    
+
     for (let i = 0; i < n; i++) {
         sumX += i;
         sumY += dadosNumericos[i];
         sumXY += i * dadosNumericos[i];
         sumX2 += i * i;
     }
-    
+
     const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
-    
+
     console.log('Regressão - Slope:', slope, 'Intercept:', intercept, 'n:', n);
 
     const previsoes = [];
@@ -121,10 +147,12 @@ function calcularPrevisaoTendencia(dadosHistoricos, numPrevisoes) {
         previsao = Math.max(0, Math.round(previsao));
         previsoes.push(previsao);
     }
-    
+
     console.log('Previsões finais:', previsoes);
     return previsoes;
 }
+
+
 function processarDadosParaPrevisao(dadosReais, periodo) {
     if (dadosReais && dadosReais.alto && dadosReais.medio && dadosReais.baixo) {
         console.log('Dados já processados, retornando diretamente');
@@ -207,10 +235,12 @@ function destruirGrafico(grafico) {
     return null;
 }
 
+
 function limparTodosGraficos() {
     graficoLinha = destruirGrafico(graficoLinha);
     graficoLatencia = destruirGrafico(graficoLatencia);
 }
+
 
 function criarBotoesComponentes() {
     if (botoesCriados) {
@@ -281,6 +311,7 @@ function criarBotoesComponentes() {
     });
 }
 
+
 function toggleVisaoGeral() {
     visaoGeralAtiva = !visaoGeralAtiva;
     const btnVisaoGeral = document.getElementById('btnVisaoGeral');
@@ -315,6 +346,7 @@ function toggleVisaoGeral() {
     atualizarDashboard();
 }
 
+
 function calcularTaxaCrescimentoTotal(dados) {
     const taxas = {};
     for (const componente in dados) {
@@ -326,6 +358,7 @@ function calcularTaxaCrescimentoTotal(dados) {
     }
     return taxas;
 }
+
 
 function encontrarComponenteMaiorCrescimento(taxas) {
     let maiorComponente = '';
@@ -343,6 +376,7 @@ function encontrarComponenteMaiorCrescimento(taxas) {
     return { componente: maiorComponente, taxa: maiorTaxa.toFixed(1) };
 }
 
+
 async function atualizarDashboard() {
     const periodo = periodoSelect.value;
 
@@ -354,7 +388,7 @@ async function atualizarDashboard() {
 
     try {
         const dadosAWS = await buscarDadosPrevisaoAWS();
-        
+
         if (dadosAWS) {
             if (visaoGeralAtiva) {
                 renderGraficoLinhasMultiplas(dadosAWS);
@@ -373,6 +407,7 @@ async function atualizarDashboard() {
         }
     }
 }
+
 
 function renderGraficoLinhasMultiplas(dados) {
     const canvas = document.getElementById("graficoPrevisaoLinha");
@@ -466,6 +501,7 @@ function renderGraficoLinhasMultiplas(dados) {
         }
     });
 }
+
 
 function renderGraficoLinhaUnica(dados) {
     const canvas = document.getElementById("graficoPrevisaoLinha");
@@ -570,22 +606,25 @@ function renderGraficoLinhaUnica(dados) {
     });
 }
 
+
 function renderGraficoLatenciaGeral(dados) {
     const canvas = document.getElementById("graficoLatencia");
     if (!canvas) {
         return;
     }
-
     const periodo = periodoSelect.value;
-
     let labels, data;
 
     if (periodo === "semanal") {
         labels = ["Semana Passada", "Semana Atual", "Próxima Semana", "Semana +2"];
-        data = [65, 67, 63, 69];
+        data = dados.latencia ? dados.latencia.slice(0, 4) : [0, 0, 0, 0];
     } else {
         labels = ["Mês Passado", "Mês Atual", "Próximo Mês", "Mês +2"];
-        data = [62, 65, 63, 68];
+        data = dados.latencia ? dados.latencia.slice(0, 4) : [0, 0, 0, 0];
+    }
+    if (!dados.latencia || dados.latencia.length === 0) {
+        console.warn('Dados de latência não disponíveis');
+        data = [0, 0, 0, 0];
     }
 
     const ctx = canvas.getContext("2d");
@@ -709,8 +748,8 @@ async function renderGraficoAlertas() {
     console.log('Dados medios:', dadosProcessados.medio);
     console.log('Dados baixos:', dadosProcessados.baixo);
 
-    if (dadosProcessados.alto.length !== totalPontos || 
-        dadosProcessados.medio.length !== totalPontos || 
+    if (dadosProcessados.alto.length !== totalPontos ||
+        dadosProcessados.medio.length !== totalPontos ||
         dadosProcessados.baixo.length !== totalPontos) {
         console.log('Erro: Arrays de dados com tamanhos diferentes');
         return;
@@ -783,21 +822,33 @@ async function renderGraficoAlertas() {
     console.log('Gráfico criado com sucesso');
 }
 
+
 const cores = {
     cpu: "#a78bfa",
     ram: "#38bdf8",
     disco: "#ff89b0"
 };
 
-function atualizarKPIsGerais(dados) {
-    const taxas = calcularTaxaCrescimentoTotal(dados);
-    const maiorCrescimento = encontrarComponenteMaiorCrescimento(taxas);
 
+function atualizarKPIsGerais(dados) {
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
     const disponibilidade = 99.7;
     let periodo = periodoSelect.value === "semanal" ? "semanal" : "mensal";
+    const taxas = {};
+    
+    for (const componente in dados) {
+        if (componente !== 'latencia' && Array.isArray(dados[componente])) {
+            const valores = dados[componente];
+            if (valores.length >= 2) {
+                const crescimento = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
+                taxas[componente] = parseFloat(crescimento.toFixed(2));
+            }
+        }
+    }
 
-    const latenciaMedia = Object.values(dados.latencia).reduce((a, b) => a + b, 0) / 3;
+    const maiorCrescimento = encontrarComponenteMaiorCrescimento(taxas);
+    const latenciaMedia = Array.isArray(dados.latencia) && dados.latencia.length > 0 ?
+        dados.latencia.reduce((a, b) => a + b, 0) / dados.latencia.length : 0;
 
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
@@ -816,48 +867,42 @@ function atualizarKPIsGerais(dados) {
     `;
 }
 
+
 async function atualizarKPIs(dados) {
-    const valores = dados[componenteAtual];
-    let soma = 0;
-    for (let i = 0; i < valores.length; i++) {
-        soma += valores[i];
-    }
-    const mediaUso = (soma / valores.length).toFixed(1);
+    async function atualizarKPIs(dados) {
+        const valores = dados[componenteAtual];
+        const mediaUso = Array.isArray(valores) ?
+            (valores.reduce((a, b) => a + b, 0) / valores.length).toFixed(1) : "0.0";
 
-    const periodo = periodoSelect.value;
-
-    const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
-
-    const primeiroValor = valores[0];
-    const ultimoValor = valores[valores.length - 1];
-    let variacaoPercentual = 0;
-    if (primeiroValor !== 0) {
-        variacaoPercentual = ((ultimoValor - primeiroValor) / primeiroValor) * 100;
-    }
-
-    const alertasReais = await buscarDadosHistoricosAlertas(componenteAtual, periodo);
-    let alertaMaisFrequente = "Baixo";
-    if (alertasReais) {
-        let totalAlto = 0;
-        let totalMedio = 0;
-        let totalBaixo = 0;
-        
-        for (let i = 0; i < alertasReais.alto.length; i++) {
-            totalAlto += alertasReais.alto[i];
+        const periodo = periodoSelect.value;
+        const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
+        let variacaoPercentual = 0;
+        if (Array.isArray(valores) && valores.length >= 2 && valores[0] !== 0) {
+            variacaoPercentual = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
         }
-        for (let i = 0; i < alertasReais.medio.length; i++) {
-            totalMedio += alertasReais.medio[i];
-        }
-        for (let i = 0; i < alertasReais.baixo.length; i++) {
-            totalBaixo += alertasReais.baixo[i];
+        const alertasReais = await buscarDadosHistoricosAlertas(componenteAtual, periodo);
+        let alertaMaisFrequente = "Baixo";
+        if (alertasReais) {
+            let totalAlto = 0;
+            let totalMedio = 0;
+            let totalBaixo = 0;
+
+            for (let i = 0; i < alertasReais.alto.length; i++) {
+                totalAlto += alertasReais.alto[i];
+            }
+            for (let i = 0; i < alertasReais.medio.length; i++) {
+                totalMedio += alertasReais.medio[i];
+            }
+            for (let i = 0; i < alertasReais.baixo.length; i++) {
+                totalBaixo += alertasReais.baixo[i];
+            }
+
+            if (totalAlto > totalMedio && totalAlto > totalBaixo) alertaMaisFrequente = "Alto";
+            else if (totalMedio > totalBaixo) alertaMaisFrequente = "Médio";
         }
 
-        if (totalAlto > totalMedio && totalAlto > totalBaixo) alertaMaisFrequente = "Alto";
-        else if (totalMedio > totalBaixo) alertaMaisFrequente = "Médio";
-    }
-
-    if (periodo == "mensal") {
-        document.getElementById("kpisContainer").innerHTML = `
+        if (periodo == "mensal") {
+            document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
             <h2>Previsão de uso médio Mensal (${nomes[componenteAtual]})</h2>
             <p class="valor-kpi" id="kpi1"> ${mediaUso}%</p>
@@ -871,8 +916,8 @@ async function atualizarKPIs(dados) {
             <p class="valor-kpi" id="kpi2" style="color:${alertaMaisFrequente === 'Alto' ? 'red' : alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'}">${alertaMaisFrequente}</p>
         </div>
         `;
-    } else if (periodo == "semanal") {
-        document.getElementById("kpisContainer").innerHTML = `
+        } else if (periodo == "semanal") {
+            document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
             <h2>Previsão de uso médio Semanal (${nomes[componenteAtual]})</h2>
             <p class="valor-kpi" id="kpi1"> ${mediaUso}%</p>
@@ -886,17 +931,19 @@ async function atualizarKPIs(dados) {
             <p class="valor-kpi" id="kpi2" style="color:${alertaMaisFrequente === 'Alto' ? 'red' : alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'}">${alertaMaisFrequente}</p>
         </div>
         `;
-    }
+        }
 
-    const kpi1 = document.getElementById("kpi1");
-    if (nomes[componenteAtual] == "CPU") {
-        kpi1.style.color = `${cores.cpu}`;
-    } else if (nomes[componenteAtual] == "RAM") {
-        kpi1.style.color = `${cores.ram}`;
-    } else if (nomes[componenteAtual] == "Disco") {
-        kpi1.style.color = `${cores.disco}`;
+        const kpi1 = document.getElementById("kpi1");
+        if (nomes[componenteAtual] == "CPU") {
+            kpi1.style.color = `${cores.cpu}`;
+        } else if (nomes[componenteAtual] == "RAM") {
+            kpi1.style.color = `${cores.ram}`;
+        } else if (nomes[componenteAtual] == "Disco") {
+            kpi1.style.color = `${cores.disco}`;
+        }
     }
 }
+
 
 function inicializar() {
     criarBotoesComponentes();
@@ -911,6 +958,7 @@ function inicializar() {
 
     atualizarDashboard();
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     passagem = true;
