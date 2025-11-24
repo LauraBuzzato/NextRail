@@ -31,5 +31,9 @@ router.post("/atualizarSla", servidorController.atualizarConfiguracaoSla);
 router.get("/script/:servidorId", servidorController.buscarScriptServidor);
 router.post("/buscarAlertasHistorico", servidorController.buscarAlertasHistorico);
 
+router.get("/uso", function (req, res) {
+    servidorController.pegarUso(req, res);
+});
+
 
 module.exports = router;
