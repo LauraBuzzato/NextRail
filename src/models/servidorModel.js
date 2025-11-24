@@ -1,4 +1,18 @@
 var database = require("../database/config");
+require("dotenv").config({ path: ".env.dev" });
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+
+const BUCKET = process.env.S3_BUCKET_DADOS || "bucket-client-teste-etl";
+
+// pega credenciais do env.dev
+const s3 = new S3Client({
+    region: process.env.AWS_DEFAULT_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        sessionToken: process.env.AWS_SESSION_TOKEN
+    }
+});
 
 function listarEmpresas() {
     var instrucaoSql = `
@@ -885,6 +899,155 @@ function paramsNomes(fk_servidor) {
     return database.executar(instrucaoSql);
 }
 
+// -------------------------------------------
+// Funções auxiliares
+// -------------------------------------------
+
+// converte vírgula para ponto e transforma em número
+function normalizarValor(valor) {
+    if (valor === undefined || valor === null) return NaN;
+
+    if (typeof valor === "string") {
+        valor = valor.replace(",", ".");
+    }
+
+    const num = Number(valor);
+    return isFinite(num) ? num : NaN;
+}
+
+// média básica
+function calcularMedia(valores) {
+    if (!valores.length) return 0;
+    return valores.reduce((a, b) => a + b, 0) / valores.length;
+}
+
+// variância básica
+function calcularVariancia(valores) {
+    if (!valores.length) return 0;
+
+    const media = calcularMedia(valores);
+    const diffs = valores.map(v => Math.pow(v - media, 2));
+    return calcularMedia(diffs);
+}
+
+// stream → texto
+async function streamToString(stream) {
+    return await new Promise((resolve, reject) => {
+        const chunks = [];
+        stream.on("data", chunk => chunks.push(chunk));
+        stream.on("error", reject);
+        stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
+    });
+}
+
+// lê arquivo JSON do S3
+async function lerArquivoS3(bucket, key) {
+    const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
+    const resp = await s3.send(cmd);
+    const texto = await streamToString(resp.Body);
+    return JSON.parse(texto);
+}
+
+// mapeamento ID → coluna real do JSON
+const mapComponentes = {
+    1: "cpu_percent",
+    2: "memory_percent",
+    3: "memory_available",
+    4: "processos_ativos",
+    5: "disk_percent",
+    6: "disk_avl",
+    7: "latencia_media_ms"
+};
+
+// -------------------------------------------
+// FUNÇÃO PRINCIPAL (pronta para uso no controller)
+// -------------------------------------------
+
+async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
+    const campo = mapComponentes[componente];
+
+    if (!campo) {
+        throw new Error(`Componente inválido (${componente}).`);
+    }
+
+    let key = "";
+    if (tipo === "anual") {
+        key = `dadosDashComponentes/${empresa}/${servidor}/anual_${ano}.json`;
+    } else {
+        key = `dadosDashComponentes/${empresa}/${servidor}/mensal_${ano}-${mes}.json`;
+    }
+
+    const registros = await lerArquivoS3(BUCKET, key);
+
+    // ----------- Extrair valores ----------------
+    let valores = [];
+
+    for (let i = 0; i < registros.length; i++) {
+        const valor = normalizarValor(registros[i][campo]);
+        if (isFinite(valor)) valores.push(valor);
+    }
+
+    const variancia = calcularVariancia(valores);
+
+    // ----------------------------------------------------
+    //     MENSAL → agrupar por dia
+    // ----------------------------------------------------
+    if (tipo === "mensal") {
+        let dias = {};
+
+        for (let i = 0; i < registros.length; i++) {
+            const dia = registros[i].timestamp.split(" ")[0];
+            const valor = normalizarValor(registros[i][campo]);
+            if (!isFinite(valor)) continue;
+
+            if (!dias[dia]) dias[dia] = [];
+            dias[dia].push(valor);
+        }
+
+        let mediasDiarias = [];
+        for (let dia in dias) {
+            mediasDiarias.push({
+                dia: dia,
+                media: calcularMedia(dias[dia])
+            });
+        }
+
+        return {
+            mediaMensal: calcularMedia(valores),
+            variancia: variancia,
+            mediasDiarias: mediasDiarias
+        };
+    }
+
+    // ----------------------------------------------------
+    //     ANUAL → agrupar por mês
+    // ----------------------------------------------------
+    let meses = {};
+
+    for (let i = 0; i < registros.length; i++) {
+        const mesReg = Number(registros[i].timestamp.substring(5, 7));
+        const valor = normalizarValor(registros[i][campo]);
+        if (!isFinite(valor)) continue;
+
+        if (!meses[mesReg]) meses[mesReg] = [];
+        meses[mesReg].push(valor);
+    }
+
+    let mediasMensais = [];
+    for (let m in meses) {
+        mediasMensais.push({
+            mes: Number(m),
+            media: calcularMedia(meses[m])
+        });
+    }
+
+    return {
+        mediaAnual: calcularMedia(valores),
+        variancia: variancia,
+        mediasMensais: mediasMensais
+    };
+}
+
 module.exports = {
     listarEmpresas,
     listarTipos,
@@ -910,5 +1073,9 @@ module.exports = {
     listarIncidentes,
     buscarAlertasDoServidor,
     buscarParametrosDoServidor,
+<<<<<<< HEAD
     paramsNomes
+=======
+    pegarUso
+>>>>>>> 5d12b4536cbbd36cb6a26b85fab8688a1cc91b42
 };

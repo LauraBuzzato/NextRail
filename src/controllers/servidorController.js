@@ -443,6 +443,7 @@ function listarIncidentes(req, res) {
     });
 }
 
+<<<<<<< HEAD
 function paramsNomes(req, res) {
     var fk_servidor = req.params.fk_servidor;
     if (!fk_servidor) {
@@ -457,6 +458,52 @@ function paramsNomes(req, res) {
             console.log("Erro ao buscar nomes:", erro);
             res.status(500).json(erro.sqlMessage);
         });
+=======
+async function pegarUso(req, res) {
+    try {
+        const empresa = req.query.empresa;
+        const servidor = req.query.servidor;
+        const tipo = req.query.tipo; // "mensal" ou "anual"
+        const ano = req.query.ano;
+        const mes = req.query.mes;
+        const componente = req.query.componente;
+
+        // validações básicas
+        if (!empresa || !servidor || !tipo || !ano || !componente) {
+            return res.status(400).json({
+                erro: "Parâmetros obrigatórios ausentes. Envie empresa, servidor, tipo, ano, componente (e mes se mensal)."
+            });
+        }
+
+        console.log("[API] Pegando uso real do S3:", {
+            empresa,
+            servidor,
+            tipo,
+            ano,
+            mes,
+            componente
+        });
+
+        const resultado = await servidorModel.pegarUso(
+            empresa,
+            servidor,
+            tipo,
+            ano,
+            mes,
+            Number(componente)
+        );
+
+        return res.status(200).json(resultado);
+
+    } catch (erro) {
+        console.error("❌ Erro no pegarUso Controller:", erro);
+
+        return res.status(500).json({
+            erro: "Erro ao obter dados de uso",
+            detalhe: erro.message
+        });
+    }
+>>>>>>> 5d12b4536cbbd36cb6a26b85fab8688a1cc91b42
 }
 
 module.exports = {
@@ -484,5 +531,9 @@ module.exports = {
   listarIncidentes,
   buscarAlertasDoServidor,
   buscarParametrosDoServidor,
+<<<<<<< HEAD
   paramsNomes
+=======
+  pegarUso
+>>>>>>> 5d12b4536cbbd36cb6a26b85fab8688a1cc91b42
 };
