@@ -1,4 +1,18 @@
 var database = require("../database/config");
+require("dotenv").config({ path: ".env.dev" });
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+
+const BUCKET = process.env.S3_BUCKET_DADOS || "teste-bucket-joao-pinheiro-client";
+
+// pega credenciais do env.dev
+const s3 = new S3Client({
+    region: process.env.AWS_DEFAULT_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        sessionToken: process.env.AWS_SESSION_TOKEN
+    }
+});
 
 function listarEmpresas() {
     var instrucaoSql = `
@@ -114,9 +128,9 @@ function cadastrarServidor(nome, fk_tipo, fk_so, fk_empresa, logradouro, cep, nu
 function criarComponentesServidor(servidorId) {
 
     const componentes = [
-        { nome: 'CPU', id: 1},
+        { nome: 'CPU', id: 1 },
         { nome: 'Memória RAM', id: 2 },
-        { nome: 'Disco Rígido', id: 3}
+        { nome: 'Disco Rígido', id: 3 }
     ];
     const gravidades = [1, 2, 3];
 
@@ -138,9 +152,9 @@ function criarComponentesServidor(servidorId) {
 
                 gravidades.forEach(gravidadeId => {
 
-                    if(gravidadeId == 1){
+                    if (gravidadeId == 1) {
                         nivelRecomend = 70;
-                    }else if (gravidadeId == 2) {
+                    } else if (gravidadeId == 2) {
                         nivelRecomend = 80;
                     } else {
                         nivelRecomend = 90;
@@ -281,7 +295,7 @@ function atualizarConfiguracaoScript(servidorId, configuracoes) {
                 WHERE s.id = ${servidorId}
             `;
 
-                const result = await database.executar(instrucaoScript);
+            const result = await database.executar(instrucaoScript);
 
             resolve(result);
 
@@ -297,7 +311,8 @@ function buscarConfiguracoesServidor(servidorId) {
             tc.nome_tipo_componente as componente,
             g.id as gravidade_id,
             g.nome as gravidade_nome,
-            m.valor
+            m.valor,
+            m.sla
         FROM tipo_componente tc
         INNER JOIN componente_servidor cs ON tc.id = cs.fk_tipo_componente
         INNER JOIN metrica m ON m.fk_componenteServidor_servidor = cs.fk_servidor AND m.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
@@ -310,6 +325,38 @@ function buscarConfiguracoesServidor(servidorId) {
     return database.executar(instrucaoSql);
 }
 
+function buscarAlertasDoServidor(servidorId) {
+    var instrucaoSql = `
+        SELECT 	tc.nome_tipo_componente AS componente, g.nome AS gravidade, s.descricao AS status_alerta, a.inicio AS inicio, a.fim AS fim
+        FROM alerta AS a
+        INNER JOIN status AS s ON a.fk_status = s.id
+        INNER JOIN gravidade AS g ON a.fk_gravidade = g.id
+        INNER JOIN componente_servidor AS cs ON a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente AND a.fk_componenteServidor_servidor = cs.fk_servidor
+        INNER JOIN tipo_componente AS tc ON cs.fk_tipo_componente = tc.id
+        INNER JOIN servidor AS serv ON cs.fk_servidor = serv.id
+        WHERE serv.id = ${servidorId} AND inicio >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+        ORDER BY inicio DESC;
+    `;
+
+    console.log("Buscando alertas do servidor: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function buscarParametrosDoServidor(servidorId, componente) {
+    var instrucaoSql = `
+        SELECT m.valor AS valor
+        FROM metrica AS m
+        INNER JOIN componente_servidor AS cs ON m.fk_componenteServidor_servidor = cs.fk_servidor AND m.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+        INNER JOIN tipo_componente AS tc ON cs.fk_tipo_componente = tc.id
+        INNER JOIN servidor AS s ON s.id = cs.fk_servidor
+        WHERE tc.nome_tipo_componente = '${componente}' AND s.id = ${servidorId}
+        ORDER BY valor ASC;
+    `;
+
+    console.log("Buscando parametros do servidor: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 function buscarScriptServidor(servidorId) {
     var instrucaoSql = `
         SELECT intervalo, leituras_consecutivas_para_alerta AS leituras
@@ -318,7 +365,7 @@ function buscarScriptServidor(servidorId) {
         WHERE s.id = ${servidorId}
     `;
 
-    console.log("Buscando configurações do servidor: \n" + instrucaoSql);
+    console.log("Buscando configurações do script do servidor: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
 
@@ -735,13 +782,12 @@ GROUP BY a.fk_componenteServidor_servidor;
 
 function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
     let instrucaoSql = "";
-    
+
     if (periodo === "semanal") {
         instrucaoSql = `
             SELECT 
                 YEARWEEK(inicio) as semana,
                 COUNT(*) as total_alertas,
-                AVG(TIMESTAMPDIFF(HOUR, inicio, COALESCE(fim, NOW()))) as duracao_media_horas,
                 SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
                 SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
                 SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
@@ -756,7 +802,7 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
                 AND a.inicio >= DATE_SUB(CURDATE(), INTERVAL 8 WEEK)
             GROUP BY YEARWEEK(inicio)
             ORDER BY semana DESC
-            LIMIT 4;
+            LIMIT 6;
         `;
     } else {
         instrucaoSql = `
@@ -764,7 +810,6 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
                 YEAR(inicio) as ano,
                 MONTH(inicio) as mes,
                 COUNT(*) as total_alertas,
-                AVG(TIMESTAMPDIFF(HOUR, inicio, COALESCE(fim, NOW()))) as duracao_media_horas,
                 SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
                 SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
                 SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
@@ -787,6 +832,302 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
     return database.executar(instrucaoSql);
 }
 
+function atualizarConfiguracaoSla(dadosSla) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let queries = [
+
+                `UPDATE metrica SET sla = ${dadosSla.baixo} 
+                 WHERE fk_componenteServidor_servidor = ${dadosSla.servidorId} AND fk_gravidade = 1`,
+
+                `UPDATE metrica SET sla = ${dadosSla.medio} 
+                 WHERE fk_componenteServidor_servidor = ${dadosSla.servidorId} AND fk_gravidade = 2`,
+
+                `UPDATE metrica SET sla = ${dadosSla.alto} 
+                 WHERE fk_componenteServidor_servidor = ${dadosSla.servidorId} AND fk_gravidade = 3`
+            ];
+
+            let results = [];
+            for (let query of queries) {
+                console.log("Executando update GLOBAL de SLA: " + query);
+                const result = await database.executar(query);
+                results.push(result);
+            }
+
+            resolve(results);
+
+        } catch (error) {
+            console.error("Erro ao atualizar SLA:", error);
+            reject(error);
+        }
+    });
+}
+
+function listarIncidentes(fkEmpresa) {
+    var instrucaoSql = `
+       SELECT emp.razao_social AS empresa,	srv.nome AS servidor, 
+       status.descricao AS status, gv.nome AS gravidade, inicio, fim,
+       TIMESTAMPDIFF(MINUTE, inicio, fim) AS duracao,
+       mt.sla
+       FROM alerta
+       JOIN status ON status.id = fk_status
+       JOIN gravidade gv ON gv.id = fk_gravidade
+       JOIN servidor srv ON srv.id = fk_componenteServidor_servidor
+       JOIN tipo_componente tc ON tc.id = fk_componenteServidor_tipoComponente
+       JOIN metrica mt ON srv.id = mt.fk_componenteServidor_servidor
+                      AND tc.id = mt.fk_componenteServidor_tipoComponente
+                      AND gv.id = mt.fk_gravidade
+       JOIN empresa emp ON emp.id = srv.fk_empresa
+       WHERE emp.id = ${fkEmpresa} and fk_status = 3
+       ORDER BY srv.nome, inicio;
+    `;
+    console.log("Executando SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+
+}
+
+function paramsNomes(fk_servidor) {
+    var instrucaoSql = `
+    SELECT 
+    servidor.nome AS nome_servidor,
+    empresa.razao_social AS nome_empresa
+    FROM servidor
+    JOIN empresa ON servidor.fk_empresa = empresa.id
+    WHERE servidor.id = ${fk_servidor};
+    `
+    console.log("Executando SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+// converte vírgula para ponto e transforma em número
+function normalizarValor(valor) {
+    if (valor === undefined || valor === null) return NaN;
+
+    if (typeof valor === "string") {
+        valor = valor.replace(",", ".");
+    }
+
+    const num = Number(valor);
+    return isFinite(num) ? num : NaN;
+}
+
+function calcularMedia(valores) {
+    if (!valores.length) return 0;
+
+    let soma = 0;
+    for (let i = 0; i < valores.length; i++) {
+        soma += valores[i];
+    }
+
+    return soma / valores.length;
+}
+
+function calcularVariancia(valores) {
+    if (!valores.length) return 0;
+
+    const media = calcularMedia(valores);
+
+    let soma = 0;
+    for (let i = 0; i < valores.length; i++) {
+        const valor = valores[i] - media;
+        soma += valor * valor;
+    }
+
+    const variancia = soma / valores.length;
+    return Math.sqrt(variancia);
+}
+
+function calcularDesvioPadrao(valores) {
+    if (!valores.length) return 0;
+
+    const media = calcularMedia(valores);
+    let soma = 0;
+
+    for (let i = 0; i < valores.length; i++) {
+        soma += Math.pow(valores[i] - media, 2);
+    }
+
+    return Math.sqrt(soma / valores.length);
+}
+
+
+function calcularTaxaVariacao(valores) {
+    const media = calcularMedia(valores);
+    if (media === 0) return 0;
+
+    const desvio = calcularDesvioPadrao(valores);
+    return (desvio / media) * 100;
+}
+
+
+
+// stream → texto
+async function streamToString(stream) {
+    return await new Promise((resolve, reject) => {
+        const chunks = [];
+        stream.on("data", chunk => chunks.push(chunk));
+        stream.on("error", reject);
+        stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
+    });
+}
+
+// lê arquivo JSON do S3
+async function lerArquivoS3(bucket, key) {
+    const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
+    const resp = await s3.send(cmd);
+    const texto = await streamToString(resp.Body);
+    return JSON.parse(texto);
+}
+
+// mapeamento ID → coluna real do JSON
+const mapComponentes = {
+    1: "cpu_percent",
+    2: "memory_percent",
+    3: "memory_available",
+    4: "processos_ativos",
+    5: "disk_percent",
+    6: "disk_avl",
+    7: "latencia_media_ms"
+};
+
+async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
+    const campo = mapComponentes[componente];
+    if (!campo) throw new Error(`Componente inválido (${componente}).`);
+
+    let key = tipo === "anual"
+        ? `dadosDashComponentes/${empresa}/${servidor}/anual_${ano}.json`
+        : `dadosDashComponentes/${empresa}/${servidor}/mensal_${ano}-${mes}.json`;
+
+    const registros = await lerArquivoS3(BUCKET, key);
+
+    // Extrair valores válidos
+    let valores = [];
+    for (let i = 0; i < registros.length; i++) {
+        const valor = normalizarValor(registros[i][campo]);
+        if (isFinite(valor)) valores.push(valor);
+    }
+    const taxaVariacao = calcularTaxaVariacao(valores);
+
+    // --- MENSAL → agrupar por dia ---
+    if (tipo === "mensal") {
+        let dias = {};
+        for (let i = 0; i < registros.length; i++) {
+            const dia = registros[i].timestamp.split(" ")[0];
+            const valor = normalizarValor(registros[i][campo]);
+            if (!isFinite(valor)) continue;
+
+            if (!dias[dia]) dias[dia] = [];
+            dias[dia].push(valor);
+        }
+
+        let mediasDiarias = [];
+        for (let dia in dias) {
+            mediasDiarias.push({
+                dia: dia,
+                media: calcularMedia(dias[dia])
+            });
+        }
+
+        return {
+            mediaMensal: calcularMedia(valores),
+            taxaVariacao: taxaVariacao,
+            mediasDiarias: mediasDiarias
+        };
+    }
+
+    // --- ANUAL → agrupar por mês ---
+    let meses = {};
+    for (let i = 0; i < registros.length; i++) {
+        const mesReg = Number(registros[i].timestamp.substring(5, 7));
+        const valor = normalizarValor(registros[i][campo]);
+        if (!isFinite(valor)) continue;
+
+        if (!meses[mesReg]) meses[mesReg] = [];
+        meses[mesReg].push(valor);
+    }
+
+    let mediasMensais = [];
+    for (let m in meses) {
+        mediasMensais.push({
+            mes: Number(m),
+            media: calcularMedia(meses[m])
+        });
+    }
+
+    return {
+        mediaAnual: calcularMedia(valores),
+        taxaVariacao: taxaVariacao,
+        mediasMensais: mediasMensais
+    };
+}
+
+async function pegarPrevisao(servidorId, periodo) {
+    try {
+        const dadosServidor = await paramsNomes(servidorId);
+        
+        if (!dadosServidor || dadosServidor.length === 0) {
+            throw new Error('Servidor não encontrado');
+        }
+
+        const empresa = dadosServidor[0].nome_empresa;
+        const servidor = dadosServidor[0].nome_servidor;
+
+        const dataAtc = new Date();
+        const dia = ('0' + dataAtc.getDate()).slice(-2);
+        const mes = ('0' + (dataAtc.getMonth() + 1)).slice(-2);
+        const ano = dataAtc.getFullYear();
+        const dataFormatada = `${dia}-${mes}-${ano}`;
+
+        const key = `${empresa}/${servidor}/previsoes/dadosPrev_${dataFormatada}_${periodo}.json`;
+        const dadosNovos = await lerArquivoS3(BUCKET, key);
+        
+        console.log('Dados recebidos do S3:', dadosNovos);
+        
+        return {
+            cpu: dadosNovos.previsoes.cpu,
+            ram: dadosNovos.previsoes.ram,
+            disco: dadosNovos.previsoes.disco,
+            latencia: dadosNovos.previsoes.latencia
+        };
+
+    } catch (error) {
+        console.error('Erro ao buscar previsão do S3:', error);
+        return null;
+    }
+}
+
+
+
+// Tentativa pegar dados s3
+
+const AWS = require("aws-sdk");
+
+async function pegarJsonDoS3() {
+    console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
+
+    const path = "dadosDashAlertas/Empresa_Teste/Servidor01/mensal_2025-11.json"; 
+
+    const s3 = new AWS.S3({
+    region: "us-east-1" 
+});
+
+    const params = {
+        Bucket: process.env.BUCKET_ALERTAS,   
+        Key: path
+    };
+
+    try {
+        const data = await s3.getObject(params).promise();
+        const jsonStr = data.Body.toString("utf-8");
+        return JSON.parse(jsonStr);
+    } catch (error) {
+        console.error("Erro ao acessar o S3:", error);
+        throw error;
+    }
+}
+
+
 module.exports = {
     listarEmpresas,
     listarTipos,
@@ -807,5 +1148,13 @@ module.exports = {
     pegarFrequencia,
     atualizarConfiguracaoScript,
     buscarScriptServidor,
-    buscarAlertasHistorico
+    buscarAlertasHistorico,
+    atualizarConfiguracaoSla,
+    listarIncidentes,
+    buscarAlertasDoServidor,
+    buscarParametrosDoServidor,
+    pegarUso,
+    paramsNomes,
+    pegarPrevisao,
+    pegarJsonDoS3
 };

@@ -189,6 +189,43 @@ function buscarConfiguracoesServidor(req, res) {
         });
 }
 
+function buscarAlertasDoServidor(req, res) {
+    var servidorId = req.params.servidorId;
+
+    if (!servidorId) {
+        res.status(400).send("ID do servidor não informado!");
+        return;
+    }
+
+    servidorModel.buscarAlertasDoServidor(servidorId)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
+function buscarParametrosDoServidor(req, res) {
+    var servidorId = req.params.servidorId;
+    var componente = req.params.componente;
+
+    if (!servidorId) {
+        res.status(400).send("ID do servidor não informado!");
+        return;
+    }
+    if (!componente) {
+        res.status(400).send("Componente do servidor não informado!");
+        return;
+    }
+
+    servidorModel.buscarParametrosDoServidor(servidorId, componente)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
 function buscarScriptServidor(req, res) {
     var servidorId = req.params.servidorId;
 
@@ -368,6 +405,135 @@ function buscarAlertasHistorico(req, res) {
         });
 }
 
+function atualizarConfiguracaoSla(req, res) {
+    var dadosSla = req.body;
+
+    if (!dadosSla.servidorId || !dadosSla.baixo || !dadosSla.medio || !dadosSla.alto) {
+        res.status(400).json({ 
+            success: false, 
+            message: "Preencha todos os campos de tempo (Baixo, Médio e Alto)!" 
+        });
+        return;
+    }
+
+    servidorModel.atualizarConfiguracaoSla(dadosSla)
+        .then(
+            function (resultado) {
+                res.json({
+                    success: true,
+                    message: 'SLA atualizado com sucesso!'
+                });
+            }
+        )
+        .catch(
+            function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
+}
+
+function listarIncidentes(req, res) {
+  var fkEmpresa = req.body.idempresa;
+  servidorModel.listarIncidentes(fkEmpresa)
+    .then(resultado => res.json(resultado))
+    .catch(erro => {
+      console.log(erro);
+      res.status(500).json(erro.sqlMessage);
+    });
+}
+
+async function pegarUso(req, res) {
+    try {
+        const empresa = req.query.empresa;
+        const servidor = req.query.servidor;
+        const tipo = req.query.tipo; // "mensal" ou "anual"
+        const ano = req.query.ano;
+        const mes = req.query.mes;
+        const componente = req.query.componente;
+
+        // validações básicas
+        if (!empresa || !servidor || !tipo || !ano || !componente) {
+            return res.status(400).json({
+                erro: "Parâmetros obrigatórios ausentes. Envie empresa, servidor, tipo, ano, componente (e mes se mensal)."
+            });
+        }
+
+        console.log("[API] Pegando uso real do S3:", {
+            empresa,
+            servidor,
+            tipo,
+            ano,
+            mes,
+            componente
+        });
+
+        const resultado = await servidorModel.pegarUso(
+            empresa,
+            servidor,
+            tipo,
+            ano,
+            mes,
+            Number(componente)
+        );
+
+        return res.status(200).json(resultado);
+
+    } catch (erro) {
+        console.error("Erro no pegarUso Controller:", erro);
+
+        return res.status(500).json({
+            erro: "Erro ao obter dados de uso",
+            detalhe: erro.message
+        });
+    }
+}
+
+function paramsNomes(req, res) {
+    var fk_servidor = req.params.fk_servidor;
+    if (!fk_servidor) {
+        res.status(400).send("ID do servidor não informado!");
+        return;
+    }
+    servidorModel.paramsNomes(fk_servidor)
+        .then(resultado => {
+            res.json(resultado);
+        })
+        .catch(erro => {
+            console.log("Erro ao buscar nomes:", erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
+
+function pegarPrevisao(req, res) {
+    const { servidorId, periodo } = req.body;
+
+    if (!servidorId || !periodo) {
+        return res.status(400).json({ error: "servidorId e periodo são obrigatórios" });
+    }
+
+    servidorModel.pegarPrevisao(servidorId, periodo)
+        .then(dados => {
+            res.json(dados);
+        })
+        .catch(error => {
+            console.error("Erro no controller:", error);
+            res.status(500).json({ error: "Erro interno do servidor" });
+        });
+}
+
+
+ async function listarDadosAlertas(req, res) {
+    try {
+        const dados = await servidorModel.pegarJsonDoS3();
+        return res.status(200).json(dados);
+    } catch (erro) {
+        console.log("Erro ao listar alertas:", erro.message);
+        return res.status(500).json({ erro: "Erro ao buscar dados do S3" });
+    }
+}
+
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -388,5 +554,13 @@ module.exports = {
   pegarFrequencia,
   atualizarConfiguracaoScript,
   buscarScriptServidor,
-  buscarAlertasHistorico
+  buscarAlertasHistorico,
+  atualizarConfiguracaoSla,
+  listarIncidentes,
+  buscarAlertasDoServidor,
+  buscarParametrosDoServidor,
+  pegarUso,
+  paramsNomes,
+  pegarPrevisao,
+  listarDadosAlertas
 };

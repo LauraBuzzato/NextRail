@@ -1,6 +1,7 @@
 :root{
     --amarelo: #ffe066;
     --grafico: #1a1a2e;
+    --linhas-grid: ; /*Variável aterada dinâmicamente pelo javascript (função criarTabela)*/
 }
 
 /* ================== FUNDO PRINCIPAL ================== */
@@ -41,7 +42,7 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  height: 100vh;
+  height: 85vh;
   width: 100%;
 }
 
@@ -233,7 +234,7 @@ body {
 }
 
 .kpi-1, .kpi-2, .kpi-3 {
-  height: 25vh;
+  height: 42vh;
   width: 83%;
   background-color: var(--grafico);
   border-radius: 13px;
@@ -241,7 +242,7 @@ body {
 }
 
 .kpi-1 .kpi-titulo, .kpi-2 .kpi-titulo, .kpi-3 .kpi-titulo {
-  height: 25%;
+  height: 10%;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -285,7 +286,7 @@ body {
 
 .graficos-container {
   height: 50%;
-  margin-top: 3%;
+  margin-top: 1.5%;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -320,7 +321,7 @@ body {
 /* ================== Histórico de alertas ================== */
 .container-tabela-dinamica{
   height: 90%;
-  width: 55%;
+  width: 75%;
   display: flex; 
   flex-direction: column;
   justify-content: space-evenly;
@@ -340,7 +341,7 @@ body {
 }
 
 .tabela-titulo{
-  height: 20%;
+  height: 15%;
   width: 100%;
   font-size: 2.5rem;
   display: flex;
@@ -368,11 +369,11 @@ body {
 }
 
 .tabela-conteudo{
-  height: 60%;
+  height: 69%;
   width: 98%;
   display: grid;
-  grid-template-columns: 22% 20% 20% 16% 22%;
-  grid-template-rows: 25% 25% 25% 25% 25% 25% 25%;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+  grid-template-rows: var(--linhas-grid);
   overflow-y: auto;
 }
 
@@ -419,8 +420,7 @@ body {
   grid-column: 1 / -1;     
   text-align: center;      
   color: #ffe066; 
-  margin-bottom: 1rem;
-  font-size: 4rem;     
+  font-size: 3rem;     
 }
 
 .desempenho {
@@ -456,14 +456,6 @@ body {
   padding-bottom: 0px;
 }
 
-
-.grafico-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
 .carrossel-botoes button {
   font-size: 20px;
   background: none;
@@ -475,10 +467,14 @@ body {
 
 
 .grafico-header {
-  position: relative;
-  height: 80px; 
+  height: 10%;
   width: 100%;
-  margin-bottom: 28px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--amarelo);
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 

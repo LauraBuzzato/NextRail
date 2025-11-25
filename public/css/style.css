@@ -639,6 +639,60 @@ main {
   align-self: center;
 }
 
+#botaoTrocaSla {
+  cursor: pointer;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #ffe066;
+  background-color: black;
+  width: 13vw;
+  height: 8vh;
+  align-self: center;
+}
+
+#botaoScript {
+  cursor: pointer;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #ffe066;
+  background-color: black;
+  width: 13vw;
+  height: 8vh;
+  align-self: center;
+}
+
+
+#botaoSla {
+  cursor: pointer;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #ffe066;
+  background-color: black;
+  width: 13vw;
+  height: 8vh;
+  align-self: center;
+}
+
+
+#botaoAlerta {
+  cursor: pointer;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #ffe066;
+  background-color: black;
+  width: 13vw;
+  height: 8vh;
+  align-self: center;
+}
+
 #botaoTroca:hover{
   background-color: rgb(221, 221, 221);
   color: black;
@@ -678,6 +732,7 @@ main {
   color: #ffe066;
   margin-bottom: 15px;
 }
+
 .botao_script {
   cursor: pointer;
   border: 0;
@@ -757,7 +812,8 @@ main {
   display: flex;
   flex-direction: column;
   background-color:#181a20;
-  height: 20%;
+  height: auto;
+  min-height: 200px;
   width: 90%;
   border-radius: 18px;
   padding: 20px;
@@ -802,10 +858,15 @@ main {
   justify-content: space-evenly;
 }
 
+input::placeholder {
+  text-align: center;
+}
+
 .alerta_componente {
   display: flex;
   color: #ffe066;
   font-weight: bold;
+  justify-content: center;
   align-items: center;
 }
 .titulo_select {
@@ -824,6 +885,9 @@ main {
 .titulo_select>select option {
   appearance: none;
 }
+
+
+
 
 /* ================== SELECIONAR SERVIDOR ================== */
 .selecionar_servidor {

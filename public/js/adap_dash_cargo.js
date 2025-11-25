@@ -146,19 +146,49 @@ function inicializarGraficosSuporte() {
   setTimeout(() => {
     if (typeof dash_suporte === 'function') {
       console.log('Inicializando gráficos do suporte...');
-      try {
+      /*try {
         dash_suporte();
       } catch (error) {
         console.error('Erro ao inicializar gráficos do suporte:', error);
+      }*/
+      try {
+        kpi_suporte('ram');
+      } catch (error) {
+        console.error("Erro ao inicializar a kpi ram:", error)
+      }
+      try {
+        kpi_suporte('cpu');
+      } catch (error) {
+        console.error("Erro ao inicializar a kpi cpu:", error)
+      }
+      try {
+        kpi_suporte('disco');
+      } catch (error) {
+        console.error("Erro ao inicializar a kpi disco:", error)
       }
     } else {
       console.error('dash_suporte não disponível');
       setTimeout(() => {
         if (typeof dash_suporte === 'function') {
-          try {
+          /*try {
             dash_suporte();
           } catch (error) {
             console.error('Erro na segunda tentativa do suporte:', error);
+          }*/
+          try {
+            kpi_suporte('ram');
+          } catch (error) {
+            console.error('Erro na segunda tentativa da kpi ram:', error);
+          }
+          try {
+            kpi_suporte('cpu');
+          } catch (error) {
+            console.error('Erro na segunda tentativa da kpi cpu:', error);
+          }
+          try {
+            kpi_suporte('disco');
+          } catch (error) {
+            console.error('Erro na segunda tentativa da kpi disco:', error);
           }
         }
       }, 1000);
@@ -217,7 +247,31 @@ async function atualizar(a) {
     dash_suporte.innerHTML = `
     <div class="container-pagina">
       <h1 class="bem-vindo">Uso dos Componentes: ${localStorage.NOME_SERVIDOR}</span></h1>
-      <div class="legenda">
+      <section class="conteudo-principal">
+        <div class="kpi-container">
+          <div class="kpi-1">
+            <div class="kpi-titulo">Uso de memória RAM atual</div>
+            <canvas id="grafico_ram"></canvas>
+          </div>
+          <div class="kpi-2">
+            <div class="kpi-titulo">Uso de CPU atual</div>
+            <canvas id="grafico_cpu"></canvas>
+          </div>
+          <div class="kpi-3">
+            <div class="kpi-titulo">Uso de DISCO atual</div>
+            <canvas id="grafico_disco"></canvas>
+          </div>
+        </div>
+
+          <div class="graficos-container">
+            <!--<div class="grafico-box">
+    <div class="grafico-header">Leituras mais frequentes nas últimas 24 horas</div>
+    <canvas id="graficoSuporte"></canvas>
+  </div>-->
+
+          <div class="container-tabela-dinamica">
+            <div class="tabela-titulo">Histórico de alertas da semana</div>
+            <div class="legenda">
       <div class="opcaoLegenda">
         <div class="bloco_cor" style="background-color:green"></div>
         <p>Sem Alerta </p>
@@ -238,58 +292,6 @@ async function atualizar(a) {
         <p>Alerta Alto</p>
       </div>
     </div>
-      <section class="conteudo-principal">
-        <div class="kpi-container">
-          <div class="kpi-1">
-            <div class="kpi-titulo">Uso de memória RAM atual</div>
-            <div class="kpi-conteudo"><span style="color: rgba(255, 0, 0, 1);">90%</span></div>
-            <div class="kpi-passado">Leitura anterior: 78%</div>
-          </div>
-          <div class="kpi-2">
-            <div class="kpi-titulo">Uso de CPU atual</div>
-            <div class="kpi-conteudo"><span style="color: yellow;">74%</span></div>
-            <div class="kpi-passado">Leitura anterior: 88%</div>
-          </div>
-          <div class="kpi-3">
-            <div class="kpi-titulo">Uso de DISCO atual</div>
-            <div class="kpi-conteudo"><span style="color: rgb(24, 216, 24);">53%</span></div>
-            <div class="kpi-passado">Leitura anterior: 48%</div>
-          </div>
-        </div>
-
-          <div class="graficos-container">
-            <div class="grafico-box">
-              <div class="grafico-header">
-              <button id="btnPrev" class="grafico-btn btn-esquerda"><svg fill="#000000" width="50px" height="30px" viewBox="0 0 24 24"
-     id="left-circle" data-name="Flat Color"
-     xmlns="http://www.w3.org/2000/svg"
-     class="icon flat-color">
-  <g id="SVGRepo_iconCarrier">
-    <circle id="primary" cx="12" cy="12" r="10"></circle>
-    <path id="secondary"
-          d="M13,16a1,1,0,0,1-.71-.29l-3-3a1,1,0,0,1,0-1.42l3-3a1,1,0,0,1,1.42,1.42L11.41,12l2.3,2.29a1,1,0,0,1,0,1.42A1,1,0,0,1,13,16Z">
-    </path>
-  </g>
-</svg></button>
-              <h3 class="grafico-titulo">Uso dos componentes nas últimas 24 horas</h3>
-              <button id="btnNext" class="grafico-btn btn-direita"><svg fill="#000000" width="50px" height="30px" viewBox="0 0 24 24"
-     id="right-circle" data-name="Flat Color"
-     xmlns="http://www.w3.org/2000/svg"
-     class="icon flat-color">
-  <g id="SVGRepo_iconCarrier">
-    <circle id="primary" cx="12" cy="12" r="10"></circle>
-    <path id="secondary"
-          d="M11,16a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.42L12.59,12l-2.3-2.29a1,1,0,0,1,1.42-1.42l3,3a1,1,0,0,1,0,1.42l-3,3A1,1,0,0,1,11,16Z">
-    </path>
-  </g>
-</svg></button>
-            </div>
-            <canvas id="graficoSuporte"></canvas>
-              </div>
-
-          <div class="container-tabela-dinamica">
-            <div class="tabela-titulo">Histórico de alertas da última semana</div>
-            <span class="quantidade-alertas">Quantidade de alertas do ${localStorage.NOME_SERVIDOR} na última semana: 6</span>
             <div id="tabela-conteudo" class="tabela-conteudo"></div>
           </div>
         </div>
@@ -304,10 +306,7 @@ async function atualizar(a) {
     setTimeout(() => {
       inicializarGraficosSuporte();
       criarTabela()
-
-      setTimeout(() => {
-        configurarCarrosselSuporte();
-      }, 300);
+      
     }, 200);
 
   } else { // ANALISTA DE INFRAESTRUTURA
@@ -490,83 +489,4 @@ function analisaCargo() {
   }
 
   return mudanca;
-}
-
-
-
-function configurarCarrosselSuporte() {
-  const btnNext = document.getElementById('btnNext');
-  const btnPrev = document.getElementById('btnPrev');
-
-  if (!btnNext || !btnPrev) {
-    console.error('Botões do carrossel não encontrados. Tentando novamente em 100ms...');
-
-    return;
-  }
-
-  const newBtnNext = btnNext.cloneNode(true);
-  const newBtnPrev = btnPrev.cloneNode(true);
-
-  btnNext.parentNode.replaceChild(newBtnNext, btnNext);
-  btnPrev.parentNode.replaceChild(newBtnPrev, btnPrev);
-
-  newBtnNext.addEventListener('click', () => {
-    indiceAtual = (indiceAtual + 1) % 4;
-    atualizarVisibilidadeSuporte();
-  });
-
-  newBtnPrev.addEventListener('click', () => {
-    indiceAtual = (indiceAtual - 1 + 4) % 4;
-    atualizarVisibilidadeSuporte();
-  });
-
-  console.log('Carrossel do suporte configurado com sucesso');
-}
-
-function atualizarVisibilidadeSuporte() {
-  if (!graficoSuporte) {
-    console.error('Gráfico do suporte não inicializado');
-    return;
-  }
-
-  const datasets = graficoSuporte.data.datasets;
-  const legendas = ['Todos os Componentes', 'CPU', 'RAM', 'Disco'];
-
-  const tituloGrafico = document.querySelector('.grafico-box h3');
-  if (tituloGrafico) {
-    tituloGrafico.textContent = `Uso de ${legendas[indiceAtual]} nas últimas 24 horas`;
-  }
-
-  // Controlar visibilidade dos datasets
-  switch (indiceAtual) {
-    case 0: // Todos
-      datasets[0].hidden = false;
-      datasets[1].hidden = false;
-      datasets[2].hidden = false;
-      datasets[3].hidden = true;
-      break;
-    case 1: // CPU
-      datasets[0].hidden = false;
-      datasets[1].hidden = true;
-      datasets[2].hidden = true;
-      datasets[3].hidden = false;
-      datasets[3].data = Array(13).fill(70)
-      break;
-    case 2: // RAM
-      datasets[0].hidden = true;
-      datasets[1].hidden = false;
-      datasets[2].hidden = true;
-      datasets[3].hidden = false;
-      datasets[3].data = Array(13).fill(60)
-      break;
-    case 3: // Disco
-      datasets[0].hidden = true;
-      datasets[1].hidden = true;
-      datasets[2].hidden = false;
-      datasets[3].hidden = false;
-      datasets[3].data = Array(13).fill(65)
-      break;
-  }
-
-  graficoSuporte.update();
 }

@@ -1,72 +1,130 @@
-var opcao = 0
 
-function alterarPagina(){
-    if (opcao == 0){
-        opcao = 1
-        document.getElementById('tituloPagina').innerHTML = 'Configurar Parâmetros de Script'
-        document.getElementById('botaoTroca').innerHTML = 'Configurar Alerta'
-    }
-    else if (opcao == 1){
-        opcao = 0
-        document.getElementById('tituloPagina').innerHTML = 'Configurar Parâmetros de Alerta'
-        document.getElementById('botaoTroca').innerHTML = 'Configurar Script'
-    }
-    carregarServidores(opcao)
+var opcao = 0; // 0 = alerta | 1 = script | 2 = sla
+
+function abrirScript() {
+    opcao = 1;
+    atualizarPagina();
 }
+
+function abrirSla() {
+    opcao = 2;
+    atualizarPagina();
+}
+
+function voltarParaAlerta() {
+    opcao = 0;
+    atualizarPagina();
+}
+
+
+
+function atualizarPagina() {
+
+    const titulo = document.getElementById('tituloPagina');
+    const botoes = document.getElementById('botoesTopo');
+    const container = document.getElementById('configuracaoContainer');
+
+    // limpa só o conteúdo de baixo
+    container.innerHTML = '';
+    container.appendChild(titulo);
+    container.appendChild(botoes);
+
+    if (opcao === 0) {
+        titulo.innerHTML = "Configurar Parâmetros de Alerta";
+
+        botoes.innerHTML = `
+        <div id="botoesTopo" class="botoes-container">  
+            <button onclick="abrirScript()" id="botaoScript">Configurar Script</button>
+            <button onclick="abrirSla()" id="botaoSla">Configurar SLA</button>
+        </div>
+        `;
+
+        carregarServidores(0);
+    }
+
+    if (opcao === 1) {
+        titulo.innerHTML = "Configurar Parâmetros de Script";
+
+        botoes.innerHTML = `
+            <div id="botoesTopo" class="botoes-container">  
+            <button onclick="voltarParaAlerta()" id="botaoAlerta">Configurar Alertas</button>
+            <button onclick="abrirSla()" id="botaoSla">Configurar SLA</button>
+            </div>
+        `;
+
+        carregarServidores(1);
+    }
+
+    if (opcao === 2) {
+        titulo.innerHTML = "Configurar Parâmetros de SLA";
+
+        botoes.innerHTML = `
+            <div id="botoesTopo" class="botoes-container">  
+            <button onclick="abrirScript()" id="botaoScript">Configurar Script</button>
+            <button onclick="voltarParaAlerta()" id="botaoAlerta">Configurar Alertas</button>
+            </div>
+        `;
+
+        carregarServidores(2);
+    }
+}
+
 
 function carregarServidores(opcao) {
     console.log('Iniciando carregamento de servidores...');
-    
+
     fetch('/servidores/listarServidores', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
     })
-    .then(response => {
-        console.log('Status da resposta:', response.status);
-        console.log('URL da resposta:', response.url);
-        
-        if (!response.ok) {
-            throw new Error('Erro ao carregar servidores: ' + response.status);
-        }
-        return response.json();
-    })
-    .then(servidores => {
-        console.log('Servidores carregados:', servidores);
-        exibirServidores(servidores, opcao);
-    })
-    .catch(error => {
-        console.error('Erro ao carregar servidores:', error);
-        const container = document.getElementById('configuracaoContainer');
-        const erroDiv = document.createElement('div');
-        erroDiv.className = 'sem-servidores';
-        erroDiv.innerHTML = `
+        .then(response => {
+            console.log('Status da resposta:', response.status);
+            console.log('URL da resposta:', response.url);
+
+            if (!response.ok) {
+                throw new Error('Erro ao carregar servidores: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(servidores => {
+            console.log('Servidores carregados:', servidores);
+            exibirServidores(servidores, opcao);
+        })
+        .catch(error => {
+            console.error('Erro ao carregar servidores:', error);
+            const container = document.getElementById('configuracaoContainer');
+            const erroDiv = document.createElement('div');
+            erroDiv.className = 'sem-servidores';
+            erroDiv.innerHTML = `
             <p>Erro ao carregar servidores. Verifique o console.</p>
             <p>URL tentada: /servidores/listarServidores</p>
         `;
-        container.appendChild(erroDiv);
-    });
+            container.appendChild(erroDiv);
+        });
 }
 
 function exibirServidores(servidores, opcao) {
     const container = document.getElementById('configuracaoContainer');
-    
-    // Remove o conteúdo existente, mantendo apenas o título e o botão de troca
-    const titulo = container.querySelector('h1');
-    const botao = container.querySelector('button');
-    container.innerHTML = '';
+
+    const titulo = document.getElementById('tituloPagina');
+    const botoesTopo = document.getElementById('botoesTopo');
+
+    // limpar apenas a parte dos servidores
+    container.innerHTML = "";
+
     container.appendChild(titulo);
-    container.appendChild(botao);
+    container.appendChild(botoesTopo);
 
     console.log('Todos os servidores:', servidores);
 
     // Filtra servidores
-    const reguladores = servidores.filter(s => 
+    const reguladores = servidores.filter(s =>
         s.tipo && s.tipo.toLowerCase().includes('regulador')
     );
-    
-    const ctcs = servidores.filter(s => 
+
+    const ctcs = servidores.filter(s =>
         s.tipo && s.tipo.toLowerCase().includes('ctc')
     );
 
@@ -102,13 +160,13 @@ function exibirServidores(servidores, opcao) {
 }
 
 function criarContainerServidor(servidor, numero, tipo, opcao) {
-    if (opcao == 0){
+    if (opcao == 0) {
 
         const div = document.createElement('div');
         div.className = 'container_servidor';
-    div.id = `servidor-${servidor.id}`;
-    
-    div.innerHTML = `
+        div.id = `servidor-${servidor.id}`;
+
+        div.innerHTML = `
         <div class="linha_titulo">
             <div class="titulo_servidor">
                 <h2>${servidor.nome}</h2>
@@ -184,20 +242,20 @@ function criarContainerServidor(servidor, numero, tipo, opcao) {
             </div>
             </div>
             `;
-            
-            // Carrega as configurações existentes após criar o container
-            setTimeout(() => {
-                carregarConfiguracoesServidor(servidor.id);
-            }, 100);
-            
-            return div;
-        }
-        else if (opcao == 1){
-            const div = document.createElement('div');
-    div.className = 'container_servidor_script';
-    div.id = `servidor-${servidor.id}`;
-    
-    div.innerHTML = `
+
+        // Carrega as configurações existentes após criar o container
+        setTimeout(() => {
+            carregarConfiguracoesServidor(servidor.id);
+        }, 100);
+
+        return div;
+    }
+    else if (opcao == 1) {
+        const div = document.createElement('div');
+        div.className = 'container_servidor_script';
+        div.id = `servidor-${servidor.id}`;
+
+        div.innerHTML = `
         <div class="linha_titulo_script">
             <div class="titulo_servidor_script">
                 <h2>${servidor.nome}</h2>
@@ -221,14 +279,68 @@ function criarContainerServidor(servidor, numero, tipo, opcao) {
             </div>
         </div>
     `;
-    
-    // Carrega as configurações existentes após criar o container
-    setTimeout(() => {
-                carregarScriptServidor(servidor.id);
-            }, 100);
-    
-    return div;
-        }
+
+        // Carrega as configurações existentes após criar o container
+        setTimeout(() => {
+            carregarScriptServidor(servidor.id);
+        }, 100);
+
+        return div;
+    }
+
+
+
+
+
+
+    else if (opcao == 2) { // CONFIGURAÇÃO DE SLA 
+        const div = document.createElement('div');
+        div.className = 'container_servidor';
+        div.id = `servidor-sla-${servidor.id}`;
+
+        div.style.cssText = "height: auto; min-height: 250px; align-items: center; justify-content: center;";
+
+        div.innerHTML = `
+        <div class="linha_titulo" style="width: 100%; margin-bottom: 30px;">
+            <div class="titulo_servidor">
+                <h2>${servidor.nome}</h2>
+                <span class="tipo_servidor">${servidor.tipo}</span>
+            </div>
+            <button class="botao" onclick="salvarConfiguracaoSla(${servidor.id})">Salvar SLA</button>
+        </div>
+        
+        <div class="linha_servidor" style="flex-direction: column; height: auto; width: 100%; gap: 10px; align-items: center;">
+            
+            <strong style="color: #ffe066; font-size: 1.3rem; margin-bottom: 20px;">Tempo Limite de Resolução (Minutos)</strong>
+
+            <div style="display: flex; width: 90%; justify-content: space-around; gap: 20px;">
+                
+                <div class="titulo_select" style="flex: 1;">
+                    <label style="color: #ffe066; margin-bottom: 10px; font-size: 1.3rem;">Baixo:</label>
+                    <input type="number" id="sla_min_${servidor.id}" placeholder="min" style="text-align: center;">
+                </div>
+
+                <div class="titulo_select" style="flex: 1;">
+                    <label style="color: #ffe066; margin-bottom: 10px; font-size: 1.3rem;">Médio:</label>
+                    <input type="number" id="sla_alr_${servidor.id}" placeholder="min" style="text-align: center;">
+                </div>
+
+                <div class="titulo_select" style="flex: 1;">
+                    <label style="color: #ffe066; margin-bottom: 10px; font-size: 1.3rem;">Alto:</label>
+                    <input type="number" id="sla_max_${servidor.id}" placeholder="min" style="text-align: center;">
+                </div>
+
+            </div>
+            <p style="color: #aaa; margin-top: 20px; font-size: 0.9rem;"> O tempo definido será aplicado a todos os componentes (CPU, RAM e Disco).</p>
+        </div>
+        `;
+
+        setTimeout(() => {
+            carregarConfiguracoesSla(servidor.id);
+        }, 100);
+
+        return div;
+    }
 }
 
 function salvarConfiguracaoScript(servidorId) {
@@ -243,9 +355,9 @@ function salvarConfiguracaoScript(servidorId) {
     console.log(config)
 
     if (config.configuracoes.intervalo == null || config.configuracoes.intervalo == null
-        || config.configuracoes.intervalo <= 0 || config.configuracoes.leitura <= 0){
-            alert('Deu erro ao salvar as configurações.')
-            return;
+        || config.configuracoes.intervalo <= 0 || config.configuracoes.leitura <= 0) {
+        alert('Deu erro ao salvar as configurações.')
+        return;
     }
 
     console.log('Salvando configuração para servidor', servidorId, ':', config);
@@ -257,20 +369,20 @@ function salvarConfiguracaoScript(servidorId) {
         },
         body: JSON.stringify(config)
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Todas as configurações salvas com sucesso!', data);
-            alert(' Configurações salvas com sucesso!');
-        } else {
-            console.error('Erro ao salvar configurações:', data);
-            alert( + data.message); 
-        }
-    })
-    .catch(error => {
-        console.error('Erro na requisição:', error);
-        alert('Erro de conexão ao salvar configurações.');
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Todas as configurações salvas com sucesso!', data);
+                alert(' Configurações salvas com sucesso!');
+            } else {
+                console.error('Erro ao salvar configurações:', data);
+                alert(+ data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erro na requisição:', error);
+            alert('Erro de conexão ao salvar configurações.');
+        });
 }
 
 function gerarOpcoesPercentual() {
@@ -317,20 +429,20 @@ function salvarConfiguracao(servidorId) {
         },
         body: JSON.stringify(config)
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Todas as configurações salvas com sucesso!', data);
-            alert(' Configurações salvas com sucesso!');
-        } else {
-            console.error('Erro ao salvar configurações:', data);
-            alert( + data.message); 
-        }
-    })
-    .catch(error => {
-        console.error('Erro na requisição:', error);
-        alert('Erro de conexão ao salvar configurações.');
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Todas as configurações salvas com sucesso!', data);
+                alert(' Configurações salvas com sucesso!');
+            } else {
+                console.error('Erro ao salvar configurações:', data);
+                alert(+ data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erro na requisição:', error);
+            alert('Erro de conexão ao salvar configurações.');
+        });
 }
 
 function validarOrdemFrontend(configuracoes) {
@@ -353,7 +465,7 @@ function validarOrdemFrontend(configuracoes) {
     if (!validarComponente(configuracoes.cpu.baixo, configuracoes.cpu.medio, configuracoes.cpu.alto, 'CPU')) return false;
     if (!validarComponente(configuracoes.ram.baixo, configuracoes.ram.medio, configuracoes.ram.alto, 'RAM')) return false;
     if (!validarComponente(configuracoes.disco.baixo, configuracoes.disco.medio, configuracoes.disco.alto, 'Disco')) return false;
-    
+
     return true;
 }
 
@@ -370,13 +482,13 @@ function salvarMetrica(servidorId, componente, gravidade, valor) {
             valor: valor
         })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (!data.success) {
-            throw new Error(data.message);
-        }
-        return data;
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+            return data;
+        });
 }
 
 function carregarConfiguracoesServidor(servidorId) {
@@ -417,7 +529,7 @@ function preencherSelectComponente(servidorId, componente, valores) {
 
     Object.keys(valores).forEach(gravidade => {
         const sufixo = mapeamento[gravidade];
-        
+
         let selectId;
         if (componente === 'CPU') {
             selectId = `cpu_${sufixo}_${servidorId}`;
@@ -426,15 +538,15 @@ function preencherSelectComponente(servidorId, componente, valores) {
         } else if (componente === 'Disco Rígido') {
             selectId = `disco_${sufixo}_${servidorId}`;
         }
-        
+
         const selectElement = document.getElementById(selectId);
-        
+
         if (selectElement) {
             selectElement.value = valores[gravidade];
             console.log(` Preenchendo ${selectId} com valor:`, valores[gravidade]);
         } else {
             console.warn(`Select não encontrado: ${selectId}`);
-            
+
             const allSelects = document.querySelectorAll('select');
             const availableIds = Array.from(allSelects).map(select => select.id).filter(id => id.includes(servidorId));
             console.log(`Selects disponíveis para servidor ${servidorId}:`, availableIds);
@@ -457,4 +569,80 @@ function carregarScriptServidor(servidorId) {
 function preencherInputs(servidorId, configuracoes) {
     document.getElementById(`intervalo_${servidorId}`).value = configuracoes[0].intervalo
     document.getElementById(`leituras_consecutivas_${servidorId}`).value = configuracoes[0].leituras
+}
+
+
+
+function carregarConfiguracoesSla(servidorId) {
+    fetch(`/servidores/configuracoes/${servidorId}`)
+        .then(response => response.json())
+        .then(configuracoes => {
+            console.log('Carregando SLA:', configuracoes);
+
+            const configBaixo = configuracoes.find(c => c.gravidade_id == 1);
+            const configMedio = configuracoes.find(c => c.gravidade_id == 2);
+            const configAlto = configuracoes.find(c => c.gravidade_id == 3);
+
+            const inputBaixo = document.getElementById(`sla_min_${servidorId}`);
+            const inputMedio = document.getElementById(`sla_alr_${servidorId}`);
+            const inputAlto = document.getElementById(`sla_max_${servidorId}`);
+
+            //Baixo
+            if (inputBaixo) {
+                if (configBaixo && configBaixo.sla) {
+                    inputBaixo.value = configBaixo.sla;
+                } else {
+                    inputBaixo.value = 0;
+                }
+            }
+
+            //Médio
+            if (inputMedio) {
+                if (configMedio && configMedio.sla) {
+                    inputMedio.value = configMedio.sla;
+                } else {
+                    inputMedio.value = 0;
+                }
+            }
+
+            //Alto
+            if (inputAlto) {
+                if (configAlto && configAlto.sla) {
+                    inputAlto.value = configAlto.sla;
+                } else {
+                    inputAlto.value = 0;
+                }
+            }
+
+        })
+        .catch(erro => console.error("Erro ao carregar SLA:", erro));
+}
+
+function salvarConfiguracaoSla(servidorId) {
+    const dadosSla = {
+        servidorId: servidorId,
+        baixo: document.getElementById(`sla_min_${servidorId}`).value,
+        medio: document.getElementById(`sla_alr_${servidorId}`).value,
+        alto: document.getElementById(`sla_max_${servidorId}`).value
+    };
+
+    console.log("Enviando SLA Global para salvar:", dadosSla);
+
+    fetch('/servidores/atualizarSla', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dadosSla)
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('SLA atualizado com sucesso para todos os componentes!');
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Erro ao salvar SLA.');
+        });
 }

@@ -37,6 +37,7 @@ function entrar() {
             sessionStorage.ID_USUARIO = json.id;
             sessionStorage.CARGO_USUARIO = json.cargo;
             sessionStorage.ID_EMPRESA = json.empresaId;
+            sessionStorage.NOME_EMPRESA = json.nomeEmpresa;
 
             setTimeout(() => {
                 if (json.cargo === "Suporte técnico" || json.cargo === "Analista de infraestrutura") {

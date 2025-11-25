@@ -32,53 +32,20 @@
   <main class="dashAdmin">
     <h1>Empresa - Equipe de Suporte</h1>
 
-    <div class="card_legenda">
-      <div class="legenda">
-        <div class="opcaoLegenda">
-          <div class="bloco_cor" style="background-color:yellow"></div>
-          <p>Alerta Baixo</p>
-        </div>
-        <p>|</p>
-        <div class="opcaoLegenda">
-          <div class="bloco_cor" style="background-color:darkorange"></div>
-          <p>Alerta Médio</p>
-        </div>
-        <p>|</p>
-        <div class="opcaoLegenda">
-          <div class="bloco_cor" style="background-color:red"></div>
-          <p>Alerta Alto</p>
-        </div>
-        <div class="opcaoLegenda" id="mostrarTodos" onclick="listarServidorTodos()">
-      </div>
-    </div>
-      <div>
-        <div>
-          <span class="desc">MTTA:</span> Tempo médio para um alerta ser Reconhecido
-        </div>
-        <div>
-          <span class="desc">MTTR:</span> Tempo médio de resolução de um alerta        
-        </div>
-        <div>
-          <span class="desc">MTBF:</span> Tempo médio entre alertas
-        </div>
-      </div>
-    </div>
-
     <div class="linha">
       <div class="kpi">
         <div class="titulo">MTTA</div>
-        <div class="conteudo">
+        <div id="mtta" class="conteudo">
           5 min.
-<ion-icon name="arrow-up-outline" style="color: red;" class="seta"></ion-icon>
         </div>
       </div>
       <div class="kpi">
         <div class="titulo">MTTR (Geral)</div>
-        <div class="conteudo">1 hora</div>
+        <div id="mttr-geral" class="conteudo"></div>
       </div>
       <div class="kpi">
         <div class="titulo">MTBF</div>
-        <div class="conteudo">8 dias</div>
+        <div id="mtbf" class="conteudo">8 dias</div>
       </div>
       <div class="kpi, kpi_sla" id="kpi_sla">
         <div class="titulo">Alertas resolvidos dentro do SLA 
@@ -99,17 +66,61 @@
 
     <div class="linha">
       <div class="cardGrafico">
-        <h2>Tempo de Resolução em relação a Meta 
-          <button id="muda-alerta" onclick="mudarAlerta()" class="mudaAlerta">></button>
-        </h2>
+        <h2>Tempo de Resolução em relação a Meta</h2>
+          <div class="servidorAlerta">
+            <select name="" id="muda-servidor" onchange="mudarServidor()" class="mudaAlerta"></select>
+            
+            <button id="muda-alerta" onclick="mudarAlerta()" class="mudaAlerta">Alto</button>
+          </div>
         <canvas id="tempoSla"></canvas>
       </div>
 
       <div class="cardGrafico">
-        <h2>Tickets por Suporte</h2>
+        <h2 id="titulo-ticket">Tickets por Suporte</h2>
         <canvas id="ticketsSup"></canvas>
       </div>
     </div>
+
+    <div class="card_legenda">
+      <div class="legenda">
+        <div class="opcaoLegenda">
+          <div class="bloco_cor" style="background-color:yellow"></div>
+          <p>Alerta Baixo</p>
+        </div>
+        <p>|</p>
+        <div class="opcaoLegenda">
+          <div class="bloco_cor" style="background-color:darkorange"></div>
+          <p>Alerta Médio</p>
+        </div>
+        <p>|</p>
+        <div class="opcaoLegenda">
+          <div class="bloco_cor" style="background-color:red"></div>
+          <p>Alerta Alto</p>
+        </div>
+        <div class="opcaoLegenda" id="mostrarTodos" onclick="listarServidorTodos()">
+      </div>
+    </div>
+      <div class="descricoes">
+        <div class="desc">
+          <span>MTTA:</span> Tempo médio para um alerta ser Reconhecido
+        </div>
+        <div class="desc">
+          <span>MTTR:</span> Tempo médio de resolução de um alerta        
+        </div>
+        <div class="desc">
+          <span>MTBF:</span> Tempo médio entre alertas
+        </div>
+        <div class="desc">
+          <ion-icon name="arrow-up-outline" style="color: red; width: 50px;" class="seta"></ion-icon>
+          Aumento em relação ao último mês
+        </div>
+        <div class="desc">
+          <ion-icon name="arrow-down-outline" style="color: green; width: 50px;" class="seta"></ion-icon>
+          Redução em relação ao último mês
+        </div>
+      </div>
+    </div>
+
   </main>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
