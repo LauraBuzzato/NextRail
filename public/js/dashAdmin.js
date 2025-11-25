@@ -130,13 +130,13 @@ function criarKpis() {
     let totalMtbf = 0
     for (let i = 0; i < listDate.length; i++) {
         if (i > 0) {
-            diff.push(listDate[i-1].getTime() - listDate[i].getTime())
-            totalMtbf += (listDate[i-1].getTime() - listDate[i].getTime())
+            diff.push(listDate[i].getTime() - listDate[i-1].getTime())
+            totalMtbf += (listDate[i].getTime() - listDate[i-1].getTime())
         }
     }
-    //console.log('diff: ',diff)
-    //console.log('mtbf MS: ',(totalMtbf/diff.length))
-    mtbf.innerText = `${Math.round((totalMtbf/diff.length)/(1000 * 60 * 60))} horas`
+    let mediaMtbf = totalMtbf/diff.length
+    let horasMtbf = Math.round((mediaMtbf)/(1000 * 60 * 60))
+    mtbf.innerText = `${horasMtbf} horas`
 
 }
 
