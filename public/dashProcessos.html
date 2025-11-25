@@ -88,18 +88,18 @@
         <h2>Acompanhamento diário dos Processos</h2>
       </div>
 
-      <div class="container-geral" id="containerGeral">
+      <div class="container-geral" id="containerGeral" style="max-width: 98%; margin: 0 auto;">
         <div class="container-KPIS">
           <div class="KPI">
-            <h2>Número máximo de processos:</h2>
+            <h2>Pico de processos do dia:</h2>
             <h2 id="maximoProcessos">700</h2>
           </div>
           <div class="KPI">
-            <h2>Média de processos:</h2>
+            <h2>Média de processos do dia:</h2>
             <h2 id="mediaProcessos">277</h2>
           </div>
           <div class="KPI">
-            <h2>Processo com maior uso de memória:</h2>
+            <h2>Processo com maior uso de memória do dia:</h2>
             <h2 id="textoProcessoFrequente">script.py</h2>
           </div>
         </div>
@@ -132,37 +132,7 @@
 </body>
 
 <script>
-  const caminho = window.location.pathname;
   const ctx = document.getElementById('frequenciaProcessosChart');
-
-  const isProcessos = caminho.includes("/dashProcessos.html/")
-
-  const arquivo = caminho.split("/dashProcessos.html/")[1];
-
-  if (!arquivo) {
-    document.getElementById('raw-data').textContent = 
-      "Nenhum arquivo informado";
-    return
-  }
-
-  const resposta = await fetch(`/dashProcessos.html/${arquivo}`);
-  const data = await resposta.json();
-
-  document.getElementById("raw-data").textContent = 
-    JSON.stringify(data, null, 2);
-
-  if(isProcessos) return;
-
-  if(!Array.isArray(data) || data.length === 0) return;
-
-  const keys = Object.keys(data[0]);
-  const labelKey = keys[0];
-  const valueKey = keys[1];
-
-  const labels = data.map(d => d[labelKey]);
-  const values = data.map(d => Number(d[valueKey]) || 0);
-
-  document.getElementById("charts").style.display = "block";
 
   new Chart(ctx, {
     type: 'bar',
