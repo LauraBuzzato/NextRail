@@ -2,7 +2,7 @@ var database = require("../database/config");
 require("dotenv").config({ path: ".env.dev" });
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 
-const BUCKET = process.env.S3_BUCKET_DADOS || "bucket-client-teste-etl";
+const BUCKET = process.env.S3_BUCKET_DADOS || "teste-bucket-joao-pinheiro-client";
 
 // pega credenciais do env.dev
 const s3 = new S3Client({

@@ -742,10 +742,10 @@ async function renderGraficoAlertas() {
             labels: labels,
             datasets: [
                 {
-                    label: "Alertas Altos",
-                    data: dadosProcessados.alto,
-                    backgroundColor: "rgba(244, 67, 54, 0.8)",
-                    borderColor: "rgba(244, 67, 54, 1)",
+                    label: "Alertas Baixos",
+                    data: dadosProcessados.baixo,
+                    backgroundColor: "rgba(255, 235, 59, 0.8)",
+                    borderColor: "rgba(255, 235, 59, 1)",
                     borderWidth: 1
                 },
                 {
@@ -756,10 +756,10 @@ async function renderGraficoAlertas() {
                     borderWidth: 1
                 },
                 {
-                    label: "Alertas Baixos",
-                    data: dadosProcessados.baixo,
-                    backgroundColor: "rgba(255, 235, 59, 0.8)",
-                    borderColor: "rgba(255, 235, 59, 1)",
+                    label: "Alertas Altos",
+                    data: dadosProcessados.alto,
+                    backgroundColor: "rgba(244, 67, 54, 0.8)",
+                    borderColor: "rgba(244, 67, 54, 1)",
                     borderWidth: 1
                 }
             ]
