@@ -1,4 +1,3 @@
-const { pegarPrevisao } = require("../controllers/servidorController");
 var database = require("../database/config");
 require("dotenv").config({ path: ".env.dev" });
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");

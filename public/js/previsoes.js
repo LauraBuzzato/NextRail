@@ -8,12 +8,6 @@ var graficoLinha, graficoLatencia;
 var visaoGeralAtiva = true;
 
 
-const AWS_CONFIG = {
-    bucketName: 'teste-bucket-joao-pinheiro-client',
-    region: 'us-east-1'
-};
-
-
 Chart.defaults.color = "#fff";
 Chart.defaults.font.family = "Poppins";
 
