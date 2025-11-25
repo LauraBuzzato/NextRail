@@ -1098,6 +1098,36 @@ async function pegarPrevisao(servidorId, periodo) {
 }
 
 
+
+// Tentativa pegar dados s3
+
+const AWS = require("aws-sdk");
+
+async function pegarJsonDoS3() {
+    console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
+
+    const path = "dadosDashAlertas/Empresa_Teste/Servidor01/mensal_2025-11.json"; 
+
+    const s3 = new AWS.S3({
+    region: "us-east-1" 
+});
+
+    const params = {
+        Bucket: process.env.BUCKET_ALERTAS,   
+        Key: path
+    };
+
+    try {
+        const data = await s3.getObject(params).promise();
+        const jsonStr = data.Body.toString("utf-8");
+        return JSON.parse(jsonStr);
+    } catch (error) {
+        console.error("Erro ao acessar o S3:", error);
+        throw error;
+    }
+}
+
+
 module.exports = {
     listarEmpresas,
     listarTipos,
@@ -1125,5 +1155,6 @@ module.exports = {
     buscarParametrosDoServidor,
     pegarUso,
     paramsNomes,
-    pegarPrevisao
+    pegarPrevisao,
+    pegarJsonDoS3
 };

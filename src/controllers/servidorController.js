@@ -523,6 +523,17 @@ function pegarPrevisao(req, res) {
 }
 
 
+ async function listarDadosAlertas(req, res) {
+    try {
+        const dados = await servidorModel.pegarJsonDoS3();
+        return res.status(200).json(dados);
+    } catch (erro) {
+        console.log("Erro ao listar alertas:", erro.message);
+        return res.status(500).json({ erro: "Erro ao buscar dados do S3" });
+    }
+}
+
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -550,5 +561,6 @@ module.exports = {
   buscarParametrosDoServidor,
   pegarUso,
   paramsNomes,
-  pegarPrevisao
+  pegarPrevisao,
+  listarDadosAlertas
 };

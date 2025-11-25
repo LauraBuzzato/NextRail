@@ -36,5 +36,8 @@ router.get("/uso", function (req, res) {
     servidorController.pegarUso(req, res);
 });
 
+router.get("/dados", function (req, res) {
+    servidorController.listarDadosAlertas(req, res);
+});
 
 module.exports = router;
