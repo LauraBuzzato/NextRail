@@ -69,9 +69,9 @@ async function buscarDadosPrevisaoAWS() {
         }
 
         const dadosNovos = await response.json();
-        
+
         console.log('Dados recebidos do backend:', dadosNovos);
-        
+
         return dadosNovos;
 
     } catch (error) {
@@ -409,21 +409,47 @@ function renderGraficoLinhasMultiplas(dados) {
 
     for (const componente in dados) {
         if (componente !== 'latencia') {
+            const dadosCompletos = dados[componente];
+            const numHistorico = dados.historico || 2;
+            const numPrevisao = dados.previsao || 2;
+
+            const dadosHistorico = dadosCompletos.slice(0, numHistorico);
+            const dadosPrevisao = dadosCompletos.slice(numHistorico, numHistorico + numPrevisao);
             datasets.push({
-                label: `${nomes[componente]} (%)`,
-                data: dados[componente].slice(0, 4),
+                label: nomes[componente],
+                data: dadosHistorico.concat(Array(numPrevisao).fill(null)),
                 borderColor: cores[componente],
                 backgroundColor: `${cores[componente]}20`,
                 fill: false,
                 tension: 0.4,
                 borderWidth: 3,
                 pointRadius: 5,
-                pointBackgroundColor: cores[componente]
+                pointBackgroundColor: cores[componente],
+                spanGaps: true
+            });
+
+            const dadosPrevisaoComPontoInicial = [dadosHistorico[numHistorico - 1]].concat(dadosPrevisao);
+            const dadosTracejados = Array(numHistorico - 1).fill(null).concat(dadosPrevisaoComPontoInicial);
+
+            datasets.push({
+                label: nomes[componente] + " (previsão)",
+                data: dadosTracejados,
+                borderColor: cores[componente],
+                backgroundColor: `${cores[componente]}20`,
+                fill: false,
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 3,
+                pointBackgroundColor: cores[componente],
+                borderDash: [5, 5],
+                spanGaps: true,
+                isDashed: true
             });
         }
     }
 
     const ctx = canvas.getContext("2d");
+
     graficoLinha = new Chart(ctx, {
         type: "line",
         data: {
@@ -437,6 +463,10 @@ function renderGraficoLinhasMultiplas(dados) {
                 legend: {
                     display: true,
                     labels: {
+                        filter: function (legendItem, chartData) {
+                            const dataset = chartData.datasets[legendItem.datasetIndex];
+                            return !dataset.isDashed;
+                        },
                         color: '#fff',
                         font: {
                             size: 15
@@ -493,7 +523,7 @@ function renderGraficoLinhaUnica(dados) {
         cpu: 70,
         ram: 70,
         disco: 80
-    }
+    };
 
     const nomes = {
         cpu: "CPU",
@@ -505,34 +535,63 @@ function renderGraficoLinhaUnica(dados) {
         ? ["Semana Passada", "Semana Atual", "Próxima Semana", "Semana +2"]
         : ["Mês Passado", "Mês Atual", "Próximo Mês", "Mês +2"];
 
+    const dadosCompletos = dados[componenteAtual];
+    const numHistorico = dados.historico || 2;
+    const numPrevisao = dados.previsao || 2;
+
+    const dadosHistorico = dadosCompletos.slice(0, numHistorico);
+    const dadosPrevisao = dadosCompletos.slice(numHistorico, numHistorico + numPrevisao);
+
+    const datasets = [];
+
+    datasets.push({
+        label: nomes[componenteAtual],
+        data: dadosHistorico.concat(Array(numPrevisao).fill(null)),
+        borderColor: cores[componenteAtual],
+        backgroundColor: `${cores[componenteAtual]}20`,
+        fill: false,
+        tension: 0.4,
+        borderWidth: 3,
+        pointRadius: 5,
+        pointBackgroundColor: cores[componenteAtual],
+        spanGaps: true
+    });
+
+    const dadosPrevisaoComPontoInicial = [dadosHistorico[numHistorico - 1]].concat(dadosPrevisao);
+    const dadosTracejados = Array(numHistorico - 1).fill(null).concat(dadosPrevisaoComPontoInicial);
+
+    datasets.push({
+        label: nomes[componenteAtual] + " (previsão)",
+        data: dadosTracejados,
+        borderColor: cores[componenteAtual],
+        backgroundColor: `${cores[componenteAtual]}20`,
+        fill: false,
+        tension: 0.4,
+        borderWidth: 3,
+        pointRadius: 3,
+        pointBackgroundColor: cores[componenteAtual],
+        borderDash: [6, 6],
+        spanGaps: true,
+        isDashed: true 
+    });
+
+    datasets.push({
+        label: "Limite alerta",
+        data: Array(labels.length).fill(Number(limite[componenteAtual])),
+        borderColor: "yellow",
+        backgroundColor: "rgba(166, 161, 84, 0.2)",
+        tension: 0.4,
+        fill: false,
+        pointRadius: 0
+    });
+
     const ctx = canvas.getContext("2d");
+
     graficoLinha = new Chart(ctx, {
         type: "line",
         data: {
             labels,
-            datasets: [
-                {
-                    label: `${nomes[componenteAtual]} (%)`,
-                    data: dados[componenteAtual].slice(0, 4),
-                    borderColor: cores[componenteAtual],
-                    backgroundColor: `${cores[componenteAtual]}20`,
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 3,
-                    pointRadius: 5,
-                    pointBackgroundColor: cores[componenteAtual]
-                },
-                {
-                    label: 'Limite alerta',
-                    data: Array(4).fill(Number(limite[componenteAtual])),
-                    borderColor: 'yellow',
-                    backgroundColor: 'rgba(166, 161, 84, 0.2)',
-                    tension: 0.4,
-                    fill: false,
-                    pointRadius: 0,
-                    datalabels: { display: false }
-                }
-            ]
+            datasets
         },
         options: {
             maintainAspectRatio: false,
@@ -541,7 +600,11 @@ function renderGraficoLinhaUnica(dados) {
                 legend: {
                     display: true,
                     labels: {
-                        color: '#fff',
+                        filter: function (legendItem, chartData) {
+                            const dataset = chartData.datasets[legendItem.datasetIndex];
+                            return !dataset.isDashed;
+                        },
+                        color: "#fff",
                         font: {
                             size: 15
                         }
@@ -579,6 +642,7 @@ function renderGraficoLinhaUnica(dados) {
         }
     });
 }
+
 
 
 function renderGraficoLatenciaGeral(dados) {
@@ -809,7 +873,7 @@ function atualizarKPIsGerais(dados) {
     const disponibilidade = 99.7;
     let periodo = periodoSelect.value === "semanal" ? "semanal" : "mensal";
     const taxas = {};
-    
+
     for (const componente in dados) {
         if (componente !== 'latencia' && Array.isArray(dados[componente])) {
             const valores = dados[componente];
@@ -826,7 +890,7 @@ function atualizarKPIsGerais(dados) {
 
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
-            <h2>Componente com Maior Crescimento ${periodo}</h2>
+            <h2>Componente com Maior Consumo ${periodo}</h2>
             <p class="valor-kpi" style="color:${cores[maiorCrescimento.componente]}">${nomes[maiorCrescimento.componente]}</p>
             <p class="tendencia">+${maiorCrescimento.taxa}%</p>
         </div>
@@ -843,40 +907,39 @@ function atualizarKPIsGerais(dados) {
 
 
 async function atualizarKPIs(dados) {
-    async function atualizarKPIs(dados) {
-        const valores = dados[componenteAtual];
-        const mediaUso = Array.isArray(valores) ?
-            (valores.reduce((a, b) => a + b, 0) / valores.length).toFixed(1) : "0.0";
+    const valores = dados[componenteAtual];
+    const mediaUso = Array.isArray(valores) ?
+        (valores.reduce((a, b) => a + b, 0) / valores.length).toFixed(1) : "0.0";
 
-        const periodo = periodoSelect.value;
-        const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
-        let variacaoPercentual = 0;
-        if (Array.isArray(valores) && valores.length >= 2 && valores[0] !== 0) {
-            variacaoPercentual = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
+    const periodo = periodoSelect.value;
+    const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
+    let variacaoPercentual = 0;
+    if (Array.isArray(valores) && valores.length >= 2 && valores[0] !== 0) {
+        variacaoPercentual = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
+    }
+    const alertasReais = await buscarDadosHistoricosAlertas(componenteAtual, periodo);
+    let alertaMaisFrequente = "Baixo";
+    if (alertasReais) {
+        let totalAlto = 0;
+        let totalMedio = 0;
+        let totalBaixo = 0;
+
+        for (let i = 0; i < alertasReais.alto.length; i++) {
+            totalAlto += alertasReais.alto[i];
         }
-        const alertasReais = await buscarDadosHistoricosAlertas(componenteAtual, periodo);
-        let alertaMaisFrequente = "Baixo";
-        if (alertasReais) {
-            let totalAlto = 0;
-            let totalMedio = 0;
-            let totalBaixo = 0;
-
-            for (let i = 0; i < alertasReais.alto.length; i++) {
-                totalAlto += alertasReais.alto[i];
-            }
-            for (let i = 0; i < alertasReais.medio.length; i++) {
-                totalMedio += alertasReais.medio[i];
-            }
-            for (let i = 0; i < alertasReais.baixo.length; i++) {
-                totalBaixo += alertasReais.baixo[i];
-            }
-
-            if (totalAlto > totalMedio && totalAlto > totalBaixo) alertaMaisFrequente = "Alto";
-            else if (totalMedio > totalBaixo) alertaMaisFrequente = "Médio";
+        for (let i = 0; i < alertasReais.medio.length; i++) {
+            totalMedio += alertasReais.medio[i];
+        }
+        for (let i = 0; i < alertasReais.baixo.length; i++) {
+            totalBaixo += alertasReais.baixo[i];
         }
 
-        if (periodo == "mensal") {
-            document.getElementById("kpisContainer").innerHTML = `
+        if (totalAlto > totalMedio && totalAlto > totalBaixo) alertaMaisFrequente = "Alto";
+        else if (totalMedio > totalBaixo) alertaMaisFrequente = "Médio";
+    }
+
+    if (periodo == "mensal") {
+        document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
             <h2>Previsão de uso médio Mensal (${nomes[componenteAtual]})</h2>
             <p class="valor-kpi" id="kpi1"> ${mediaUso}%</p>
@@ -890,10 +953,10 @@ async function atualizarKPIs(dados) {
             <p class="valor-kpi" id="kpi2" style="color:${alertaMaisFrequente === 'Alto' ? 'red' : alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'}">${alertaMaisFrequente}</p>
         </div>
         `;
-        } else if (periodo == "semanal") {
-            document.getElementById("kpisContainer").innerHTML = `
+    } else if (periodo == "semanal") {
+        document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
-            <h2>Previsão de uso médio Semanal (${nomes[componenteAtual]})</h2>
+            <h2>Porcentagem de consumo médio(${nomes[componenteAtual]})</h2>
             <p class="valor-kpi" id="kpi1"> ${mediaUso}%</p>
         </div>
         <div class ="KPI">
@@ -905,16 +968,15 @@ async function atualizarKPIs(dados) {
             <p class="valor-kpi" id="kpi2" style="color:${alertaMaisFrequente === 'Alto' ? 'red' : alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'}">${alertaMaisFrequente}</p>
         </div>
         `;
-        }
+    }
 
-        const kpi1 = document.getElementById("kpi1");
-        if (nomes[componenteAtual] == "CPU") {
-            kpi1.style.color = `${cores.cpu}`;
-        } else if (nomes[componenteAtual] == "RAM") {
-            kpi1.style.color = `${cores.ram}`;
-        } else if (nomes[componenteAtual] == "Disco") {
-            kpi1.style.color = `${cores.disco}`;
-        }
+    const kpi1 = document.getElementById("kpi1");
+    if (nomes[componenteAtual] == "CPU") {
+        kpi1.style.color = `${cores.cpu}`;
+    } else if (nomes[componenteAtual] == "RAM") {
+        kpi1.style.color = `${cores.ram}`;
+    } else if (nomes[componenteAtual] == "Disco") {
+        kpi1.style.color = `${cores.disco}`;
     }
 }
 
