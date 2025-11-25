@@ -118,21 +118,25 @@ function criarKpis() {
 
     // mttr geral
     //console.log("diracao total: ", duracaoTotal)
-    let total = 0
+    let totalMttrGeral = 0
     for (let i = 0; i < duracaoTotal.length; i++) {
-        total += duracaoTotal[i]
+        totalMttrGeral += duracaoTotal[i]
     }
-    mttrGeral.innerText = `${Math.round(total/duracaoTotal.length)} min.`
+    mttrGeral.innerText = `${Math.round(totalMttrGeral/duracaoTotal.length)} min.`
 
     // mtbf
     console.log("listDate: ",listDate)
     let diff = []
+    let totalMtbf = 0
     for (let i = 0; i < listDate.length; i++) {
         if (i > 0) {
             diff.push(listDate[i-1].getTime() - listDate[i].getTime())
+            totalMtbf += (listDate[i-1].getTime() - listDate[i].getTime())
         }
     }
-    console.log('diff: ',diff)
+    //console.log('diff: ',diff)
+    //console.log('mtbf MS: ',(totalMtbf/diff.length))
+    mtbf.innerText = `${Math.round((totalMtbf/diff.length)/(1000 * 60 * 60))} horas`
 
 }
 
