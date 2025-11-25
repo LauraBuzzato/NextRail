@@ -25,7 +25,7 @@ router.post("/listarIncidentes", servidorController.listarIncidentes);
 router.get("/buscarAlertasDoServidor/:servidorId", servidorController.buscarAlertasDoServidor);
 router.get("/buscarParametrosDoServidor/:servidorId/:componente", servidorController.buscarParametrosDoServidor);
 router.get("/paramsNomes/:fk_servidor", servidorController.paramsNomes);
-
+router.post("/pegarPrevisao", servidorController.pegarPrevisao);
 router.post("/atualizarSla", servidorController.atualizarConfiguracaoSla);
 
 

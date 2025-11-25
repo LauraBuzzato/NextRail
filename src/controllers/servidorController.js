@@ -505,6 +505,24 @@ function paramsNomes(req, res) {
         });
 }
 
+function pegarPrevisao(req, res) {
+    const { servidorId, periodo } = req.body;
+
+    if (!servidorId || !periodo) {
+        return res.status(400).json({ error: "servidorId e periodo são obrigatórios" });
+    }
+
+    servidorModel.pegarPrevisao(servidorId, periodo)
+        .then(dados => {
+            res.json(dados);
+        })
+        .catch(error => {
+            console.error("Erro no controller:", error);
+            res.status(500).json({ error: "Erro interno do servidor" });
+        });
+}
+
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -531,5 +549,6 @@ module.exports = {
   buscarAlertasDoServidor,
   buscarParametrosDoServidor,
   pegarUso,
-  paramsNomes
+  paramsNomes,
+  pegarPrevisao
 };

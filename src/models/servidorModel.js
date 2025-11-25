@@ -1,3 +1,4 @@
+const { pegarPrevisao } = require("../controllers/servidorController");
 var database = require("../database/config");
 require("dotenv").config({ path: ".env.dev" });
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
@@ -1062,6 +1063,41 @@ async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
     };
 }
 
+async function pegarPrevisao(servidorId, periodo) {
+    try {
+        const dadosServidor = await paramsNomes(servidorId);
+        
+        if (!dadosServidor || dadosServidor.length === 0) {
+            throw new Error('Servidor não encontrado');
+        }
+
+        const empresa = dadosServidor[0].nome_empresa;
+        const servidor = dadosServidor[0].nome_servidor;
+
+        const dataAtc = new Date();
+        const dia = ('0' + dataAtc.getDate()).slice(-2);
+        const mes = ('0' + (dataAtc.getMonth() + 1)).slice(-2);
+        const ano = dataAtc.getFullYear();
+        const dataFormatada = `${dia}-${mes}-${ano}`;
+
+        const key = `${empresa}/${servidor}/previsoes/dadosPrev_${dataFormatada}_${periodo}.json`;
+        const dadosNovos = await lerArquivoS3(BUCKET, key);
+        
+        console.log('Dados recebidos do S3:', dadosNovos);
+        
+        return {
+            cpu: dadosNovos.previsoes.cpu,
+            ram: dadosNovos.previsoes.ram,
+            disco: dadosNovos.previsoes.disco,
+            latencia: dadosNovos.previsoes.latencia
+        };
+
+    } catch (error) {
+        console.error('Erro ao buscar previsão do S3:', error);
+        return null;
+    }
+}
+
 
 module.exports = {
     listarEmpresas,
@@ -1089,5 +1125,6 @@ module.exports = {
     buscarAlertasDoServidor,
     buscarParametrosDoServidor,
     pegarUso,
-    paramsNomes
+    paramsNomes,
+    pegarPrevisao
 };

@@ -1,6 +1,6 @@
 console.log(sessionStorage.ID_SERVIDOR)
-const testeServidor = sessionStorage.ID_SERVIDOR;
-const testeEmpresa = sessionStorage.ID_EMPRESA;
+const idServidor = sessionStorage.ID_SERVIDOR;
+const idEmpresa = sessionStorage.ID_EMPRESA;
 var passagem = true;
 var botoesCriados = false;
 var componenteAtual = "cpu";
@@ -18,8 +18,8 @@ Chart.defaults.color = "#fff";
 Chart.defaults.font.family = "Poppins";
 
 async function buscarDadosHistoricosAlertas(componente, periodo) {
-    const fkEmpresa = testeEmpresa;
-    const fkServidor = testeServidor;
+    const fkEmpresa = idEmpresa;
+    const fkServidor = idServidor;
 
     const componentesMap = {
         'cpu': 1,
@@ -58,50 +58,30 @@ async function buscarDadosHistoricosAlertas(componente, periodo) {
 
 async function buscarDadosPrevisaoAWS() {
     try {
-        const response = await fetch(`/servidores/paramsNomes/${testeServidor}`, {
-            method: 'GET',
+        const periodo = periodoSelect.value;
+        const response = await fetch('/servidores/pegarPrevisao', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
+            body: JSON.stringify({
+                servidorId: idServidor,
+                periodo: periodo
+            })
         });
 
         if (!response.ok) {
             throw new Error('Erro na resposta do servidor');
         }
 
-        const dadosServidor = await response.json();
-
-        const empresa = dadosServidor[0].nome_empresa;
-        const servidor = dadosServidor[0].nome_servidor;
-
-        const dataAtc = new Date();
-        const dia = ('0' + dataAtc.getDate()).slice(-2);
-        const mes = ('0' + (dataAtc.getMonth() + 1)).slice(-2);
-        const ano = dataAtc.getFullYear();
-        const dataFormatada = `${dia}-${mes}-${ano}`;
-
-        const periodo = periodoSelect.value;
-        const url = `https://${AWS_CONFIG.bucketName}.s3.${AWS_CONFIG.region}.amazonaws.com/${empresa}/${servidor}/previsoes/dadosPrev_${dataFormatada}_${periodo}.json`;
-
-        const responseAWS = await fetch(url);
-
-        if (!responseAWS.ok) {
-            throw new Error(`Erro ao buscar dados: ${responseAWS.status}`);
-        }
-
-        const dadosNovos = await responseAWS.json();
+        const dadosNovos = await response.json();
         
-        console.log('Dados recebidos do bucket:', dadosNovos);
+        console.log('Dados recebidos do backend:', dadosNovos);
         
-        return {
-            cpu: dadosNovos.previsoes.cpu,
-            ram: dadosNovos.previsoes.ram,
-            disco: dadosNovos.previsoes.disco,
-            latencia: dadosNovos.previsoes.latencia
-        };
+        return dadosNovos;
 
     } catch (error) {
-        console.error('Erro ao buscar dados da AWS:', error);
+        console.error('Erro ao buscar dados de previsão:', error);
         return null;
     }
 }
