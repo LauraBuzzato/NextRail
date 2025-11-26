@@ -130,146 +130,105 @@
   <script src="./js/script.js"></script>
 
 </body>
-
 <script>
-  const ctx = document.getElementById('frequenciaProcessosChart');
+async function carregarDados() {
+  const res = await fetch("http://localhost:3333/api/processos"); 
+  const dados = await res.json();
+  
+  if (dados.erro) {
+      console.error("Erro do servidor:", dados.erro);
+      document.getElementById('mensagemQtdProcesso').innerText = dados.erro;
+      return { labelsMemoria: [], memoriaMB: [], horarios: [], processos24h: [] };
+  }
+  
+  return dados;
+}
 
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['script.py', 'teste123', 'algo.exe'],
-      datasets: [{
-        label: "MB de memória",
-        data: [50, 25, 25],
-        backgroundColor: [
-          'rgba(36, 184, 191)',
-          'rgba(36, 184, 191)',
-          'rgba(36, 184, 191)',
-        ],
-        borderColor: [
-          'rgba(26, 111, 115)',
-          'rgba(26, 111, 115)',
-          'rgba(26, 111, 115)'
-        ],
-        borderWidth: 2,
-        borderRadius: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {display: true},
-        title: {display: false},
-        tooltip: {
-          enabled: true,
-          callbacks: {
-            label: function (context) {
-              return `${context.parsed.y}%`;
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: '#fff',
-            font: {
-              size: 14
-            }
-          },
-          grid: {
-            color: 'rgba(255,255,255,0.1)',
-            display: false
-          }
-        },
-        y: {
-          beginAtZero: true,
-          ticks: {
-            color: '#fff',
-            font: {
-              size: 14
-            }
-          },
-          grid: {
-            color: 'rgba(255,255,255,0.1)'
-          }
-        }
-      },
-      layout: {
-        padding: {
-          top: 20,
-          bottom: 20
-        }
-      }
+async function montarGraficos() {
+  try {
+    console.log('Iniciando carregamento de dados...');
+    
+    const dados = await carregarDados();
+    
+    console.log('Dados recebidos da API:', dados);
+
+    if (dados.maximoProcessos !== undefined) {
+        document.getElementById('maximoProcessos').textContent = dados.maximoProcessos;
     }
-  });
-
-  const ctx2 = document.getElementById('varicaoUso');
-
-  new Chart(ctx2, {
-    type: 'line',
-    data: {
-      labels: [
-        '00:00', '05:00', '10:00', '15:00',
-        '20:00', '23:59'],
-      datasets: [
-        {
-          label: 'Quantidade de processos',
-          data: [22, 700, 20, 120, 300, 500],
-          borderColor: '#a78bfa',
-          backgroundColor: 'rgba(167,139,250,0.2)',
-          tension: 0.3,
-          fill: true,
-          pointRadius: 4,
-          borderWidth: 2
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            color: '#fff',
-            font: {
-              size: 15
-            }
-          }
-        },
-        title: {
-          display: false
-        }
-      },
-      scales: {
-        x: {
-
-          ticks: {
-            color: '#fff',
-            font: {
-              size: 18
-            }
-          },
-          grid: {color: 'rgba(255,255,255,0.1)'}
-        },
-        y: {
-          beginAtZero: true,
-          ticks: {
-            color: '#fff',
-            font: {
-              size: 18
-            }
-          },
-          grid: {color: 'rgba(255,255,255,0.1)'}
-        }
-      }
+    if (dados.mediaProcessos !== undefined) {
+        document.getElementById('mediaProcessos').textContent = dados.mediaProcessos;
     }
-  });
+    if (dados.processoMaisFrequente) {
+        document.getElementById('textoProcessoFrequente').textContent = dados.processoMaisFrequente;
+    }
 
+    if (!dados.labelsMemoria || dados.labelsMemoria.length === 0) {
+        console.warn('Sem dados para gráficos');
+        document.getElementById('mensagemQtdProcesso').innerText += ' (Sem dados)';
+        return;
+    }
 
+    const ctx1 = document.getElementById('frequenciaProcessosChart');
+    if (ctx1) {
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: dados.labelsMemoria,
+                datasets: [{
+                    label: "MB de memória",
+                    data: dados.memoriaMB,
+                    backgroundColor: 'rgba(36,184,191,0.8)',
+                    borderColor: 'rgba(26,111,115,1)',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '5 maiores Processos - Uso de Memória'
+                    }
+                }
+            }
+        });
+    }
+
+    const ctx2 = document.getElementById('varicaoUso');
+    if (ctx2 && dados.horarios && dados.horarios.length > 0) {
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: dados.horarios,
+                datasets: [{
+                    label: 'Quantidade de processos',
+                    data: dados.processos24h,
+                    borderColor: '#a78bfa',
+                    backgroundColor: 'rgba(167,139,250,0.2)',
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: 4,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+
+    console.log('Gráficos montados com sucesso!');
+
+  } catch (error) {
+    console.error('Erro ao montar gráficos:', error);
+    document.getElementById('mensagemQtdProcesso').innerText = 'Erro ao carregar dados: ' + error.message;
+  }
+}
+
+montarGraficos();
 </script>
-
 
 </html>
