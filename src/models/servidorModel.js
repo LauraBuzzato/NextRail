@@ -1083,12 +1083,38 @@ async function pegarPrevisao(servidorId, periodo) {
         const dadosNovos = await lerArquivoS3(BUCKET, key);
         
         console.log('Dados recebidos do S3:', dadosNovos);
+    
+        if (!dadosNovos) {
+            console.log('Nenhum dado encontrado no S3');
+            return null;
+        }
+
+        console.log('Estrutura completa dos dados:', JSON.stringify(dadosNovos, null, 2));        
+
+        let previsoes;
         
+        if (dadosNovos.previsoes) {
+            previsoes = dadosNovos.previsoes;
+        } else if (dadosNovos.previsao) {
+            previsoes = dadosNovos.previsao;
+        } else if (Array.isArray(dadosNovos.cpu)) {
+  
+            return {
+                cpu: dadosNovos.cpu || [],
+                ram: dadosNovos.ram || [],
+                disco: dadosNovos.disco || [],
+                latencia: dadosNovos.latencia || []
+            };
+        } else {
+            console.log('Estrutura de previsão não reconhecida');
+            return null;
+        }
+
         return {
-            cpu: dadosNovos.previsoes.cpu,
-            ram: dadosNovos.previsoes.ram,
-            disco: dadosNovos.previsoes.disco,
-            latencia: dadosNovos.previsoes.latencia
+            cpu: previsoes.cpu || [],
+            ram: previsoes.ram || [],
+            disco: previsoes.disco || [],
+            latencia: previsoes.latencia || []
         };
 
     } catch (error) {
@@ -1097,9 +1123,6 @@ async function pegarPrevisao(servidorId, periodo) {
     }
 }
 
-
-
-// Tentativa pegar dados s3
 
 const AWS = require("aws-sdk");
 
