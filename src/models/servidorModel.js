@@ -2,7 +2,7 @@ var database = require("../database/config");
 require("dotenv").config({ path: ".env.dev" });
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 
-const BUCKET = process.env.S3_BUCKET_DADOS || "teste-bucket-joao-pinheiro-client";
+const BUCKET = process.env.S3_BUCKET;
 
 // pega credenciais do env.dev
 const s3 = new S3Client({
@@ -996,8 +996,8 @@ async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
     if (!campo) throw new Error(`Componente inválido (${componente}).`);
 
     let key = tipo === "anual"
-        ? `dadosDashComponentes/${empresa}/${servidor}/anual_${ano}.json`
-        : `dadosDashComponentes/${empresa}/${servidor}/mensal_${ano}-${mes}.json`;
+        ? `${empresa}/${servidor}/dadosDashComponentes/anual_${ano}.json`
+        : `${empresa}/${servidor}/dadosDashComponentes/mensal_${ano}-${mes}.json`;
 
     const registros = await lerArquivoS3(BUCKET, key);
 

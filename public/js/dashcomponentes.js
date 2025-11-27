@@ -32,7 +32,7 @@ async function mudarVisualizacao() {
         nomePeriodo.innerHTML = periodo;
 
         const palavraAntesComponente = nomeComponente === "Disco" ? "do" : "da";
-
+        const corGraficoUsoComponente = nomeComponente === "Disco" ? "do" : "da";
 
         const periodoParaTexto = periodo === "Anual" ? "anuais" : "mensais";
         const textoFreqAnterior = periodo === "Anual" ? "ano" : "mês";
@@ -97,21 +97,15 @@ async function mudarVisualizacao() {
             freq = frequencia[0].frequencia_alerta_percentual;
             diferenca_freq = frequencia[0].diferenca_percentual;
 
-            // corrigido: loop decrescente
-            for (let i = gravidades.length - 1; i >= 0; i--) {
-                if (gravidades[i].valor <= freq) {
-                    if (gravidades[i].nome_gravidade === "Baixo") corFrequencia = "yellow";
-                    else if (gravidades[i].nome_gravidade === "Alto") corFrequencia = "red";
-                    else corFrequencia = "orange";
-                    break;
-                }
+            if(freq>10){
+                corFrequencia = "red"
             }
         }
 
         const textoDiferenca =
             diferenca_freq < 0 ? `↓ ${Math.abs(diferenca_freq)}% que o ${textoFreqAnterior} anterior` :
                 diferenca_freq > 0 ? `↑ ${diferenca_freq}% que o ${textoFreqAnterior} anterior` :
-                    `0% de diferença`;
+                    `0% de diferença que o ${textoFreqAnterior} anterior`;
 
         // --- Buscar dados do uso real ---
         const hoje = new Date();
@@ -187,7 +181,9 @@ async function mudarVisualizacao() {
         containerGeral.innerHTML = `
             <div class="container-KPIS">
                 <div class="KPI">
-                    <h2>Tempo em Alerta (%):</h2>
+                    <h2 class="arrumarLinha">Tempo em Alerta (%) <div class="info-icon" data-tooltip="As cores das barras representam a situação atual dos servidores, não sendo relacionada com o tipo do alerta que foi contado.">
+    <svg fill="#000000" width="20px" height="20px" viewBox="0 0 24 24" id="information-circle" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><line id="secondary-upstroke" x1="12.05" y1="8" x2="11.95" y2="8" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><line id="secondary" x1="12" y1="13" x2="12" y2="16" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><path id="primary" d="M3,12a9,9,0,0,1,9-9h0a9,9,0,0,1,9,9h0a9,9,0,0,1-9,9h0a9,9,0,0,1-9-9Z" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>
+  </div></h2>
                     <h1 style="color: ${corFrequencia};">${freq}%</h1>
                     <h4 style="color: ${diferenca_freq <= 0 ? "green" : "red"};">${textoDiferenca}</h4>
                 </div>
@@ -205,12 +201,13 @@ async function mudarVisualizacao() {
             <div class="container-KPIS-segunda-linha">
                 <div class="GRAFICO-2">
                     <h2>Variação do uso:</h2>
-                    <canvas id="varicaoUso" width="1000" height="400"></canvas>
+                    <canvas id="varicaoUso" width="880" height="400"></canvas>
                 </div>
                 <div class="Container-KPI-2">
                     <div class="KPI-2">
                         <h2>Uso médio ${palavraAntesComponente} ${nomeComponente}:</h2>
                         <h1 style="color: ${corUsoMedio};">${mediaUso.toFixed(2)}%</h1>
+                        <h4>Parâmetro limite: ${gravidadeBaixo}%</h4>
                     </div>
                     <div class="KPI-2">
                         <h2>Taxa de variação:</h2>
