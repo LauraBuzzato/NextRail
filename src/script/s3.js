@@ -9,7 +9,7 @@ async function lerArquivo(req, res) {
     const fileKey = req.params.arquivo;
 
     if (!/^[\w.\-]+$/.test(fileKey)) {
-      return res.status(400).send('❌ Nome de arquivo inválido.');
+      return res.status(400).send('Nome de arquivo inválido.');
     }
 
     const params = {
@@ -17,7 +17,7 @@ async function lerArquivo(req, res) {
       Key: fileKey
     };
 
-    console.log(`📥 Lendo do S3: ${params.Bucket}/${params.Key}`);
+    console.log(`Lendo do S3: ${params.Bucket}/${params.Key}`);
 
     const data = await s3.getObject(params).promise();
     const text = data.Body.toString('utf-8').trim();
@@ -36,7 +36,7 @@ async function lerArquivo(req, res) {
 
     res.json(content);
   } catch (err) {
-    console.error('❌ Erro ao buscar arquivo:', err.message);
+    console.error('Erro ao buscar arquivo:', err.message);
     res.status(500).send('Erro ao buscar arquivo: ' + err.message);
   }
 }

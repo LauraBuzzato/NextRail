@@ -118,47 +118,62 @@ function transformarDadosParaDashboard(dadosBrutos) {
 }
 
 async function lerArquivo() {
-  const bucket = process.env.S3_BUCKET;
-  if (!bucket) throw new Error('Variável S3_BUCKET não configurada');
+    const bucket = process.env.S3_BUCKET;
+    if (!bucket) throw new Error('Variável S3_BUCKET não configurada');
 
+    // Caminho fixo dentro do bucket
+    const prefix = 'ViaMobilidade/Servidor01/Processos/';
+    
+    console.log(`Procurando arquivos em: s3://${bucket}/${prefix}`);
 
-  const { Contents } = await s3.listObjectsV2({
-    Bucket: bucket,
-    MaxKeys: 10
-  }).promise();
+    const { Contents } = await s3.listObjectsV2({
+        Bucket: bucket,
+        Prefix: prefix,      // ← aqui garante que só olha dentro dessa pasta
+        MaxKeys: 20
+    }).promise();
 
-  if (!Contents || Contents.length === 0) {
-    throw new Error('Bucket vazio');
-  }
+    if (!Contents || Contents.length === 0) {
+        throw new Error(`Nenhum arquivo encontrado no caminho: ${prefix}`);
+    }
 
-  // Arquivo mais recente (não diretório)
-  const arquivoMaisRecente = Contents
-    .filter(obj => obj.Key && !obj.Key.endsWith('/'))
-    .sort((a, b) => (b.LastModified || 0) - (a.LastModified || 0))[0];
+    // Filtra apenas arquivos reais (não pastas) e ordena pelo mais recente
+    const arquivosValidos = Contents
+        .filter(obj => 
+            obj.Key && 
+            !obj.Key.endsWith('/') &&  // exclui pastas
+            obj.Size > 0               // exclui arquivos vazios
+        )
+        .sort((a, b) => (b.LastModified || 0) - (a.LastModified || 0));
 
-  if (!arquivoMaisRecente) {
-    throw new Error('Nenhum arquivo encontrado');
-  }
+    if (arquivosValidos.length === 0) {
+        throw new Error(`Nenhum arquivo válido encontrado em ${prefix}`);
+    }
 
-  const { Body } = await s3.getObject({
-    Bucket: bucket,
-    Key: arquivoMaisRecente.Key
-  }).promise();
+    const arquivoMaisRecente = arquivosValidos[0];
 
-  const texto = Body.toString('utf-8').trim();
-  if (!texto) throw new Error('Arquivo vazio');
+    console.log(`Arquivo mais recente encontrado: ${arquivoMaisRecente.Key}`);
+    console.log(`Última modificação: ${arquivoMaisRecente.LastModified}`);
+    console.log(`Tamanho: ${(arquivoMaisRecente.Size / 1024).toFixed(2)} KB`);
 
-  const { rows } = parseCSV(texto);
+    const { Body } = await s3.getObject({
+        Bucket: bucket,
+        Key: arquivoMaisRecente.Key
+    }).promise();
 
-  if (rows.length === 0) {
-    console.warn('Nenhum dado válido após parsing');
-    return {
-      labelsMemoria: [], memoriaMB: [], horarios: [], processos24h: [],
-      maximoProcessos: 0, mediaProcessos: 0, processoMaisFrequente: 'N/A'
-    };
-  }
+    const texto = Body.toString('utf-8').trim();
+    if (!texto) throw new Error('Arquivo está vazio');
 
-  return transformarDadosParaDashboard(rows);
+    const { rows } = parsCSV(texto);  // mantive o nome que você usou (parsCSV)
+
+    if (rows.length === 0) {
+        console.warn('Nenhum dado válido após parsing do CSV');
+        return {
+            labelsMemoria: [], memoriaMB: [], horarios: [], processos24h: [],
+            maximoProcessos: 0, mediaProcessos: 0, processoMaisFrequente: 'N/A'
+        };
+    }
+
+    return transformarDadosParaDashboard(rows);
 }
 
 module.exports = { lerArquivo };
