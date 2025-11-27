@@ -113,7 +113,6 @@ function calcularPrevisaoTendencia(dadosHistoricos, numPrevisoes) {
     const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
 
-    console.log('Regressão - Slope:', slope, 'Intercept:', intercept, 'n:', n);
 
     const previsoes = [];
     for (let i = 0; i < numPrevisoes; i++) {
