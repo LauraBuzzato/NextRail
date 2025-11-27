@@ -185,20 +185,20 @@ body {
   font-size: 1.2rem;
 }
 
-#textoProcessoFrequente {
-  color: white;
-  margin-top: 15px;
+#maximoProcessos {
+  color: #a78bfa;
   font-size: 2.5rem;
 }
 
 #mediaProcessos {
-  color: white;
+  color: rgba(255,0,0,1);
   margin-top: 15px;
   font-size: 2.5rem;
 }
 
-#maximoProcessos {
-  color: white;
+#textoProcessoFrequente {
+  color: rgba(36,184,191,0.8);
+  margin-top: 15px;
   font-size: 2.5rem;
 }
 
@@ -424,7 +424,6 @@ body {
 #mediaProcessos,
 #maximoProcessos,
 #textoProcessoFrequente {
-  color: white;
   margin-top: 10px;
   /* Reduzido */
   font-size: 1.8rem;
