@@ -92,15 +92,15 @@
         <div class="container-KPIS">
           <div class="KPI">
             <h2>Pico de processos do dia:</h2>
-            <h2 id="maximoProcessos">700</h2>
+            <h2 id="maximoProcessos"></h2>
           </div>
           <div class="KPI">
             <h2>Média de processos do dia:</h2>
-            <h2 id="mediaProcessos">277</h2>
+            <h2 id="mediaProcessos"></h2>
           </div>
           <div class="KPI">
             <h2>Processo com maior uso de memória do dia:</h2>
-            <h2 id="textoProcessoFrequente">script.py</h2>
+            <h2 id="textoProcessoFrequente"></h2>
           </div>
         </div>
         <div class="container-KPIS-segunda-linha">
@@ -131,104 +131,104 @@
 
 </body>
 <script>
-async function carregarDados() {
-  const res = await fetch("http://localhost:3333/api/processos"); 
-  const dados = await res.json();
-  
-  if (dados.erro) {
+  async function carregarDados() {
+    const res = await fetch("http://localhost:3333/api/processos");
+    const dados = await res.json();
+
+    if (dados.erro) {
       console.error("Erro do servidor:", dados.erro);
       document.getElementById('mensagemQtdProcesso').innerText = dados.erro;
-      return { labelsMemoria: [], memoriaMB: [], horarios: [], processos24h: [] };
+      return {labelsMemoria: [], memoriaMB: [], horarios: [], processos24h: []};
+    }
+
+    return dados;
   }
-  
-  return dados;
-}
 
-async function montarGraficos() {
-  try {
-    console.log('Iniciando carregamento de dados...');
-    
-    const dados = await carregarDados();
-    
-    console.log('Dados recebidos da API:', dados);
+  async function montarGraficos() {
+    try {
+      console.log('Iniciando carregamento de dados...');
 
-    if (dados.maximoProcessos !== undefined) {
+      const dados = await carregarDados();
+
+      console.log('Dados recebidos da API:', dados);
+
+      if (dados.maximoProcessos !== undefined) {
         document.getElementById('maximoProcessos').textContent = dados.maximoProcessos;
-    }
-    if (dados.mediaProcessos !== undefined) {
+      }
+      if (dados.mediaProcessos !== undefined) {
         document.getElementById('mediaProcessos').textContent = dados.mediaProcessos;
-    }
-    if (dados.processoMaisFrequente) {
+      }
+      if (dados.processoMaisFrequente) {
         document.getElementById('textoProcessoFrequente').textContent = dados.processoMaisFrequente;
-    }
+      }
 
-    if (!dados.labelsMemoria || dados.labelsMemoria.length === 0) {
+      if (!dados.labelsMemoria || dados.labelsMemoria.length === 0) {
         console.warn('Sem dados para gráficos');
         document.getElementById('mensagemQtdProcesso').innerText += ' (Sem dados)';
         return;
-    }
+      }
 
-    const ctx1 = document.getElementById('frequenciaProcessosChart');
-    if (ctx1) {
+      const ctx1 = document.getElementById('frequenciaProcessosChart');
+      if (ctx1) {
         new Chart(ctx1, {
-            type: 'bar',
-            data: {
-                labels: dados.labelsMemoria,
-                datasets: [{
-                    label: "MB de memória",
-                    data: dados.memoriaMB,
-                    backgroundColor: 'rgba(36,184,191,0.8)',
-                    borderColor: 'rgba(26,111,115,1)',
-                    borderWidth: 2,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '5 maiores Processos - Uso de Memória'
-                    }
-                }
+          type: 'bar',
+          data: {
+            labels: dados.labelsMemoria,
+            datasets: [{
+              label: "MB de memória",
+              data: dados.memoriaMB,
+              backgroundColor: 'rgba(36,184,191,0.8)',
+              borderColor: 'rgba(26,111,115,1)',
+              borderWidth: 2,
+              borderRadius: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: '5 maiores Processos - Uso de Memória'
+              }
             }
+          }
         });
-    }
+      }
 
-    const ctx2 = document.getElementById('varicaoUso');
-    if (ctx2 && dados.horarios && dados.horarios.length > 0) {
+      const ctx2 = document.getElementById('varicaoUso');
+      if (ctx2 && dados.horarios && dados.horarios.length > 0) {
         new Chart(ctx2, {
-            type: 'line',
-            data: {
-                labels: dados.horarios,
-                datasets: [{
-                    label: 'Quantidade de processos',
-                    data: dados.processos24h,
-                    borderColor: '#a78bfa',
-                    backgroundColor: 'rgba(167,139,250,0.2)',
-                    tension: 0.3,
-                    fill: true,
-                    pointRadius: 4,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
+          type: 'line',
+          data: {
+            labels: dados.horarios,
+            datasets: [{
+              label: 'Quantidade de processos',
+              data: dados.processos24h,
+              borderColor: '#a78bfa',
+              backgroundColor: 'rgba(167,139,250,0.2)',
+              tension: 0.3,
+              fill: true,
+              pointRadius: 4,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false
+          }
         });
+      }
+
+      console.log('Gráficos montados com sucesso!');
+
+    } catch (error) {
+      console.error('Erro ao montar gráficos:', error);
+      document.getElementById('mensagemQtdProcesso').innerText = 'Erro ao carregar dados: ' + error.message;
     }
-
-    console.log('Gráficos montados com sucesso!');
-
-  } catch (error) {
-    console.error('Erro ao montar gráficos:', error);
-    document.getElementById('mensagemQtdProcesso').innerText = 'Erro ao carregar dados: ' + error.message;
   }
-}
 
-montarGraficos();
+  montarGraficos();
 </script>
 
 </html>
