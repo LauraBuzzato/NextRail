@@ -1100,9 +1100,7 @@ async function pegarPrevisao(servidorId, periodo) {
 
 
 // Tentativa pegar dados s3
-
 const AWS = require("aws-sdk");
-
 async function pegarJsonDoS3() {
     console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
 
