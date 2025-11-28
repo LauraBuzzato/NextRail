@@ -21,7 +21,9 @@ var indexRouter = require("./src/routes/index");
 var servidoresRouter = require("./src/routes/servidores");
 var listarEstadosRouter = require("./src/routes/listarEstados");
 var relatorioRouter = require("./src/routes/relatorios");
+var s3Route = require("./src/routes/s3Route");
 
+app.use("/api", s3Route);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());

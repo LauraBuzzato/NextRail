@@ -2,7 +2,7 @@ var database = require("../database/config");
 require("dotenv").config({ path: ".env.dev" });
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 
-const BUCKET = process.env.S3_BUCKET_DADOS || "bucket-client-teste-etl";
+const BUCKET = process.env.S3_BUCKET;
 
 // pega credenciais do env.dev
 const s3 = new S3Client({
@@ -996,8 +996,8 @@ async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
     if (!campo) throw new Error(`Componente inválido (${componente}).`);
 
     let key = tipo === "anual"
-        ? `dadosDashComponentes/${empresa}/${servidor}/anual_${ano}.json`
-        : `dadosDashComponentes/${empresa}/${servidor}/mensal_${ano}-${mes}.json`;
+        ? `${empresa}/${servidor}/dadosDashComponentes/anual_${ano}.json`
+        : `${empresa}/${servidor}/dadosDashComponentes/mensal_${ano}-${mes}.json`;
 
     const registros = await lerArquivoS3(BUCKET, key);
 
@@ -1083,12 +1083,38 @@ async function pegarPrevisao(servidorId, periodo) {
         const dadosNovos = await lerArquivoS3(BUCKET, key);
         
         console.log('Dados recebidos do S3:', dadosNovos);
+    
+        if (!dadosNovos) {
+            console.log('Nenhum dado encontrado no S3');
+            return null;
+        }
+
+        console.log('Estrutura completa dos dados:', JSON.stringify(dadosNovos, null, 2));        
+
+        let previsoes;
         
+        if (dadosNovos.previsoes) {
+            previsoes = dadosNovos.previsoes;
+        } else if (dadosNovos.previsao) {
+            previsoes = dadosNovos.previsao;
+        } else if (Array.isArray(dadosNovos.cpu)) {
+  
+            return {
+                cpu: dadosNovos.cpu || [],
+                ram: dadosNovos.ram || [],
+                disco: dadosNovos.disco || [],
+                latencia: dadosNovos.latencia || []
+            };
+        } else {
+            console.log('Estrutura de previsão não reconhecida');
+            return null;
+        }
+
         return {
-            cpu: dadosNovos.previsoes.cpu,
-            ram: dadosNovos.previsoes.ram,
-            disco: dadosNovos.previsoes.disco,
-            latencia: dadosNovos.previsoes.latencia
+            cpu: previsoes.cpu || [],
+            ram: previsoes.ram || [],
+            disco: previsoes.disco || [],
+            latencia: previsoes.latencia || []
         };
 
     } catch (error) {
