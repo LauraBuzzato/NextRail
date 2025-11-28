@@ -20,7 +20,7 @@ function parsCSV(text) {
     let current = '';
     let inQuotes = false;
 
-    for (let char of line + ';') { // +';' garante fechar última coluna
+    for (let char of line + ';') {
       if (char === '"') {
         inQuotes = !inQuotes;
       } else if (char === ';' && !inQuotes) {
@@ -31,7 +31,7 @@ function parsCSV(text) {
       }
     }
 
-    if (values.length !== headers.length) continue; // linha malformada
+    if (values.length !== headers.length) continue;
 
     const row = {};
     let hasValue = false;
@@ -71,7 +71,7 @@ function transformarDadosParaDashboard(dadosBrutos) {
     throw new Error('Colunas obrigatórias não encontradas: NOME ou MEMORIA/USO');
   }
 
-  const memoriaPorProcesso = new Map(); // mais rápido que objeto com chaves dinâmicas
+  const memoriaPorProcesso = new Map();
   const contagemPorHora = new Map();
   let totalProcessos = 0;
 
@@ -93,7 +93,6 @@ function transformarDadosParaDashboard(dadosBrutos) {
     }
   }
 
-  // Top 5 processos por memória
   const top5 = [...memoriaPorProcesso.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
@@ -118,62 +117,79 @@ function transformarDadosParaDashboard(dadosBrutos) {
 }
 
 async function lerArquivo() {
-    const bucket = process.env.S3_BUCKET;
-    if (!bucket) throw new Error('Variável S3_BUCKET não configurada');
+  const bucket = process.env.S3_BUCKET;
+  const agora = new Date();
+  const vinteQuatroHAtras = new Date(agora.getTime() - 24 * 60 * 60 * 1000);
 
-    // Caminho fixo dentro do bucket
-    const prefix = 'ViaMobilidade/Servidor01/Processos/';
-    
-    console.log(`Procurando arquivos em: s3://${bucket}/${prefix}`);
+  let arquivos = [];
+  let continuationToken = null;
+  do {
+    const params = {
+      Bucket: bucket,
+      Prefix: 'ViaMobilidade/Servidor01/Processos/',
+      MaxKeys: 1000,
+      ...(continuationToken && { ContinuationToken: continuationToken })
+    };
+    const { Contents, IsTruncated, NextContinuationToken } = await s3.listObjectsV2(params).promise();
+    arquivos = arquivos.concat(Contents || []);
+    continuationToken = NextContinuationToken;
+  } while (continuationToken);
 
-    const { Contents } = await s3.listObjectsV2({
-        Bucket: bucket,
-        Prefix: prefix,      // ← aqui garante que só olha dentro dessa pasta
-        MaxKeys: 20
-    }).promise();
+  const arquivosValidos = arquivos
+    .filter(obj => 
+      obj.Key && !obj.Key.endsWith('/') && obj.Size > 0 &&
+      new Date(obj.LastModified) >= vinteQuatroHAtras
+    )
+    .sort((a, b) => b.LastModified - a.LastModified);
 
-    if (!Contents || Contents.length === 0) {
-        throw new Error(`Nenhum arquivo encontrado no caminho: ${prefix}`);
-    }
+  if (arquivosValidos.length === 0) throw new Error('Nenhum arquivo das últimas 24h');
 
-    // Filtra apenas arquivos reais (não pastas) e ordena pelo mais recente
-    const arquivosValidos = Contents
-        .filter(obj => 
-            obj.Key && 
-            !obj.Key.endsWith('/') &&  // exclui pastas
-            obj.Size > 0               // exclui arquivos vazios
-        )
-        .sort((a, b) => (b.LastModified || 0) - (a.LastModified || 0));
+  console.log(`Lidos ${arquivosValidos.length} arquivos das últimas 24h`);
 
-    if (arquivosValidos.length === 0) {
-        throw new Error(`Nenhum arquivo válido encontrado em ${prefix}`);
-    }
+  let todosDados = [];
+  let memoriaPorProcessoGlobal = new Map();
+  const contagemPorHora = new Map();
 
-    const arquivoMaisRecente = arquivosValidos[0];
-
-    console.log(`Arquivo mais recente encontrado: ${arquivoMaisRecente.Key}`);
-    console.log(`Última modificação: ${arquivoMaisRecente.LastModified}`);
-    console.log(`Tamanho: ${(arquivoMaisRecente.Size / 1024).toFixed(2)} KB`);
-
-    const { Body } = await s3.getObject({
-        Bucket: bucket,
-        Key: arquivoMaisRecente.Key
-    }).promise();
-
+  for (const arquivo of arquivosValidos) {
+    const { Body } = await s3.getObject({ Bucket: bucket, Key: arquivo.Key }).promise();
     const texto = Body.toString('utf-8').trim();
-    if (!texto) throw new Error('Arquivo está vazio');
+    const { rows } = parsCSV(texto);
 
-    const { rows } = parsCSV(texto);  // mantive o nome que você usou (parsCSV)
+    if (rows.length === 0) continue;
 
-    if (rows.length === 0) {
-        console.warn('Nenhum dado válido após parsing do CSV');
-        return {
-            labelsMemoria: [], memoriaMB: [], horarios: [], processos24h: [],
-            maximoProcessos: 0, mediaProcessos: 0, processoMaisFrequente: 'N/A'
-        };
+    todosDados.push(...rows);
+
+    const primeiroTs = rows[0][Object.keys(rows[0]).find(k => /TIMESTAMP/i.test(k))];
+    const horaMatch = primeiroTs.match(/(\d{1,2}):/);
+    if (horaMatch) {
+      const hora = horaMatch[1].padStart(2, '0') + ':00';
+      contagemPorHora.set(hora, (contagemPorHora.get(hora) || 0) + rows.length);
     }
 
-    return transformarDadosParaDashboard(rows);
-}
+    for (const row of rows) {
+      const nome = row.NOME?.trim() || 'Desconhecido';
+      const mem = parseFloat(row['USO_MEMORIA (MB)']) || 0;
+      memoriaPorProcessoGlobal.set(nome, Math.max(memoriaPorProcessoGlobal.get(nome) || 0, mem));
+    }
+  }
 
+  const horasOrdenadas = [...contagemPorHora.keys()].sort();
+  const processosPorHora = horasOrdenadas.map(h => contagemPorHora.get(h));
+  const maximoProcessos = Math.max(...processosPorHora, 0);
+  const mediaProcessos = processosPorHora.length > 0 ? Math.round(processosPorHora.reduce((a, b) => a + b, 0) / processosPorHora.length) : 0;
+
+  const top5 = [...memoriaPorProcessoGlobal.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  return {
+    labelsMemoria: top5.map(([nome]) => nome),
+    memoriaMB: top5.map(([, uso]) => uso),
+    horarios: horasOrdenadas,
+    processos24h: processosPorHora,
+    maximoProcessos,
+    mediaProcessos,
+    processoMaisFrequente: top5[0]?.[0] || 'N/A'
+  };
+}
 module.exports = { lerArquivo };
