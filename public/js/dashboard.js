@@ -555,10 +555,28 @@ var caminhoS3 = '/servidores/dados';
         .catch(function(erro) {
             console.error("Erro na integração S3:", erro);
         });
+    
 
+        //Lógica Definição kpi Sla
+        var idServidor = sessionStorage.ID_SERVIDOR; 
+
+    fetch(`/servidores/sla/${idServidor}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Média de SLA recebida:", data.mediaSla);
+            
+            var metricaMTTR = document.getElementById('metrica-sla');
+            
+            if (metricaMTTR) {
+                metricaMTTR.innerHTML = `(SLA: < ${data.mediaSla} min)`;
+            }
+            
+        })
+        .catch(err => {
+            console.error("Erro ao buscar SLA:", err);
+        });
 
 }
-
 
 
 

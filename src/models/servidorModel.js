@@ -1151,6 +1151,17 @@ async function pegarJsonDoS3() {
     }
 }
 
+function buscarSla(idServidor) {
+    var instrucao = `
+        SELECT sla 
+        FROM metrica 
+        WHERE fk_componenteServidor_servidor = ${idServidor} 
+        AND sla > 0;
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucao);
+    return database.executar(instrucao);
+}
+
 
 module.exports = {
     listarEmpresas,
@@ -1180,5 +1191,6 @@ module.exports = {
     pegarUso,
     paramsNomes,
     pegarPrevisao,
-    pegarJsonDoS3
+    pegarJsonDoS3,
+    buscarSla
 };

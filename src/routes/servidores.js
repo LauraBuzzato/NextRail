@@ -40,4 +40,6 @@ router.get("/dados", function (req, res) {
     servidorController.listarDadosAlertas(req, res);
 });
 
+router.get("/sla/:idServidor", servidorController.buscarSla);
+
 module.exports = router;

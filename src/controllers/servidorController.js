@@ -534,6 +534,29 @@ function pegarPrevisao(req, res) {
 }
 
 
+async function buscarSla(req, res) {
+    var idServidor = req.params.idServidor;
+
+    try {
+        const registros = await servidorModel.buscarSla(idServidor);
+        if (registros.length > 0) {
+            let soma = 0;
+            for (let i = 0; i < registros.length; i++) {
+                soma += registros[i].sla;
+            }
+            
+            let media = (soma / registros.length).toFixed(0);
+
+            res.status(200).json({ mediaSla: media });
+        } else {
+            res.status(200).json({ mediaSla: 0 });
+        }
+    } catch (erro) {
+        console.log(erro);
+        res.status(500).json(erro.sqlMessage);
+    }
+}
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -562,5 +585,6 @@ module.exports = {
   pegarUso,
   paramsNomes,
   pegarPrevisao,
-  listarDadosAlertas
+  listarDadosAlertas,
+  buscarSla
 };
