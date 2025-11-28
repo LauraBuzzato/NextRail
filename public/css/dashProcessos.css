@@ -191,13 +191,13 @@ body {
 }
 
 #mediaProcessos {
-  color: rgba(255,0,0,1);
+  color: #f6fa2d;
   margin-top: 15px;
   font-size: 2.5rem;
 }
 
 #textoProcessoFrequente {
-  color: rgba(36,184,191,0.8);
+  color: rgba(56, 189, 248, 1);
   margin-top: 15px;
   font-size: 2.5rem;
 }

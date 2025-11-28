@@ -138,7 +138,7 @@
     if (dados.erro) {
       console.error("Erro do servidor:", dados.erro);
       document.getElementById('mensagemQtdProcesso').innerText = dados.erro;
-      return { labelsMemoria: [], memoriaMB: [], horarios: [], processos24h: [] };
+      return {labelsMemoria: [], memoriaMB: [], horarios: [], processos24h: []};
     }
 
     return dados;
@@ -177,8 +177,8 @@
             datasets: [{
               label: "MB de memória",
               data: dados.memoriaMB,
-              backgroundColor: 'rgba(36,184,191,0.8)',
-              borderColor: 'rgba(26,111,115,1)',
+              backgroundColor: 'rgba(56,189,248,1)',
+              borderColor: 'rgba(56,189,248,0)',
               borderWidth: 2,
               borderRadius: 8
             },
@@ -218,13 +218,13 @@
             {
               label: 'Media de processos',
               data: Array(dados.horarios.length).fill(dados.mediaProcessos),
-              borderColor: 'rgba(255,0,0,1)',
-              backgroundColor: 'rgba(255,0,0,0.2)',
+              borderColor: '#f6fa2d',
+              backgroundColor: '#f9fc3d',
               borderWidth: 2,
               tension: 0.4,
               fill: false,
               pointRadius: 0,
-              datalabels: { display: false }
+              datalabels: {display: false}
             }]
           },
           options: {
