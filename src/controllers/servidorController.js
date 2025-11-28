@@ -557,6 +557,67 @@ async function buscarSla(req, res) {
     }
 }
 
+
+async function compararAlertas(req, res) {
+    var idServidor = req.params.idServidor;
+
+    try {
+        const resultado = await servidorModel.buscarComparacaoMes(idServidor);
+
+        if (resultado.length > 0) {
+            var atual = resultado[0].qtd_atual;
+            var anterior = resultado[0].qtd_anterior;
+
+            var porcentagem = 0;
+            var cssCor = "";
+            var icone = "";
+            var texto = "";
+
+            // Evitar divisão por zero
+            if (anterior == 0) {
+                // Se não teve alertas mês passado e agora tem, subiu 100% (ou infinito)
+                porcentagem = atual > 0 ? 100 : 0;
+            } else {
+                porcentagem = ((atual - anterior) / anterior) * 100;
+            }
+
+            porcentagem = porcentagem.toFixed(1);
+
+            if (porcentagem > 0) {
+                // Piorou (mais alertas)
+                cssCor = "red";
+                icone = "arrow-up-outline";
+                texto = "vs. Mês Anterior";
+            } else if (porcentagem < 0) {
+                // Melhorou (menos alertas)}
+                cssCor = "lightgreen";
+                icone = "arrow-down-outline";
+                texto = "vs. Mês Anterior";
+                porcentagem = Math.abs(porcentagem); // Tira sinal negativo
+            } else {
+                // Igual
+                cssCor = "white"; 
+                icone = "remove-outline"; 
+                texto = "Igual ao mês anterior";
+            }
+            
+            res.json({
+                percentual: porcentagem,
+                cor: cssCor,
+                icone: icone,
+                texto: texto
+            });
+
+        } else {
+            res.status(204).send("Nenhum resultado encontrado!");
+        }
+    } catch (erro) {
+        console.log(erro);
+        res.status(500).json(erro.sqlMessage);
+    }
+}
+
+
 module.exports = {
   listarEmpresas,
   listarTipos,
@@ -586,5 +647,6 @@ module.exports = {
   paramsNomes,
   pegarPrevisao,
   listarDadosAlertas,
-  buscarSla
+  buscarSla,
+  compararAlertas
 };

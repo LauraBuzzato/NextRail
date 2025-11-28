@@ -576,6 +576,22 @@ var caminhoS3 = '/servidores/dados';
             console.error("Erro ao buscar SLA:", err);
         });
 
+
+
+    //Função de comparação de alertas (%) com base no mês anterior
+    fetch(`/servidores/comparacao/${idServidor}`)
+        .then(res => res.json())
+        .then(dados => {
+            var kpiVariacao = document.getElementById('variacao');
+            if (kpiVariacao) {
+                kpiVariacao.innerHTML = `
+                    (${dados.percentual}% 
+                    <ion-icon name="${dados.icone}" style="color: ${dados.cor}"></ion-icon> ${dados.texto})
+                    `;
+            }
+        })
+        .catch(err => console.error("Erro comparação:", err));
+
 }
 
 

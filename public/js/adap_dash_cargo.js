@@ -325,7 +325,7 @@ async function atualizar(a) {
       <div class="kpi-box">
         <span class="kpi-title">Quantidade total de Alertas do Mês</span>
         <div id="kpi-total-alertas" style="font-size: 40px";></div>
-        <h4 class="seta">(30% <ion-icon name="arrow-up-outline" style="color: red";> </ion-icon> vs. Mês Anterior)</h4>
+      <h4 class="seta" id="variacao"></h4>
 
       </div>
 
