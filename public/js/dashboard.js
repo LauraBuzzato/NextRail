@@ -34,7 +34,8 @@ function dash_analista() {
 
     var caminhoRelatorio = '/relatorio/mensal-detalhado/' + anoEscolhido + '/' + mesEscolhido;
     
-    var caminho = '/servidores/dados';
+
+
 
     console.log("Buscando dados do S3 em:", caminho);
 
@@ -457,9 +458,16 @@ function dash_analista() {
 
         
 // == S3 ==
-var caminhoS3 = '/servidores/dados'; 
+
+    var nomeServidor = localStorage.NOME_SERVIDOR
     
-    fetch(caminhoS3)
+    if (!nomeServidor || nomeServidor === "undefined") {
+        nomeServidor = "Servidor01";
+    }
+    var caminho = `/servidores/dados?nomeServer=${nomeServidor}`;
+    
+    
+    fetch(caminho)
         .then(function(res) {
             if (!res.ok) throw new Error('Erro ao pegar dados S3');
             return res.json();

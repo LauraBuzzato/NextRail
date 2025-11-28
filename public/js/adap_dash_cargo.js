@@ -342,7 +342,7 @@ async function atualizar(a) {
 
       <div class="kpi-box">
         <span class="kpi-title">Gravidade mais frequente do Mês</span>
-        <div id="kpi-gravidade-mais-frequente" style="color: #FFA500; font-size: 40px;";></div>
+        <div id="kpi-gravidade-mais-frequente"; font-size: 40px;";></div>
       </div>
     </section>
     
