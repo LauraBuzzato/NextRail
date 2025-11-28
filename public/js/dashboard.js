@@ -88,14 +88,6 @@ function dash_analista() {
                 }
                     */
 
-
-                var elComp = document.getElementById('kpi-componente-mais-impactado');
-                if (elComp) {
-                    elComp.innerText = componenteMaisImpactado;
-                } else {
-                    console.log('KPI componenteMaisAfetado:', componenteMaisImpactado);
-                }
-
                 var elMttr = document.getElementById('kpi-mttr-medio');
                 if (elMttr) {
                     elMttr.innerText = mttrMedioMes;
@@ -385,79 +377,13 @@ function dash_analista() {
                 chartFreq = new Chart(frequenciaCanvas, configFreq);
             }
 
-            // Alertas por Componente 
-            if (alertasComponenteCanvas) {
-                var configComp = {
-                    type: 'bar',
-                    data: {
-                        labels: ['Cpu', 'Ram', 'Disco'],
-                        datasets: [{
-                            data: [compCpu, compRam, compDisco],
-                            backgroundColor: ['rgba(147, 112, 219, 0.8)', 'rgba(0, 191, 255, 0.8)', 'rgba(255, 137, 176, 0.8)'],
-                            borderColor: ['#9370DB', '#00BFFF', '#ff89b0'],
-                            borderWidth: 1,
-                            borderRadius: 8
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Quantidades',
-                                    font: {
-                                        size: 20,
-                                        weight: "bold"
-                                    }
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 14,
-                                        weight: "bold"
-                                    }
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Componentes',
-                                    font: {
-                                        size: 20,
-                                        weight: "bold"
-                                    }
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 20,
-                                        weight: "bold"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                if (chartComp !== null) {
-                    chartComp.destroy(); chartComp = null;
-                }
-                chartComp = new Chart(alertasComponenteCanvas, configComp);
-            }
-        })
-        .catch(function (err) {
-            console.error('Erro no fetch do relatorio:', err);
+           
         });
 
 
 
         
-// == S3 ==
+// ================================================= S3 ==============================================================
 
     var nomeServidor = localStorage.NOME_SERVIDOR
     
@@ -467,7 +393,7 @@ function dash_analista() {
     var caminho = `/servidores/dados?nomeServer=${nomeServidor}`;
     
     console.log("Buscando dados do S3 em:", caminho);
-    
+
     fetch(caminho)
         .then(function(res) {
             if (!res.ok) throw new Error('Erro ao pegar dados S3');
@@ -484,6 +410,30 @@ function dash_analista() {
             var s3Baixo = dadosS3.total_alertas_baixo;
             var s3Medio = dadosS3.total_alertas_medio;
             var s3Alto  = dadosS3.total_alertas_alto;
+        
+            var s3Cpu = dadosS3.total_alertas_cpu;
+            var s3Ram = dadosS3.total_alertas_ram;
+            var s3Disco = dadosS3.total_alertas_disco; 
+            
+
+            var compMaisAfetado = ""
+
+            if(s3Cpu > s3Ram && s3Cpu > s3Disco){
+                compMaisAfetado = "Cpu"
+            } else if(s3Ram > s3Cpu && s3Ram > s3Disco){
+                compMaisAfetado = "Ram"
+            }
+            else if(s3Disco > s3Ram && s3Disco > s3Cpu){
+                compMaisAfetado = "Disco"
+            }
+
+
+            var elComp = document.getElementById('kpi-componente-mais-impactado');
+                if (elComp) {
+                    elComp.innerText = compMaisAfetado;
+                } else {
+                    console.log('KPI componenteMaisAfetado:', compMaisAfetado);
+                }
 
             var textoGravidade = "Sem alertas";
             var corKPI = "white";
@@ -610,7 +560,75 @@ function dash_analista() {
                     chartGrav.destroy(); chartGrav = null;
                  }
                 chartGrav = new Chart(alertasServidorCanvas, configGrav);
+        
             }
+             // Alertas por Componente 
+            if (alertasComponenteCanvas) {
+                var configComp = {
+                    type: 'bar',
+                    data: {
+                        labels: ['Cpu', 'Ram', 'Disco'],
+                        datasets: [{
+                            data: [s3Cpu, s3Ram, s3Disco],
+                            backgroundColor: ['rgba(147, 112, 219, 0.8)', 'rgba(0, 191, 255, 0.8)', 'rgba(255, 137, 176, 0.8)'],
+                            borderColor: ['#9370DB', '#00BFFF', '#ff89b0'],
+                            borderWidth: 1,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Quantidades',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 14,
+                                        weight: "bold"
+                                    }
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Componentes',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                if (chartComp !== null) {
+                    chartComp.destroy(); chartComp = null;
+                }
+                chartComp = new Chart(alertasComponenteCanvas, configComp);
+            }
+        })
+        .catch(function (err) {
+            console.error('Erro no fetch do relatorio:', err);
         })
         .catch(function(erro) {
             console.error("Erro na integração S3:", erro);
