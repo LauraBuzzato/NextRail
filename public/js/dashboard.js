@@ -14,7 +14,6 @@ function dash_analista() {
 
     var frequenciaCanvas = document.getElementById('frequenciaSemanalChart');
     var alertasComponenteCanvas = document.getElementById('alertasComponenteChart');
-    var alertasServidorCanvas = document.getElementById('alertasServidorChart');
 
     if (!frequenciaCanvas) {
         console.error('Elemento frequenciaSemanalChart não encontrado');
@@ -34,6 +33,11 @@ function dash_analista() {
     var mesEscolhido = hojeData.getMonth() + 1; // 1..12
 
     var caminhoRelatorio = '/relatorio/mensal-detalhado/' + anoEscolhido + '/' + mesEscolhido;
+    
+    var caminho = '/servidores/dados';
+
+    console.log("Buscando dados do S3 em:", caminho);
+
 
     fetch(caminhoRelatorio)
         .then(function (res) {
@@ -74,12 +78,14 @@ function dash_analista() {
                     gravidadeMaisFrequente = kpis.gravidadePredominante;
                 }
 
+                /*
                 var elTotal = document.getElementById('kpi-total-alertas');
                 if (elTotal) {
                     elTotal.innerText = totalAlertsMes;
                 } else {
                     console.log('KPI totalAlerts:', totalAlertsMes);
                 }
+                    */
 
 
                 var elComp = document.getElementById('kpi-componente-mais-impactado');
@@ -442,15 +448,52 @@ function dash_analista() {
                 }
                 chartComp = new Chart(alertasComponenteCanvas, configComp);
             }
+        })
+        .catch(function (err) {
+            console.error('Erro no fetch do relatorio:', err);
+        });
+
+
+
+        
+// == S3 ==
+var caminhoS3 = '/servidores/dados'; 
+    
+    fetch(caminhoS3)
+        .then(function(res) {
+            if (!res.ok) throw new Error('Erro ao pegar dados S3');
+            return res.json();
+        })
+        .then(function(dadosS3) {
+            console.log("JSON do S3 recebido:", dadosS3);
+
+            var totalS3 = dadosS3.total_alertas_baixo + 
+                          dadosS3.total_alertas_medio +
+                          dadosS3.total_alertas_alto
+
+
+            var s3Baixo = dadosS3.total_alertas_baixo;
+            var s3Medio = dadosS3.total_alertas_medio;
+            var s3Alto  = dadosS3.total_alertas_alto;
+
+            var kpiTotal = document.getElementById('kpi-total-alertas');
+            if (kpiTotal) {
+                kpiTotal.innerHTML = totalS3;  
+            }
+
+            console.log(`Dados referentes a: ${dadosS3.mes_referencia}/${dadosS3.ano_referencia}`);
+
 
             // Alertas por Gravidade 
-            if (alertasServidorCanvas) {
+            var alertasServidorCanvas = document.getElementById('alertasServidorChart');
+
+             if (alertasServidorCanvas) {
                 var configGrav = {
                     type: 'bar',
                     data: {
                         labels: ['Baixo', 'Médio', 'Alto'],
                         datasets: [{
-                            data: [gravBaixo, gravMedio, gravAlto],
+                            data: [s3Baixo, s3Medio, s3Alto],
                             backgroundColor: ['rgba(255, 255, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)'],
                             borderColor: ['rgba(255, 255, 0, 1)', 'rgba(3, 2, 0, 1)', 'rgba(255, 0, 0, 1)'],
                             borderWidth: 1,
@@ -503,16 +546,56 @@ function dash_analista() {
                 };
 
 
-                if (chartGrav !== null) { chartGrav.destroy(); chartGrav = null; }
+                if (chartGrav !== null) { 
+                    chartGrav.destroy(); chartGrav = null;
+                 }
                 chartGrav = new Chart(alertasServidorCanvas, configGrav);
             }
-
         })
-        .catch(function (err) {
-            console.error('Erro no fetch do relatorio:', err);
+        .catch(function(erro) {
+            console.error("Erro na integração S3:", erro);
+        });
+    
+
+        //Lógica Definição kpi Sla
+        var idServidor = sessionStorage.ID_SERVIDOR; 
+
+    fetch(`/servidores/sla/${idServidor}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Média de SLA recebida:", data.mediaSla);
+            
+            var metricaMTTR = document.getElementById('metrica-sla');
+            
+            if (metricaMTTR) {
+                metricaMTTR.innerHTML = `(SLA: < ${data.mediaSla} min)`;
+            }
+            
+        })
+        .catch(err => {
+            console.error("Erro ao buscar SLA:", err);
         });
 
+
+
+    //Função de comparação de alertas (%) com base no mês anterior
+    fetch(`/servidores/comparacao/${idServidor}`)
+        .then(res => res.json())
+        .then(dados => {
+            var kpiVariacao = document.getElementById('variacao');
+            if (kpiVariacao) {
+                kpiVariacao.innerHTML = `
+                    (${dados.percentual}% 
+                    <ion-icon name="${dados.icone}" style="color: ${dados.cor}"></ion-icon> ${dados.texto})
+                    `;
+            }
+        })
+        .catch(err => console.error("Erro comparação:", err));
+
 }
+
+
+
 
 // dash suporte ------------------------------------------------------------------------------------------------------------------
 
