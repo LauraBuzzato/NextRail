@@ -1109,7 +1109,7 @@ async function pegarPrevisao(servidorId, periodo) {
             console.log('Estrutura de previsão não reconhecida');
             return null;
         }
-
+        
         return {
             cpu: previsoes.cpu || [],
             ram: previsoes.ram || [],
