@@ -37,7 +37,7 @@ function dash_analista() {
 
 
 
-    console.log("Buscando dados do S3 em:", caminho);
+    
 
 
     fetch(caminhoRelatorio)
@@ -466,6 +466,7 @@ function dash_analista() {
     }
     var caminho = `/servidores/dados?nomeServer=${nomeServidor}`;
     
+    console.log("Buscando dados do S3 em:", caminho);
     
     fetch(caminho)
         .then(function(res) {
@@ -483,6 +484,57 @@ function dash_analista() {
             var s3Baixo = dadosS3.total_alertas_baixo;
             var s3Medio = dadosS3.total_alertas_medio;
             var s3Alto  = dadosS3.total_alertas_alto;
+
+            var textoGravidade = "Sem alertas";
+            var corKPI = "white";
+
+            //Qtd total
+            if(totalS3 > 0){
+            if (s3Alto >= s3Medio && s3Alto >= s3Baixo && s3Alto > 0) {
+                textoGravidade = "Alto";
+                corKPI = "rgba(255, 0, 0, 1)";
+            } 
+            else if (s3Medio >= s3Baixo && s3Medio > s3Alto && s3Medio > 0) {
+                textoGravidade = "Médio";
+                corKPI = "rgba(255, 165, 0, 1)"; 
+            } 
+            else if (s3Baixo > s3Medio && s3Baixo > s3Alto && s3Baixo > 0) {
+                  textoGravidade = "Baixo";
+                corKPI = "rgba(255, 255, 0, 1)"; 
+            }
+
+
+            var maiorValor = Math.max(s3Alto, s3Medio, s3Baixo);
+
+            // Prioridade 
+                if (s3Alto === maiorValor) {
+                    textoGravidade = "Alto";
+                    corKPI = "rgba(255, 0, 0, 1)";
+                } 
+                else if (s3Medio === maiorValor) {
+                    textoGravidade = "Médio";
+                    corKPI = "rgba(255, 165, 0, 1)";
+                } 
+                else {
+                    textoGravidade = "Baixo";
+                    corKPI = "rgba(255, 255, 0, 1)";
+                }
+            }
+        
+        
+            var kpiGravidade = document.getElementById('kpi-gravidade-mais-frequente');
+
+            if(kpiGravidade){
+                kpiGravidade.innerHTML = textoGravidade;
+                kpiGravidade.style.color = corKPI
+                kpiGravidade.style.fontSize = "40px"
+                kpiGravidade.style.weight = "bold" 
+                                        
+            }
+            console.log(`Cor aplicada: ${corKPI} (Alto: ${s3Alto}, Médio: ${s3Medio}, Baixo: ${s3Baixo})`);
+
+
+
 
             var kpiTotal = document.getElementById('kpi-total-alertas');
             if (kpiTotal) {

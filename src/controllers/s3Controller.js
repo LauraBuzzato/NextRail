@@ -2,194 +2,156 @@ const AWS = require('aws-sdk');
 AWS.config.update({ region: process.env.AWS_REGION });
 const s3 = new AWS.S3();
 
-function parsCSV(text) {
-  const lines = text.split(/\r?\n/);
-  if (lines.length < 1) return { headers: [], rows: [] };
-
-  const headerLine = lines[0].trim();
-  const headers = headerLine
-    .split(';')
-    .map(h => h.trim().replace(/^"|"$/g, '').toUpperCase());
-
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-
-    const values = [];
-    let current = '';
-    let inQuotes = false;
-
-    for (let char of line + ';') {
-      if (char === '"') {
-        inQuotes = !inQuotes;
-      } else if (char === ';' && !inQuotes) {
-        values.push(current.replace(/^"|"$/g, '').trim());
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-
-    if (values.length !== headers.length) continue;
-
-    const row = {};
-    let hasValue = false;
-    for (let j = 0; j < headers.length; j++) {
-      const val = values[j];
-      row[headers[j]] = val;
-      if (val !== '') hasValue = true;
-    }
-
-    if (hasValue && row.NOME) {
-      rows.push(row);
-    }
-  }
-
-  return { headers, rows };
-}
-
-function transformarDadosParaDashboard(dadosBrutos) {
-  if (!dadosBrutos || dadosBrutos.length === 0) {
-    return {
-      labelsMemoria: [],
-      memoriaMB: [],
-      horarios: [],
-      processos24h: [],
-      maximoProcessos: 0,
-      mediaProcessos: 0,
-      processoMaisFrequente: 'N/A'
-    };
-  }
-
-  const primeira = dadosBrutos[0];
-  const colNome = Object.keys(primeira).find(k => /NOME/i.test(k)) || 'NOME';
-  const colMem = Object.keys(primeira).find(k => /MEMORIA|USO/i.test(k));
-  const colTs = Object.keys(primeira).find(k => /TIMESTAMP|DATA|HORA/i.test(k));
-
-  if (!colMem || !colNome) {
-    throw new Error('Colunas obrigatórias não encontradas: NOME ou MEMORIA/USO');
-  }
-
-  const memoriaPorProcesso = new Map();
-  const contagemPorHora = new Map();
-  let totalProcessos = 0;
-
-  for (const row of dadosBrutos) {
-    const nome = String(row[colNome] || '').trim() || 'Desconhecido';
-    const memoria = parseFloat(row[colMem]) || 0;
-
-    if (memoria > (memoriaPorProcesso.get(nome) || 0)) {
-      memoriaPorProcesso.set(nome, memoria);
-    }
-
-    if (colTs && row[colTs]) {
-      const horaMatch = String(row[colTs]).match(/(\d{1,2}):\d{2}/);
-      if (horaMatch) {
-        const hora = horaMatch[1].padStart(2, '0') + ':00';
-        contagemPorHora.set(hora, (contagemPorHora.get(hora) || 0) + 1);
-        totalProcessos++;
-      }
-    }
-  }
-
-  const top5 = [...memoriaPorProcesso.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
-
-  const horasOrdenadas = [...contagemPorHora.keys()].sort();
-  const processosPorHora = horasOrdenadas.map(h => contagemPorHora.get(h));
-
-  const somaProcessos = processosPorHora.reduce((a, b) => a + b, 0);
-  const mediaProcessos = processosPorHora.length > 0
-    ? Math.round(somaProcessos / processosPorHora.length)
-    : totalProcessos;
-
-  return {
-    labelsMemoria: top5.map(([nome]) => nome),
-    memoriaMB: top5.map(([, uso]) => uso),
-    horarios: horasOrdenadas,
-    processos24h: processosPorHora,
-    maximoProcessos: processosPorHora.length > 0 ? Math.max(...processosPorHora) : totalProcessos,
-    mediaProcessos,
-    processoMaisFrequente: top5[0]?.[0] || 'N/A'
-  };
-}
-
 async function lerArquivo() {
   const bucket = process.env.S3_BUCKET;
-  const agora = new Date();
-  const vinteQuatroHAtras = new Date(agora.getTime() - 24 * 60 * 60 * 1000);
+  const ontem = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24h atrás
 
-  let arquivos = [];
-  let continuationToken = null;
-  do {
-    const params = {
-      Bucket: bucket,
-      Prefix: 'ViaMobilidade/Servidor01/Processos/',
-      MaxKeys: 1000,
-      ...(continuationToken && { ContinuationToken: continuationToken })
-    };
-    const { Contents, IsTruncated, NextContinuationToken } = await s3.listObjectsV2(params).promise();
-    arquivos = arquivos.concat(Contents || []);
-    continuationToken = NextContinuationToken;
-  } while (continuationToken);
+  //Lista todos os arquivos do caminho no S3
+  const arquivos = await listarArquivos(bucket, 'ViaMobilidade/Servidor01/Processos/');
 
-  const arquivosValidos = arquivos
-    .filter(obj => 
-      obj.Key && !obj.Key.endsWith('/') && obj.Size > 0 &&
-      new Date(obj.LastModified) >= vinteQuatroHAtras
-    )
-    .sort((a, b) => b.LastModified - a.LastModified);
+  //Filtra só os das últimas 24h e que têm conteúdo
+  const arquivosRecentes = arquivos
+    .filter(a => a.Key && !a.Key.endsWith('/') && a.Size > 0)
+    .filter(a => a.LastModified >= ontem)
+    .sort((a, b) => b.LastModified - a.LastModified); // mais novo primeiro
 
-  if (arquivosValidos.length === 0) throw new Error('Nenhum arquivo das últimas 24h');
+  if (arquivosRecentes.length === 0) {
+    throw new Error('Nenhum arquivo encontrado nas últimas 24 horas');
+  }
 
-  console.log(`Lidos ${arquivosValidos.length} arquivos das últimas 24h`);
+  console.log(`Encontrados ${arquivosRecentes.length} arquivos recentes`);
 
-  let todosDados = [];
-  let memoriaPorProcessoGlobal = new Map();
-  const contagemPorHora = new Map();
+  //Objetos para guardar os resultados finais
+  const usoMaximoMemoriaPorProcesso = new Map();
+  const processosPorHora = new Map();
 
-  for (const arquivo of arquivosValidos) {
-    const { Body } = await s3.getObject({ Bucket: bucket, Key: arquivo.Key }).promise();
-    const texto = Body.toString('utf-8').trim();
-    const { rows } = parsCSV(texto);
+  //Para cada arquivo: baixa, lê e processa
+  for (const arquivo of arquivosRecentes) {
+    const texto = await baixarArquivo(bucket, arquivo.Key);
+    const linhasDeDados = parseCSV(texto);
 
-    if (rows.length === 0) continue;
-
-    todosDados.push(...rows);
-
-    const primeiroTs = rows[0][Object.keys(rows[0]).find(k => /TIMESTAMP/i.test(k))];
-    const horaMatch = primeiroTs.match(/(\d{1,2}):/);
-    if (horaMatch) {
-      const hora = horaMatch[1].padStart(2, '0') + ':00';
-      contagemPorHora.set(hora, (contagemPorHora.get(hora) || 0) + rows.length);
+    //Conta quantos processos tinham naquela hora (usa o timestamp da primeira linha)
+    if (linhasDeDados.length > 0) {
+      const hora = extrairHora(linhasDeDados[0]);
+      if (hora) {
+        processosPorHora.set(hora, (processosPorHora.get(hora) || 0) + linhasDeDados.length);
+      }
     }
 
-    for (const row of rows) {
-      const nome = row.NOME?.trim() || 'Desconhecido';
-      const mem = parseFloat(row['USO_MEMORIA (MB)']) || 0;
-      memoriaPorProcessoGlobal.set(nome, Math.max(memoriaPorProcessoGlobal.get(nome) || 0, mem));
+    //Atualiza memória máxima de cada processo
+    for (const linha of linhasDeDados) {
+      const nome = (linha.NOME || 'Desconhecido').trim();
+      const memoria = parseFloat(linha['USO_MEMORIA (MB)']) || 0;
+
+      if (memoria > (usoMaximoMemoriaPorProcesso.get(nome) || 0)) {
+        usoMaximoMemoriaPorProcesso.set(nome, memoria);
+      }
     }
   }
 
-  const horasOrdenadas = [...contagemPorHora.keys()].sort();
-  const processosPorHora = horasOrdenadas.map(h => contagemPorHora.get(h));
-  const maximoProcessos = Math.max(...processosPorHora, 0);
-  const mediaProcessos = processosPorHora.length > 0 ? Math.round(processosPorHora.reduce((a, b) => a + b, 0) / processosPorHora.length) : 0;
+  //Monta o resultado final para o dashboard
+  return montarResultadoDashboard(usoMaximoMemoriaPorProcesso, processosPorHora);
+}
 
-  const top5 = [...memoriaPorProcessoGlobal.entries()]
+module.exports = { lerArquivo };
+
+
+async function listarArquivos(bucket, prefix) {
+  let todos = [];
+  let token = null;
+  do {
+    const resultado = await s3.listObjectsV2({
+      Bucket: bucket,
+      Prefix: prefix,
+      MaxKeys: 1000,
+      ContinuationToken: token || undefined
+    }).promise();
+
+    todos = todos.concat(resultado.Contents || []);
+    token = resultado.NextContinuationToken;
+  } while (token);
+  return todos;
+}
+
+async function baixarArquivo(bucket, key) {
+  const { Body } = await s3.getObject({ Bucket: bucket, Key: key }).promise();
+  return Body.toString('utf-8').trim();
+}
+
+//Converte CSV separado por ; (com ou sem aspas)
+function parseCSV(texto) {
+  const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  if (linhas.length === 0) return [];
+
+  const cabecalho = linhas[0].split(';').map(h => h.replace(/^"|"$/g, '').trim().toUpperCase());
+  const dados = [];
+
+  for (let i = 1; i < linhas.length; i++) {
+    const colunas = parseLinhaCSV(linhas[i]);
+    if (colunas.length !== cabecalho.length) continue;
+
+    const registro = {};
+    let temDados = false;
+    for (let j = 0; j < cabecalho.length; j++) {
+      const valor = colunas[j].replace(/^"|"$/g, '').trim();
+      registro[cabecalho[j]] = valor;
+      if (valor) temDados = true;
+    }
+    if (temDados && registro.NOME) dados.push(registro);
+  }
+  return dados;
+}
+
+//Trata linhas CSV com campos entre aspas e ponto-e-vírgula
+function parseLinhaCSV(linha) {
+  const valores = [];
+  let atual = '';
+  let aspas = false;
+
+  for (let char of linha + ';') { // adiciona ; no final pra fechar o último campo
+    if (char === '"') {
+      aspas = !aspas;
+    } else if (char === ';' && !aspas) {
+      valores.push(atual);
+      atual = '';
+    } else {
+      atual += char;
+    }
+  }
+  return valores;
+}
+
+function extrairHora(linha) {
+  const colunas = Object.keys(linha);
+  const colunaTempo = colunas.find(c => /TIMESTAMP|DATA|HORA/i.test(c));
+  if (!colunaTempo) return null;
+
+  const match = linha[colunaTempo].match(/(\d{1,2}):\d{2}/);
+  return match ? match[1].padStart(2, '0') + ':00' : null;
+}
+
+function montarResultadoDashboard(memoriaMap, horaMap) {
+  //Top 5 processos que mais consumiram memória
+  const top5 = [...memoriaMap.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
 
+  //Horários ordenados e quantidade de processos por hora
+  const horas = [...horaMap.keys()].sort();
+  const quantidades = horas.map(h => horaMap.get(h) || 0);
+
+  const totalHoras = quantidades.length;
+  const soma = quantidades.reduce((a, b) => a + b, 0);
+  const media = totalHoras > 0 ? Math.round(soma / totalHoras) : 0;
+  const maximo = totalHoras > 0 ? Math.max(...quantidades) : 0;
+
   return {
     labelsMemoria: top5.map(([nome]) => nome),
-    memoriaMB: top5.map(([, uso]) => uso),
-    horarios: horasOrdenadas,
-    processos24h: processosPorHora,
-    maximoProcessos,
-    mediaProcessos,
+    memoriaMB: top5.map(([, mb]) => mb),
+    horarios: horas,
+    processos24h: quantidades,
+    maximoProcessos: maximo,
+    mediaProcessos: media,
     processoMaisFrequente: top5[0]?.[0] || 'N/A'
   };
 }
-module.exports = { lerArquivo };
