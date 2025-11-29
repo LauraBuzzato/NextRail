@@ -331,7 +331,7 @@ async function atualizar(a) {
 
       <div class="kpi-box">
         <span class="kpi-title">Componente Mais Impactado do Mês</span>
-        <div id="kpi-componente-mais-impactado" style="color: #00BFFF; font-size: 40px";></div>
+        <div id="kpi-componente-mais-impactado" style="font-size: 40px";></div>
       </div>
 
       <div class="kpi-box">

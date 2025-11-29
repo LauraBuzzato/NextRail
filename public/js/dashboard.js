@@ -214,6 +214,15 @@ function dash_analista() {
                 console.log('KPI componenteMaisAfetado:', compMaisAfetado);
             }
 
+            if(compMaisAfetado == "Cpu"){
+                elComp.style.color = "#a78bfa";
+            } else if(compMaisAfetado == "Ram"){
+                elComp.style.color = "#38bdf8";
+            } else if(compMaisAfetado == "Disco"){
+                elComp.style.color = "#ff89b0";
+            }
+
+
             var textoGravidade = "Sem alertas";
             var corKPI = "white";
 
