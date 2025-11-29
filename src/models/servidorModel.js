@@ -1112,7 +1112,7 @@ async function pegarPrevisao(servidorId, periodo) {
         
         return {
             cpu: previsoes.cpu || [],
-            ram: previsoes.ram || [],
+            ram: previsoes.ram || [], 
             disco: previsoes.disco || [],
             latencia: previsoes.latencia || []
         };
