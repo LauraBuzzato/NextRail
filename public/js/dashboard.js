@@ -1062,7 +1062,7 @@ async function kpi_suporte(componente) {
 
         const dadosNovos = await response.json();
         
-        console.log('Dados recebidos do backend:', dadosNovos);
+        console.log('Dados recebidos do bucket:', dadosNovos);
         
         return dadosNovos;
 
