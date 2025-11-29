@@ -1046,6 +1046,32 @@ async function kpi_suporte(componente) {
 }
 }
 
+ async function buscarDadosComponentes() {
+    try {
+
+        const response = await fetch(`/servidores/pegarUso/${sessionStorage.NOME_EMPRESA}/${localStorage.NOME_SERVIDOR}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro na resposta do servidor');
+        }
+
+        const dadosNovos = await response.json();
+        
+        console.log('Dados recebidos do backend:', dadosNovos);
+        
+        return dadosNovos;
+
+    } catch (error) {
+        console.error('Erro ao buscar dados de uso:', error);
+        return null;
+    }
+}
+
  async function criarTabela() {
     const conteudo = document.getElementById('tabela-conteudo');
     if (!conteudo) return;
@@ -1113,3 +1139,5 @@ async function kpi_suporte(componente) {
         console.log("Erro: ", erro)
     }
 }
+console.log(sessionStorage)
+console.log(localStorage)

@@ -445,37 +445,25 @@ function listarIncidentes(req, res) {
 
 async function pegarUso(req, res) {
     try {
-        const empresa = req.query.empresa;
-        const servidor = req.query.servidor;
-        const tipo = req.query.tipo; // "mensal" ou "anual"
-        const ano = req.query.ano;
-        const mes = req.query.mes;
-        const componente = req.query.componente;
+        const empresa = req.params.empresa;
+        const servidor = req.params.servidorNome;
 
         // validações básicas
-        if (!empresa || !servidor || !tipo || !ano || !componente) {
+        if (!empresa || !servidor) {
             return res.status(400).json({
-                erro: "Parâmetros obrigatórios ausentes. Envie empresa, servidor, tipo, ano, componente (e mes se mensal)."
+                erro: "Parâmetros obrigatórios ausentes. Envie empresa, servidor"
             });
         }
 
         console.log("[API] Pegando uso real do S3:", {
             empresa,
-            servidor,
-            tipo,
-            ano,
-            mes,
-            componente
+            servidor
         });
 
         const resultado = await servidorModel.pegarUso(
             empresa,
             servidor,
-            tipo,
-            ano,
-            mes,
-            Number(componente)
-        );
+            );
 
         return res.status(200).json(resultado);
 
