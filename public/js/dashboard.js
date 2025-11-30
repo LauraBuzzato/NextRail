@@ -42,22 +42,22 @@ function dash_analista() {
 
             var kpis = payload.kpisGerais;
 
-            
-                var mttrMedioMes = 0;
-                if (kpis.mttrMedio !== undefined && kpis.mttrMedio !== null) {
-                    mttrMedioMes = Math.round(kpis.mttrMedio);
-                }
-        
-                var elMttr = document.getElementById('kpi-mttr-medio');
-                if (elMttr) {
-                    elMttr.innerText = `${mttrMedioMes} min`;
-                } else {
-                    console.log('KPI mttrMedio:', mttrMedioMes);
-                }
 
-        }); 
-        
-                
+            var mttrMedioMes = 0;
+            if (kpis.mttrMedio !== undefined && kpis.mttrMedio !== null) {
+                mttrMedioMes = Math.round(kpis.mttrMedio);
+            }
+
+            var elMttr = document.getElementById('kpi-mttr-medio');
+            if (elMttr) {
+                elMttr.innerText = `${mttrMedioMes} min`;
+            } else {
+                console.log('KPI mttrMedio:', mttrMedioMes);
+            }
+
+        });
+
+
     // ================================================= S3 ==============================================================
 
     var nomeServidor = localStorage.NOME_SERVIDOR
@@ -134,7 +134,28 @@ function dash_analista() {
                         plugins: {
                             legend: {
                                 display: true
+                            },
+
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            // Adicione estas linhas:
+                            z: 9999, // Alto z-index
+                            external: function (context) {
+                                // Garante que o tooltip fique na frente
+                                var tooltip = context.tooltip;
+                                if (tooltip && tooltip.el) {
+                                    tooltip.el.style.zIndex = '9999';
+                                }
                             }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
                         },
                         scales: {
                             y: {
@@ -214,11 +235,11 @@ function dash_analista() {
                 console.log('KPI componenteMaisAfetado:', compMaisAfetado);
             }
 
-            if(compMaisAfetado == "Cpu"){
+            if (compMaisAfetado == "Cpu") {
                 elComp.style.color = "#a78bfa";
-            } else if(compMaisAfetado == "Ram"){
+            } else if (compMaisAfetado == "Ram") {
                 elComp.style.color = "#38bdf8";
-            } else if(compMaisAfetado == "Disco"){
+            } else if (compMaisAfetado == "Disco") {
                 elComp.style.color = "#ff89b0";
             }
 
@@ -302,6 +323,26 @@ function dash_analista() {
                                 display: false
                             }
                         },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            // Adicione estas linhas:
+                            z: 9999, // Alto z-index
+                            external: function (context) {
+                                // Garante que o tooltip fique na frente
+                                var tooltip = context.tooltip;
+                                if (tooltip && tooltip.el) {
+                                    tooltip.el.style.zIndex = '9999';
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
@@ -368,6 +409,26 @@ function dash_analista() {
                                 display: false
                             }
                         },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            // Adicione estas linhas:
+                            z: 9999, // Alto z-index
+                            external: function (context) {
+                                // Garante que o tooltip fique na frente
+                                var tooltip = context.tooltip;
+                                if (tooltip && tooltip.el) {
+                                    tooltip.el.style.zIndex = '9999';
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
@@ -381,7 +442,7 @@ function dash_analista() {
                                 },
                                 ticks: {
                                     font: {
-                                        size: 14,
+                                        size: 20,
                                         weight: "bold"
                                     }
                                 }
@@ -411,7 +472,7 @@ function dash_analista() {
                 }
                 chartComp = new Chart(alertasComponenteCanvas, configComp);
             }
-        
+
         })
         .catch(function (erro) {
             console.error("Erro na integração S3:", erro);
