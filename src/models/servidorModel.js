@@ -1043,39 +1043,14 @@ async function pegarPrevisao(servidorId, periodo) {
         }
 
         console.log('Estrutura completa dos dados:', JSON.stringify(dadosNovos, null, 2));        
-
-        let previsoes;
         
-        if (dadosNovos.previsoes) {
-            previsoes = dadosNovos.previsoes;
-        } else if (dadosNovos.previsao) {
-            previsoes = dadosNovos.previsao;
-        } else if (Array.isArray(dadosNovos.cpu)) {
-  
-            return {
-                cpu: dadosNovos.cpu || [],
-                ram: dadosNovos.ram || [],
-                disco: dadosNovos.disco || [],
-                latencia: dadosNovos.latencia || []
-            };
-        } else {
-            console.log('Estrutura de previsão não reconhecida');
-            return null;
-        }
-        
-        return {
-            cpu: previsoes.cpu || [],
-            ram: previsoes.ram || [], 
-            disco: previsoes.disco || [],
-            latencia: previsoes.latencia || []
-        };
+        return dadosNovos;
 
     } catch (error) {
         console.error('Erro ao buscar previsão do S3:', error);
         return null;
     }
 }
-
 
 
 // Tentativa pegar dados s3

@@ -867,44 +867,6 @@ const cores = {
 };
 
 
-function atualizarKPIsGerais(dados) {
-    const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
-    const disponibilidade = 99.7;
-    let periodo = periodoSelect.value === "semanal" ? "semanal" : "mensal";
-    const taxas = {};
-
-    for (const componente in dados) {
-        if (componente !== 'latencia' && Array.isArray(dados[componente])) {
-            const valores = dados[componente];
-            if (valores.length >= 2) {
-                const crescimento = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
-                taxas[componente] = parseFloat(crescimento.toFixed(2));
-            }
-        }
-    }
-
-    const maiorCrescimento = encontrarComponenteMaiorCrescimento(taxas);
-    const latenciaMedia = Array.isArray(dados.latencia) && dados.latencia.length > 0 ?
-        dados.latencia.reduce((a, b) => a + b, 0) / dados.latencia.length : 0;
-
-    document.getElementById("kpisContainer").innerHTML = `
-        <div class="KPI">
-            <h2>Componente com Maior Consumo ${periodo}</h2>
-            <p class="valor-kpi" style="color:${cores[maiorCrescimento.componente]}">${nomes[maiorCrescimento.componente]}</p>
-            <p class="tendencia">+${maiorCrescimento.taxa}%</p>
-        </div>
-        <div class="KPI">
-            <h2>Previsão de latência média ${periodo}</h2>
-            <p class="valor-kpi" style="color:rgba(65, 94, 243, 0.8)">${latenciaMedia.toFixed(1)}ms</p>
-        </div>
-        <div class="KPI">
-            <h2>Disponibilidade do Servidor</h2>
-            <p class="valor-kpi" style="color:green">${disponibilidade}%</p>
-        </div>
-    `;
-}
-
-
 async function atualizarKPIs(dados) {
     const valores = dados[componenteAtual];
     const mediaUso = Array.isArray(valores) ?
@@ -912,12 +874,29 @@ async function atualizarKPIs(dados) {
 
     const periodo = periodoSelect.value;
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
-    let variacaoPercentual = 0;
-    if (Array.isArray(valores) && valores.length >= 2 && valores[0] !== 0) {
-        variacaoPercentual = ((valores[valores.length - 1] - valores[0]) / valores[0]) * 100;
+    
+    // Usa os dados de crescimento específicos do componente
+    let crescimentoPercentual = 0;
+    let tendencia = "estavel";
+    
+    switch(componenteAtual) {
+        case 'cpu':
+            crescimentoPercentual = dados.crescimentoCpuPercentual || 0;
+            tendencia = dados.crescimentoCpuTendencia || "estavel";
+            break;
+        case 'ram':
+            crescimentoPercentual = dados.crescimentoRamPercentual || 0;
+            tendencia = dados.crescimentoRamTendencia || "estavel";
+            break;
+        case 'disco':
+            crescimentoPercentual = dados.crescimentoDiscoPercentual || 0;
+            tendencia = dados.crescimentoDiscoTendencia || "estavel";
+            break;
     }
+
     const alertasReais = await buscarDadosHistoricosAlertas(componenteAtual, periodo);
     let alertaMaisFrequente = "Baixo";
+    
     if (alertasReais) {
         let totalAlto = 0;
         let totalMedio = 0;
@@ -936,46 +915,69 @@ async function atualizarKPIs(dados) {
         if (totalAlto > totalMedio && totalAlto > totalBaixo) alertaMaisFrequente = "Alto";
         else if (totalMedio > totalBaixo) alertaMaisFrequente = "Médio";
     }
+    const corTendencia = tendencia === "crescendo" ? "#ff6b6b" : 
+                        tendencia === "decrescendo" ? "#51cf66" : "#ffe066";
 
-    if (periodo == "mensal") {
-        document.getElementById("kpisContainer").innerHTML = `
+    const periodoTexto = periodo === "mensal" ? "Mensal" : "Semanal";
+
+    document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
-            <h2>Previsão de uso médio Mensal (${nomes[componenteAtual]})</h2>
-            <p class="valor-kpi" id="kpi1"> ${mediaUso}%</p>
-        </div>
-        <div class ="KPI">
-        <h2> Taxa de aumento Percentual Mensal:</h2>
-        <p class="valor-kpi" style="color:white">${variacaoPercentual > 0 ? '+' : ''}${variacaoPercentual.toFixed(1)}%</p>
+            <h2>Previsão de Uso Médio ${periodoTexto}</h2>
+            <p class="valor-kpi" id="kpi1" style="color:${cores[componenteAtual]}">${mediaUso}%</p>
         </div>
         <div class="KPI">
-            <h2>Previsão do alerta mais frequente:</h2>
-            <p class="valor-kpi" id="kpi2" style="color:${alertaMaisFrequente === 'Alto' ? 'red' : alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'}">${alertaMaisFrequente}</p>
-        </div>
-        `;
-    } else if (periodo == "semanal") {
-        document.getElementById("kpisContainer").innerHTML = `
-        <div class="KPI">
-            <h2>Porcentagem de consumo médio(${nomes[componenteAtual]})</h2>
-            <p class="valor-kpi" id="kpi1"> ${mediaUso}%</p>
-        </div>
-        <div class ="KPI">
-        <h2> Taxa de aumento Percentual Semanal:</h2>
-        <p class="valor-kpi" style="color:white">${variacaoPercentual > 0 ? '+' : ''}${variacaoPercentual.toFixed(1)}%</p>
+            <h2>Taxa de Crescimento ${periodoTexto}</h2>
+            <p class="valor-kpi" style="color:${corTendencia}">
+                ${crescimentoPercentual > 0 ? '+' : ''}${crescimentoPercentual.toFixed(1)}%
+            </p>
+            <p class="tendencia" style="color:${corTendencia}">
+                ${tendencia === "crescendo" ? "📈 Crescendo" : 
+                  tendencia === "decrescendo" ? "📉 Decrescendo" : "➡️ Estável"}
+            </p>
         </div>
         <div class="KPI">
-            <h2>Previsão do alerta mais frequente:</h2>
-            <p class="valor-kpi" id="kpi2" style="color:${alertaMaisFrequente === 'Alto' ? 'red' : alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'}">${alertaMaisFrequente}</p>
+            <h2>Previsão do Alerta Mais Frequente</h2>
+            <p class="valor-kpi" id="kpi2" style="color:${
+                alertaMaisFrequente === 'Alto' ? 'red' : 
+                alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'
+            }">${alertaMaisFrequente}</p>
         </div>
-        `;
+        <div class="KPI">
+            <h2>Status do Componente</h2>
+            <p class="valor-kpi" style="color:${
+                crescimentoPercentual > 10 ? '#ff6b6b' : 
+                crescimentoPercentual > 5 ? '#ffa94d' : '#51cf66'
+            }">
+                ${crescimentoPercentual > 10 ? 'Crítico' : 
+                  crescimentoPercentual > 5 ? 'Atenção' : 'Normal'}
+            </p>
+        </div>
+    `;
+
+
+    // const kpi1 = document.getElementById("kpi1");
+    // if (nomes[componenteAtual] == "CPU") {
+    //     kpi1.style.color = `${cores.cpu}`;
+    // } else if (nomes[componenteAtual] == "RAM") {
+    //     kpi1.style.color = `${cores.ram}`;
+    // } else if (nomes[componenteAtual] == "Disco") {
+    //     kpi1.style.color = `${cores.disco}`;
+    // }
+}
+
+function getIconeTendencia(tendencia) {
+    switch(tendencia) {
+        case 'crescendo': return '📈';
+        case 'decrescendo': return '📉';
+        default: return null;
     }
+}
 
-    const kpi1 = document.getElementById("kpi1");
-    if (nomes[componenteAtual] == "CPU") {
-        kpi1.style.color = `${cores.cpu}`;
-    } else if (nomes[componenteAtual] == "RAM") {
-        kpi1.style.color = `${cores.ram}`;
-    } else if (nomes[componenteAtual] == "Disco") {
-        kpi1.style.color = `${cores.disco}`;
+function getCorTendencia(tendencia) {
+    switch(tendencia) {
+        case 'crescendo': return '#ff6b6b';
+        case 'decrescendo': return '#51cf66';
+        default: return 'rgba(255, 255, 255, 1)';
     }
 }
 
