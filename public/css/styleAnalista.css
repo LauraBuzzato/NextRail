@@ -909,7 +909,7 @@ footer {
 
 /*----------------------------------------------------------------------------------------------------------------------*/
 
-/* 1. ZERAGEM GERAL */
+
 * {
     margin: 0;
     padding: 0;
@@ -921,11 +921,11 @@ html, body {
     width: 100%;
     overflow: hidden; /* Trava rolagem */
     background-color: #181a20;
-    font-family: sans-serif; /* Garante uma fonte padrão */
+    font-family: sans-serif;
 }
 
 
-/* 2. GRADE PRINCIPAL */
+
 .dashboard-grid {
     display: flex;
     flex-direction: column;
@@ -934,8 +934,8 @@ html, body {
     background: linear-gradient(120deg, #23262b 0%, #181a20 100%);
     width: 100vw;
     height: 100vh;
-    padding: 1vh 2vw; /* Margens laterais */
-    gap: 2vh; /* Espaço pequeno entre as linhas */
+    padding: 1vh 2vw; 
+    gap: 2vh; 
 }
 
 /* Títulos */
@@ -944,20 +944,20 @@ html, body {
     color: #ffe066;
     width: 100%;
     font-size: 1.4rem;
-    height: 5vh; /* 5% da tela para o título */
+    height: 5vh; 
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0;
 }
 
-/* 3. ÁREA DAS KPIS (Topo) */
+
 .kpis {
     display: flex;
     justify-content: space-between;
     width: 96%;
-    height: 15vh; /* 15% da tela para as KPIs */
-    gap: 1.5vw; /* Espaço entre as caixas */
+    height: 15vh; 
+    gap: 1.5vw; 
     margin-right: 4%;
     
 }
@@ -969,7 +969,7 @@ html, body {
     box-shadow: 0 4px 6px #ffffff1a;
     text-align: center;
     font-weight: bold;
-    flex: 1; /* Divide o espaço igualmente entre as 4 (25% cada) */
+    flex: 1; 
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -989,64 +989,64 @@ html, body {
     color: #ffe066;
     font-size: 0.85rem;
     margin-bottom: 0.5vh;
-    margin-top: 2vh; /* Posiciona sempre no topo */
+    margin-top: 2vh; 
     text-align: center;
-    min-height: 2.5vh; /* Altura mínima para uniformizar */
+    min-height: 2.5vh; 
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
 }
 
-/* Ajuste dos números das KPIs */
+/* Todos os elementos que são div e começam com "kpi" são alterados *Eficiente* */
 .kpi-box div[id^="kpi-"] {
-    font-size: 1.8rem !important;
+    font-size: 1.8rem ;
     font-weight: bold;
     line-height: 1.2;
-    margin-top: auto; /* Empurra o número para baixo */
-    margin-bottom: auto; /* Centraliza verticalmente o restante */
+    margin-top: auto; 
+    margin-bottom: auto; 
 }
 
-/* 4. ÁREA DOS GRÁFICOS (Parte de Baixo) */
+
 .tendencia-semanal {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
-    height: 75vh; /* 72% da tela para os gráficos (Sobra espaço para labels) */
+    height: 75vh; 
     gap: 1.5vw;
 }
 
-/* ESQUERDA: Gráfico Grande (Ocupa 50% do espaço menos a metade do gap) */
+
 .tendencia-semanal .grafico-box-grande {
     background-color: #1a1a2e;
     border-radius: 12px;
     box-shadow: 0 4px 6px #ffffff1a;
-    padding: 2vh 2vw; /* Padding maior para o gráfico respirar */
-    width: 56%; /* Metade da tela */
+    padding: 2vh 2vw; 
+    width: 56%; 
     height: 95%;
     display: flex;
     flex-direction: column;
 }
 
-/* DIREITA: Coluna com 2 Gráficos (Ocupa 50% do espaço menos a metade do gap) */
+
 .analise-direita {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     width: 38%;
-    height: 95%; /* Alterado de 90% para 95% */
+    height: 95%; 
     gap: 2vh;
     margin-right: 4%;
 }
 
-/* Caixas dos Gráficos da Direita */
+
 .analise-direita .grafico-box {
     background-color: #1a1a2e;
     border-radius: 12px;
     box-shadow: 0 4px 6px #ffffff1a;
     padding: 1.5vh 1.5vw;
-    height: 48%; /* Alterado de 39% para 48% para dividir melhor o espaço */
+    height: 48%; 
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -1056,46 +1056,42 @@ html, body {
 }
 
 .analise-direita .grafico-box canvas {
-    max-height: 85%; /* Garante que o canvas não sobreponha o título */
-    width: 100% !important;
+    max-height: 85%; 
+    width: 100%;
     cursor: crosshair; /* Mostra que é interativo */
 }
 
-/* Títulos dos Gráficos */
+
 .grafico-titulo {
     color: #ffe066;
     font-size: 1rem;
     font-weight: 600;
     text-align: center;
     margin-bottom: 1vh;
-    height: 3vh; /* Altura reservada fixa para o texto não empurrar o gráfico */
+    height: 3vh; 
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* AJUSTE CRÍTICO DOS CANVAS */
-/* Isso garante que o gráfico respeite o tamanho da caixa pai e não estoure */
+
 canvas {
-    width: 100% !important;
-    height: 100% !important; 
-    flex-grow: 1; /* Ocupa todo o espaço que sobrar na caixa */
-    min-height: 0; /* Permite encolher se necessário */
+    width: 100% ;
+    height: 100% ; 
+    flex-grow: 1; 
+    min-height: 0;
     max-height: 100%;
     z-index: 1;
     position: relative;
 }
 
-
-
-/* Pequeno ajuste na seta de variação */
 #variacao {
     font-size: 1rem;
     margin-top: 5px;
 }
 
 .chartjs-tooltip {
-    z-index: 9999 !important;
+    z-index: 9999 ;
     position: relative;
-    pointer-events: none; /* Importante para não interferir */
+    pointer-events: none; 
 }
