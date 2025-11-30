@@ -668,6 +668,7 @@ function dash_suporte() {
 async function kpi_suporte(componente) {
     const larguraGrafico = 586;
     let parametrosJsonTemp;
+    let parametrosScriptJsonTemp;
 
     try {
     const resposta = await fetch(`/servidores/buscarParametrosDoServidor/${sessionStorage.ID_SERVIDOR}/${componente}`);
@@ -678,17 +679,51 @@ async function kpi_suporte(componente) {
         console.error("Erro recebido do servidor:", erroTexto);
         return; 
     }
+    
+    parametrosJsonTemp = await resposta.json();
+    console.log("Parametros do servidor: ", parametrosJsonTemp);
 
-        parametrosJsonTemp = await resposta.json();
     } 
     catch (erro) {
         console.error("Erro de rede ou JSON: ", erro);
         return;
     }
+
+    try {
+    const resposta = await fetch(`/servidores/script/${sessionStorage.ID_SERVIDOR}`);
+
+    if (!resposta.ok) {
+        
+        const erroTexto = await resposta.text();
+        console.error("Erro recebido do servidor:", erroTexto);
+        return; 
+    }
+
+        parametrosScriptJsonTemp = await resposta.json();
+        console.log("Parametros script: ", parametrosScriptJsonTemp)
+
+    } 
+    catch (erro) {
+        console.error("Erro de rede ou JSON: ", erro);
+        return;
+    }
+
     const parametrosJson = parametrosJsonTemp;
+    const parametrosScriptJson = parametrosScriptJsonTemp;
+    const dadosMaquinaJson = await buscarDadosComponentes();
 
-    console.log("Parametros: ", parametrosJson);
+    let dadosCpu = [], dadosRam = [], dadosDisco = [], timestamps = [];
 
+    // 2 minutos (120 segundos) dividido pelo intervalo de leitura do script retorna a quantidade de dados do gráfico de linhas
+    let tamanhoVetor = Math.round(120 / parametrosScriptJson[0].intervalo); 
+
+    for (let i = dadosMaquinaJson.length - 1; i >= (dadosMaquinaJson.length - tamanhoVetor); i--){
+
+        dadosCpu.push(Number(dadosMaquinaJson[i].cpu.replaceAll(",", ".")));
+        dadosRam.push(Number(dadosMaquinaJson[i].ram.replaceAll(",", ".")));
+        dadosDisco.push(Number(dadosMaquinaJson[i].disco.replaceAll(",", ".")));
+        timestamps.push(dadosMaquinaJson[i].timestampCaptura.split(" ")[1]); // pegar somente o horário
+    }
     
     if (componente == 'ram') {
 
@@ -716,23 +751,40 @@ async function kpi_suporte(componente) {
         const configLine = {
             type: 'line',
             data: {
-                labels: [
-                    '16:00:00','16:00:10','16:00:20','16:00:30','16:00:40',
-                    '16:00:50','16:01:00','16:01:10','16:01:20','16:01:30'
-                ],
+                labels: timestamps.toReversed(),
 
                 datasets: [
                     {
                         label: 'Uso de RAM (%)',
-                        data: [28, 48, 40, 19, 86, 27, 90, 45, 60, 35, 50, 78, 82],
+                        data: dadosRam.toReversed(),
                         borderColor: 'rgba(56,189,248,1)',
                         backgroundColor: 'rgba(56,189,248,0.2)',
                         tension: 0.4,
                         fill: true
                     },
                     {
-                        label: '',
-                        data: Array(10).fill(parametrosJson[0].valor),
+                        label: 'Alerta baixo',
+                        data: Array(tamanhoVetor).fill(parametrosJson[0].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta médio',
+                        data: Array(tamanhoVetor).fill(parametrosJson[1].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta alto',
+                        data: Array(tamanhoVetor).fill(parametrosJson[2].valor),
                         borderColor: 'rgba(255,0,0,1)',
                         backgroundColor: 'rgba(255,0,0,0.2)',
                         tension: 0.4,
@@ -774,7 +826,7 @@ async function kpi_suporte(componente) {
                             color: '#fff',
                             maxRotation: 0,
                             font: {
-                                size: 12
+                                size: 14
                             }
                         },
                         grid: {
@@ -834,23 +886,40 @@ async function kpi_suporte(componente) {
         const configLine = {
             type: 'line',
             data: {
-                labels: [
-                    '16:00:00','16:00:10','16:00:20','16:00:30','16:00:40',
-                    '16:00:50','16:01:00','16:01:10','16:01:20','16:01:30'
-                ],
+                labels: timestamps.toReversed(),
 
                 datasets: [
                     {
                         label: 'Uso de CPU (%)',
-                        data: [65, 59, 80, 81, 56, 55, 40, 45, 60, 70, 75, 88, 75],
+                        data: dadosCpu.toReversed(),
                         borderColor: 'rgba(167,139,250,1)',
                         backgroundColor: 'rgba(167,139,250,0.2)',
                         tension: 0.4,
                         fill: true
                     },
                     {
-                        label: '',
-                        data: Array(10).fill(parametrosJson[0].valor),
+                        label: 'Alerta baixo',
+                        data: Array(tamanhoVetor).fill(parametrosJson[0].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta médio',
+                        data: Array(tamanhoVetor).fill(parametrosJson[1].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta alto',
+                        data: Array(tamanhoVetor).fill(parametrosJson[2].valor),
                         borderColor: 'rgba(255,0,0,1)',
                         backgroundColor: 'rgba(255,0,0,0.2)',
                         tension: 0.4,
@@ -892,7 +961,7 @@ async function kpi_suporte(componente) {
                             color: '#fff',
                             maxRotation: 0,
                             font: {
-                                size: 12
+                                size: 14
                             }
                         },
                         grid: {
@@ -952,23 +1021,40 @@ async function kpi_suporte(componente) {
         const configLine = {
             type: 'line',
             data: {
-                labels: [
-                    '16:00:00','16:00:10','16:00:20','16:00:30','16:00:40',
-                    '16:00:50','16:01:00','16:01:10','16:01:20','16:01:30'
-                ],
+                labels: timestamps.toReversed(),
 
                 datasets: [
                     {
                         label: 'Uso de Disco (%)',
-                        data: [45, 35, 50, 60, 40, 55, 65, 50, 45, 60, 55, 48, 53],
+                        data: dadosDisco.toReversed(),
                         borderColor: 'rgba(251,191,36,1)',
                         backgroundColor: 'rgba(251,191,36,0.2)',
                         tension: 0.4,
                         fill: true
                     },
                     {
-                        label: '',
-                        data: Array(10).fill(parametrosJson[0].valor),
+                        label: 'Alerta baixo',
+                        data: Array(tamanhoVetor).fill(parametrosJson[0].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta médio',
+                        data: Array(tamanhoVetor).fill(parametrosJson[1].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta alto',
+                        data: Array(tamanhoVetor).fill(parametrosJson[2].valor),
                         borderColor: 'rgba(255,0,0,1)',
                         backgroundColor: 'rgba(255,0,0,0.2)',
                         tension: 0.4,
@@ -1010,7 +1096,7 @@ async function kpi_suporte(componente) {
                             color: '#fff',
                             maxRotation: 0,
                             font: {
-                                size: 12
+                                size: 14
                             }
                         },
                         grid: {
