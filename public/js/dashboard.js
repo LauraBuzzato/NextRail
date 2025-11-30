@@ -667,6 +667,7 @@ function dash_suporte() {
 
 async function kpi_suporte(componente) {
     const larguraGrafico = 586;
+    const alturaGrafico = 370;
     let parametrosJsonTemp;
     let parametrosScriptJsonTemp;
 
@@ -744,7 +745,7 @@ async function kpi_suporte(componente) {
     
     try {
         canvas.width = larguraGrafico;
-        canvas.height = 350;
+        canvas.height = alturaGrafico;
 
         const ctx = canvas.getContext('2d');
         
@@ -755,7 +756,7 @@ async function kpi_suporte(componente) {
 
                 datasets: [
                     {
-                        label: 'Uso de RAM (%)',
+                        label: 'RAM (%)',
                         data: dadosRam.toReversed(),
                         borderColor: 'rgba(56,189,248,1)',
                         backgroundColor: 'rgba(56,189,248,0.2)',
@@ -879,7 +880,7 @@ async function kpi_suporte(componente) {
     
     try {
         canvas.width = larguraGrafico;
-        canvas.height = 350;
+        canvas.height = alturaGrafico;
 
         const ctx = canvas.getContext('2d');
         
@@ -890,7 +891,7 @@ async function kpi_suporte(componente) {
 
                 datasets: [
                     {
-                        label: 'Uso de CPU (%)',
+                        label: 'CPU (%)',
                         data: dadosCpu.toReversed(),
                         borderColor: 'rgba(167,139,250,1)',
                         backgroundColor: 'rgba(167,139,250,0.2)',
@@ -1014,7 +1015,7 @@ async function kpi_suporte(componente) {
     
     try {
         canvas.width = larguraGrafico;
-        canvas.height = 350;
+        canvas.height = alturaGrafico;
 
         const ctx = canvas.getContext('2d');
         
@@ -1025,7 +1026,7 @@ async function kpi_suporte(componente) {
 
                 datasets: [
                     {
-                        label: 'Uso de Disco (%)',
+                        label: 'Disco (%)',
                         data: dadosDisco.toReversed(),
                         borderColor: 'rgba(251,191,36,1)',
                         backgroundColor: 'rgba(251,191,36,0.2)',
@@ -1123,11 +1124,13 @@ async function kpi_suporte(componente) {
             }
         };
 
-        graficoCpu = new Chart(ctx, configLine);
+        graficoDisco = new Chart(ctx, configLine);
         console.log('Gráfico disco criado com sucesso!');
 
     } catch (error) {
         console.error('Erro ao criar gráfico disco:', error);
+    } finally {
+        setTimeout(() => kpi_suporte(componente), 130000);
     }
 }
 }
@@ -1175,7 +1178,7 @@ async function kpi_suporte(componente) {
         const resposta = await fetch(`/servidores/buscarAlertasDoServidor/${sessionStorage.ID_SERVIDOR}`);
         const alertasJson = await resposta.json();
 
-        console.log(alertasJson)
+        console.log("Alertas: ", alertasJson)
 
         document.documentElement.style.setProperty('--linhas-grid', `repeat(${alertasJson.length + 1}, 25%)`)
 
@@ -1189,10 +1192,8 @@ async function kpi_suporte(componente) {
                 (alertasJson[i].gravidade == "Médio") ? "background-color: darkorange" :
                 (alertasJson[i].gravidade == "Baixo") ? "background-color: rgb(207, 207, 0)" : ""
                 
-                corComponente = (alertasJson[i].componente == "Cpu") ? "background-color: rgba(167,139,250,1)" : 
-                (alertasJson[i].componente == "Ram") ? "background-color: rgba(56,189,248,1)" :
-                (alertasJson[i].componente == "Disco") ? "background-color: rgba(251,191,36,1)" : ""
-        
+                corComponente = "color: var(--amarelo)"
+
                 corStatus = (alertasJson[i].status_alerta == "Aberto") ? "background-color: red" : 
                 (alertasJson[i].status_alerta == "Fechado") ? "background-color: green" : ""
 
@@ -1223,7 +1224,7 @@ async function kpi_suporte(componente) {
         }
     } catch (erro) {
         console.log("Erro: ", erro)
+    } finally {
+        setTimeout(() => criarTabela(), 130000);
     }
 }
-console.log(sessionStorage)
-console.log(localStorage)
