@@ -42,22 +42,22 @@ function dash_analista() {
 
             var kpis = payload.kpisGerais;
 
-            
-                var mttrMedioMes = 0;
-                if (kpis.mttrMedio !== undefined && kpis.mttrMedio !== null) {
-                    mttrMedioMes = Math.round(kpis.mttrMedio);
-                }
-        
-                var elMttr = document.getElementById('kpi-mttr-medio');
-                if (elMttr) {
-                    elMttr.innerText = mttrMedioMes;
-                } else {
-                    console.log('KPI mttrMedio:', mttrMedioMes);
-                }
 
-        }); 
-        
-                
+            var mttrMedioMes = 0;
+            if (kpis.mttrMedio !== undefined && kpis.mttrMedio !== null) {
+                mttrMedioMes = Math.round(kpis.mttrMedio);
+            }
+
+            var elMttr = document.getElementById('kpi-mttr-medio');
+            if (elMttr) {
+                elMttr.innerText = `${mttrMedioMes} min`;
+            } else {
+                console.log('KPI mttrMedio:', mttrMedioMes);
+            }
+
+        });
+
+
     // ================================================= S3 ==============================================================
 
     var nomeServidor = localStorage.NOME_SERVIDOR
@@ -134,7 +134,28 @@ function dash_analista() {
                         plugins: {
                             legend: {
                                 display: true
+                            },
+
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            // Adicione estas linhas:
+                            z: 9999, // Alto z-index
+                            external: function (context) {
+                                // Garante que o tooltip fique na frente
+                                var tooltip = context.tooltip;
+                                if (tooltip && tooltip.el) {
+                                    tooltip.el.style.zIndex = '9999';
+                                }
                             }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
                         },
                         scales: {
                             y: {
@@ -214,11 +235,11 @@ function dash_analista() {
                 console.log('KPI componenteMaisAfetado:', compMaisAfetado);
             }
 
-            if(compMaisAfetado == "Cpu"){
+            if (compMaisAfetado == "Cpu") {
                 elComp.style.color = "#a78bfa";
-            } else if(compMaisAfetado == "Ram"){
+            } else if (compMaisAfetado == "Ram") {
                 elComp.style.color = "#38bdf8";
-            } else if(compMaisAfetado == "Disco"){
+            } else if (compMaisAfetado == "Disco") {
                 elComp.style.color = "#ff89b0";
             }
 
@@ -302,6 +323,26 @@ function dash_analista() {
                                 display: false
                             }
                         },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            // Adicione estas linhas:
+                            z: 9999, // Alto z-index
+                            external: function (context) {
+                                // Garante que o tooltip fique na frente
+                                var tooltip = context.tooltip;
+                                if (tooltip && tooltip.el) {
+                                    tooltip.el.style.zIndex = '9999';
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
@@ -368,6 +409,26 @@ function dash_analista() {
                                 display: false
                             }
                         },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            // Adicione estas linhas:
+                            z: 9999, // Alto z-index
+                            external: function (context) {
+                                // Garante que o tooltip fique na frente
+                                var tooltip = context.tooltip;
+                                if (tooltip && tooltip.el) {
+                                    tooltip.el.style.zIndex = '9999';
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
@@ -381,7 +442,7 @@ function dash_analista() {
                                 },
                                 ticks: {
                                     font: {
-                                        size: 14,
+                                        size: 20,
                                         weight: "bold"
                                     }
                                 }
@@ -411,7 +472,7 @@ function dash_analista() {
                 }
                 chartComp = new Chart(alertasComponenteCanvas, configComp);
             }
-        
+
         })
         .catch(function (erro) {
             console.error("Erro na integração S3:", erro);
@@ -609,386 +670,501 @@ function dash_suporte() {
 
 async function kpi_suporte(componente) {
     const larguraGrafico = 586;
+    const alturaGrafico = 370;
     let parametrosJsonTemp;
+    let parametrosScriptJsonTemp;
 
     try {
-        const resposta = await fetch(`/servidores/buscarParametrosDoServidor/${sessionStorage.ID_SERVIDOR}/${componente}`);
+    const resposta = await fetch(`/servidores/buscarParametrosDoServidor/${sessionStorage.ID_SERVIDOR}/${componente}`);
 
-        if (!resposta.ok) {
-
-            const erroTexto = await resposta.text();
-            console.error("Erro recebido do servidor:", erroTexto);
-            return;
-        }
-
-        parametrosJsonTemp = await resposta.json();
+    if (!resposta.ok) {
+        
+        const erroTexto = await resposta.text();
+        console.error("Erro recebido do servidor:", erroTexto);
+        return; 
     }
+    
+    parametrosJsonTemp = await resposta.json();
+    console.log("Parametros do servidor: ", parametrosJsonTemp);
+
+    } 
     catch (erro) {
         console.error("Erro de rede ou JSON: ", erro);
         return;
     }
+
+    try {
+    const resposta = await fetch(`/servidores/script/${sessionStorage.ID_SERVIDOR}`);
+
+    if (!resposta.ok) {
+        
+        const erroTexto = await resposta.text();
+        console.error("Erro recebido do servidor:", erroTexto);
+        return; 
+    }
+
+        parametrosScriptJsonTemp = await resposta.json();
+        console.log("Parametros script: ", parametrosScriptJsonTemp)
+
+    } 
+    catch (erro) {
+        console.error("Erro de rede ou JSON: ", erro);
+        return;
+    }
+
     const parametrosJson = parametrosJsonTemp;
+    const parametrosScriptJson = parametrosScriptJsonTemp;
+    const dadosMaquinaJson = await buscarDadosComponentes();
 
-    console.log("Parametros: ", parametrosJson);
+    let dadosCpu = [], dadosRam = [], dadosDisco = [], timestamps = [];
 
+    // 2 minutos (120 segundos) dividido pelo intervalo de leitura do script retorna a quantidade de dados do gráfico de linhas
+    let tamanhoVetor = Math.round(120 / parametrosScriptJson[0].intervalo); 
 
+    for (let i = dadosMaquinaJson.length - 1; i >= (dadosMaquinaJson.length - tamanhoVetor); i--){
+
+        dadosCpu.push(Number(dadosMaquinaJson[i].cpu.replaceAll(",", ".")));
+        dadosRam.push(Number(dadosMaquinaJson[i].ram.replaceAll(",", ".")));
+        dadosDisco.push(Number(dadosMaquinaJson[i].disco.replaceAll(",", ".")));
+        timestamps.push(dadosMaquinaJson[i].timestampCaptura.split(" ")[1]); // pegar somente o horário
+    }
+    
     if (componente == 'ram') {
 
         console.log('Inicializando kpi ram');
         const canvas = document.getElementById('grafico_ram');
 
-        if (typeof Chart === 'undefined') {
-            console.error('Chart.js não carregado');
-            setTimeout(kpi_suporte('ram'), 500);
-            return;
-        }
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js não carregado');
+        setTimeout(kpi_suporte('ram'), 500);
+        return;
+    }
+    
+    if (graficoRam) {
+        console.log('Destruindo gráfico anterior(ram)...');
+        graficoRam.destroy();
+        graficoRam = null;
+    }
+    
+    try {
+        canvas.width = larguraGrafico;
+        canvas.height = alturaGrafico;
 
-        if (graficoRam) {
-            console.log('Destruindo gráfico anterior(ram)...');
-            graficoRam.destroy();
-            graficoRam = null;
-        }
+        const ctx = canvas.getContext('2d');
+        
+        const configLine = {
+            type: 'line',
+            data: {
+                labels: timestamps.toReversed(),
 
-        try {
-            canvas.width = larguraGrafico;
-            canvas.height = 350;
-
-            const ctx = canvas.getContext('2d');
-
-            const configLine = {
-                type: 'line',
-                data: {
-                    labels: [
-                        '16:00:00', '16:00:10', '16:00:20', '16:00:30', '16:00:40',
-                        '16:00:50', '16:01:00', '16:01:10', '16:01:20', '16:01:30'
-                    ],
-
-                    datasets: [
-                        {
-                            label: 'Uso de RAM (%)',
-                            data: [28, 48, 40, 19, 86, 27, 90, 45, 60, 35, 50, 78, 82],
-                            borderColor: 'rgba(56,189,248,1)',
-                            backgroundColor: 'rgba(56,189,248,0.2)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: '',
-                            data: Array(10).fill(parametrosJson[0].valor),
-                            borderColor: 'rgba(255,0,0,1)',
-                            backgroundColor: 'rgba(255,0,0,0.2)',
-                            tension: 0.4,
-                            fill: false,
-                            pointRadius: 0,
-                            datalabels: { display: false }
-                        }
-                    ]
+                datasets: [
+                    {
+                        label: 'RAM (%)',
+                        data: dadosRam.toReversed(),
+                        borderColor: 'rgba(56,189,248,1)',
+                        backgroundColor: 'rgba(56,189,248,0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Alerta baixo',
+                        data: Array(tamanhoVetor).fill(parametrosJson[0].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta médio',
+                        data: Array(tamanhoVetor).fill(parametrosJson[1].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta alto',
+                        data: Array(tamanhoVetor).fill(parametrosJson[2].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    onComplete: function () {
+                        console.log('Gráfico renderizado com sucesso!');
+                    }
                 },
-                options: {
-                    responsive: false,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 1000,
-                        onComplete: function () {
-                            console.log('Gráfico renderizado com sucesso!');
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 14 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
                         }
                     },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: '#fff',
-                                font: { size: 14 },
-                                filter: function (legendItem, chart) {
-                                    return legendItem.text !== '';
-                                }
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff',
+                            maxRotation: 0,
+                            font: {
+                                size: 14
                             }
                         },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
                         }
                     },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#fff',
-                                maxRotation: 0,
-                                font: {
-                                    size: 12
-                                }
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
                             },
-                            grid: {
-                                color: 'rgba(255,255,255,0.1)'
+                            font: {
+                                size: 14
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                color: '#fff',
-                                callback: function (value) {
-                                    return value + '%';
-                                },
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
                         }
                     }
                 }
-            };
+            }
+        };
 
-            graficoRam = new Chart(ctx, configLine);
-            console.log('Gráfico ram criado com sucesso!');
+        graficoRam = new Chart(ctx, configLine);
+        console.log('Gráfico ram criado com sucesso!');
 
-        } catch (error) {
-            console.error('Erro ao criar gráfico ram:', error);
-        }
+    } catch (error) {
+        console.error('Erro ao criar gráfico ram:', error);
     }
+}
     if (componente == 'cpu') {
 
         console.log('Inicializando kpi cpu');
         const canvas = document.getElementById('grafico_cpu');
 
-        if (typeof Chart === 'undefined') {
-            console.error('Chart.js não carregado');
-            setTimeout(kpi_suporte('cpu'), 500);
-            return;
-        }
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js não carregado');
+        setTimeout(kpi_suporte('cpu'), 500);
+        return;
+    }
+    
+    if (graficoCpu) {
+        console.log('Destruindo gráfico anterior(cpu)...');
+        graficoCpu.destroy();
+        graficoCpu = null;
+    }
+    
+    try {
+        canvas.width = larguraGrafico;
+        canvas.height = alturaGrafico;
 
-        if (graficoCpu) {
-            console.log('Destruindo gráfico anterior(cpu)...');
-            graficoCpu.destroy();
-            graficoCpu = null;
-        }
+        const ctx = canvas.getContext('2d');
+        
+        const configLine = {
+            type: 'line',
+            data: {
+                labels: timestamps.toReversed(),
 
-        try {
-            canvas.width = larguraGrafico;
-            canvas.height = 350;
-
-            const ctx = canvas.getContext('2d');
-
-            const configLine = {
-                type: 'line',
-                data: {
-                    labels: [
-                        '16:00:00', '16:00:10', '16:00:20', '16:00:30', '16:00:40',
-                        '16:00:50', '16:01:00', '16:01:10', '16:01:20', '16:01:30'
-                    ],
-
-                    datasets: [
-                        {
-                            label: 'Uso de CPU (%)',
-                            data: [65, 59, 80, 81, 56, 55, 40, 45, 60, 70, 75, 88, 75],
-                            borderColor: 'rgba(167,139,250,1)',
-                            backgroundColor: 'rgba(167,139,250,0.2)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: '',
-                            data: Array(10).fill(parametrosJson[0].valor),
-                            borderColor: 'rgba(255,0,0,1)',
-                            backgroundColor: 'rgba(255,0,0,0.2)',
-                            tension: 0.4,
-                            fill: false,
-                            pointRadius: 0,
-                            datalabels: { display: false }
-                        }
-                    ]
+                datasets: [
+                    {
+                        label: 'CPU (%)',
+                        data: dadosCpu.toReversed(),
+                        borderColor: 'rgba(167,139,250,1)',
+                        backgroundColor: 'rgba(167,139,250,0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Alerta baixo',
+                        data: Array(tamanhoVetor).fill(parametrosJson[0].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta médio',
+                        data: Array(tamanhoVetor).fill(parametrosJson[1].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta alto',
+                        data: Array(tamanhoVetor).fill(parametrosJson[2].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    onComplete: function () {
+                        console.log('Gráfico renderizado com sucesso!');
+                    }
                 },
-                options: {
-                    responsive: false,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 1000,
-                        onComplete: function () {
-                            console.log('Gráfico renderizado com sucesso!');
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 14 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
                         }
                     },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: '#fff',
-                                font: { size: 14 },
-                                filter: function (legendItem, chart) {
-                                    return legendItem.text !== '';
-                                }
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff',
+                            maxRotation: 0,
+                            font: {
+                                size: 14
                             }
                         },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
                         }
                     },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#fff',
-                                maxRotation: 0,
-                                font: {
-                                    size: 12
-                                }
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
                             },
-                            grid: {
-                                color: 'rgba(255,255,255,0.1)'
+                            font: {
+                                size: 14
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                color: '#fff',
-                                callback: function (value) {
-                                    return value + '%';
-                                },
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
                         }
                     }
                 }
-            };
+            }
+        };
 
-            graficoCpu = new Chart(ctx, configLine);
-            console.log('Gráfico cpu criado com sucesso!');
+        graficoCpu = new Chart(ctx, configLine);
+        console.log('Gráfico cpu criado com sucesso!');
 
-        } catch (error) {
-            console.error('Erro ao criar gráfico cpu:', error);
-        }
+    } catch (error) {
+        console.error('Erro ao criar gráfico cpu:', error);
     }
+}
     if (componente == 'disco') {
 
         console.log('Inicializando kpi disco');
         const canvas = document.getElementById('grafico_disco');
 
-        if (typeof Chart === 'undefined') {
-            console.error('Chart.js não carregado');
-            setTimeout(kpi_suporte('disco'), 500);
-            return;
-        }
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js não carregado');
+        setTimeout(kpi_suporte('disco'), 500);
+        return;
+    }
+    
+    if (graficoDisco) {
+        console.log('Destruindo gráfico anterior(disco)...');
+        graficoDisco.destroy();
+        graficoDisco = null;
+    }
+    
+    try {
+        canvas.width = larguraGrafico;
+        canvas.height = alturaGrafico;
 
-        if (graficoDisco) {
-            console.log('Destruindo gráfico anterior(disco)...');
-            graficoDisco.destroy();
-            graficoDisco = null;
-        }
+        const ctx = canvas.getContext('2d');
+        
+        const configLine = {
+            type: 'line',
+            data: {
+                labels: timestamps.toReversed(),
 
-        try {
-            canvas.width = larguraGrafico;
-            canvas.height = 350;
-
-            const ctx = canvas.getContext('2d');
-
-            const configLine = {
-                type: 'line',
-                data: {
-                    labels: [
-                        '16:00:00', '16:00:10', '16:00:20', '16:00:30', '16:00:40',
-                        '16:00:50', '16:01:00', '16:01:10', '16:01:20', '16:01:30'
-                    ],
-
-                    datasets: [
-                        {
-                            label: 'Uso de Disco (%)',
-                            data: [45, 35, 50, 60, 40, 55, 65, 50, 45, 60, 55, 48, 53],
-                            borderColor: 'rgba(251,191,36,1)',
-                            backgroundColor: 'rgba(251,191,36,0.2)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: '',
-                            data: Array(10).fill(parametrosJson[0].valor),
-                            borderColor: 'rgba(255,0,0,1)',
-                            backgroundColor: 'rgba(255,0,0,0.2)',
-                            tension: 0.4,
-                            fill: false,
-                            pointRadius: 0,
-                            datalabels: { display: false }
-                        }
-                    ]
+                datasets: [
+                    {
+                        label: 'Disco (%)',
+                        data: dadosDisco.toReversed(),
+                        borderColor: 'rgba(251,191,36,1)',
+                        backgroundColor: 'rgba(251,191,36,0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Alerta baixo',
+                        data: Array(tamanhoVetor).fill(parametrosJson[0].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta médio',
+                        data: Array(tamanhoVetor).fill(parametrosJson[1].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Alerta alto',
+                        data: Array(tamanhoVetor).fill(parametrosJson[2].valor),
+                        borderColor: 'rgba(255,0,0,1)',
+                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0,
+                        datalabels: { display: false }
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    onComplete: function () {
+                        console.log('Gráfico renderizado com sucesso!');
+                    }
                 },
-                options: {
-                    responsive: false,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 1000,
-                        onComplete: function () {
-                            console.log('Gráfico renderizado com sucesso!');
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 14 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
                         }
                     },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: '#fff',
-                                font: { size: 14 },
-                                filter: function (legendItem, chart) {
-                                    return legendItem.text !== '';
-                                }
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff',
+                            maxRotation: 0,
+                            font: {
+                                size: 14
                             }
                         },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
                         }
                     },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#fff',
-                                maxRotation: 0,
-                                font: {
-                                    size: 12
-                                }
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
                             },
-                            grid: {
-                                color: 'rgba(255,255,255,0.1)'
+                            font: {
+                                size: 14
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                color: '#fff',
-                                callback: function (value) {
-                                    return value + '%';
-                                },
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
                         }
                     }
                 }
-            };
+            }
+        };
 
-            graficoCpu = new Chart(ctx, configLine);
-            console.log('Gráfico disco criado com sucesso!');
+        graficoDisco = new Chart(ctx, configLine);
+        console.log('Gráfico disco criado com sucesso!');
 
-        } catch (error) {
-            console.error('Erro ao criar gráfico disco:', error);
+    } catch (error) {
+        console.error('Erro ao criar gráfico disco:', error);
+    } finally {
+        setTimeout(() => kpi_suporte(componente), 130000);
+    }
+}
+}
+
+ async function buscarDadosComponentes() {
+    try {
+
+        const response = await fetch(`/servidores/pegarUso/${sessionStorage.NOME_EMPRESA}/${localStorage.NOME_SERVIDOR}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro na resposta do servidor');
         }
+
+        const dadosNovos = await response.json();
+        
+        console.log('Dados recebidos do bucket:', dadosNovos);
+        
+        return dadosNovos;
+
+    } catch (error) {
+        console.error('Erro ao buscar dados de uso:', error);
+        return null;
     }
 }
 
-async function criarTabela() {
+ async function criarTabela() {
     const conteudo = document.getElementById('tabela-conteudo');
     if (!conteudo) return;
 
@@ -1001,39 +1177,37 @@ async function criarTabela() {
     `;
 
     try {
-
+        
         const resposta = await fetch(`/servidores/buscarAlertasDoServidor/${sessionStorage.ID_SERVIDOR}`);
         const alertasJson = await resposta.json();
 
-        console.log(alertasJson)
+        console.log("Alertas: ", alertasJson)
 
         document.documentElement.style.setProperty('--linhas-grid', `repeat(${alertasJson.length + 1}, 25%)`)
 
         for (let i = 0; i < alertasJson.length; i++) {
-
+            
             if (alertasJson[i].status_alerta != "Andamento") {
 
                 var componente, grau, status, inicio, fim, corComponente, corLeitura, corStatus;
+                
+                corLeitura = (alertasJson[i].gravidade == "Alto") ? "background-color: red" : 
+                (alertasJson[i].gravidade == "Médio") ? "background-color: darkorange" :
+                (alertasJson[i].gravidade == "Baixo") ? "background-color: rgb(207, 207, 0)" : ""
+                
+                corComponente = "color: var(--amarelo)"
 
-                corLeitura = (alertasJson[i].gravidade == "Alto") ? "background-color: red" :
-                    (alertasJson[i].gravidade == "Médio") ? "background-color: darkorange" :
-                        (alertasJson[i].gravidade == "Baixo") ? "background-color: rgb(207, 207, 0)" : ""
-
-                corComponente = (alertasJson[i].componente == "Cpu") ? "background-color: rgba(167,139,250,1)" :
-                    (alertasJson[i].componente == "Ram") ? "background-color: rgba(56,189,248,1)" :
-                        (alertasJson[i].componente == "Disco") ? "background-color: rgba(251,191,36,1)" : ""
-
-                corStatus = (alertasJson[i].status_alerta == "Aberto") ? "background-color: red" :
-                    (alertasJson[i].status_alerta == "Fechado") ? "background-color: green" : ""
+                corStatus = (alertasJson[i].status_alerta == "Aberto") ? "background-color: red" : 
+                (alertasJson[i].status_alerta == "Fechado") ? "background-color: green" : ""
 
                 //formatando a data que naturalmente vem em um formato não amigável
                 const inicioBruto = new Date(alertasJson[i].inicio);
                 const fimBruto = new Date(alertasJson[i].fim);
-
+        
                 componente = alertasJson[i].componente;
                 grau = alertasJson[i].gravidade;
                 status = alertasJson[i].status_alerta;
-
+                
                 inicio = (alertasJson[i].inicio === null) ? "NA" : inicioBruto.toLocaleString("pt-BR", {
                     timeZone: "UTC"
                 });
@@ -1041,7 +1215,7 @@ async function criarTabela() {
                 fim = (alertasJson[i].fim === null) ? "NA" : fimBruto.toLocaleString("pt-BR", {
                     timeZone: "UTC"
                 });
-
+        
                 conteudo.innerHTML += `
                 <span class="tabela-celula" style="${corComponente}">${componente}</span>
                 <span class="tabela-celula" style="${corLeitura}">${grau}</span>
@@ -1053,5 +1227,7 @@ async function criarTabela() {
         }
     } catch (erro) {
         console.log("Erro: ", erro)
+    } finally {
+        setTimeout(() => criarTabela(), 130000);
     }
 }
