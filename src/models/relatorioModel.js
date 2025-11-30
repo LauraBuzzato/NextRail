@@ -5,14 +5,16 @@ function buscarDadosAnuais(ano) {
 
     var instrucaoSql = `
         SELECT 
-            alerta.inicio, alerta.fim, tipo_componente.nome_tipo_componente AS nome_componente,
+            alerta.id AS idAlerta,
+            alerta.inicio, 
+            alerta.fim, 
+            tipo_componente.nome_tipo_componente AS nome_componente,
             servidor.nome AS nome_servidor, 
             gravidade.nome AS nome_gravidade,
             empresa.razao_social AS nome_empresa
-        FROM alerta
-        JOIN componente_servidor ON alerta.fk_componenteServidor_servidor = componente_servidor.fk_servidor AND alerta.fk_componenteServidor_tipoComponente = componente_servidor.fk_tipo_componente
-        JOIN tipo_componente ON componente_servidor.fk_tipo_componente = tipo_componente.id
-        JOIN servidor ON componente_servidor.fk_servidor = servidor.id
+        FROM alerta        
+        JOIN tipo_componente ON alerta.fk_componenteServidor_tipoComponente = tipo_componente.id
+        JOIN servidor ON alerta.fk_componenteServidor_servidor = servidor.id
         JOIN empresa on servidor.fk_empresa = empresa.id
         LEFT JOIN gravidade ON alerta.fk_gravidade = gravidade.id 
         WHERE YEAR(alerta.inicio) = ${ano} 
@@ -27,37 +29,42 @@ function buscarDadosAnuais(ano) {
             return { ano: ano, totalAlertsAnual: 0, dadosMensais: [] };
         }
 
-        var totalAlertsAnual = 0;
+        var idsUnicos = new Set();
+        var listaSemDuplicadas = [];
+
+        for (var i = 0; i < resultadoSql.length; i++) {
+            var item = resultadoSql[i];
+            if (!idsUnicos.has(item.idAlerta)) {
+                idsUnicos.add(item.idAlerta);
+                listaSemDuplicadas.push(item);
+            }
+        }
+
+        var totalAlertsAnual = idsUnicos.size; 
+        console.log(`DEBUG: SQL retornou ${resultadoSql.length} linhas.`);
+        console.log(`DEBUG: Após limpar duplicatas no JS, temos ${totalAlertsAnual} alertas reais.`);
+
         var totalMinutosParadoAnual = 0;
+        var totalAlertasFinalizados = 0;
+        var minutosSomadosParaMTTR = 0;
+        var minutosSomadosParaDisponibilidade = 0;
+
         var contagemServidoresAno = {};
         var contagemComponentesAno = {};
         var contagemGravidadesAno = {};
-
         var mesesComAlertas = {};
-        var nomeEmpresa = "nenhuma"
+        var nomeEmpresa = "nenhuma";
 
-        // cada alerta que vem do banco
-        for (var i = 0; i < resultadoSql.length; i++) {
-            var alerta = resultadoSql[i];
+        for (var i = 0; i < listaSemDuplicadas.length; i++) {
+            var alerta = listaSemDuplicadas[i];
 
-            if (i == 0) {
-                nomeEmpresa = alerta.nome_empresa
-            }
+            if (i == 0) nomeEmpresa = alerta.nome_empresa;
+            if (alerta.nome_gravidade == null) alerta.nome_gravidade = "indefinida";
 
-            if (alerta.nome_gravidade == null) {
-                alerta.nome_gravidade = "indefinida"
-            }
-
-            // Pega o número do mês do alerta 0 para Janeiro, 1 para Fevereiro etc.
             var indiceMes = new Date(alerta.inicio).getMonth();
 
-            //Se a caixa não existe a gente cria ela
-
             if (!mesesComAlertas[indiceMes]) {
-
                 var nomeDoMes = new Date(ano, indiceMes).toLocaleString('pt-BR', { month: 'long' });
-            console.log("Gravidade recebida:", alerta.nome_gravidade);
-
                 mesesComAlertas[indiceMes] = {
                     nome: nomeDoMes,
                     totalAlerts: 0,
@@ -67,175 +74,112 @@ function buscarDadosAnuais(ano) {
                     gravidades: { 'Baixo': 0, 'Médio': 0, 'Alto': 0 },
                     serverBreakdown: {}
                 };
-                console.log(`CRIANDO a caixinha para o mês: ${nomeDoMes}`);
             }
-console.log("Gravidade recebida:", alerta.nome_gravidade);
 
             var mesParaAtualizar = mesesComAlertas[indiceMes];
-
-            mesParaAtualizar.totalAlerts = mesParaAtualizar.totalAlerts + 1;
+            mesParaAtualizar.totalAlerts++;
 
             var duracaoMinutos = 0;
-            if (alerta.fim) {
-                //subtrai o tempo de início do tempo de fim (o que dá um valor em milissegundos) e divide por 60.000 para transformar em minutos.
+            var duracaoAteAgora = 0;
+            var isFinalizado = false;
+
+            if (alerta.fim !== null) {
                 duracaoMinutos = (new Date(alerta.fim) - new Date(alerta.inicio)) / 60000;
-            }
-
-            if (contagemServidoresAno[alerta.nome_servidor] === undefined) {
-                // Se é a primeira vez que vemos este servidor, atribuimos com 1
-                contagemServidoresAno[alerta.nome_servidor] = 1;
+                duracaoAteAgora = duracaoMinutos;
+                isFinalizado = true;
             } else {
-                contagemServidoresAno[alerta.nome_servidor]++;
+                duracaoAteAgora = (new Date() - new Date(alerta.inicio)) / 60000;
+                duracaoMinutos = duracaoAteAgora;
+                isFinalizado = false;
             }
 
-            if (contagemComponentesAno[alerta.nome_componente] == undefined) {
-                contagemComponentesAno[alerta.nome_componente] = 1;
-            } else {
-                contagemComponentesAno[alerta.nome_componente]++;
-            }
+            minutosSomadosParaDisponibilidade += duracaoAteAgora;
 
-            if (contagemGravidadesAno[alerta.nome_gravidade] == undefined) {
-                contagemGravidadesAno[alerta.nome_gravidade] = 1;
-            } else {
-                contagemGravidadesAno[alerta.nome_gravidade]++;
-            }
-
-            // Contar Servidores para o MÊS
-            if (mesParaAtualizar.servidores[alerta.nome_servidor] == undefined) {
-                mesParaAtualizar.servidores[alerta.nome_servidor] = 1;
-            } else {
-                mesParaAtualizar.servidores[alerta.nome_servidor]++;
-            }
-
-            // Contar Componentes para o MÊS
-            if (mesParaAtualizar.componentes[alerta.nome_componente] == undefined) {
-                mesParaAtualizar.componentes[alerta.nome_componente] = 1;
-            } else {
-                mesParaAtualizar.componentes[alerta.nome_componente]++;
-            }
-
-            // Contar Gravidades para o MÊS
-
-            if (mesParaAtualizar.gravidades[alerta.nome_gravidade] == undefined) {
-                mesParaAtualizar.gravidades[alerta.nome_gravidade] = 1;
-            } else{
-                mesParaAtualizar.gravidades[alerta.nome_gravidade]++
+            if (isFinalizado) {
+                minutosSomadosParaMTTR += duracaoMinutos;
+                totalAlertasFinalizados++;
             }
 
 
-            if (mesParaAtualizar.serverBreakdown[alerta.nome_servidor] === undefined) {
+            // Contadores Ano
+            contagemServidoresAno[alerta.nome_servidor] = (contagemServidoresAno[alerta.nome_servidor] || 0) + 1;
+            contagemComponentesAno[alerta.nome_componente] = (contagemComponentesAno[alerta.nome_componente] || 0) + 1;
+            contagemGravidadesAno[alerta.nome_gravidade] = (contagemGravidadesAno[alerta.nome_gravidade] || 0) + 1;
+
+            // Contadores Mês
+            mesParaAtualizar.servidores[alerta.nome_servidor] = (mesParaAtualizar.servidores[alerta.nome_servidor] || 0) + 1;
+            mesParaAtualizar.componentes[alerta.nome_componente] = (mesParaAtualizar.componentes[alerta.nome_componente] || 0) + 1;
+            mesParaAtualizar.gravidades[alerta.nome_gravidade] = (mesParaAtualizar.gravidades[alerta.nome_gravidade] || 0) + 1;
+
+            if (!mesParaAtualizar.serverBreakdown[alerta.nome_servidor]) {
                 mesParaAtualizar.serverBreakdown[alerta.nome_servidor] = {};
             }
+            mesParaAtualizar.serverBreakdown[alerta.nome_servidor][alerta.nome_componente] = (mesParaAtualizar.serverBreakdown[alerta.nome_servidor][alerta.nome_componente] || 0) + 1;
 
-            if (mesParaAtualizar.serverBreakdown[alerta.nome_servidor][alerta.nome_componente] === undefined) {
-                mesParaAtualizar.serverBreakdown[alerta.nome_servidor][alerta.nome_componente] = 1;
-            } else {
-                mesParaAtualizar.serverBreakdown[alerta.nome_servidor][alerta.nome_componente]++;
+            mesParaAtualizar.totalMinutosParado += duracaoMinutos;
+            totalMinutosParadoAnual += duracaoMinutos;
+        }
+
+        // Funções auxiliares e métricas finais
+        function acharMaisFrequente(obj) {
+            var max = 0, itemMax = 'N/A';
+            for (var item in obj) {
+                if (obj[item] > max) { max = obj[item]; itemMax = item; }
             }
-
-            // somar os minutos que calculamos nos totais
-            mesParaAtualizar.totalMinutosParado = mesParaAtualizar.totalMinutosParado + duracaoMinutos;
-
-            // somar nos totais do ano inteiro
-            totalAlertsAnual = totalAlertsAnual + 1;
-            totalMinutosParadoAnual = totalMinutosParadoAnual + duracaoMinutos;
-
+            return itemMax;
         }
 
         for (var indiceMes in mesesComAlertas) {
             var mes = mesesComAlertas[indiceMes];
+            var qtdServidoresMes = Object.keys(mes.servidores).length || 1;
 
             if (mes.totalAlerts > 0) {
-                // MTTR = Tempo Total Parado / Total de Alertas
                 mes.mttr = mes.totalMinutosParado / mes.totalAlerts;
-
-                // Disponibilidade = (Tempo Total do Mês - Tempo Parado) / Tempo Total do Mês
-                var totalMinutosNoMes = 30 * 24 * 60;
+                var totalMinutosNoMes = 30 * 24 * 60 * qtdServidoresMes;
                 mes.disponibilidade = ((totalMinutosNoMes - mes.totalMinutosParado) / totalMinutosNoMes) * 100;
             } else {
-
-                //Se nao teve nenhum alerta
                 mes.mttr = 0;
                 mes.disponibilidade = 100;
             }
-
             mes.servidorMaisAfetadoMes = acharMaisFrequente(mes.servidores);
             mes.componenteMaisAfetadoMes = acharMaisFrequente(mes.componentes);
             mes.gravidadePredominante = acharMaisFrequente(mes.gravidades);
-
         }
 
-        function acharMaisFrequente(objetoDeContagem) {
-            var maisFrequente = 'N/A';
-            var maxContagem = 0;
-
-            for (var item in objetoDeContagem) {
-                if (objetoDeContagem[item] > maxContagem) {
-                    maxContagem = objetoDeContagem[item];
-                    maisFrequente = item;
-                }
-            }
-            return maisFrequente;
-        }
-
-        // Usamos a função pra encontrar os mais frequentes do ano
-        var servidorMaisAfetadoAno = acharMaisFrequente(contagemServidoresAno);
-        var componenteMaisAfetadoAno = acharMaisFrequente(contagemComponentesAno);
-        var gravidadeMaisComumAno = acharMaisFrequente(contagemGravidadesAno);
-
-        // mês mais crítico e mais estável
-        var mesMaisCritico = 'N/A';
-        var mesMaisEstavel = 'N/A';
-        var maxAlertas = -1;
-        var minAlertas = 999999;
         var arrayMesesFinal = [];
+        var mesMaisCritico = 'N/A', mesMaisEstavel = 'N/A';
+        var maxAlertas = -1, minAlertas = 999999;
 
         for (var indiceMes in mesesComAlertas) {
-
             var mes = mesesComAlertas[indiceMes];
-
-            if (mes.totalAlerts > maxAlertas) {
-                maxAlertas = mes.totalAlerts;
-                mesMaisCritico = mes.nome;
-            }
-            if (mes.totalAlerts < minAlertas) {
-                minAlertas = mes.totalAlerts;
-                mesMaisEstavel = mes.nome;
-            }
-            //console.log(mes)
+            if (mes.totalAlerts > maxAlertas) { maxAlertas = mes.totalAlerts; mesMaisCritico = mes.nome; }
+            if (mes.totalAlerts < minAlertas) { minAlertas = mes.totalAlerts; mesMaisEstavel = mes.nome; }
             arrayMesesFinal.push(mes);
         }
 
-        // Médias do ano
-        var mttrMedioAnual = 0;
-        if (totalAlertsAnual > 0) {
-            //     Soma de todos os min de alerta / qtd
-            mttrMedioAnual = totalMinutosParadoAnual / totalAlertsAnual;
-        }
+        var mttrMedioAnual = totalAlertasFinalizados > 0 ? (minutosSomadosParaMTTR / totalAlertasFinalizados) : 0;
+        
+        var qtdServidores = Object.keys(contagemServidoresAno).length || 1;
+        var minutosTotaisNoAno = 365 * 24 * 60 * qtdServidores;
+        var disponibilidadeMediaAnual = 100 - ((minutosSomadosParaDisponibilidade / minutosTotaisNoAno) * 100);
 
-        //Calcula os minutos totais do ano / pelos minutos parados do ano e subtrai de 100%
-        var disponibilidadeMediaAnual = 100 - (totalMinutosParadoAnual / (365 * 24 * 60)) * 100;
-
-        //Json exibido 
         var resultadoFinal = {
             empresa: nomeEmpresa,
             ano: ano,
-            totalAlertsAnual: totalAlertsAnual,
+            totalAlertsAnual: totalAlertsAnual, 
             mttrMedioAnual: Math.round(mttrMedioAnual),
             disponibilidadeMediaAnual: disponibilidadeMediaAnual,
-            gravidadeMaisComumAno: gravidadeMaisComumAno,
+            gravidadeMaisComumAno: acharMaisFrequente(contagemGravidadesAno),
             mesMaisCritico: mesMaisCritico.charAt(0).toUpperCase() + mesMaisCritico.slice(1),
             mesMaisEstavel: mesMaisEstavel.charAt(0).toUpperCase() + mesMaisEstavel.slice(1),
-            servidorMaisAfetadoAno: servidorMaisAfetadoAno,
-            componenteMaisAfetadoAno: componenteMaisAfetadoAno,
+            servidorMaisAfetadoAno: acharMaisFrequente(contagemServidoresAno),
+            componenteMaisAfetadoAno: acharMaisFrequente(contagemComponentesAno),
             dadosMensais: arrayMesesFinal,
         };
 
-        console.log("Objeto final pronto para ser enviado:", resultadoFinal);
+        console.log("Objeto final pronto:", resultadoFinal);
         return resultadoFinal;
-
-    })
-
+    });
 }
 
 function buscarAnosDisponiveis() {
@@ -289,9 +233,8 @@ function buscarDadosMensais(ano, mes) {
             servidor.nome AS nome_servidor, gravidade.nome AS nome_gravidade,
             empresa.razao_social AS nome_empresa
         FROM alerta
-        JOIN componente_servidor ON alerta.fk_componenteServidor_servidor = componente_servidor.fk_servidor AND alerta.fk_componenteServidor_tipoComponente = componente_servidor.fk_tipo_componente
-        JOIN tipo_componente ON componente_servidor.fk_tipo_componente = tipo_componente.id
-        JOIN servidor ON componente_servidor.fk_servidor = servidor.id
+        JOIN tipo_componente ON alerta.fk_componenteServidor_servidor = tipo_componente.id
+        JOIN servidor ON alerta.fk_componenteServidor_servidor = servidor.id
         JOIN empresa on servidor.fk_empresa = empresa.id
         LEFT JOIN gravidade ON alerta.fk_gravidade = gravidade.id
         WHERE YEAR(alerta.inicio) = ${ano} AND MONTH(alerta.inicio) = ${mes}

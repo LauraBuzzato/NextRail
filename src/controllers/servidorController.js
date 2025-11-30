@@ -512,12 +512,108 @@ function pegarPrevisao(req, res) {
 
 
  async function listarDadosAlertas(req, res) {
+    var nomeServer = req.query.nomeServer;
     try {
-        const dados = await servidorModel.pegarJsonDoS3();
+        const dados = await servidorModel.pegarJsonDoS3(nomeServer);
         return res.status(200).json(dados);
     } catch (erro) {
+        if(erro.code === "NoSuchKey"){
+            console.log(`Arquivo do S3 não encontrado para ${nomeServer}. Retornando zeros.`);
+            return res.status(200).json({
+                total_alertas_baixo: 0,
+                total_alertas_medio: 0,
+                total_alertas_alto: 0,
+                servidor_nome: nomeServer,
+                mes_referencia: new Date().getMonth() + 1,
+                ano_referencia: new Date().getFullYear()
+            });
+        }
         console.log("Erro ao listar alertas:", erro.message);
         return res.status(500).json({ erro: "Erro ao buscar dados do S3" });
+    }
+}
+
+
+async function buscarSla(req, res) {
+    var idServidor = req.params.idServidor;
+
+    try {
+        const registros = await servidorModel.buscarSla(idServidor);
+        if (registros.length > 0) {
+            let soma = 0;
+            for (let i = 0; i < registros.length; i++) {
+                soma += registros[i].sla;
+            }
+            
+            let media = (soma / registros.length).toFixed(0);
+
+            res.status(200).json({ mediaSla: media });
+        } else {
+            res.status(200).json({ mediaSla: 0 });
+        }
+    } catch (erro) {
+        console.log(erro);
+        res.status(500).json(erro.sqlMessage);
+    }
+}
+
+
+async function compararAlertas(req, res) {
+    var idServidor = req.params.idServidor;
+
+    try {
+        const resultado = await servidorModel.buscarComparacaoMes(idServidor);
+
+        var atual = 0
+        var anterior = 0
+
+        if (resultado.length > 0) {
+            var atual = resultado[0].qtd_atual || 0;
+            var anterior = resultado[0].qtd_anterior || 0;
+        }
+            var porcentagem = 0;
+            var cssCor = "";
+            var icone = "";
+            var texto = "";
+
+            // Só pra evitar divisão por zero
+            if (anterior == 0) {
+                // Se não teve alertas mês passado e agora tem, subiu 100% 
+                // Se ambos forem 0, continua 0%
+                porcentagem = atual > 0 ? 100 : 0;
+            } else {
+                porcentagem = ((atual - anterior) / anterior) * 100;
+            }
+
+            porcentagem = porcentagem.toFixed(1);
+
+            if (porcentagem > 0) {
+                // Piorou (mais alertas)
+                cssCor = "red";
+                icone = "arrow-up-outline";
+                texto = `vs. ${anterior} no Mês Anterior`;
+            } else if (porcentagem < 0) {
+                // Melhorou (menos alertas)}
+                cssCor = "lightgreen";
+                icone = "arrow-down-outline";
+                texto = `vs. ${anterior} no Mês Anterior`;
+                porcentagem = Math.abs(porcentagem); // Tira sinal negativo
+            } else {
+                // Igual
+                cssCor = "white"; 
+                icone = "remove-outline"; 
+                texto = "Igual ao mês anterior";
+            }
+        
+        res.json({
+                percentual: porcentagem,
+                cor: cssCor,
+                icone: icone,
+                texto: texto
+            });
+    } catch (erro) {
+        console.log(erro);
+        res.status(500).json(erro.sqlMessage);
     }
 }
 
@@ -550,5 +646,7 @@ module.exports = {
   pegarUso,
   paramsNomes,
   pegarPrevisao,
-  listarDadosAlertas
+  listarDadosAlertas,
+  buscarSla,
+  compararAlertas
 };

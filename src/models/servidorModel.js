@@ -2,7 +2,7 @@ var database = require("../database/config");
 require("dotenv").config({ path: ".env.dev" });
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 
-const BUCKET = process.env.S3_BUCKET_DADOS || "bucket-nextrail-client";
+const BUCKET = process.env.S3_BUCKET;
 
 // pega credenciais do env.dev
 const s3 = new S3Client({
@@ -1036,12 +1036,38 @@ async function pegarPrevisao(servidorId, periodo) {
         const dadosNovos = await lerArquivoS3(BUCKET, key);
         
         console.log('Dados recebidos do S3:', dadosNovos);
+    
+        if (!dadosNovos) {
+            console.log('Nenhum dado encontrado no S3');
+            return null;
+        }
+
+        console.log('Estrutura completa dos dados:', JSON.stringify(dadosNovos, null, 2));        
+
+        let previsoes;
         
+        if (dadosNovos.previsoes) {
+            previsoes = dadosNovos.previsoes;
+        } else if (dadosNovos.previsao) {
+            previsoes = dadosNovos.previsao;
+        } else if (Array.isArray(dadosNovos.cpu)) {
+  
+            return {
+                cpu: dadosNovos.cpu || [],
+                ram: dadosNovos.ram || [],
+                disco: dadosNovos.disco || [],
+                latencia: dadosNovos.latencia || []
+            };
+        } else {
+            console.log('Estrutura de previsão não reconhecida');
+            return null;
+        }
+
         return {
-            cpu: dadosNovos.previsoes.cpu,
-            ram: dadosNovos.previsoes.ram,
-            disco: dadosNovos.previsoes.disco,
-            latencia: dadosNovos.previsoes.latencia
+            cpu: previsoes.cpu || [],
+            ram: previsoes.ram || [],
+            disco: previsoes.disco || [],
+            latencia: previsoes.latencia || []
         };
 
     } catch (error) {
@@ -1055,11 +1081,12 @@ async function pegarPrevisao(servidorId, periodo) {
 // Tentativa pegar dados s3
 
 const AWS = require("aws-sdk");
-
-async function pegarJsonDoS3() {
+async function pegarJsonDoS3(nomeServidor) {
     console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
 
-    const path = "dadosDashAlertas/Empresa_Teste/Servidor01/mensal_2025-11.json"; 
+    const servidor =  nomeServidor
+
+    const path = `dadosDashAlertas/Empresa_Teste/${servidor}/mensal_2025-11.json`; 
 
     const s3 = new AWS.S3({
     region: "us-east-1" 
@@ -1080,6 +1107,29 @@ async function pegarJsonDoS3() {
     }
 }
 
+function buscarSla(idServidor) {
+    var instrucao = `
+        SELECT sla 
+        FROM metrica 
+        WHERE fk_componenteServidor_servidor = ${idServidor} 
+        AND sla > 0;
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucao);
+    return database.executar(instrucao);
+}
+
+function buscarComparacaoMes(idServidor) {
+    //deste mês (0) e do mês passado (1)
+    var instrucao = `
+        SELECT 
+            SUM(CASE WHEN MONTH(inicio) = MONTH(NOW()) AND YEAR(inicio) = YEAR(NOW()) THEN 1 ELSE 0 END) as qtd_atual,
+            SUM(CASE WHEN MONTH(inicio) = MONTH(NOW() - INTERVAL 1 MONTH) AND YEAR(inicio) = YEAR(NOW() - INTERVAL 1 MONTH) THEN 1 ELSE 0 END) as qtd_anterior
+        FROM alerta
+        WHERE fk_componenteServidor_servidor = ${idServidor};
+        
+    `;
+    return database.executar(instrucao);
+}
 
 module.exports = {
     listarEmpresas,
@@ -1109,5 +1159,7 @@ module.exports = {
     pegarUso,
     paramsNomes,
     pegarPrevisao,
-    pegarJsonDoS3
+    pegarJsonDoS3,
+    buscarSla,
+    buscarComparacaoMes 
 };

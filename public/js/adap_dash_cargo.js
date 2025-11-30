@@ -325,24 +325,24 @@ async function atualizar(a) {
       <div class="kpi-box">
         <span class="kpi-title">Quantidade total de Alertas do Mês</span>
         <div id="kpi-total-alertas" style="font-size: 40px";></div>
-        <h4 class="seta">(30% <ion-icon name="arrow-up-outline" style="color: red";> </ion-icon> vs. Mês Anterior)</h4>
+      <h4 class="seta" id="variacao"></h4>
 
       </div>
 
       <div class="kpi-box">
         <span class="kpi-title">Componente Mais Impactado do Mês</span>
-        <div id="kpi-componente-mais-impactado" style="color: #00BFFF; font-size: 40px";></div>
+        <div id="kpi-componente-mais-impactado" style="font-size: 40px";></div>
       </div>
 
       <div class="kpi-box">
-        <span class="kpi-title">MTTR (Tempo Médio de Reparo) do Mês</span>
-        <div id="kpi-mttr-medio" style="font-size: 40px";> <ion-icon name="arrow-up-outline" style="color: red";></ion-icon></div>
-        <h4>(SLA: < 15 min)</h4>
+        <span class="kpi-title">MTTR do Mês</span>
+        <div id="kpi-mttr-medio" > <ion-icon name="arrow-up-outline" style="color: red";></ion-icon></div>
+        <h4 id="metrica-sla"></h4>
       </div>
 
       <div class="kpi-box">
         <span class="kpi-title">Gravidade mais frequente do Mês</span>
-        <div id="kpi-gravidade-mais-frequente" style="color: #FFA500; font-size: 40px;";></div>
+        <div id="kpi-gravidade-mais-frequente"; font-size: 40px;";></div>
       </div>
     </section>
     

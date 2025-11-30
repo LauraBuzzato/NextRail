@@ -41,4 +41,8 @@ router.get("/dados", function (req, res) {
     servidorController.listarDadosAlertas(req, res);
 });
 
+router.get("/sla/:idServidor", servidorController.buscarSla);
+
+router.get("/comparacao/:idServidor", servidorController.compararAlertas);
+
 module.exports = router;

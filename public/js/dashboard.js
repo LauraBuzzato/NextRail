@@ -12,21 +12,12 @@ function dash_analista() {
         return;
     }
 
-    var frequenciaCanvas = document.getElementById('frequenciaSemanalChart');
     var alertasComponenteCanvas = document.getElementById('alertasComponenteChart');
-    var alertasServidorCanvas = document.getElementById('alertasServidorChart');
-
-    if (!frequenciaCanvas) {
-        console.error('Elemento frequenciaSemanalChart não encontrado');
-        setTimeout(dash_analista, 200);
-        return;
-    }
 
     console.log('Criando gráficos do analista...');
 
     Chart.defaults.color = '#fff';
     Chart.defaults.font.weight = 'bold';
-
 
     // pegar ano e mês atuais 
     var hojeData = new Date();
@@ -34,6 +25,7 @@ function dash_analista() {
     var mesEscolhido = hojeData.getMonth() + 1; // 1..12
 
     var caminhoRelatorio = '/relatorio/mensal-detalhado/' + anoEscolhido + '/' + mesEscolhido;
+
 
     fetch(caminhoRelatorio)
         .then(function (res) {
@@ -48,255 +40,65 @@ function dash_analista() {
                 return;
             }
 
-            var porDia = {};
-            var contagemComponentes = {};
-            var contagemGravidades = {};
-
             var kpis = payload.kpisGerais;
-            if (kpis !== undefined && kpis !== null) {
-                var totalAlertsMes = 0;
-                if (kpis.totalAlerts !== undefined && kpis.totalAlerts !== null) {
-                    totalAlertsMes = kpis.totalAlerts;
-                }
-
-                var componenteMaisImpactado = 'N/A';
-                if (kpis.componenteMaisAfetado !== undefined && kpis.componenteMaisAfetado !== null) {
-                    componenteMaisImpactado = kpis.componenteMaisAfetado;
-                }
-
-                var mttrMedioMes = 0;
-                if (kpis.mttrMedio !== undefined && kpis.mttrMedio !== null) {
-                    mttrMedioMes = Math.round(kpis.mttrMedio);
-                }
-
-                var gravidadeMaisFrequente = 'N/A';
-                if (kpis.gravidadePredominante !== undefined && kpis.gravidadePredominante !== null) {
-                    gravidadeMaisFrequente = kpis.gravidadePredominante;
-                }
-
-                var elTotal = document.getElementById('kpi-total-alertas');
-                if (elTotal) {
-                    elTotal.innerText = totalAlertsMes;
-                } else {
-                    console.log('KPI totalAlerts:', totalAlertsMes);
-                }
 
 
-                var elComp = document.getElementById('kpi-componente-mais-impactado');
-                if (elComp) {
-                    elComp.innerText = componenteMaisImpactado;
-                } else {
-                    console.log('KPI componenteMaisAfetado:', componenteMaisImpactado);
-                }
+            var mttrMedioMes = 0;
+            if (kpis.mttrMedio !== undefined && kpis.mttrMedio !== null) {
+                mttrMedioMes = Math.round(kpis.mttrMedio);
+            }
 
-                var elMttr = document.getElementById('kpi-mttr-medio');
-                if (elMttr) {
-                    elMttr.innerText = mttrMedioMes;
-                } else {
-                    console.log('KPI mttrMedio:', mttrMedioMes);
-                }
-
-                var elGrav = document.getElementById('kpi-gravidade-mais-frequente');
-                if (elGrav) {
-                    elGrav.innerText = gravidadeMaisFrequente;
-                } else {
-                    console.log('KPI gravidadePredominante:', gravidadeMaisFrequente);
-                }
+            var elMttr = document.getElementById('kpi-mttr-medio');
+            if (elMttr) {
+                elMttr.innerText = `${mttrMedioMes} min`;
             } else {
-                console.log('kpisGerais não encontrado no payload');
+                console.log('KPI mttrMedio:', mttrMedioMes);
             }
 
-            var semanas;
-            if (payload.dadosSemanais === undefined) {
-                semanas = [];
-            } else {
-                semanas = payload.dadosSemanais;
-            }
-
-            for (var i = 0; i < semanas.length; i++) {
-                var semana = semanas[i];
-                var listaAlertas;
-                if (semana.alertas === undefined) {
-                    listaAlertas = [];
-                } else {
-                    listaAlertas = semana.alertas;
-                }
-
-                for (var j = 0; j < listaAlertas.length; j++) {
-                    var alerta = listaAlertas[j];
-
-                    var nomeCompRaw = alerta.nome_componente;
-                    if (nomeCompRaw === undefined || nomeCompRaw === null) {
-                        nomeCompRaw = alerta.componente;
-                        if (nomeCompRaw === undefined || nomeCompRaw === null) {
-                            nomeCompRaw = 'Outro';
-                        }
-                    }
-                    var nomeCompLower = nomeCompRaw.toString().toLowerCase();
-                    var chaveComp;
-
-                    if (nomeCompLower.indexOf('cpu') !== -1) {
-                        chaveComp = 'Cpu';
-                    } else if (nomeCompLower.indexOf('ram') !== -1) {
-                        chaveComp = 'Ram';
-                    } else if (nomeCompLower.indexOf('disco') !== -1) {
-                        chaveComp = 'Disco';
-                    } else {
-                        chaveComp = 'Outro';
-                    }
+        });
 
 
-                    if (contagemComponentes[chaveComp] === undefined) {
-                        contagemComponentes[chaveComp] = 1;
-                    } else {
-                        contagemComponentes[chaveComp] = contagemComponentes[chaveComp] + 1;
-                    }
+    // ================================================= S3 ==============================================================
+
+    var nomeServidor = localStorage.NOME_SERVIDOR
+
+    if (!nomeServidor || nomeServidor === "undefined") {
+        nomeServidor = "Servidor01";
+    }
+    var caminho = `/servidores/dados?nomeServer=${nomeServidor}`;
+
+    console.log("Buscando dados do S3 em:", caminho);
+
+    fetch(caminho)
+        .then(function (res) {
+            if (!res.ok) throw new Error('Erro ao pegar dados S3');
+            return res.json();
+        })
+        .then(function (dadosS3) {
+            console.log("JSON do S3 recebido:", dadosS3);
 
 
-                    var nomeGravRaw = alerta.nome_gravidade;
-                    if (nomeGravRaw === undefined || nomeGravRaw === null) {
-                        nomeGravRaw = alerta.gravidade;
-                    }
-                    var chaveGrav;
-                    if (nomeGravRaw === undefined || nomeGravRaw === null) {
-                        chaveGrav = 'indefinida';
-                    } else {
-                        var gravLower = nomeGravRaw.toString().toLowerCase();
-                        if (gravLower.indexOf('alto') !== -1) {
-                            chaveGrav = 'Alto';
-                        } else if (gravLower.indexOf('med') !== -1 || gravLower.indexOf('méd') !== -1) {
-                            chaveGrav = 'Médio';
-                        } else if (gravLower.indexOf('baixo') !== -1) {
-                            chaveGrav = 'Baixo';
-                        } else {
-                            chaveGrav = 'indefinida';
-                        }
-                    }
 
-                    if (contagemGravidades[chaveGrav] === undefined) {
-                        contagemGravidades[chaveGrav] = 1;
-                    } else {
-                        contagemGravidades[chaveGrav] = contagemGravidades[chaveGrav] + 1;
-                    }
+            var objGrafico = dadosS3.grafico_linha || {};
 
-                    // por dia por componente (usamos YYYY-MM-DD para ordenar depois) 
-                    var inicioRaw = alerta.inicio;
-                    var dt = new Date(inicioRaw);
-
-                    if (!isNaN(dt.getTime())) {
-                        var y = dt.getFullYear();
-                        var m = dt.getMonth() + 1;
-                        var d = dt.getDate();
-                        var mStr;
-                        if (m < 10) {
-                            mStr = '0' + m;
-                        } else {
-                            mStr = '' + m;
-                        }
-                        var dStr;
-                        if (d < 10) {
-                            dStr = '0' + d;
-                        } else {
-                            dStr = '' + d;
-                        }
-                        var chaveDia = y + '-' + mStr + '-' + dStr;
-
-                        if (porDia[chaveDia] === undefined) {
-                            porDia[chaveDia] = { 'Cpu': 0, 'Ram': 0, 'Disco': 0, 'Outro': 0 };
-                        }
-
-                        porDia[chaveDia][chaveComp] = porDia[chaveDia][chaveComp] + 1;
-                    } else {
-                        console.log("ERRO NA DATAA");
-
-                    }
-                }
-            }
-
-            // transformar porDia em arrays ordenados para o Chart (labels dd/MM)
-            var chavesDatas = [];
-            for (var k in porDia) {
-                chavesDatas.push(k);
-            }
+            var labelsProntas = objGrafico.labels || [];
+            var dadosCpu = objGrafico.cpu || [];
+            var dadosRam = objGrafico.ram || [];
+            var dadosDisco = objGrafico.disco || [];
 
 
-            // ordenar chavesDatas por data (comparar new Date)
-            chavesDatas.sort(function (a, b) {
-                var da = new Date(a + 'T00:00:00');
-                var db = new Date(b + 'T00:00:00');
-                if (da < db) return -1;
-                if (da > db) return 1;
-                return 0;
-            });
+            var frequenciaCanvas = document.getElementById('frequenciaSemanalChart');
 
-            var labelsDias = [];
-            var cpuPorDia = [];
-            var ramPorDia = [];
-            var discoPorDia = [];
 
-            if (chavesDatas.length === 0) {
-                labelsDias.push('Sem dados');
-                cpuPorDia.push(0);
-                ramPorDia.push(0);
-                discoPorDia.push(0);
-            } else {
-                for (var idx = 0; idx < chavesDatas.length; idx++) {
-                    var chaveAtual = chavesDatas[idx]; // YYYY-MM-DD
-                    var partes = chaveAtual.split('-');
-                    var labelFormat = partes[2] + '/' + partes[1]; // DD/MM
-                    labelsDias.push(labelFormat);
-
-                    var objDia = porDia[chaveAtual];
-                    if (objDia['Cpu'] === undefined) objDia['Cpu'] = 0;
-                    if (objDia['Ram'] === undefined) objDia['Ram'] = 0;
-                    if (objDia['Disco'] === undefined) objDia['Disco'] = 0;
-
-                    cpuPorDia.push(objDia['Cpu']);
-                    ramPorDia.push(objDia['Ram']);
-                    discoPorDia.push(objDia['Disco']);
-                }
-            }
-
-            // preparar arrays para componentes (ordem: Cpu, Ram, Disco) 
-            var compCpu = 0;
-            var compRam = 0;
-            var compDisco = 0;
-
-            if (contagemComponentes['Cpu'] !== undefined) {
-                compCpu = contagemComponentes['Cpu'];
-            }
-            if (contagemComponentes['Ram'] !== undefined) {
-                compRam = contagemComponentes['Ram'];
-            }
-            if (contagemComponentes['Disco'] !== undefined) {
-                compDisco = contagemComponentes['Disco'];
-            }
-
-            //prepara array para gravidade
-            var gravBaixo = 0;
-            var gravMedio = 0;
-            var gravAlto = 0;
-
-            if (contagemGravidades['Baixo'] !== undefined) {
-                gravBaixo = contagemGravidades['Baixo'];
-            }
-            if (contagemGravidades['Médio'] !== undefined) {
-                gravMedio = contagemGravidades['Médio'];
-            }
-            if (contagemGravidades['Alto'] !== undefined) {
-                gravAlto = contagemGravidades['Alto'];
-            }
-
-            // Frequência Semanal 
             if (frequenciaCanvas) {
                 var configFreq = {
                     type: 'line',
                     data: {
-                        labels: labelsDias,
+                        labels: labelsProntas,
                         datasets: [
                             {
                                 label: 'CPU',
-                                data: cpuPorDia,
+                                data: dadosCpu,
                                 borderColor: '#a78bfa',
                                 backgroundColor: 'rgba(167,139,250,0.2)',
                                 tension: 0.3,
@@ -306,7 +108,7 @@ function dash_analista() {
                             },
                             {
                                 label: 'RAM',
-                                data: ramPorDia,
+                                data: dadosRam,
                                 borderColor: '#38bdf8',
                                 backgroundColor: 'rgba(56,189,248,0.2)',
                                 tension: 0.3,
@@ -316,7 +118,7 @@ function dash_analista() {
                             },
                             {
                                 label: 'Disco',
-                                data: discoPorDia,
+                                data: dadosDisco,
                                 borderColor: '#ff89b0',
                                 backgroundColor: 'rgba(255,137,176,0.2)',
                                 tension: 0.3,
@@ -331,8 +133,29 @@ function dash_analista() {
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                display: false
+                                display: true
+                            },
+
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            // Adicione estas linhas:
+                            z: 9999, // Alto z-index
+                            external: function (context) {
+                                // Garante que o tooltip fique na frente
+                                var tooltip = context.tooltip;
+                                if (tooltip && tooltip.el) {
+                                    tooltip.el.style.zIndex = '9999';
+                                }
                             }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
                         },
                         scales: {
                             y: {
@@ -378,79 +201,115 @@ function dash_analista() {
                 chartFreq = new Chart(frequenciaCanvas, configFreq);
             }
 
-            // Alertas por Componente 
-            if (alertasComponenteCanvas) {
-                var configComp = {
-                    type: 'bar',
-                    data: {
-                        labels: ['Cpu', 'Ram', 'Disco'],
-                        datasets: [{
-                            data: [compCpu, compRam, compDisco],
-                            backgroundColor: ['rgba(147, 112, 219, 0.8)', 'rgba(0, 191, 255, 0.8)', 'rgba(255, 137, 176, 0.8)'],
-                            borderColor: ['#9370DB', '#00BFFF', '#ff89b0'],
-                            borderWidth: 1,
-                            borderRadius: 8
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Quantidades',
-                                    font: {
-                                        size: 20,
-                                        weight: "bold"
-                                    }
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 14,
-                                        weight: "bold"
-                                    }
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Componentes',
-                                    font: {
-                                        size: 20,
-                                        weight: "bold"
-                                    }
-                                },
-                                ticks: {
-                                    font: {
-                                        size: 20,
-                                        weight: "bold"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
 
-                if (chartComp !== null) {
-                    chartComp.destroy(); chartComp = null;
-                }
-                chartComp = new Chart(alertasComponenteCanvas, configComp);
+            var totalS3 = dadosS3.total_alertas_baixo +
+                dadosS3.total_alertas_medio +
+                dadosS3.total_alertas_alto
+
+
+            var s3Baixo = dadosS3.total_alertas_baixo;
+            var s3Medio = dadosS3.total_alertas_medio;
+            var s3Alto = dadosS3.total_alertas_alto;
+
+            var s3Cpu = dadosS3.total_alertas_cpu;
+            var s3Ram = dadosS3.total_alertas_ram;
+            var s3Disco = dadosS3.total_alertas_disco;
+
+
+            var compMaisAfetado = ""
+
+            if (s3Cpu >= s3Ram && s3Cpu >= s3Disco) {
+                compMaisAfetado = "Cpu"
+            } else if (s3Ram >= s3Cpu && s3Ram >= s3Disco) {
+                compMaisAfetado = "Ram"
+            }
+            else if (s3Disco >= s3Ram && s3Disco >= s3Cpu) {
+                compMaisAfetado = "Disco"
             }
 
+
+            var elComp = document.getElementById('kpi-componente-mais-impactado');
+            if (elComp) {
+                elComp.innerText = compMaisAfetado;
+            } else {
+                console.log('KPI componenteMaisAfetado:', compMaisAfetado);
+            }
+
+            if (compMaisAfetado == "Cpu") {
+                elComp.style.color = "#a78bfa";
+            } else if (compMaisAfetado == "Ram") {
+                elComp.style.color = "#38bdf8";
+            } else if (compMaisAfetado == "Disco") {
+                elComp.style.color = "#ff89b0";
+            }
+
+
+            var textoGravidade = "Sem alertas";
+            var corKPI = "white";
+
+            //Qtd total
+            if (totalS3 > 0) {
+                if (s3Alto >= s3Medio && s3Alto >= s3Baixo && s3Alto > 0) {
+                    textoGravidade = "Alto";
+                    corKPI = "rgba(255, 0, 0, 1)";
+                }
+                else if (s3Medio >= s3Baixo && s3Medio > s3Alto && s3Medio > 0) {
+                    textoGravidade = "Médio";
+                    corKPI = "rgba(255, 165, 0, 1)";
+                }
+                else if (s3Baixo > s3Medio && s3Baixo > s3Alto && s3Baixo > 0) {
+                    textoGravidade = "Baixo";
+                    corKPI = "rgba(255, 255, 0, 1)";
+                }
+
+
+                var maiorValor = Math.max(s3Alto, s3Medio, s3Baixo);
+
+                // Prioridade 
+                if (s3Alto === maiorValor) {
+                    textoGravidade = "Alto";
+                    corKPI = "rgba(255, 0, 0, 1)";
+                }
+                else if (s3Medio === maiorValor) {
+                    textoGravidade = "Médio";
+                    corKPI = "rgba(255, 165, 0, 1)";
+                }
+                else {
+                    textoGravidade = "Baixo";
+                    corKPI = "rgba(255, 255, 0, 1)";
+                }
+            }
+
+
+            var kpiGravidade = document.getElementById('kpi-gravidade-mais-frequente');
+
+            if (kpiGravidade) {
+                kpiGravidade.innerHTML = textoGravidade;
+                kpiGravidade.style.color = corKPI
+                kpiGravidade.style.fontSize = "40px"
+                kpiGravidade.style.weight = "bold"
+
+            }
+            console.log(`Cor aplicada: ${corKPI} (Alto: ${s3Alto}, Médio: ${s3Medio}, Baixo: ${s3Baixo})`);
+
+            var kpiTotal = document.getElementById('kpi-total-alertas');
+            if (kpiTotal) {
+                kpiTotal.innerHTML = totalS3;
+            }
+
+            console.log(`Dados referentes a: ${dadosS3.mes_referencia}/${dadosS3.ano_referencia}`);
+
+
             // Alertas por Gravidade 
+            var alertasServidorCanvas = document.getElementById('alertasServidorChart');
+
             if (alertasServidorCanvas) {
                 var configGrav = {
                     type: 'bar',
                     data: {
                         labels: ['Baixo', 'Médio', 'Alto'],
                         datasets: [{
-                            data: [gravBaixo, gravMedio, gravAlto],
+                            data: [s3Baixo, s3Medio, s3Alto],
                             backgroundColor: ['rgba(255, 255, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)'],
                             borderColor: ['rgba(255, 255, 0, 1)', 'rgba(3, 2, 0, 1)', 'rgba(255, 0, 0, 1)'],
                             borderWidth: 1,
@@ -463,6 +322,26 @@ function dash_analista() {
                             legend: {
                                 display: false
                             }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            // Adicione estas linhas:
+                            z: 9999, // Alto z-index
+                            external: function (context) {
+                                // Garante que o tooltip fique na frente
+                                var tooltip = context.tooltip;
+                                if (tooltip && tooltip.el) {
+                                    tooltip.el.style.zIndex = '9999';
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
                         },
                         scales: {
                             y: {
@@ -503,16 +382,140 @@ function dash_analista() {
                 };
 
 
-                if (chartGrav !== null) { chartGrav.destroy(); chartGrav = null; }
+                if (chartGrav !== null) {
+                    chartGrav.destroy(); chartGrav = null;
+                }
                 chartGrav = new Chart(alertasServidorCanvas, configGrav);
+
+            }
+            // Alertas por Componente 
+            if (alertasComponenteCanvas) {
+                var configComp = {
+                    type: 'bar',
+                    data: {
+                        labels: ['Cpu', 'Ram', 'Disco'],
+                        datasets: [{
+                            data: [s3Cpu, s3Ram, s3Disco],
+                            backgroundColor: ['rgba(147, 112, 219, 0.8)', 'rgba(0, 191, 255, 0.8)', 'rgba(255, 137, 176, 0.8)'],
+                            borderColor: ['#9370DB', '#00BFFF', '#ff89b0'],
+                            borderWidth: 1,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            // Adicione estas linhas:
+                            z: 9999, // Alto z-index
+                            external: function (context) {
+                                // Garante que o tooltip fique na frente
+                                var tooltip = context.tooltip;
+                                if (tooltip && tooltip.el) {
+                                    tooltip.el.style.zIndex = '9999';
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Quantidades',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Componentes',
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 20,
+                                        weight: "bold"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                if (chartComp !== null) {
+                    chartComp.destroy(); chartComp = null;
+                }
+                chartComp = new Chart(alertasComponenteCanvas, configComp);
             }
 
         })
-        .catch(function (err) {
-            console.error('Erro no fetch do relatorio:', err);
+        .catch(function (erro) {
+            console.error("Erro na integração S3:", erro);
         });
 
+
+    //Lógica Definição kpi Sla
+    var idServidor = sessionStorage.ID_SERVIDOR;
+
+    fetch(`/servidores/sla/${idServidor}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Média de SLA recebida:", data.mediaSla);
+
+            var metricaMTTR = document.getElementById('metrica-sla');
+
+            if (metricaMTTR) {
+                metricaMTTR.innerHTML = `(SLA: < ${data.mediaSla} min)`;
+            }
+
+        })
+        .catch(err => {
+            console.error("Erro ao buscar SLA:", err);
+        });
+
+
+
+    //Função de comparação de alertas (%) com base no mês anterior
+    fetch(`/servidores/comparacao/${idServidor}`)
+        .then(res => res.json())
+        .then(dados => {
+            var kpiVariacao = document.getElementById('variacao');
+            if (kpiVariacao) {
+                kpiVariacao.innerHTML = `
+                    (${dados.percentual}% 
+                    <ion-icon name="${dados.icone}" style="color: ${dados.cor}"></ion-icon> ${dados.texto})
+                    `;
+            }
+        })
+        .catch(err => console.error("Erro comparação:", err));
+
 }
+
 
 // dash suporte ------------------------------------------------------------------------------------------------------------------
 
@@ -672,7 +675,7 @@ async function kpi_suporte(componente) {
     let parametrosScriptJsonTemp;
 
     try {
-    const resposta = await fetch(`/servidores/buscarParametrosDoServidor/${sessionStorage.ID_SERVIDOR}/${componente}`);
+        const resposta = await fetch(`/servidores/buscarParametrosDoServidor/${sessionStorage.ID_SERVIDOR}/${componente}`);
 
     if (!resposta.ok) {
         
@@ -804,16 +807,13 @@ async function kpi_suporte(componente) {
                         console.log('Gráfico renderizado com sucesso!');
                     }
                 },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: '#fff',
-                            font: { size: 14 },
-                            filter: function (legendItem, chart) {
-                                return legendItem.text !== '';
-                            }
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1000,
+                        onComplete: function () {
+                            console.log('Gráfico renderizado com sucesso!');
                         }
                     },
                     tooltip: {
@@ -830,37 +830,51 @@ async function kpi_suporte(componente) {
                                 size: 14
                             }
                         },
-                        grid: {
-                            color: 'rgba(255,255,255,0.1)'
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
                         }
                     },
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            color: '#fff',
-                            callback: function (value) {
-                                return value + '%';
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#fff',
+                                maxRotation: 0,
+                                font: {
+                                    size: 12
+                                }
                             },
-                            font: {
-                                size: 14
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
                             }
                         },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#fff',
+                                callback: function (value) {
+                                    return value + '%';
+                                },
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
                         }
                     }
                 }
-            }
-        };
+            };
 
-        graficoRam = new Chart(ctx, configLine);
-        console.log('Gráfico ram criado com sucesso!');
+            graficoRam = new Chart(ctx, configLine);
+            console.log('Gráfico ram criado com sucesso!');
 
-    } catch (error) {
-        console.error('Erro ao criar gráfico ram:', error);
+        } catch (error) {
+            console.error('Erro ao criar gráfico ram:', error);
+        }
     }
-}
     if (componente == 'cpu') {
 
         console.log('Inicializando kpi cpu');
@@ -939,16 +953,13 @@ async function kpi_suporte(componente) {
                         console.log('Gráfico renderizado com sucesso!');
                     }
                 },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: '#fff',
-                            font: { size: 14 },
-                            filter: function (legendItem, chart) {
-                                return legendItem.text !== '';
-                            }
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1000,
+                        onComplete: function () {
+                            console.log('Gráfico renderizado com sucesso!');
                         }
                     },
                     tooltip: {
@@ -965,37 +976,51 @@ async function kpi_suporte(componente) {
                                 size: 14
                             }
                         },
-                        grid: {
-                            color: 'rgba(255,255,255,0.1)'
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
                         }
                     },
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            color: '#fff',
-                            callback: function (value) {
-                                return value + '%';
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#fff',
+                                maxRotation: 0,
+                                font: {
+                                    size: 12
+                                }
                             },
-                            font: {
-                                size: 14
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
                             }
                         },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#fff',
+                                callback: function (value) {
+                                    return value + '%';
+                                },
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
                         }
                     }
                 }
-            }
-        };
+            };
 
-        graficoCpu = new Chart(ctx, configLine);
-        console.log('Gráfico cpu criado com sucesso!');
+            graficoCpu = new Chart(ctx, configLine);
+            console.log('Gráfico cpu criado com sucesso!');
 
-    } catch (error) {
-        console.error('Erro ao criar gráfico cpu:', error);
+        } catch (error) {
+            console.error('Erro ao criar gráfico cpu:', error);
+        }
     }
-}
     if (componente == 'disco') {
 
         console.log('Inicializando kpi disco');
@@ -1074,16 +1099,13 @@ async function kpi_suporte(componente) {
                         console.log('Gráfico renderizado com sucesso!');
                     }
                 },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: '#fff',
-                            font: { size: 14 },
-                            filter: function (legendItem, chart) {
-                                return legendItem.text !== '';
-                            }
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1000,
+                        onComplete: function () {
+                            console.log('Gráfico renderizado com sucesso!');
                         }
                     },
                     tooltip: {
@@ -1100,29 +1122,43 @@ async function kpi_suporte(componente) {
                                 size: 14
                             }
                         },
-                        grid: {
-                            color: 'rgba(255,255,255,0.1)'
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
                         }
                     },
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            color: '#fff',
-                            callback: function (value) {
-                                return value + '%';
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#fff',
+                                maxRotation: 0,
+                                font: {
+                                    size: 12
+                                }
                             },
-                            font: {
-                                size: 14
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
                             }
                         },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#fff',
+                                callback: function (value) {
+                                    return value + '%';
+                                },
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
                         }
                     }
                 }
-            }
-        };
+            };
 
         graficoDisco = new Chart(ctx, configLine);
         console.log('Gráfico disco criado com sucesso!');
@@ -1132,7 +1168,6 @@ async function kpi_suporte(componente) {
     } finally {
         setTimeout(() => kpi_suporte(componente), 130000);
     }
-}
 }
 
  async function buscarDadosComponentes() {
@@ -1174,7 +1209,7 @@ async function kpi_suporte(componente) {
     `;
 
     try {
-        
+
         const resposta = await fetch(`/servidores/buscarAlertasDoServidor/${sessionStorage.ID_SERVIDOR}`);
         const alertasJson = await resposta.json();
 
@@ -1183,7 +1218,7 @@ async function kpi_suporte(componente) {
         document.documentElement.style.setProperty('--linhas-grid', `repeat(${alertasJson.length + 1}, 25%)`)
 
         for (let i = 0; i < alertasJson.length; i++) {
-            
+
             if (alertasJson[i].status_alerta != "Andamento") {
 
                 var componente, grau, status, inicio, fim, corComponente, corLeitura, corStatus;
@@ -1200,11 +1235,11 @@ async function kpi_suporte(componente) {
                 //formatando a data que naturalmente vem em um formato não amigável
                 const inicioBruto = new Date(alertasJson[i].inicio);
                 const fimBruto = new Date(alertasJson[i].fim);
-        
+
                 componente = alertasJson[i].componente;
                 grau = alertasJson[i].gravidade;
                 status = alertasJson[i].status_alerta;
-                
+
                 inicio = (alertasJson[i].inicio === null) ? "NA" : inicioBruto.toLocaleString("pt-BR", {
                     timeZone: "UTC"
                 });
@@ -1212,7 +1247,7 @@ async function kpi_suporte(componente) {
                 fim = (alertasJson[i].fim === null) ? "NA" : fimBruto.toLocaleString("pt-BR", {
                     timeZone: "UTC"
                 });
-        
+
                 conteudo.innerHTML += `
                 <span class="tabela-celula" style="${corComponente}">${componente}</span>
                 <span class="tabela-celula" style="${corLeitura}">${grau}</span>
