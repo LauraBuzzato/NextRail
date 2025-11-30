@@ -675,7 +675,7 @@ async function kpi_suporte(componente) {
     let parametrosScriptJsonTemp;
 
     try {
-        const resposta = await fetch(`/servidores/buscarParametrosDoServidor/${sessionStorage.ID_SERVIDOR}/${componente}`);
+    const resposta = await fetch(`/servidores/buscarParametrosDoServidor/${sessionStorage.ID_SERVIDOR}/${componente}`);
 
     if (!resposta.ok) {
         
@@ -807,13 +807,16 @@ async function kpi_suporte(componente) {
                         console.log('Gráfico renderizado com sucesso!');
                     }
                 },
-                options: {
-                    responsive: false,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 1000,
-                        onComplete: function () {
-                            console.log('Gráfico renderizado com sucesso!');
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 14 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
                         }
                     },
                     tooltip: {
@@ -830,51 +833,37 @@ async function kpi_suporte(componente) {
                                 size: 14
                             }
                         },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
                         }
                     },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#fff',
-                                maxRotation: 0,
-                                font: {
-                                    size: 12
-                                }
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
                             },
-                            grid: {
-                                color: 'rgba(255,255,255,0.1)'
+                            font: {
+                                size: 14
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                color: '#fff',
-                                callback: function (value) {
-                                    return value + '%';
-                                },
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
                         }
                     }
                 }
-            };
+            }
+        };
 
-            graficoRam = new Chart(ctx, configLine);
-            console.log('Gráfico ram criado com sucesso!');
+        graficoRam = new Chart(ctx, configLine);
+        console.log('Gráfico ram criado com sucesso!');
 
-        } catch (error) {
-            console.error('Erro ao criar gráfico ram:', error);
-        }
+    } catch (error) {
+        console.error('Erro ao criar gráfico ram:', error);
     }
+}
     if (componente == 'cpu') {
 
         console.log('Inicializando kpi cpu');
@@ -953,13 +942,16 @@ async function kpi_suporte(componente) {
                         console.log('Gráfico renderizado com sucesso!');
                     }
                 },
-                options: {
-                    responsive: false,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 1000,
-                        onComplete: function () {
-                            console.log('Gráfico renderizado com sucesso!');
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 14 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
                         }
                     },
                     tooltip: {
@@ -976,51 +968,37 @@ async function kpi_suporte(componente) {
                                 size: 14
                             }
                         },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
                         }
                     },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#fff',
-                                maxRotation: 0,
-                                font: {
-                                    size: 12
-                                }
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
                             },
-                            grid: {
-                                color: 'rgba(255,255,255,0.1)'
+                            font: {
+                                size: 14
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                color: '#fff',
-                                callback: function (value) {
-                                    return value + '%';
-                                },
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
                         }
                     }
                 }
-            };
+            }
+        };
 
-            graficoCpu = new Chart(ctx, configLine);
-            console.log('Gráfico cpu criado com sucesso!');
+        graficoCpu = new Chart(ctx, configLine);
+        console.log('Gráfico cpu criado com sucesso!');
 
-        } catch (error) {
-            console.error('Erro ao criar gráfico cpu:', error);
-        }
+    } catch (error) {
+        console.error('Erro ao criar gráfico cpu:', error);
     }
+}
     if (componente == 'disco') {
 
         console.log('Inicializando kpi disco');
@@ -1099,13 +1077,16 @@ async function kpi_suporte(componente) {
                         console.log('Gráfico renderizado com sucesso!');
                     }
                 },
-                options: {
-                    responsive: false,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 1000,
-                        onComplete: function () {
-                            console.log('Gráfico renderizado com sucesso!');
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: { size: 14 },
+                            filter: function (legendItem, chart) {
+                                return legendItem.text !== '';
+                            }
                         }
                     },
                     tooltip: {
@@ -1122,43 +1103,29 @@ async function kpi_suporte(componente) {
                                 size: 14
                             }
                         },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
                         }
                     },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#fff',
-                                maxRotation: 0,
-                                font: {
-                                    size: 12
-                                }
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: '#fff',
+                            callback: function (value) {
+                                return value + '%';
                             },
-                            grid: {
-                                color: 'rgba(255,255,255,0.1)'
+                            font: {
+                                size: 14
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                color: '#fff',
-                                callback: function (value) {
-                                    return value + '%';
-                                },
-                                font: {
-                                    size: 14
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
                         }
                     }
                 }
-            };
+            }
+        };
 
         graficoDisco = new Chart(ctx, configLine);
         console.log('Gráfico disco criado com sucesso!');
@@ -1168,6 +1135,7 @@ async function kpi_suporte(componente) {
     } finally {
         setTimeout(() => kpi_suporte(componente), 130000);
     }
+}
 }
 
  async function buscarDadosComponentes() {
@@ -1209,7 +1177,7 @@ async function kpi_suporte(componente) {
     `;
 
     try {
-
+        
         const resposta = await fetch(`/servidores/buscarAlertasDoServidor/${sessionStorage.ID_SERVIDOR}`);
         const alertasJson = await resposta.json();
 
@@ -1218,7 +1186,7 @@ async function kpi_suporte(componente) {
         document.documentElement.style.setProperty('--linhas-grid', `repeat(${alertasJson.length + 1}, 25%)`)
 
         for (let i = 0; i < alertasJson.length; i++) {
-
+            
             if (alertasJson[i].status_alerta != "Andamento") {
 
                 var componente, grau, status, inicio, fim, corComponente, corLeitura, corStatus;
@@ -1235,11 +1203,11 @@ async function kpi_suporte(componente) {
                 //formatando a data que naturalmente vem em um formato não amigável
                 const inicioBruto = new Date(alertasJson[i].inicio);
                 const fimBruto = new Date(alertasJson[i].fim);
-
+        
                 componente = alertasJson[i].componente;
                 grau = alertasJson[i].gravidade;
                 status = alertasJson[i].status_alerta;
-
+                
                 inicio = (alertasJson[i].inicio === null) ? "NA" : inicioBruto.toLocaleString("pt-BR", {
                     timeZone: "UTC"
                 });
@@ -1247,7 +1215,7 @@ async function kpi_suporte(componente) {
                 fim = (alertasJson[i].fim === null) ? "NA" : fimBruto.toLocaleString("pt-BR", {
                     timeZone: "UTC"
                 });
-
+        
                 conteudo.innerHTML += `
                 <span class="tabela-celula" style="${corComponente}">${componente}</span>
                 <span class="tabela-celula" style="${corLeitura}">${grau}</span>
