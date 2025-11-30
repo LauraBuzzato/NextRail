@@ -603,12 +603,12 @@ async function compararAlertas(req, res) {
                 // Piorou (mais alertas)
                 cssCor = "red";
                 icone = "arrow-up-outline";
-                texto = "vs. Mês Anterior";
+                texto = `vs. ${anterior} no Mês Anterior`;
             } else if (porcentagem < 0) {
                 // Melhorou (menos alertas)}
                 cssCor = "lightgreen";
                 icone = "arrow-down-outline";
-                texto = "vs. Mês Anterior";
+                texto = `vs. ${anterior} no Mês Anterior`;
                 porcentagem = Math.abs(porcentagem); // Tira sinal negativo
             } else {
                 // Igual

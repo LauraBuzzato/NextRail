@@ -50,7 +50,7 @@ function dash_analista() {
         
                 var elMttr = document.getElementById('kpi-mttr-medio');
                 if (elMttr) {
-                    elMttr.innerText = mttrMedioMes;
+                    elMttr.innerText = `${mttrMedioMes} min`;
                 } else {
                     console.log('KPI mttrMedio:', mttrMedioMes);
                 }

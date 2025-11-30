@@ -1172,10 +1172,8 @@ function buscarComparacaoMes(idServidor) {
             SUM(CASE WHEN MONTH(inicio) = MONTH(NOW()) AND YEAR(inicio) = YEAR(NOW()) THEN 1 ELSE 0 END) as qtd_atual,
             SUM(CASE WHEN MONTH(inicio) = MONTH(NOW() - INTERVAL 1 MONTH) AND YEAR(inicio) = YEAR(NOW() - INTERVAL 1 MONTH) THEN 1 ELSE 0 END) as qtd_anterior
         FROM alerta
-        JOIN componente_servidor cs ON fk_componenteServidor_servidor = cs.fk_servidor 
-            AND fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
-        WHERE cs.fk_servidor = ${idServidor}
-        GROUP BY cs.fk_servidor;
+        WHERE fk_componenteServidor_servidor = ${idServidor};
+        
     `;
     return database.executar(instrucao);
 }
