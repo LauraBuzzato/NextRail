@@ -72,6 +72,11 @@ async function buscarDadosPrevisaoAWS() {
 
         console.log('Dados recebidos do backend:', dadosNovos);
 
+        if (dadosNovos) {
+            dadosNovos.historico = 2; 
+            dadosNovos.previsao = 2;  
+        }
+
         return dadosNovos;
 
     } catch (error) {
@@ -363,6 +368,8 @@ async function atualizarDashboard() {
         const dadosAWS = await buscarDadosPrevisaoAWS();
 
         if (dadosAWS) {
+            console.log('Dados processados para dashboard:', dadosAWS);
+            
             if (visaoGeralAtiva) {
                 renderGraficoLinhasMultiplas(dadosAWS);
                 renderGraficoLatenciaGeral(dadosAWS);
@@ -375,6 +382,7 @@ async function atualizarDashboard() {
             document.getElementById("kpisContainer").innerHTML = '<div class="KPI"><p>Dados de previsão temporariamente indisponíveis</p></div>';
         }
     } catch (error) {
+        console.error('Erro ao atualizar dashboard:', error);
         if (!visaoGeralAtiva) {
             document.getElementById("kpisContainer").innerHTML = '<div class="KPI"><p>Dados de previsão temporariamente indisponíveis</p></div>';
         }
@@ -407,16 +415,21 @@ function renderGraficoLinhasMultiplas(dados) {
     const datasets = [];
 
     for (const componente in dados) {
-        if (componente !== 'latencia') {
+        if (['cpu', 'ram', 'disco'].includes(componente)) {
             const dadosCompletos = dados[componente];
-            const numHistorico = dados.historico || 2;
-            const numPrevisao = dados.previsao || 2;
+            
+            if (!dadosCompletos || dadosCompletos.length !== 4) {
+                console.warn(`Dados incompletos para ${componente}:`, dadosCompletos);
+                continue;
+            }
 
-            const dadosHistorico = dadosCompletos.slice(0, numHistorico);
-            const dadosPrevisao = dadosCompletos.slice(numHistorico, numHistorico + numPrevisao);
+            const dadosHistorico = dadosCompletos.slice(0, 2);
+            const dadosPrevisao = dadosCompletos.slice(2, 4);
+            
+            // Linha sólida para dados históricos
             datasets.push({
                 label: nomes[componente],
-                data: dadosHistorico.concat(Array(numPrevisao).fill(null)),
+                data: dadosHistorico.concat(Array(2).fill(null)),
                 borderColor: cores[componente],
                 backgroundColor: `${cores[componente]}20`,
                 fill: false,
@@ -427,8 +440,9 @@ function renderGraficoLinhasMultiplas(dados) {
                 spanGaps: true
             });
 
-            const dadosPrevisaoComPontoInicial = [dadosHistorico[numHistorico - 1]].concat(dadosPrevisao);
-            const dadosTracejados = Array(numHistorico - 1).fill(null).concat(dadosPrevisaoComPontoInicial);
+            // Linha tracejada para previsão
+            const dadosPrevisaoComPontoInicial = [dadosHistorico[1]].concat(dadosPrevisao);
+            const dadosTracejados = Array(1).fill(null).concat(dadosPrevisaoComPontoInicial);
 
             datasets.push({
                 label: nomes[componente] + " (previsão)",
@@ -448,6 +462,11 @@ function renderGraficoLinhasMultiplas(dados) {
     }
 
     const ctx = canvas.getContext("2d");
+
+    // Destruir gráfico anterior se existir
+    if (graficoLinha) {
+        graficoLinha.destroy();
+    }
 
     graficoLinha = new Chart(ctx, {
         type: "line",
@@ -535,17 +554,22 @@ function renderGraficoLinhaUnica(dados) {
         : ["Mês Passado", "Mês Atual", "Próximo Mês", "Mês +2"];
 
     const dadosCompletos = dados[componenteAtual];
-    const numHistorico = dados.historico || 2;
-    const numPrevisao = dados.previsao || 2;
+    
+    if (!dadosCompletos || dadosCompletos.length !== 4) {
+        console.error(`Dados incompletos para ${componenteAtual}:`, dadosCompletos);
+        return;
+    }
 
-    const dadosHistorico = dadosCompletos.slice(0, numHistorico);
-    const dadosPrevisao = dadosCompletos.slice(numHistorico, numHistorico + numPrevisao);
+
+    const dadosHistorico = dadosCompletos.slice(0, 2);
+    
+    const dadosPrevisao = dadosCompletos.slice(2, 4);
 
     const datasets = [];
 
-    datasets.push({
+        datasets.push({
         label: nomes[componenteAtual],
-        data: dadosHistorico.concat(Array(numPrevisao).fill(null)),
+        data: dadosHistorico.concat(Array(2).fill(null)),
         borderColor: cores[componenteAtual],
         backgroundColor: `${cores[componenteAtual]}20`,
         fill: false,
@@ -556,8 +580,8 @@ function renderGraficoLinhaUnica(dados) {
         spanGaps: true
     });
 
-    const dadosPrevisaoComPontoInicial = [dadosHistorico[numHistorico - 1]].concat(dadosPrevisao);
-    const dadosTracejados = Array(numHistorico - 1).fill(null).concat(dadosPrevisaoComPontoInicial);
+    const dadosPrevisaoComPontoInicial = [dadosHistorico[1]].concat(dadosPrevisao);
+    const dadosTracejados = Array(1).fill(null).concat(dadosPrevisaoComPontoInicial);
 
     datasets.push({
         label: nomes[componenteAtual] + " (previsão)",
@@ -585,6 +609,10 @@ function renderGraficoLinhaUnica(dados) {
     });
 
     const ctx = canvas.getContext("2d");
+
+    if (graficoLinha) {
+        graficoLinha.destroy();
+    }
 
     graficoLinha = new Chart(ctx, {
         type: "line",
@@ -643,28 +671,30 @@ function renderGraficoLinhaUnica(dados) {
 }
 
 
-
 function renderGraficoLatenciaGeral(dados) {
     const canvas = document.getElementById("graficoLatencia");
     if (!canvas) {
         return;
     }
+    
     const periodo = periodoSelect.value;
     let labels, data;
 
     if (periodo === "semanal") {
         labels = ["Semana Passada", "Semana Atual", "Próxima Semana", "Semana +2"];
-        data = dados.latencia ? dados.latencia.slice(0, 4) : [0, 0, 0, 0];
     } else {
         labels = ["Mês Passado", "Mês Atual", "Próximo Mês", "Mês +2"];
-        data = dados.latencia ? dados.latencia.slice(0, 4) : [0, 0, 0, 0];
-    }
-    if (!dados.latencia || dados.latencia.length === 0) {
-        console.warn('Dados de latência não disponíveis');
-        data = [0, 0, 0, 0];
     }
 
+    data = dados.latencia || [0, 0, 0, 0];
+
     const ctx = canvas.getContext("2d");
+
+
+    if (graficoLatencia) {
+        graficoLatencia.destroy();
+    }
+
     graficoLatencia = new Chart(ctx, {
         type: "bar",
         data: {
@@ -868,14 +898,13 @@ const cores = {
 
 
 async function atualizarKPIs(dados) {
-    const valores = dados[componenteAtual];
+    const valores = dados[componenteAtual] || [0, 0, 0, 0];
     const mediaUso = Array.isArray(valores) ?
         (valores.reduce((a, b) => a + b, 0) / valores.length).toFixed(1) : "0.0";
 
     const periodo = periodoSelect.value;
     const nomes = { cpu: "CPU", ram: "RAM", disco: "Disco" };
     
-    // Usa os dados de crescimento específicos do componente
     let crescimentoPercentual = 0;
     let tendencia = "estavel";
     
@@ -915,15 +944,16 @@ async function atualizarKPIs(dados) {
         if (totalAlto > totalMedio && totalAlto > totalBaixo) alertaMaisFrequente = "Alto";
         else if (totalMedio > totalBaixo) alertaMaisFrequente = "Médio";
     }
-    const corTendencia = tendencia === "crescendo" ? "#ff6b6b" : 
-                        tendencia === "decrescendo" ? "#51cf66" : "#ffe066";
+    
+    const corTendencia = getCorTendencia(tendencia);
+    const iconeTendencia = getIconeTendencia(tendencia);
 
     const periodoTexto = periodo === "mensal" ? "Mensal" : "Semanal";
 
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
             <h2>Previsão de Uso Médio ${periodoTexto}</h2>
-            <p class="valor-kpi" id="kpi1" style="color:${cores[componenteAtual]}">${mediaUso}%</p>
+            <p class="valor-kpi" style="color:${cores[componenteAtual]}">${mediaUso}%</p>
         </div>
         <div class="KPI">
             <h2>Taxa de Crescimento ${periodoTexto}</h2>
@@ -931,13 +961,13 @@ async function atualizarKPIs(dados) {
                 ${crescimentoPercentual > 0 ? '+' : ''}${crescimentoPercentual.toFixed(1)}%
             </p>
             <p class="tendencia" style="color:${corTendencia}">
-                ${tendencia === "crescendo" ? "📈 Crescendo" : 
-                  tendencia === "decrescendo" ? "📉 Decrescendo" : "➡️ Estável"}
+                ${iconeTendencia || ''} ${tendencia === "crescendo" ? "Crescendo" : 
+                  tendencia === "decrescendo" ? "Decrescendo" : "Estável"}
             </p>
         </div>
         <div class="KPI">
             <h2>Previsão do Alerta Mais Frequente</h2>
-            <p class="valor-kpi" id="kpi2" style="color:${
+            <p class="valor-kpi" style="color:${
                 alertaMaisFrequente === 'Alto' ? 'red' : 
                 alertaMaisFrequente === 'Médio' ? 'orange' : 'yellow'
             }">${alertaMaisFrequente}</p>
@@ -945,24 +975,101 @@ async function atualizarKPIs(dados) {
         <div class="KPI">
             <h2>Status do Componente</h2>
             <p class="valor-kpi" style="color:${
-                crescimentoPercentual > 10 ? '#ff6b6b' : 
-                crescimentoPercentual > 5 ? '#ffa94d' : '#51cf66'
+                crescimentoPercentual > 10 ? '#ffffffff' : 
+                crescimentoPercentual > 5 ? '#ffffffff' : '#ffffffff'
             }">
                 ${crescimentoPercentual > 10 ? 'Crítico' : 
                   crescimentoPercentual > 5 ? 'Atenção' : 'Normal'}
             </p>
         </div>
     `;
+}
 
+function atualizarKPIsGerais(dados) {
+    const periodo = periodoSelect.value;
+    const periodoTexto = periodo === "mensal" ? "Mensal" : "Semanal";
+    
+    const crescimentos = {
+        cpu: dados.crescimentoCpuPercentual || 0,
+        ram: dados.crescimentoRamPercentual || 0,
+        disco: dados.crescimentoDiscoPercentual || 0
+    };
+    
+    let maiorComponente = '';
+    let maiorTaxa = -Infinity;
+    
+    for (const componente in crescimentos) {
+        if (crescimentos[componente] > maiorTaxa) {
+            maiorTaxa = crescimentos[componente];
+            maiorComponente = componente;
+        }
+    }
+    
+    const ultimoValores = {
+        cpu: dados.cpu ? dados.cpu[dados.cpu.length - 1] : 0,
+        ram: dados.ram ? dados.ram[dados.ram.length - 1] : 0,
+        disco: dados.disco ? dados.disco[dados.disco.length - 1] : 0
+    };
+    
+    const mediaGeral = (ultimoValores.cpu + ultimoValores.ram + ultimoValores.disco) / 3;
+    
+    const tendenciaLatencia = dados.crescimentoLatenciaTendencia || 'estavel';
+    const corLatencia = getCorTendencia(tendenciaLatencia);
+    const iconeLatencia = getIconeTendencia(tendenciaLatencia);
+    
+    const nomes = {
+        cpu: "CPU",
+        ram: "RAM",
+        disco: "Disco",
+        latencia: "Latência"
+    };
+    
+    const coresComponentes = {
+        cpu: "#a78bfa",
+        ram: "#38bdf8",
+        disco: "#ff89b0",
+        latencia: "#415ef3"
+    };
 
-    // const kpi1 = document.getElementById("kpi1");
-    // if (nomes[componenteAtual] == "CPU") {
-    //     kpi1.style.color = `${cores.cpu}`;
-    // } else if (nomes[componenteAtual] == "RAM") {
-    //     kpi1.style.color = `${cores.ram}`;
-    // } else if (nomes[componenteAtual] == "Disco") {
-    //     kpi1.style.color = `${cores.disco}`;
-    // }
+    document.getElementById("kpisContainer").innerHTML = `
+        <div class="KPI">
+            <h2>Uso Médio Geral Atual</h2>
+            <p class="valor-kpi" style="color:${mediaGeral > 70 ? '#ff6b6b' : mediaGeral > 50 ? '#ffa94d' : '#51cf66'}">
+                ${mediaGeral.toFixed(1)}%
+            </p>
+            <p class="descricao-kpi">Média dos componentes</p>
+        </div>
+        <div class="KPI">
+            <h2>Componente com Maior Crescimento</h2>
+            <p class="valor-kpi" style="color:${coresComponentes[maiorComponente] || '#fff'}">
+                ${nomes[maiorComponente] || 'N/A'}
+            </p>
+            <p class="tendencia" style="color:${maiorTaxa > 0 ? '#ff6b6b' : '#51cf66'}">
+                ${maiorTaxa > 0 ? '📈' : ''}${maiorTaxa.toFixed(1)}%
+            </p>
+        </div>
+        <div class="KPI">
+            <h2>Tendência da Latência</h2>
+            <p class="valor-kpi" style="color:${corLatencia}">
+                ${dados.crescimentoLatenciaPercentual > 0 ? '+' : ''}${dados.crescimentoLatenciaPercentual?.toFixed(1) || '0.0'}%
+            </p>
+            <p class="tendencia" style="color:${corLatencia}">
+                ${iconeLatencia || ''} ${tendenciaLatencia === 'crescendo' ? 'Aumentando' : 
+                                          tendenciaLatencia === 'decrescendo' ? 'Diminuindo' : 'Estável'}
+            </p>
+        </div>
+        <div class="KPI">
+            <h2>Status Geral do Servidor</h2>
+            <p class="valor-kpi" style="color:${
+                mediaGeral > 70 ? '#ff6b6b' : 
+                mediaGeral > 60 ? '#ffa94d' : '#51cf66'
+            }">
+                ${mediaGeral > 70 ? 'Crítico' : 
+                  mediaGeral > 60 ? 'Atenção' : 'Normal'}
+            </p>
+            <p class="descricao-kpi">Baseado no uso médio</p>
+        </div>
+    `;
 }
 
 function getIconeTendencia(tendencia) {
