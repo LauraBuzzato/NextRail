@@ -2,7 +2,7 @@ var database = require("../database/config");
 require("dotenv").config({ path: ".env.dev" });
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 
-const BUCKET = process.env.S3_BUCKET;
+const BUCKET = process.env.S3_BUCKET || 'client-nextrail-teste';
 
 // pega credenciais do env.dev
 const s3 = new S3Client({
@@ -991,7 +991,7 @@ const mapComponentes = {
     7: "latencia_media_ms"
 };
 
-async function pegarUso(empresa, servidor) {
+async function pegarUsoTempoReal(empresa, servidor) {
 
     const dataAtual = new Date();
 
@@ -1010,15 +1010,83 @@ async function pegarUso(empresa, servidor) {
         if (isFinite(valor)) valores.push(valor);
     }*/
 
-    console.log(registros)  
+    console.log(registros)
 
     return registros;
+}
+
+
+async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
+    const campo = mapComponentes[componente];
+    if (!campo) throw new Error(`Componente inválido (${componente}).`);
+
+    let key = tipo === "anual"
+        ? `${empresa}/${servidor}/dadosDashComponentes/anual_${ano}.json`
+        : `${empresa}/${servidor}/dadosDashComponentes/mensal_${ano}-${mes}.json`;
+
+    const registros = await lerArquivoS3(BUCKET, key);
+
+    let valores = [];
+
+    const taxaVariacao = calcularTaxaVariacao(valores);
+
+    // --- MENSAL → agrupar por dia ---
+    if (tipo === "mensal") {
+        let dias = {};
+        for (let i = 0; i < registros.length; i++) {
+            const dia = registros[i].timestamp.split(" ")[0];
+            const valor = normalizarValor(registros[i][campo]);
+            if (!isFinite(valor)) continue;
+
+            if (!dias[dia]) dias[dia] = [];
+            dias[dia].push(valor);
+        }
+
+        let mediasDiarias = [];
+        for (let dia in dias) {
+            mediasDiarias.push({
+                dia: dia,
+                media: calcularMedia(dias[dia])
+            });
+        }
+        return {
+            mediaMensal: calcularMedia(valores),
+            taxaVariacao: taxaVariacao,
+            mediasDiarias: mediasDiarias
+        };
+
+    }
+
+    let meses = {};
+    for (let i = 0; i < registros.length; i++) {
+        const mesReg = Number(registros[i].timestamp.substring(5, 7));
+        const valor = normalizarValor(registros[i][campo]);
+        if (!isFinite(valor)) continue;
+
+        if (!meses[mesReg]) meses[mesReg] = [];
+        meses[mesReg].push(valor);
+    }
+
+    let mediasMensais = [];
+    for (let m in meses) {
+        mediasMensais.push({
+            mes: Number(m),
+            media: calcularMedia(meses[m])
+        });
+    }
+
+    return {
+        mediaAnual: calcularMedia(valores),
+        taxaVariacao: taxaVariacao,
+        mediasMensais: mediasMensais
+    };
+
 }
 
 async function pegarPrevisao(servidorId, periodo) {
     try {
         const dadosServidor = await paramsNomes(servidorId);
-        
+
         if (!dadosServidor || dadosServidor.length === 0) {
             throw new Error('Servidor não encontrado');
         }
@@ -1034,16 +1102,16 @@ async function pegarPrevisao(servidorId, periodo) {
 
         const key = `${empresa}/${servidor}/previsoes/dadosPrev_${dataFormatada}_${periodo}.json`;
         const dadosNovos = await lerArquivoS3(BUCKET, key);
-        
+
         console.log('Dados recebidos do S3:', dadosNovos);
-    
+
         if (!dadosNovos) {
             console.log('Nenhum dado encontrado no S3');
             return null;
         }
 
-        console.log('Estrutura completa dos dados:', JSON.stringify(dadosNovos, null, 2));        
-        
+        console.log('Estrutura completa dos dados:', JSON.stringify(dadosNovos, null, 2));
+
         return dadosNovos;
 
     } catch (error) {
@@ -1056,36 +1124,36 @@ async function pegarPrevisao(servidorId, periodo) {
 // Tentativa pegar dados s3
 
 const AWS = require("aws-sdk");
-async function pegarJsonDoS3(nomeEmpresa ,nomeServidor,  tipo, ano, mes) {
+async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
     console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
 
     const empresaPath = nomeEmpresa || "Empresa_Teste";
-    const servidor =  nomeServidor
+    const servidor = nomeServidor
     const dataHoje = new Date();
-    
-    const tipoP = tipo || "mensal"; 
+
+    const tipoP = tipo || "mensal";
     const anoP = ano || dataHoje.getFullYear();
     const mesP = mes || (dataHoje.getMonth() + 1);
     const mesFormatado = String(mesP).padStart(2, '0');
-    
+
     let nomeArquivo = "";
 
 
     if (tipoP === "anual") {
         nomeArquivo = `anual_${anoP}.json`;
     } else {
-        
+
         nomeArquivo = `mensal_${anoP}-${mesFormatado}.json`;
     }
 
-    const path = `dadosDashAlertas/${empresaPath}/${servidor}/${nomeArquivo}`; 
+    const path = `dadosDashAlertas/${empresaPath}/${servidor}/${nomeArquivo}`;
 
     const s3 = new AWS.S3({
-    region: "us-east-1" 
-});
+        region: "us-east-1"
+    });
 
     const params = {
-        Bucket: process.env.BUCKET_ALERTAS,   
+        Bucket: process.env.BUCKET_ALERTAS,
         Key: path
     };
 
@@ -1160,6 +1228,7 @@ module.exports = {
     buscarAlertasDoServidor,
     buscarParametrosDoServidor,
     pegarUso,
+    pegarUsoTempoReal,
     paramsNomes,
     pegarPrevisao,
     pegarJsonDoS3,

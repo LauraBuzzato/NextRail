@@ -1200,7 +1200,7 @@ async function kpi_suporte(componente) {
  async function buscarDadosComponentes() {
     try {
 
-        const response = await fetch(`/servidores/pegarUso/${sessionStorage.NOME_EMPRESA}/${localStorage.NOME_SERVIDOR}`, {
+        const response = await fetch(`/servidores/pegarUsoTempoReal/${sessionStorage.NOME_EMPRESA}/${localStorage.NOME_SERVIDOR}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
