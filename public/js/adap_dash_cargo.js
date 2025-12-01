@@ -324,25 +324,25 @@ async function atualizar(a) {
 
       <div class="kpi-box">
         <span class="kpi-title">Quantidade total de Alertas do Mês</span>
-        <div id="kpi-total-alertas" style="font-size: 40px";></div>
+        <div id="kpi-total-alertas" ></div>
       <h4 class="seta" id="variacao"></h4>
 
       </div>
 
       <div class="kpi-box">
         <span class="kpi-title">Componente Mais Impactado do Mês</span>
-        <div id="kpi-componente-mais-impactado" style="font-size: 40px";></div>
+        <div id="kpi-componente-mais-impactado" style="font-size: 40px;"></div>
       </div>
 
       <div class="kpi-box">
         <span class="kpi-title">MTTR do Mês</span>
-        <div id="kpi-mttr-medio" > <ion-icon name="arrow-up-outline" style="color: red";></ion-icon></div>
+        <div id="kpi-mttr-medio"></div>
         <h4 id="metrica-sla"></h4>
       </div>
 
       <div class="kpi-box">
         <span class="kpi-title">Gravidade mais frequente do Mês</span>
-        <div id="kpi-gravidade-mais-frequente"; font-size: 40px;";></div>
+        <div id="kpi-gravidade-mais-frequente"></div>
       </div>
     </section>
     
@@ -358,7 +358,7 @@ async function atualizar(a) {
 
       <div class="grafico-box">
         <h3 class="grafico-titulo">Alertas divididos por Gravidade deste Mês</h3>
-        <canvas id="alertasServidorChart"></canvas>
+        <canvas id="alertasPorGravidade"></canvas>
       </div>
 
       

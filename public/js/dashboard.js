@@ -12,8 +12,6 @@ function dash_analista() {
         return;
     }
 
-    var alertasComponenteCanvas = document.getElementById('alertasComponenteChart');
-
     console.log('Criando gráficos do analista...');
 
     Chart.defaults.color = '#fff';
@@ -24,38 +22,6 @@ function dash_analista() {
     var anoEscolhido = hojeData.getFullYear();
     var mesEscolhido = hojeData.getMonth() + 1; // 1..12
 
-    var caminhoRelatorio = '/relatorio/mensal-detalhado/' + anoEscolhido + '/' + mesEscolhido;
-
-
-    fetch(caminhoRelatorio)
-        .then(function (res) {
-            if (!res.ok) {
-                console.error('Erro ao buscar relatorio mensal-detalhado. Status:', res.status);
-                return null;
-            }
-            return res.json();
-        })
-        .then(function (payload) {
-            if (payload === null) {
-                return;
-            }
-
-            var kpis = payload.kpisGerais;
-
-
-            var mttrMedioMes = 0;
-            if (kpis.mttrMedio !== undefined && kpis.mttrMedio !== null) {
-                mttrMedioMes = Math.round(kpis.mttrMedio);
-            }
-
-            var elMttr = document.getElementById('kpi-mttr-medio');
-            if (elMttr) {
-                elMttr.innerText = `${mttrMedioMes} min`;
-            } else {
-                console.log('KPI mttrMedio:', mttrMedioMes);
-            }
-
-        });
 
 
     // ================================================= S3 ==============================================================
@@ -87,8 +53,9 @@ function dash_analista() {
             var dadosDisco = objGrafico.disco || [];
 
 
-            var frequenciaCanvas = document.getElementById('frequenciaSemanalChart');
 
+// ============================================== Frequência Mensal  ================================================================
+            var frequenciaCanvas = document.getElementById('frequenciaSemanalChart');
 
             if (frequenciaCanvas) {
                 var configFreq = {
@@ -201,20 +168,25 @@ function dash_analista() {
                 chartFreq = new Chart(frequenciaCanvas, configFreq);
             }
 
+// ============================================== Cálculo qtd total alertas  ================================================================
 
             var totalS3 = dadosS3.total_alertas_baixo +
                 dadosS3.total_alertas_medio +
                 dadosS3.total_alertas_alto
 
-
+// ============================================== Cálculo alertas por gravidades  ================================================================
             var s3Baixo = dadosS3.total_alertas_baixo;
             var s3Medio = dadosS3.total_alertas_medio;
             var s3Alto = dadosS3.total_alertas_alto;
+
+// ============================================== Cálculo alertas por componente  ================================================================            
 
             var s3Cpu = dadosS3.total_alertas_cpu;
             var s3Ram = dadosS3.total_alertas_ram;
             var s3Disco = dadosS3.total_alertas_disco;
 
+
+// ============================================== Kpi Componente mais afetado  ================================================================
 
             var compMaisAfetado = ""
 
@@ -262,6 +234,7 @@ function dash_analista() {
                     corKPI = "rgba(255, 255, 0, 1)";
                 }
 
+// ============================================== Cálculo maior alertas por gravidade  ================================================================
 
                 var maiorValor = Math.max(s3Alto, s3Medio, s3Baixo);
 
@@ -299,11 +272,11 @@ function dash_analista() {
 
             console.log(`Dados referentes a: ${dadosS3.mes_referencia}/${dadosS3.ano_referencia}`);
 
+// =========================================== Gráfico Alertas por Gravidade  ================================================================
 
-            // Alertas por Gravidade 
-            var alertasServidorCanvas = document.getElementById('alertasServidorChart');
+            var alertasPorGravidade = document.getElementById('alertasPorGravidade');
 
-            if (alertasServidorCanvas) {
+            if (alertasPorGravidade) {
                 var configGrav = {
                     type: 'bar',
                     data: {
@@ -385,10 +358,14 @@ function dash_analista() {
                 if (chartGrav !== null) {
                     chartGrav.destroy(); chartGrav = null;
                 }
-                chartGrav = new Chart(alertasServidorCanvas, configGrav);
+                chartGrav = new Chart(alertasPorGravidade, configGrav);
 
             }
-            // Alertas por Componente 
+
+// ================================================== Alertas por componente ================================================================
+
+            var alertasComponenteCanvas = document.getElementById('alertasComponenteChart');
+
             if (alertasComponenteCanvas) {
                 var configComp = {
                     type: 'bar',
@@ -473,46 +450,54 @@ function dash_analista() {
                 chartComp = new Chart(alertasComponenteCanvas, configComp);
             }
 
-        })
+
+// ======================================================= MTTR ================================================================
+
+
+
+            var kpiMttr = document.getElementById("kpi-mttr-medio");
+            if (kpiMttr) {
+                kpiMttr.innerHTML = `${dadosS3.mttr} min`
+            }
+
+
+// ================================================ Comparação Mês anterior ================================================================
+
+            var pctCrescimento = dadosS3.alertas_pct_crescimento;
+            var qtdAnterior = dadosS3.alertas_qtd_mes_anterior;
+
+            var cssCor = "white";
+            var icone = "remove-outline"; // Tracinho
+            var texto = "Igual ao mês anterior";
+            var pctExibicao = pctCrescimento;
+
+            if (pctCrescimento > 0) {
+                // Piorou (Subiu os alertas) -> Vermelho
+                cssCor = "red";
+                icone = "arrow-up-outline";
+                texto = `vs. ${qtdAnterior} do Mês Anterior`;
+
+            } else if (pctCrescimento < 0) {
+                // Melhorou (Caiu os alertas) -> Verde
+                cssCor = "lightgreen";
+                icone = "arrow-down-outline";
+                texto = `vs. ${qtdAnterior} do Mês Anterior`;
+                pctExibicao = Math.abs(pctCrescimento); // Tira o sinal de negativo visualmente
+            }
+
+            
+            var kpiVariacao = document.getElementById('variacao');
+
+            if (kpiVariacao) {
+                kpiVariacao.innerHTML = ` (${pctCrescimento}% <ion-icon name="${icone}" style="color: ${cssCor}"></ion-icon> ${texto})
+    `;
+    }
+
+            })
         .catch(function (erro) {
             console.error("Erro na integração S3:", erro);
         });
 
-
-    //Lógica Definição kpi Sla
-    var idServidor = sessionStorage.ID_SERVIDOR;
-
-    fetch(`/servidores/sla/${idServidor}`)
-        .then(res => res.json())
-        .then(data => {
-            console.log("Média de SLA recebida:", data.mediaSla);
-
-            var metricaMTTR = document.getElementById('metrica-sla');
-
-            if (metricaMTTR) {
-                metricaMTTR.innerHTML = `(SLA: < ${data.mediaSla} min)`;
-            }
-
-        })
-        .catch(err => {
-            console.error("Erro ao buscar SLA:", err);
-        });
-
-
-
-    //Função de comparação de alertas (%) com base no mês anterior
-    fetch(`/servidores/comparacao/${idServidor}`)
-        .then(res => res.json())
-        .then(dados => {
-            var kpiVariacao = document.getElementById('variacao');
-            if (kpiVariacao) {
-                kpiVariacao.innerHTML = `
-                    (${dados.percentual}% 
-                    <ion-icon name="${dados.icone}" style="color: ${dados.cor}"></ion-icon> ${dados.texto})
-                    `;
-            }
-        })
-        .catch(err => console.error("Erro comparação:", err));
 
 }
 
