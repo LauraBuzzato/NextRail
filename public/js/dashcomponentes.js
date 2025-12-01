@@ -97,7 +97,7 @@ async function mudarVisualizacao() {
             freq = frequencia[0].frequencia_alerta_percentual;
             diferenca_freq = frequencia[0].diferenca_percentual;
 
-            if(freq>10){
+            if (freq > 10) {
                 corFrequencia = "red"
             }
         }
@@ -110,9 +110,11 @@ async function mudarVisualizacao() {
         // --- Buscar dados do uso real ---
         const hoje = new Date();
         const mesAtual = hoje.getMonth() + 1;
+        const anoAtual = hoje.getFullYear();
+
         const diaAtual = hoje.getDate();
 
-        const dadosUso = await fetch(`/servidores/uso?empresa=${sessionStorage.NOME_EMPRESA}&servidor=${localStorage.NOME_SERVIDOR}&tipo=${periodo.toLowerCase()}&ano=2025&mes=11&componente=${componente}`)
+        const dadosUso = await fetch(`/servidores/uso?empresa=${sessionStorage.NOME_EMPRESA}&servidor=${localStorage.NOME_SERVIDOR}&tipo=${periodo.toLowerCase()}&ano=${anoAtual}&mes=${mesAtual}&componente=${componente}`)
             .then(r => r.json());
 
         let mediaUso;
@@ -121,7 +123,7 @@ async function mudarVisualizacao() {
 
         if (!dadosUso || (!dadosUso.mediasDiarias && !dadosUso.mediasMensais)) {
             alert(`O servidor ${localStorage.NOME_SERVIDOR} ainda não possui registros de uso para esse período.`);
-            
+
             mediaUso = 0;
             taxaVariacao = 0;
 
@@ -134,7 +136,7 @@ async function mudarVisualizacao() {
                 listaPeriodos = [];
                 for (let i = 1; i <= diaAtual; i++) {
                     listaPeriodos.push({
-                        dia: `2025-11-${String(i).padStart(2, '0')}`,
+                        dia: `${anoAtual}-${mesAtual}-${String(i).padStart(2, '0')}`,
                         media: 0
                     });
                 }
@@ -160,18 +162,18 @@ async function mudarVisualizacao() {
             }
         }
 
-        corGrafico='rgba(147, 112, 219, 0.8)'
-        corGraficoTransparente='rgba(147, 112, 219, 0.2)'
+        corGrafico = 'rgba(147, 112, 219, 0.8)'
+        corGraficoTransparente = 'rgba(147, 112, 219, 0.2)'
 
-        if(nomeComponente=='Cpu'){
-            corGrafico='rgba(147, 112, 219, 0.8)'
-            corGraficoTransparente='rgba(147, 112, 219, 0.2)'
-        }else if(nomeComponente=='Ram'){
-            corGrafico='rgba(0, 191, 255, 0.8)'
-            corGraficoTransparente='rgba(0, 191, 255, 0.2)'
-        }else{
-            corGrafico='rgba(255, 137, 176, 0.8)'
-            corGraficoTransparente='rgba(255, 137, 176, 0.2)'
+        if (nomeComponente == 'Cpu') {
+            corGrafico = 'rgba(147, 112, 219, 0.8)'
+            corGraficoTransparente = 'rgba(147, 112, 219, 0.2)'
+        } else if (nomeComponente == 'Ram') {
+            corGrafico = 'rgba(0, 191, 255, 0.8)'
+            corGraficoTransparente = 'rgba(0, 191, 255, 0.2)'
+        } else {
+            corGrafico = 'rgba(255, 137, 176, 0.8)'
+            corGraficoTransparente = 'rgba(255, 137, 176, 0.2)'
         }
 
 
@@ -222,10 +224,10 @@ async function mudarVisualizacao() {
         } else {
             for (let i = 0; i < listaPeriodos.length; i++) {
                 const item = listaPeriodos[i];
-                const data = new Date(item.dia);
-                const dia = String(data.getDate()).padStart(2, '0');
-                const mes = String(data.getMonth() + 1).padStart(2, '0');
-                labelPeriodo.push(dia + "/" + mes);
+
+                const partes = item.dia.split('-');
+
+                labelPeriodo.push(`${partes[2]}/${partes[1]}`);
             }
         }
 
