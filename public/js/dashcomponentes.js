@@ -160,39 +160,44 @@ async function mudarVisualizacao() {
             }
         }
 
-        let corVariacao = "green";
+        corGrafico='rgba(147, 112, 219, 0.8)'
+        corGraficoTransparente='rgba(147, 112, 219, 0.2)'
 
-        if (!isNaN(taxaVariacao)) {
-
-            for (let i = gravidades.length - 1; i >= 0; i--) {
-                if (gravidades[i].valor <= taxaVariacao) {
-                    if (gravidades[i].nome_gravidade === "Baixo") corVariacao = "yellow";
-                    else if (gravidades[i].nome_gravidade === "Alto") corVariacao = "red";
-                    else corVariacao = "orange";
-                    break;
-                }
-            }
+        if(nomeComponente=='Cpu'){
+            corGrafico='rgba(147, 112, 219, 0.8)'
+            corGraficoTransparente='rgba(147, 112, 219, 0.2)'
+        }else if(nomeComponente=='Ram'){
+            corGrafico='rgba(0, 191, 255, 0.8)'
+            corGraficoTransparente='rgba(0, 191, 255, 0.2)'
+        }else{
+            corGrafico='rgba(255, 137, 176, 0.8)'
+            corGraficoTransparente='rgba(255, 137, 176, 0.2)'
         }
-
-
 
 
         // --- Renderizar o HTML ---
         containerGeral.innerHTML = `
             <div class="container-KPIS">
+            <div class="KPI">
+                        <h2>Uso médio ${palavraAntesComponente} ${nomeComponente}</h2>
+                        <h1 style="color: ${corUsoMedio};">${mediaUso.toFixed(2)}%</h1>
+                        <h4>Parâmetro limite: ${gravidadeBaixo}%</h4>
+                    </div>
                 <div class="KPI">
-                    <h2 class="arrumarLinha">Tempo em Alerta (%) <div class="info-icon" data-tooltip="As cores das barras representam a situação atual dos servidores, não sendo relacionada com o tipo do alerta que foi contado.">
+                    <h2 class="arrumarLinha">Período em alerta <div class="info-icon teste2" data-tooltip="Segundo práticas comuns de SRE e monitoramento de capacidade, até 10% do tempo em alerta é considerado variação normal de carga.">
     <svg fill="#000000" width="20px" height="20px" viewBox="0 0 24 24" id="information-circle" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><line id="secondary-upstroke" x1="12.05" y1="8" x2="11.95" y2="8" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><line id="secondary" x1="12" y1="13" x2="12" y2="16" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><path id="primary" d="M3,12a9,9,0,0,1,9-9h0a9,9,0,0,1,9,9h0a9,9,0,0,1-9,9h0a9,9,0,0,1-9-9Z" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>
   </div></h2>
                     <h1 style="color: ${corFrequencia};">${freq}%</h1>
                     <h4 style="color: ${diferenca_freq <= 0 ? "green" : "red"};">${textoDiferenca}</h4>
                 </div>
                 <div class="KPI">
-                    <h2>Gravidade dos alertas:</h2>
-                    <canvas id="alertasComponenteChart"></canvas>
+                    <h2>Gravidade dos alertas</h2>
+                    <canvas id="alertasComponenteChart" height="170px"></canvas>
                 </div>
                 <div class="KPI">
-                    <h2 class="titulo-kpi">Ranking:</h2>
+                    <h2 class="titulo-kpi arrumarLinha2">Ranking <div class="info-icon teste" data-tooltip="Os servidores classificados entre os três primeiros colocados no ranking de alertas recebem prioridade crítica devido à maior recorrência de eventos de saturação.">
+    <svg fill="#000000" width="20px" height="20px" viewBox="0 0 24 24" id="information-circle" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><line id="secondary-upstroke" x1="12.05" y1="8" x2="11.95" y2="8" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><line id="secondary" x1="12" y1="13" x2="12" y2="16" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><path id="primary" d="M3,12a9,9,0,0,1,9-9h0a9,9,0,0,1,9,9h0a9,9,0,0,1-9,9h0a9,9,0,0,1-9-9Z" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>
+  </div></h2>
                     <h1 class="texto-grande" style="color: ${corPintar};">${posicao[0].posicao_ranking}º</h1>
                     <h4>Servidor com mais alertas de ${nomeComponente}</h4>
                 </div>
@@ -200,20 +205,10 @@ async function mudarVisualizacao() {
 
             <div class="container-KPIS-segunda-linha">
                 <div class="GRAFICO-2">
-                    <h2>Variação do uso:</h2>
-                    <canvas id="varicaoUso" width="880" height="400"></canvas>
+                    <h2>Variação do uso</h2>
+                    <canvas id="varicaoUso" width="1500" height="400"></canvas>
                 </div>
-                <div class="Container-KPI-2">
-                    <div class="KPI-2">
-                        <h2>Uso médio ${palavraAntesComponente} ${nomeComponente}:</h2>
-                        <h1 style="color: ${corUsoMedio};">${mediaUso.toFixed(2)}%</h1>
-                        <h4>Parâmetro limite: ${gravidadeBaixo}%</h4>
-                    </div>
-                    <div class="KPI-2">
-                        <h2>Taxa de variação:</h2>
-<h1 style="color: ${corVariacao};">${taxaVariacao.toFixed(2)}%</h1>
-                    </div>
-                </div>
+                
             </div>
         `;
 
@@ -249,8 +244,8 @@ async function mudarVisualizacao() {
                     {
                         label: nomeComponente,
                         data: valoresGrafico,
-                        borderColor: '#a78bfa',
-                        backgroundColor: 'rgba(167,139,250,0.2)',
+                        borderColor: corGrafico,
+                        backgroundColor: corGraficoTransparente,
                         tension: 0.3,
                         fill: true,
                         pointRadius: 4,

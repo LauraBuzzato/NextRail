@@ -991,75 +991,28 @@ const mapComponentes = {
     7: "latencia_media_ms"
 };
 
-async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
-    const campo = mapComponentes[componente];
-    if (!campo) throw new Error(`Componente inválido (${componente}).`);
+async function pegarUso(empresa, servidor) {
 
-    let key = tipo === "anual"
-        ? `${empresa}/${servidor}/dadosDashComponentes/anual_${ano}.json`
-        : `${empresa}/${servidor}/dadosDashComponentes/mensal_${ano}-${mes}.json`;
+    const dataAtual = new Date();
+
+    const dia = dataAtual.getDate();
+    const mes = dataAtual.getMonth() + 1;
+    const ano = dataAtual.getFullYear();
+
+    let key = `${empresa}/${servidor}/componentes/dadosComponentes_${ano}-${mes}-${dia}_${dia}-${mes}-${ano}.json`;
 
     const registros = await lerArquivoS3(BUCKET, key);
 
     // Extrair valores válidos
-    let valores = [];
+    /*let valores = [];
     for (let i = 0; i < registros.length; i++) {
         const valor = normalizarValor(registros[i][campo]);
         if (isFinite(valor)) valores.push(valor);
-    }
-    const taxaVariacao = calcularTaxaVariacao(valores);
+    }*/
 
-    // --- MENSAL → agrupar por dia ---
-    if (tipo === "mensal") {
-        let dias = {};
-        for (let i = 0; i < registros.length; i++) {
-            const dia = registros[i].timestamp.split(" ")[0];
-            const valor = normalizarValor(registros[i][campo]);
-            if (!isFinite(valor)) continue;
+    console.log(registros)  
 
-            if (!dias[dia]) dias[dia] = [];
-            dias[dia].push(valor);
-        }
-
-        let mediasDiarias = [];
-        for (let dia in dias) {
-            mediasDiarias.push({
-                dia: dia,
-                media: calcularMedia(dias[dia])
-            });
-        }
-
-        return {
-            mediaMensal: calcularMedia(valores),
-            taxaVariacao: taxaVariacao,
-            mediasDiarias: mediasDiarias
-        };
-    }
-
-    // --- ANUAL → agrupar por mês ---
-    let meses = {};
-    for (let i = 0; i < registros.length; i++) {
-        const mesReg = Number(registros[i].timestamp.substring(5, 7));
-        const valor = normalizarValor(registros[i][campo]);
-        if (!isFinite(valor)) continue;
-
-        if (!meses[mesReg]) meses[mesReg] = [];
-        meses[mesReg].push(valor);
-    }
-
-    let mediasMensais = [];
-    for (let m in meses) {
-        mediasMensais.push({
-            mes: Number(m),
-            media: calcularMedia(meses[m])
-        });
-    }
-
-    return {
-        mediaAnual: calcularMedia(valores),
-        taxaVariacao: taxaVariacao,
-        mediasMensais: mediasMensais
-    };
+    return registros;
 }
 
 async function pegarPrevisao(servidorId, periodo) {
@@ -1090,39 +1043,14 @@ async function pegarPrevisao(servidorId, periodo) {
         }
 
         console.log('Estrutura completa dos dados:', JSON.stringify(dadosNovos, null, 2));        
-
-        let previsoes;
         
-        if (dadosNovos.previsoes) {
-            previsoes = dadosNovos.previsoes;
-        } else if (dadosNovos.previsao) {
-            previsoes = dadosNovos.previsao;
-        } else if (Array.isArray(dadosNovos.cpu)) {
-  
-            return {
-                cpu: dadosNovos.cpu || [],
-                ram: dadosNovos.ram || [],
-                disco: dadosNovos.disco || [],
-                latencia: dadosNovos.latencia || []
-            };
-        } else {
-            console.log('Estrutura de previsão não reconhecida');
-            return null;
-        }
-
-        return {
-            cpu: previsoes.cpu || [],
-            ram: previsoes.ram || [],
-            disco: previsoes.disco || [],
-            latencia: previsoes.latencia || []
-        };
+        return dadosNovos;
 
     } catch (error) {
         console.error('Erro ao buscar previsão do S3:', error);
         return null;
     }
 }
-
 
 
 // Tentativa pegar dados s3
