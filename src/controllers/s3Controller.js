@@ -2,46 +2,49 @@ const AWS = require('aws-sdk');
 AWS.config.update({ region: process.env.AWS_REGION });
 const s3 = new AWS.S3();
 
-async function lerArquivo() {
+async function lerArquivo(servidor) {
+  if (!servidor) {
+    throw new Error("Servidor não informado");
+  }
+
   const bucket = process.env.S3_BUCKET;
-  const ontem = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24h atrás
+  const ontem = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-  //Lista todos os arquivos do caminho no S3
-  const arquivos = await listarArquivos(bucket, 'ViaMobilidade/Servidor01/Processos/');
+  const prefixo = `ViaMobilidade/${servidor}/Processos/`;
 
-  //Filtra só os das últimas 24h e que têm conteúdo
+  const arquivos = await listarArquivos(bucket, prefixo);
+
   const arquivosRecentes = arquivos
     .filter(a => a.Key && !a.Key.endsWith('/') && a.Size > 0)
     .filter(a => a.LastModified >= ontem)
-    .sort((a, b) => b.LastModified - a.LastModified); // mais novo primeiro
+    .sort((a, b) => b.LastModified - a.LastModified);
 
   if (arquivosRecentes.length === 0) {
-    throw new Error('Nenhum arquivo encontrado nas últimas 24 horas');
+    throw new Error("Nenhum arquivo encontrado nas últimas 24 horas");
   }
 
   console.log(`Encontrados ${arquivosRecentes.length} arquivos recentes`);
 
-  //Objetos para guardar os resultados finais
   const usoMaximoMemoriaPorProcesso = new Map();
   const processosPorHora = new Map();
 
-  //Para cada arquivo: baixa, lê e processa
   for (const arquivo of arquivosRecentes) {
     const texto = await baixarArquivo(bucket, arquivo.Key);
     const linhasDeDados = parseCSV(texto);
 
-    //Conta quantos processos tinham naquela hora (usa o timestamp da primeira linha)
     if (linhasDeDados.length > 0) {
       const hora = extrairHora(linhasDeDados[0]);
       if (hora) {
-        processosPorHora.set(hora, (processosPorHora.get(hora) || 0) + linhasDeDados.length);
+        processosPorHora.set(
+          hora,
+          (processosPorHora.get(hora) || 0) + linhasDeDados.length
+        );
       }
     }
 
-    //Atualiza memória máxima de cada processo
     for (const linha of linhasDeDados) {
-      const nome = (linha.NOME || 'Desconhecido').trim();
-      const memoria = parseFloat(linha['USO_MEMORIA (MB)']) || 0;
+      const nome = (linha.NOME || "Desconhecido").trim();
+      const memoria = parseFloat(linha["USO_MEMORIA (MB)"]) || 0;
 
       if (memoria > (usoMaximoMemoriaPorProcesso.get(nome) || 0)) {
         usoMaximoMemoriaPorProcesso.set(nome, memoria);
@@ -49,9 +52,12 @@ async function lerArquivo() {
     }
   }
 
-  //Monta o resultado final para o dashboard
-  return montarResultadoDashboard(usoMaximoMemoriaPorProcesso, processosPorHora);
+  return montarResultadoDashboard(
+    usoMaximoMemoriaPorProcesso,
+    processosPorHora
+  );
 }
+
 
 module.exports = { lerArquivo };
 
