@@ -317,35 +317,57 @@ async function atualizar(a) {
     dash_analista.innerHTML = `
       <div class="dashboard-grid">
 
+  
+      <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+    <h2 class="desempenho" >Alertas do ${localStorage.NOME_SERVIDOR} </h2>
 
-    <h2 class="desempenho">Alertas do ${localStorage.NOME_SERVIDOR} </h2>
-
+    <select id="selectPeriodo" onchange="dash_analista()" style="padding: 10px; border-radius: 5px; font-weight: bold;">
+            <option value="mensal" selected>Visualização Mensal</option>
+            <option value="anual">Visualização Anual</option>
+        </select>
+        </div>
     
     <!-- KPIs -->
     <section class="kpis">
 
       <div class="kpi-box">
-        <span class="kpi-title">Quantidade total de Alertas do Mês</span>
+        <span class="kpi-title" id="titulo-kpi-total"></span>
         <div id="kpi-total-alertas" ></div>
       <h4 class="seta" id="variacao"></h4>
 
       </div>
 
       <div class="kpi-box">
-        <span class="kpi-title">Componente Mais Impactado do Mês</span>
+        <span class="kpi-title" id="titulo-kpi-comp"> </span>
         <div id="kpi-componente-mais-impactado" style="font-size: 40px;"></div>
       </div>
 
       <div class="kpi-box">
-        <span class="kpi-title">MTTR do Mês <div class="info-icon" data-tooltip="Média de tempo decorrido entre o início de um alerta e sua finalização.">
-    <svg fill="#000000" width="20px" height="20px" viewBox="0 0 24 24" id="information-circle" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><line id="secondary-upstroke" x1="12.05" y1="8" x2="11.95" y2="8" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><line id="secondary" x1="12" y1="13" x2="12" y2="16" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><path id="primary" d="M3,12a9,9,0,0,1,9-9h0a9,9,0,0,1,9,9h0a9,9,0,0,1-9,9h0a9,9,0,0,1-9-9Z" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg>
-  </div> </span>
+    <span class="kpi-title">
+        
+        <span id="titulo-kpi-mttr"></span>
+        
+        <span class="info-icon" data-tooltip="Média de tempo decorrido entre o início de um alerta e sua finalização." style="display: inline-block; vertical-align: middle; margin-left: 5px;">
+             <svg fill="#000000" width="18px" height="18px" viewBox="0 0 24 24" id="information-circle" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" style="display: block;">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <line id="secondary-upstroke" x1="12.05" y1="8" x2="11.95" y2="8" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line>
+                    <line id="secondary" x1="12" y1="13" x2="12" y2="16" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line>
+                    <path id="primary" d="M3,12a9,9,0,0,1,9-9h0a9,9,0,0,1,9,9h0a9,9,0,0,1-9,9h0a9,9,0,0,1-9-9Z" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
+                </g>
+            </svg>
+        </span>
+    </span>
+  
+
+
         <div id="kpi-mttr-medio"></div>
         <h4 id="metrica-sla"></h4>
       </div>
 
       <div class="kpi-box">
-        <span class="kpi-title">Gravidade mais frequente do Mês</span>
+        <span class="kpi-title" id="titulo-kpi-grav"></span>
         <div id="kpi-gravidade-mais-frequente"></div>
       </div>
     </section>
@@ -354,20 +376,20 @@ async function atualizar(a) {
     
     <section class="tendencia-semanal">
       <div class="grafico-box-grande">
-        <h3 class="grafico-titulo">Frequência Mensal de Alertas</h3>
+        <h3 class="grafico-titulo" id="titulo-graf-freq"></h3>
         <canvas id="frequenciaSemanalChart"></canvas>
       </div>
 
       <section class="analise-direita">
 
       <div class="grafico-box">
-        <h3 class="grafico-titulo">Alertas divididos por Gravidade deste Mês</h3>
+        <h3 class="grafico-titulo" id="titulo-graf-grav"> </h3>
         <canvas id="alertasPorGravidade"></canvas>
       </div>
 
       
       <div class="grafico-box">
-        <h3 class="grafico-titulo">Alertas por Componente deste Mês  </h3>
+        <h3 class="grafico-titulo" id="titulo-graf-comp"> </h3>
         <canvas id="alertasComponenteChart"></canvas>
       </div>
 

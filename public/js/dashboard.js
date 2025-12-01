@@ -6,6 +6,39 @@ var chartGrav = null;
 function dash_analista() {
     console.log('Executando dash_analista...');
 
+    var select = document.getElementById("selectPeriodo");
+    var periodoSelecionado = select ? select.value : "mensal"
+
+    var textoPeriodo = periodoSelecionado === "anual" ? "do Ano" : "do Mês";
+    var textoEstePeriodo = periodoSelecionado === "anual" ? "deste Ano" : "deste Mês";
+    var textoFrequencia = periodoSelecionado === "anual" ? "Frequência Anual" : "Frequência Mensal";
+
+
+    if(document.getElementById("titulo-kpi-total")){
+         document.getElementById("titulo-kpi-total").innerText = `Quantidade total de Alertas ${textoPeriodo}`;
+    }
+    if(document.getElementById("titulo-kpi-comp")){ 
+        document.getElementById("titulo-kpi-comp").innerText = `Componente Mais Impactado ${textoPeriodo}`;
+    }
+    if(document.getElementById("titulo-kpi-mttr")){
+        document.getElementById("titulo-kpi-mttr").innerText = `MTTR ${textoPeriodo} `;
+    }
+    if(document.getElementById("titulo-kpi-grav")){ document.getElementById("titulo-kpi-grav").innerText = `Gravidade mais frequente ${textoPeriodo}`;
+    }
+
+    if(document.getElementById("titulo-graf-freq")){
+        document.getElementById("titulo-graf-freq").innerText = `${textoFrequencia} de Alertas`;
+    }
+
+    if(document.getElementById("titulo-graf-grav")){ 
+        document.getElementById("titulo-graf-grav").innerText = `Alertas divididos por Gravidade ${textoEstePeriodo}`;
+    }
+    if(document.getElementById("titulo-graf-comp")){
+        document.getElementById("titulo-graf-comp").innerText = `Alertas por Componente ${textoEstePeriodo}`;
+    }
+
+
+
     if (typeof Chart === 'undefined') {
         console.error('Chart.js não disponível em dash_analista');
         setTimeout(dash_analista, 500);
@@ -17,23 +50,23 @@ function dash_analista() {
     Chart.defaults.color = '#fff';
     Chart.defaults.font.weight = 'bold';
 
-    // pegar ano e mês atuais 
-    var hojeData = new Date();
-    var anoEscolhido = hojeData.getFullYear();
-    var mesEscolhido = hojeData.getMonth() + 1; // 1..12
+    var nomeServidor = localStorage.NOME_SERVIDOR;
+    if (!nomeServidor || nomeServidor === "undefined") {
+        nomeServidor = "Servidor01";
+    }
 
+    if(document.getElementById("nome-servidor-titulo")) {
+        document.getElementById("nome-servidor-titulo").innerText = nomeServidor;
+    }
+
+    var caminho = `/servidores/dados?nomeServer=${nomeServidor}&tipo=${periodoSelecionado}`;
+
+    console.log(`Buscando dados (${periodoSelecionado}) do S3 em:`, caminho);
 
 
     // ================================================= S3 ==============================================================
 
-    var nomeServidor = localStorage.NOME_SERVIDOR
-
-    if (!nomeServidor || nomeServidor === "undefined") {
-        nomeServidor = "Servidor01";
-    }
-    var caminho = `/servidores/dados?nomeServer=${nomeServidor}`;
-
-    console.log("Buscando dados do S3 em:", caminho);
+    // var nomeServidor = localStorage.NOME_SERVIDOR
 
     fetch(caminho)
         .then(function (res) {
@@ -43,14 +76,46 @@ function dash_analista() {
         .then(function (dadosS3) {
             console.log("JSON do S3 recebido:", dadosS3);
 
+            if (chartFreq) { 
+                chartFreq.destroy(); 
+                chartFreq = null; 
+            }
+            if (chartGrav) { 
+                chartGrav.destroy(); 
+                chartGrav = null; 
+            }
+            if (chartComp) { 
+                chartComp.destroy(); 
+                chartComp = null; 
+            }
 
 
             var objGrafico = dadosS3.grafico_linha || {};
-
             var labelsProntas = objGrafico.labels || [];
             var dadosCpu = objGrafico.cpu || [];
             var dadosRam = objGrafico.ram || [];
             var dadosDisco = objGrafico.disco || [];
+
+
+// ========================================== Converter número do mês para Nome ================================================
+            if (periodoSelecionado === 'anual') {
+                var nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+                var labelsNovas = [];
+
+                for (var i = 0; i < labelsProntas.length; i++) {
+                    var textoLabel = labelsProntas[i]; // 
+                    
+                    var apenasNumero = textoLabel.replace(/[^0-9]/g, '');
+                    var numero = parseInt(apenasNumero);
+
+                    if (!isNaN(numero) && numero >= 1 && numero <= 12) {
+                        labelsNovas.push(nomesMeses[numero - 1]);
+                    } else {
+                        labelsNovas.push(textoLabel); // Se der erro, mantem o original
+                    }
+                }
+                labelsProntas = labelsNovas;
+            }
 
 
 
@@ -145,7 +210,7 @@ function dash_analista() {
                             x: {
                                 title: {
                                     display: true,
-                                    text: 'Dias',
+                                    text: periodoSelecionado === 'anual' ? 'Meses' : 'Dias',
                                     font: {
                                         size: 20,
                                         weight: "bold"
@@ -461,15 +526,15 @@ function dash_analista() {
             }
 
 
-// ================================================ Comparação Mês anterior ================================================================
+// ================================================ Comparação Mês/Ano anterior ================================================================
 
             var pctCrescimento = dadosS3.alertas_pct_crescimento;
 
             // pega o mensal. Se for undefined (porque é anual), pega o anual.
-            var qtdAnterior = dadosS3.alertas_qtd_mes_anterior || dadosS3.alertas_qtd_ano_anterior;
+            var qtdAnterior = dadosS3.alertas_qtd_mes_anterior !== undefined ? dadosS3.alertas_qtd_mes_anterior : dadosS3.alertas_qtd_ano_anterior;
 
             // Se tem mês no JSON é "Mês", senão é "Ano"
-            var textoPeriodo = dadosS3.mes_referencia ? "Mês Anterior" : "Ano Anterior";
+            var textoPeriodo = periodoSelecionado === "anual" ? "Ano Anterior" : "Mês Anterior";
 
             var cssCor = "white";
             var icone = "remove-outline"; // Tracinho
