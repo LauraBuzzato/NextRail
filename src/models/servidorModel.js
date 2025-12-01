@@ -1056,12 +1056,29 @@ async function pegarPrevisao(servidorId, periodo) {
 // Tentativa pegar dados s3
 
 const AWS = require("aws-sdk");
-async function pegarJsonDoS3(nomeServidor) {
+async function pegarJsonDoS3(nomeEmpresa ,nomeServidor,  tipo, ano, mes) {
     console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
 
+    const empresaPath = nomeEmpresa || "Empresa_Teste";
     const servidor =  nomeServidor
+    const dataHoje = new Date();
+    
+    const tipoP = tipo || "mensal"; 
+    const anoP = ano || dataHoje.getFullYear();
+    const mesP = mes || (dataHoje.getMonth() + 1);
+    const mesFormatado = String(mesP).padStart(2, '0');
+    
+    let nomeArquivo = "";
 
-    const path = `dadosDashAlertas/Empresa_Teste/${servidor}/mensal_2025-11.json`; 
+
+    if (tipoP === "anual") {
+        nomeArquivo = `anual_${anoP}.json`;
+    } else {
+        
+        nomeArquivo = `mensal_${anoP}-${mesFormatado}.json`;
+    }
+
+    const path = `dadosDashAlertas/${empresaPath}/${servidor}/${nomeArquivo}`; 
 
     const s3 = new AWS.S3({
     region: "us-east-1" 
@@ -1077,8 +1094,8 @@ async function pegarJsonDoS3(nomeServidor) {
         const jsonStr = data.Body.toString("utf-8");
         return JSON.parse(jsonStr);
     } catch (error) {
-        console.error("Erro ao acessar o S3:", error);
-        throw error;
+        console.warn(`Arquivo não encontrado ou erro S3: ${path}`);
+        return null;
     }
 }
 
@@ -1104,6 +1121,17 @@ function buscarComparacaoMes(idServidor) {
         
     `;
     return database.executar(instrucao);
+}
+
+function buscarEmpresaPorNomeServidor(nomeServidor) {
+    var instrucaoSql = `
+        SELECT e.razao_social as nome_empresa 
+        FROM servidor s 
+        JOIN empresa e ON s.fk_empresa = e.id 
+        WHERE s.nome = '${nomeServidor}';
+    `;
+    console.log("Buscando empresa do servidor: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
 module.exports = {
@@ -1136,5 +1164,6 @@ module.exports = {
     pegarPrevisao,
     pegarJsonDoS3,
     buscarSla,
-    buscarComparacaoMes 
+    buscarComparacaoMes,
+    buscarEmpresaPorNomeServidor
 };

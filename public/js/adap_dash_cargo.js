@@ -319,6 +319,8 @@ async function atualizar(a) {
 
 
     <h2 class="desempenho">Alertas do ${localStorage.NOME_SERVIDOR} </h2>
+
+    
     <!-- KPIs -->
     <section class="kpis">
 

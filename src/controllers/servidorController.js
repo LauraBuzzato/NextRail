@@ -1,85 +1,85 @@
 var servidorModel = require("../models/servidorModel");
 
 function listarEmpresas(req, res) {
-  servidorModel.listarEmpresas()
-    .then(resultado => res.json(resultado))
-    .catch(erro => {
-      console.log(erro);
-      res.status(500).json(erro.sqlMessage);
-    });
+    servidorModel.listarEmpresas()
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 function listarTipos(req, res) {
-  servidorModel.listarTipos()
-    .then(resultado => res.json(resultado))
-    .catch(erro => {
-      console.log(erro);
-      res.status(500).json(erro.sqlMessage);
-    });
+    servidorModel.listarTipos()
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 function listarSO(req, res) {
-  servidorModel.listarSO()
-    .then(resultado => res.json(resultado))
-    .catch(erro => {
-      console.log(erro);
-      res.status(500).json(erro.sqlMessage);
-    });
+    servidorModel.listarSO()
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 function listarAlertas(req, res) {
-  var fkEmpresa = req.body.idempresa;
-  servidorModel.listarAlertas(fkEmpresa)
-    .then(resultado => res.json(resultado))
-    .catch(erro => {
-      console.log(erro);
-      res.status(500).json(erro.sqlMessage);
-    });
+    var fkEmpresa = req.body.idempresa;
+    servidorModel.listarAlertas(fkEmpresa)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 function selecionarServidores(req, res) {
-  var fkEmpresa = req.body.idempresa;
-  servidorModel.selecionarServidores(fkEmpresa)
-    .then(resultado => res.json(resultado))
-    .catch(erro => {
-      console.log(erro);
-      res.status(500).json(erro.sqlMessage);
-    });
+    var fkEmpresa = req.body.idempresa;
+    servidorModel.selecionarServidores(fkEmpresa)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
-  
+
 function listarServidores(req, res) {
-  servidorModel.listarServidores()
-    .then(resultado => res.json(resultado))
-    .catch(erro => {
-      console.log(erro);
-      res.status(500).json(erro.sqlMessage);
-    });
+    servidorModel.listarServidores()
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 function cadastrarServidor(req, res) {
-  var { 
-    nome, 
-    fk_tipo, 
-    fk_so, 
-    fk_empresa,
-    logradouro,
-    cep,
-    numero,
-    complemento,
-    fk_estado
-  } = req.body;
+    var {
+        nome,
+        fk_tipo,
+        fk_so,
+        fk_empresa,
+        logradouro,
+        cep,
+        numero,
+        complemento,
+        fk_estado
+    } = req.body;
 
-  if (!nome || !fk_tipo || !fk_so || !fk_empresa || !logradouro || !cep || !numero || !fk_estado) {
-    res.status(400).send("Campos obrigatórios não preenchidos!");
-    return;
-  }
+    if (!nome || !fk_tipo || !fk_so || !fk_empresa || !logradouro || !cep || !numero || !fk_estado) {
+        res.status(400).send("Campos obrigatórios não preenchidos!");
+        return;
+    }
 
-  servidorModel.cadastrarServidor(nome, fk_tipo, fk_so, fk_empresa, logradouro, cep, numero, complemento, fk_estado)
-    .then(resultado => res.json(resultado))
-    .catch(erro => {
-      console.log(erro);
-      res.status(500).json(erro.sqlMessage);
-    });
+    servidorModel.cadastrarServidor(nome, fk_tipo, fk_so, fk_empresa, logradouro, cep, numero, complemento, fk_estado)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 function criarComponentesServidor(req, res) {
@@ -92,31 +92,31 @@ function criarComponentesServidor(req, res) {
 
     servidorModel.criarComponentesServidor(servidorId)
         .then(resultado => {
-            res.json({ 
-                success: true, 
+            res.json({
+                success: true,
                 message: 'Componentes criados com sucesso!',
                 resultado: resultado
             });
         })
         .catch(erro => {
             console.log(erro);
-            res.status(500).json({ 
-                success: false, 
-                message: erro.sqlMessage || 'Erro ao criar componentes' 
+            res.status(500).json({
+                success: false,
+                message: erro.sqlMessage || 'Erro ao criar componentes'
             });
         });
 }
 
 function atualizarConfiguracaoAlerta(req, res) {
-    var { 
-        servidorId, 
-        configuracoes 
+    var {
+        servidorId,
+        configuracoes
     } = req.body;
 
     if (!servidorId || !configuracoes) {
-        res.status(400).json({ 
-            success: false, 
-            message: "Dados incompletos para atualização!" 
+        res.status(400).json({
+            success: false,
+            message: "Dados incompletos para atualização!"
         });
         return;
     }
@@ -125,31 +125,31 @@ function atualizarConfiguracaoAlerta(req, res) {
 
     servidorModel.atualizarConfiguracaoAlerta(servidorId, configuracoes)
         .then(resultado => {
-            res.json({ 
-                success: true, 
+            res.json({
+                success: true,
                 message: 'Todas as configurações atualizadas com sucesso!',
                 affectedRows: resultado.length
             });
         })
         .catch(erro => {
             console.log("Erro no controller:", erro);
-            res.status(400).json({ 
-                success: false, 
-                message: erro.message || 'Erro ao atualizar configurações' 
+            res.status(400).json({
+                success: false,
+                message: erro.message || 'Erro ao atualizar configurações'
             });
         });
 }
 
 function atualizarConfiguracaoScript(req, res) {
-    var { 
-        servidorId, 
-        configuracoes 
+    var {
+        servidorId,
+        configuracoes
     } = req.body;
 
     if (!servidorId || !configuracoes) {
-        res.status(400).json({ 
-            success: false, 
-            message: "Dados incompletos para atualização!" 
+        res.status(400).json({
+            success: false,
+            message: "Dados incompletos para atualização!"
         });
         return;
     }
@@ -158,17 +158,17 @@ function atualizarConfiguracaoScript(req, res) {
 
     servidorModel.atualizarConfiguracaoScript(servidorId, configuracoes)
         .then(resultado => {
-            res.json({ 
-                success: true, 
+            res.json({
+                success: true,
                 message: 'Todas as configurações atualizadas com sucesso!',
                 affectedRows: resultado.length
             });
         })
         .catch(erro => {
             console.log("Erro no controller:", erro);
-            res.status(400).json({ 
-                success: false, 
-                message: erro.message || 'Erro ao atualizar configurações' 
+            res.status(400).json({
+                success: false,
+                message: erro.message || 'Erro ao atualizar configurações'
             });
         });
 }
@@ -242,153 +242,153 @@ function buscarScriptServidor(req, res) {
         });
 }
 
-function carregarComponentes(req, res){
+function carregarComponentes(req, res) {
     servidorModel.carregarComponentes()
-            .then(
-                function (resultado) {
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao procurar componentes! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao procurar componentes! Erro: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
 }
 
-function listartop3(req, res){
+function listartop3(req, res) {
     var fkEmpresa = req.body.idempresa
 
     servidorModel.listartop3(fkEmpresa)
-            .then(
-                function (resultado) {
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao procurar servidores! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao procurar servidores! Erro: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
 }
 
-function contarAlertas(req, res){
+function contarAlertas(req, res) {
     var fkEmpresa = req.body.idempresa
 
     servidorModel.contarAlertas(fkEmpresa)
-            .then(
-                function (resultado) {
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao contar alertas! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao contar alertas! Erro: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
 }
 
-function buscarAlertasComponenteEspecifico(req, res){
+function buscarAlertasComponenteEspecifico(req, res) {
     var fkEmpresa = req.body.idempresa
     var fkComponente = req.body.idComponente
     var periodo = req.body.periodoAnalisado
     var fkServidor = req.body.idServidor
 
     servidorModel.buscarAlertasComponenteEspecifico(fkEmpresa, fkComponente, periodo, fkServidor)
-            .then(
-                function (resultado) {
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao contar alertas! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao contar alertas! Erro: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
 }
 
-function buscarPosicaoRank(req, res){
+function buscarPosicaoRank(req, res) {
     var fkEmpresa = req.body.idempresa
     var fkComponente = req.body.idComponente
     var periodo = req.body.periodoAnalisado
     var fkServidor = req.body.idServidor
 
     servidorModel.buscarPosicaoRank(fkEmpresa, fkComponente, periodo, fkServidor)
-            .then(
-                function (resultado) {
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao pegar rank! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao pegar rank! Erro: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
 }
 
-function buscarMetricas(req, res){
+function buscarMetricas(req, res) {
     var fkEmpresa = req.body.idempresa
     var fkComponente = req.body.idComponente
     var fkServidor = req.body.idServidor
 
     servidorModel.buscarMetricas(fkEmpresa, fkComponente, fkServidor)
-            .then(
-                function (resultado) {
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao pegar rank! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao pegar rank! Erro: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
 }
 
-function pegarFrequencia(req, res){
+function pegarFrequencia(req, res) {
     var fkEmpresa = req.body.idempresa
     var fkComponente = req.body.idComponente
     var periodo = req.body.periodoAnalisado
     var fkServidor = req.body.idServidor
 
     servidorModel.pegarFrequencia(fkEmpresa, fkComponente, periodo, fkServidor)
-            .then(
-                function (resultado) {
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao pegar rank! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
+            function (erro) {
+                console.log(erro);
+                console.log(
+                    "\nHouve um erro ao pegar rank! Erro: ",
+                    erro.sqlMessage
+                );
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
 }
 
 function buscarAlertasHistorico(req, res) {
@@ -409,9 +409,9 @@ function atualizarConfiguracaoSla(req, res) {
     var dadosSla = req.body;
 
     if (!dadosSla.servidorId || !dadosSla.baixo || !dadosSla.medio || !dadosSla.alto) {
-        res.status(400).json({ 
-            success: false, 
-            message: "Preencha todos os campos de tempo (Baixo, Médio e Alto)!" 
+        res.status(400).json({
+            success: false,
+            message: "Preencha todos os campos de tempo (Baixo, Médio e Alto)!"
         });
         return;
     }
@@ -434,13 +434,13 @@ function atualizarConfiguracaoSla(req, res) {
 }
 
 function listarIncidentes(req, res) {
-  var fkEmpresa = req.body.idempresa;
-  servidorModel.listarIncidentes(fkEmpresa)
-    .then(resultado => res.json(resultado))
-    .catch(erro => {
-      console.log(erro);
-      res.status(500).json(erro.sqlMessage);
-    });
+    var fkEmpresa = req.body.idempresa;
+    servidorModel.listarIncidentes(fkEmpresa)
+        .then(resultado => res.json(resultado))
+        .catch(erro => {
+            console.log(erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 async function pegarUso(req, res) {
@@ -463,7 +463,7 @@ async function pegarUso(req, res) {
         const resultado = await servidorModel.pegarUso(
             empresa,
             servidor,
-            );
+        );
 
         return res.status(200).json(resultado);
 
@@ -511,27 +511,51 @@ function pegarPrevisao(req, res) {
 }
 
 
- async function listarDadosAlertas(req, res) {
-    var nomeServer = req.query.nomeServer;
+async function listarDadosAlertas(req, res) {
+    var { nomeServer, tipo, ano, mes } = req.query;
+
     try {
-        const dados = await servidorModel.pegarJsonDoS3(nomeServer);
-        return res.status(200).json(dados);
-    } catch (erro) {
-        if(erro.code === "NoSuchKey"){
-            console.log(`Arquivo do S3 não encontrado para ${nomeServer}. Retornando zeros.`);
+
+        const resultadoBanco = await servidorModel.buscarEmpresaPorNomeServidor(nomeServer);
+
+        if (resultadoBanco.length === 0) {
+            return res.status(404).json({ error: "Servidor não encontrado no banco de dados." });
+        }
+
+
+        const nomeEmpresa = resultadoBanco[0].nomeEmpresa;
+
+        const dados = await servidorModel.pegarJsonDoS3(nomeEmpresa, nomeServer, tipo, ano, mes);
+
+
+        if (!dados) {
+            console.log(`Arquivo S3 não encontrado para ${nomeServer}. Retornando padrão.`);
+
+            const hoje = new Date();
+            // Define os valores padrão para retornar ao front
             return res.status(200).json({
                 total_alertas_baixo: 0,
                 total_alertas_medio: 0,
                 total_alertas_alto: 0,
                 servidor_nome: nomeServer,
-                mes_referencia: new Date().getMonth() + 1,
-                ano_referencia: new Date().getFullYear()
+                mes_referencia: mes || (hoje.getMonth() + 1),
+                ano_referencia: ano || hoje.getFullYear(),
+                mttr: 0,
+                sla: 0,
+                historico_diario: [],
+                grafico_linha: { labels: [], cpu: [], ram: [], disco: [] }
             });
         }
-        console.log("Erro ao listar alertas:", erro.message);
-        return res.status(500).json({ erro: "Erro ao buscar dados do S3" });
+
+        // Se achou, retorna os dados reais
+        return res.status(200).json(dados);
+
+    } catch (erro) {
+        console.log("Erro ao processar requisição:", erro.message);
+        return res.status(500).json({ erro: "Erro interno no servidor" });
     }
 }
+
 
 
 async function buscarSla(req, res) {
@@ -544,7 +568,7 @@ async function buscarSla(req, res) {
             for (let i = 0; i < registros.length; i++) {
                 soma += registros[i].sla;
             }
-            
+
             let media = (soma / registros.length).toFixed(0);
 
             res.status(200).json({ mediaSla: media });
@@ -571,46 +595,46 @@ async function compararAlertas(req, res) {
             var atual = resultado[0].qtd_atual || 0;
             var anterior = resultado[0].qtd_anterior || 0;
         }
-            var porcentagem = 0;
-            var cssCor = "";
-            var icone = "";
-            var texto = "";
+        var porcentagem = 0;
+        var cssCor = "";
+        var icone = "";
+        var texto = "";
 
-            // Só pra evitar divisão por zero
-            if (anterior == 0) {
-                // Se não teve alertas mês passado e agora tem, subiu 100% 
-                // Se ambos forem 0, continua 0%
-                porcentagem = atual > 0 ? 100 : 0;
-            } else {
-                porcentagem = ((atual - anterior) / anterior) * 100;
-            }
+        // Só pra evitar divisão por zero
+        if (anterior == 0) {
+            // Se não teve alertas mês passado e agora tem, subiu 100% 
+            // Se ambos forem 0, continua 0%
+            porcentagem = atual > 0 ? 100 : 0;
+        } else {
+            porcentagem = ((atual - anterior) / anterior) * 100;
+        }
 
-            porcentagem = porcentagem.toFixed(1);
+        porcentagem = porcentagem.toFixed(1);
 
-            if (porcentagem > 0) {
-                // Piorou (mais alertas)
-                cssCor = "red";
-                icone = "arrow-up-outline";
-                texto = `vs. ${anterior} do Mês Anterior`;
-            } else if (porcentagem < 0) {
-                // Melhorou (menos alertas)}
-                cssCor = "lightgreen";
-                icone = "arrow-down-outline";
-                texto = `vs. ${anterior} do Mês Anterior`;
-                porcentagem = Math.abs(porcentagem); // Tira sinal negativo
-            } else {
-                // Igual
-                cssCor = "white"; 
-                icone = "remove-outline"; 
-                texto = "Igual ao mês anterior";
-            }
-        
+        if (porcentagem > 0) {
+            // Piorou (mais alertas)
+            cssCor = "red";
+            icone = "arrow-up-outline";
+            texto = `vs. ${anterior} do Mês Anterior`;
+        } else if (porcentagem < 0) {
+            // Melhorou (menos alertas)}
+            cssCor = "lightgreen";
+            icone = "arrow-down-outline";
+            texto = `vs. ${anterior} do Mês Anterior`;
+            porcentagem = Math.abs(porcentagem); // Tira sinal negativo
+        } else {
+            // Igual
+            cssCor = "white";
+            icone = "remove-outline";
+            texto = "Igual ao mês anterior";
+        }
+
         res.json({
-                percentual: porcentagem,
-                cor: cssCor,
-                icone: icone,
-                texto: texto
-            });
+            percentual: porcentagem,
+            cor: cssCor,
+            icone: icone,
+            texto: texto
+        });
     } catch (erro) {
         console.log(erro);
         res.status(500).json(erro.sqlMessage);
@@ -619,34 +643,34 @@ async function compararAlertas(req, res) {
 
 
 module.exports = {
-  listarEmpresas,
-  listarTipos,
-  listarSO,
-  listarAlertas,
-  selecionarServidores,
-  listarServidores,
-  cadastrarServidor,
-  criarComponentesServidor,
-  atualizarConfiguracaoAlerta,
-  buscarConfiguracoesServidor,
-  carregarComponentes,
-  listartop3,
-  contarAlertas,
-  buscarAlertasComponenteEspecifico,
-  buscarPosicaoRank,
-  buscarMetricas,
-  pegarFrequencia,
-  atualizarConfiguracaoScript,
-  buscarScriptServidor,
-  buscarAlertasHistorico,
-  atualizarConfiguracaoSla,
-  listarIncidentes,
-  buscarAlertasDoServidor,
-  buscarParametrosDoServidor,
-  pegarUso,
-  paramsNomes,
-  pegarPrevisao,
-  listarDadosAlertas,
-  buscarSla,
-  compararAlertas
+    listarEmpresas,
+    listarTipos,
+    listarSO,
+    listarAlertas,
+    selecionarServidores,
+    listarServidores,
+    cadastrarServidor,
+    criarComponentesServidor,
+    atualizarConfiguracaoAlerta,
+    buscarConfiguracoesServidor,
+    carregarComponentes,
+    listartop3,
+    contarAlertas,
+    buscarAlertasComponenteEspecifico,
+    buscarPosicaoRank,
+    buscarMetricas,
+    pegarFrequencia,
+    atualizarConfiguracaoScript,
+    buscarScriptServidor,
+    buscarAlertasHistorico,
+    atualizarConfiguracaoSla,
+    listarIncidentes,
+    buscarAlertasDoServidor,
+    buscarParametrosDoServidor,
+    pegarUso,
+    paramsNomes,
+    pegarPrevisao,
+    listarDadosAlertas,
+    buscarSla,
+    compararAlertas
 };

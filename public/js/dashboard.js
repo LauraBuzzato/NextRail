@@ -464,24 +464,29 @@ function dash_analista() {
 // ================================================ Comparação Mês anterior ================================================================
 
             var pctCrescimento = dadosS3.alertas_pct_crescimento;
-            var qtdAnterior = dadosS3.alertas_qtd_mes_anterior;
+
+            // pega o mensal. Se for undefined (porque é anual), pega o anual.
+            var qtdAnterior = dadosS3.alertas_qtd_mes_anterior || dadosS3.alertas_qtd_ano_anterior;
+
+            // Se tem mês no JSON é "Mês", senão é "Ano"
+            var textoPeriodo = dadosS3.mes_referencia ? "Mês Anterior" : "Ano Anterior";
 
             var cssCor = "white";
             var icone = "remove-outline"; // Tracinho
-            var texto = "Igual ao mês anterior";
+            var texto = `Igual ao ${textoPeriodo}`;
             var pctExibicao = pctCrescimento;
 
             if (pctCrescimento > 0) {
                 // Piorou (Subiu os alertas) -> Vermelho
                 cssCor = "red";
                 icone = "arrow-up-outline";
-                texto = `vs. ${qtdAnterior} do Mês Anterior`;
+                texto = `vs. ${qtdAnterior} do ${textoPeriodo}`;
 
             } else if (pctCrescimento < 0) {
                 // Melhorou (Caiu os alertas) -> Verde
                 cssCor = "lightgreen";
                 icone = "arrow-down-outline";
-                texto = `vs. ${qtdAnterior} do Mês Anterior`;
+                texto = `vs. ${qtdAnterior} do ${textoPeriodo}`;
                 pctExibicao = Math.abs(pctCrescimento); // Tira o sinal de negativo visualmente
             }
 
@@ -489,9 +494,13 @@ function dash_analista() {
             var kpiVariacao = document.getElementById('variacao');
 
             if (kpiVariacao) {
-                kpiVariacao.innerHTML = ` (${pctCrescimento}% <ion-icon name="${icone}" style="color: ${cssCor}"></ion-icon> ${texto})
-    `;
-    }
+                kpiVariacao.innerHTML = ` (${pctExibicao}% <ion-icon name="${icone}" style="color: ${cssCor}"></ion-icon> ${texto})`;
+            }
+    
+
+
+
+
 
             })
         .catch(function (erro) {
