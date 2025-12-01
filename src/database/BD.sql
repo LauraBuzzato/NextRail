@@ -1,4 +1,4 @@
-drop database nextrail;
+
 CREATE DATABASE IF NOT EXISTS nextrail;
 USE nextrail;
 
