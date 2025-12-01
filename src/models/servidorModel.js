@@ -786,7 +786,7 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
     if (periodo === "semanal") {
         instrucaoSql = `
             SELECT 
-                YEARWEEK(inicio) as semana,
+                'semana_anterior' as periodo,
                 COUNT(*) as total_alertas,
                 SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
                 SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
@@ -799,16 +799,33 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
             WHERE s.fk_empresa = ${fkEmpresa}
                 AND cs.fk_tipo_componente = ${fkComponente}
                 AND cs.fk_servidor = ${fkServidor}
-                AND a.inicio >= DATE_SUB(CURDATE(), INTERVAL 8 WEEK)
-            GROUP BY YEARWEEK(inicio)
-            ORDER BY semana DESC
-            LIMIT 6;
+                AND YEARWEEK(a.inicio) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL 1 WEEK))
+            UNION ALL
+            SELECT 
+                'semana_atual' as periodo,
+                COUNT(*) as total_alertas,
+                SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
+                SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
+                SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
+            FROM alerta a
+            JOIN componente_servidor cs ON 
+                a.fk_componenteServidor_servidor = cs.fk_servidor AND 
+                a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+            JOIN servidor s ON s.id = cs.fk_servidor
+            WHERE s.fk_empresa = ${fkEmpresa}
+                AND cs.fk_tipo_componente = ${fkComponente}
+                AND cs.fk_servidor = ${fkServidor}
+                AND YEARWEEK(a.inicio) = YEARWEEK(CURDATE())
+            ORDER BY 
+                CASE 
+                    WHEN periodo = 'semana_anterior' THEN 1
+                    WHEN periodo = 'semana_atual' THEN 2
+                END;
         `;
-    } else {
+    } else { // mensal
         instrucaoSql = `
             SELECT 
-                YEAR(inicio) as ano,
-                MONTH(inicio) as mes,
+                'mes_anterior' as periodo,
                 COUNT(*) as total_alertas,
                 SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
                 SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
@@ -821,10 +838,30 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
             WHERE s.fk_empresa = ${fkEmpresa}
                 AND cs.fk_tipo_componente = ${fkComponente}
                 AND cs.fk_servidor = ${fkServidor}
-                AND a.inicio >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
-            GROUP BY YEAR(inicio), MONTH(inicio)
-            ORDER BY ano DESC, mes DESC
-            LIMIT 6;
+                AND YEAR(a.inicio) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+                AND MONTH(a.inicio) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+            UNION ALL
+            SELECT 
+                'mes_atual' as periodo,
+                COUNT(*) as total_alertas,
+                SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
+                SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
+                SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
+            FROM alerta a
+            JOIN componente_servidor cs ON 
+                a.fk_componenteServidor_servidor = cs.fk_servidor AND 
+                a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+            JOIN servidor s ON s.id = cs.fk_servidor
+            WHERE s.fk_empresa = ${fkEmpresa}
+                AND cs.fk_tipo_componente = ${fkComponente}
+                AND cs.fk_servidor = ${fkServidor}
+                AND YEAR(a.inicio) = YEAR(CURDATE())
+                AND MONTH(a.inicio) = MONTH(CURDATE())
+            ORDER BY 
+                CASE 
+                    WHEN periodo = 'mes_anterior' THEN 1
+                    WHEN periodo = 'mes_atual' THEN 2
+                END;
         `;
     }
 
