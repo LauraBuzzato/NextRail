@@ -938,19 +938,6 @@ html, body {
     gap: 2vh; 
 }
 
-/* Títulos */
-.desempenho {
-    text-align: center;
-    color: #ffe066;
-    width: 100%;
-    font-size: 1.4rem;
-    height: 5vh; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-}
-
 
 .kpis {
     display: flex;
@@ -1136,3 +1123,67 @@ canvas {
 }
 
 
+.desempenho {
+    text-align: center;
+    color: #ffe066;
+    width: 100%;
+    font-size: 1.4rem;
+    height: 5vh; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10%;
+}
+
+
+.pai{
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+}
+
+
+/*
+#selectPeriodo{
+  padding: 10px; 
+  border-radius: 5px; 
+  font-weight: bold;
+  color: black;
+  background-color: #ffe066;
+}*/
+
+
+
+select {
+    padding: 10px 0;
+    border: 1px solid #ffe066;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 14rem;
+    text-align: center;
+    color: #ffe066;
+    background-color: transparent;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' clip-rule='evenodd' d='M12.7071 14.7071C12.3166 15.0976 11.6834 15.0976 11.2929 14.7071L6.29289 9.70711C5.90237 9.31658 5.90237 8.68342 6.29289 8.29289C6.68342 7.90237 7.31658 7.90237 7.70711 8.29289L12 12.5858L16.2929 8.29289C16.6834 7.90237 17.3166 7.90237 17.7071 8.29289C18.0976 8.68342 18.0976 9.31658 17.7071 9.70711L12.7071 14.7071Z' fill='%23ffe066'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    width: 23%;
+}
+
+select:focus {
+    border: 1px solid #ffe066;
+}
+
+select:hover {
+    background: #3a3d47;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' clip-rule='evenodd' d='M12.7071 14.7071C12.3166 15.0976 11.6834 15.0976 11.2929 14.7071L6.29289 9.70711C5.90237 9.31658 5.90237 8.68342 6.29289 8.29289C6.68342 7.90237 7.31658 7.90237 7.70711 8.29289L12 12.5858L16.2929 8.29289C16.6834 7.90237 17.3166 7.90237 17.7071 8.29289C18.0976 8.68342 18.0976 9.31658 17.7071 9.70711L12.7071 14.7071Z' fill='%23ffe066'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+}

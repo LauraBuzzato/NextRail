@@ -960,20 +960,20 @@ function calcularMedia(valores) {
     return soma / valores.length;
 }
 
-function calcularVariancia(valores) {
-    if (!valores.length) return 0;
+// function calcularVariancia(valores) {
+//     if (!valores.length) return 0;
 
-    const media = calcularMedia(valores);
+//     const media = calcularMedia(valores);
 
-    let soma = 0;
-    for (let i = 0; i < valores.length; i++) {
-        const valor = valores[i] - media;
-        soma += valor * valor;
-    }
+//     let soma = 0;
+//     for (let i = 0; i < valores.length; i++) {
+//         const valor = valores[i] - media;
+//         soma += valor * valor;
+//     }
 
-    const variancia = soma / valores.length;
-    return Math.sqrt(variancia);
-}
+//     const variancia = soma / valores.length;
+//     return Math.sqrt(variancia);
+// }
 
 function calcularDesvioPadrao(valores) {
     if (!valores.length) return 0;

@@ -318,14 +318,15 @@ async function atualizar(a) {
       <div class="dashboard-grid">
 
   
-      <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-    <h2 class="desempenho" >Alertas do ${localStorage.NOME_SERVIDOR} </h2>
+      <div class="pai">
+        <h2 class="desempenho" >Alertas do ${localStorage.NOME_SERVIDOR} </h2>
 
-    <select id="selectPeriodo" onchange="dash_analista()" style="padding: 10px; border-radius: 5px; font-weight: bold;">
+       <select id="selectPeriodo" onchange="dash_analista()">
             <option value="mensal" selected>Visualização Mensal</option>
             <option value="anual">Visualização Anual</option>
         </select>
-        </div>
+
+      </div>
     
     <!-- KPIs -->
     <section class="kpis">
