@@ -250,15 +250,15 @@ async function atualizar(a) {
       <section class="conteudo-principal">
         <div class="kpi-container">
           <div class="kpi-1">
-            <div class="kpi-titulo">Uso de RAM nos últimos dois minutos</div>
+            <div class="kpi-titulo">Uso de RAM nos últimos três minutos</div>
             <canvas id="grafico_ram"></canvas>
           </div>
           <div class="kpi-2">
-            <div class="kpi-titulo">Uso de CPU nos últimos dois minutos</div>
+            <div class="kpi-titulo">Uso de CPU nos últimos três minutos</div>
             <canvas id="grafico_cpu"></canvas>
           </div>
           <div class="kpi-3">
-            <div class="kpi-titulo">Uso de DISCO nos últimos dois minutos</div>
+            <div class="kpi-titulo">Uso de DISCO nos últimos três minutos</div>
             <canvas id="grafico_disco"></canvas>
           </div>
         </div>

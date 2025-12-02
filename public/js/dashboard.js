@@ -922,7 +922,7 @@ async function kpi_suporte(componente) {
     } catch (error) {
         console.error('Erro ao criar gráfico ram:', error);
     } finally {
-        setTimeout(() => kpi_suporte(componente), 130000);
+        setTimeout(() => kpi_suporte(componente), 190000);
     }
 }
     if (componente == 'cpu') {
@@ -1059,7 +1059,7 @@ async function kpi_suporte(componente) {
     } catch (error) {
         console.error('Erro ao criar gráfico cpu:', error);
     } finally {
-        setTimeout(() => kpi_suporte(componente), 130000);
+        setTimeout(() => kpi_suporte(componente), 190000);
     }
 }
     if (componente == 'disco') {
@@ -1196,7 +1196,7 @@ async function kpi_suporte(componente) {
     } catch (error) {
         console.error('Erro ao criar gráfico disco:', error);
     } finally {
-        setTimeout(() => kpi_suporte(componente), 130000);
+        setTimeout(() => kpi_suporte(componente), 190000);
     }
 }
 }
