@@ -3,61 +3,112 @@ AWS.config.update({ region: process.env.AWS_REGION });
 const s3 = new AWS.S3();
 
 async function lerArquivo(servidor) {
-  if (!servidor) {
-    throw new Error("Servidor não informado");
-  }
+  if (!servidor) throw new Error("Servidor não informado");
 
   const bucket = process.env.S3_BUCKET;
-  const ontem = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
   const prefixo = `ViaMobilidade/${servidor}/processos/`;
+  const todosArquivos = await listarArquivos(bucket, prefixo);
 
-  const arquivos = await listarArquivos(bucket, prefixo);
+  // === 1. Filtra apenas os arquivos de hoje e ontem pelo nome ===
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const ontem = new Date(hoje);
+  ontem.setDate(hoje.getDate() - 1);
 
-  const arquivosRecentes = arquivos
-    .filter(a => a.Key && !a.Key.endsWith('/') && a.Size > 0)
-    .filter(a => a.LastModified >= ontem)
-    .sort((a, b) => b.LastModified - a.LastModified);
+  const dataHoje = hoje.toISOString().slice(0, 10);    // 2025-12-02
+  const dataOntem = ontem.toISOString().slice(0, 10);  // 2025-12-01
+
+  const arquivosRecentes = todosArquivos
+    .filter(a => {
+      if (!a.Key || a.Key.endsWith('/') || a.Size === 0) return false;
+      const nome = a.Key.split('/').pop();
+      return nome === `ProcessosUso_${dataHoje}.csv` ||
+        nome === `ProcessosUso_${dataOntem}.csv`;
+    })
+    .sort((a, b) => (b.LastModified || 0) - (a.LastModified || 0));
+
+  console.log(`Encontrados ${arquivosRecentes.length} arquivos relevantes (hoje/ontem)`);
 
   if (arquivosRecentes.length === 0) {
     throw new Error("Nenhum arquivo encontrado nas últimas 24 horas");
   }
 
-  console.log(`Encontrados ${arquivosRecentes.length} arquivos recentes`);
-
+  // === 2. Processa apenas os arquivos filtrados ===
   const usoMaximoMemoriaPorProcesso = new Map();
   const processosPorHora = new Map();
+  const vinteQuatroHorasAtras = Date.now() - 24 * 60 * 60 * 1000;
+
+  // Função segura para converter seu timestamp brasileiro
+  function parseTimestampBR(str) {
+    if (!str) return null;
+    const partes = str.trim().split(' ');
+    if (partes.length !== 2) return null;
+
+    const [data, hora] = partes;
+    const [ano, mes, dia] = data.split('-').map(Number);
+    const [h, m, s] = hora.split(':').map(Number);
+
+    // Cria a data manualmente (nunca falha)
+    const date = new Date(ano, mes - 1, dia, h, m, s || 0);
+    return isNaN(date.getTime()) ? null : date;
+  }
+
+  // Função para converter 995,1 → 995.1
+  function parseFloatBR(str) {
+    if (!str) return 0;
+    const limpo = str.toString().trim().replace('.', '').replace(',', '.');
+    return parseFloat(limpo) || 0;
+  }
+
+
 
   for (const arquivo of arquivosRecentes) {
     const texto = await baixarArquivo(bucket, arquivo.Key);
-    const linhasDeDados = parseCSV(texto);
+    const linhas = parseCSV(texto); // seu parseCSV já separa por ;
 
-    if (linhasDeDados.length > 0) {
-      const hora = extrairHora(linhasDeDados[0]);
-      if (hora) {
-        processosPorHora.set(
-          hora,
-          (processosPorHora.get(hora) || 0) + linhasDeDados.length
-        );
-      }
-    }
+    // ADICIONE ESTE DEBUG (só temporário)
+    console.log("=== DEBUG PRIMEIRAS 3 LINHAS DO CSV ===");
+    linhas.slice(0, 3).forEach((l, i) => {
+      console.log(`Linha ${i}:`, l);
+      console.log("timestamp bruto:", l.timestamp);
+      console.log("timestamp tratado:", l.timestamp?.trim().replace(' ', 'T'));
+      console.log("Date result:", new Date(l.timestamp?.trim().replace(' ', 'T')));
+    });
+    console.log("=== FIM DEBUG ====");
+    
+    for (const linha of linhas) {
+      // ← AQUI ESTAVA O PROBLEMA: colunas em MAIÚSCULO no CSV!
+      const tsRaw = linha.TIMESTAMP || linha.timestamp || linha.Timestamp;
+      const nomeRaw = linha.NOME || linha.Nome || linha.nome;
+      const memoriaRaw = linha["USO_MEMORIA (MB)"] || linha["USO_MEMORIA_MB"];
 
-    for (const linha of linhasDeDados) {
-      const nome = (linha.NOME || "Desconhecido").trim();
-      const memoria = parseFloat(linha["USO_MEMORIA (MB)"]) || 0;
+      if (!tsRaw) continue;
 
-      if (memoria > (usoMaximoMemoriaPorProcesso.get(nome) || 0)) {
+      const ts = parseTimestampBR(tsRaw);
+      if (!ts || ts.getTime() < vinteQuatroHorasAtras) continue;
+
+      const nome = (nomeRaw || "Desconhecido").trim();
+      const memoria = parseFloatBR(memoriaRaw);
+
+      // Pico de memória
+      const atual = usoMaximoMemoriaPorProcesso.get(nome) || 0;
+      if (memoria > atual) {
         usoMaximoMemoriaPorProcesso.set(nome, memoria);
       }
+
+      // Por hora
+      const hora = ts.getHours().toString().padStart(2, '0') + ':00';
+      processosPorHora.set(hora, (processosPorHora.get(hora) || 0) + 1);
     }
   }
 
-  return montarResultadoDashboard(
-    usoMaximoMemoriaPorProcesso,
-    processosPorHora
-  );
-}
+  if (usoMaximoMemoriaPorProcesso.size === 0) {
+    throw new Error("Nenhum dado encontrado nas últimas 24 horas");
+  }
 
+  console.log(`Processados ${usoMaximoMemoriaPorProcesso.size} processos únicos com sucesso!`);
+  return montarResultadoDashboard(usoMaximoMemoriaPorProcesso, processosPorHora);
+}
 
 module.exports = { lerArquivo };
 
