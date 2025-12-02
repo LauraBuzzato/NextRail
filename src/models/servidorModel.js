@@ -1161,12 +1161,12 @@ async function pegarPrevisao(servidorId, periodo) {
 // Tentativa pegar dados s3
 
 const AWS = require("aws-sdk");
-async function pegarJsonDoS3(servidorId, nomeServidor, tipo, ano, mes) {
+async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
     console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
 
     const dadosServidor = await paramsNomes(servidorId);
-    const empresa = dadosServidor[0].nome_empresa;
 
+    const empresaPath = nomeEmpresa 
     const servidor = nomeServidor
     const dataHoje = new Date();
 
@@ -1192,7 +1192,7 @@ async function pegarJsonDoS3(servidorId, nomeServidor, tipo, ano, mes) {
         nomeArquivo = `mensal_${dataFormatada}.json`;
     }
 
-    const path = `${empresa}/${servidor}/dadosDashAlertas/${nomeArquivo}`;
+    const path = `${empresaPath}/${servidor}/dadosDashAlertas/${nomeArquivo}`;
 
     const s3 = new AWS.S3({
         region: "us-east-1"
@@ -1242,7 +1242,8 @@ function buscarEmpresaPorNomeServidor(nomeServidor) {
         SELECT e.razao_social as nome_empresa 
         FROM servidor s 
         JOIN empresa e ON s.fk_empresa = e.id 
-        WHERE s.nome = '${nomeServidor}';
+        WHERE e.razao_social = '${nomeServidor}'
+        limit  1;
     `;
     console.log("Buscando empresa do servidor: \n" + instrucaoSql);
     return database.executar(instrucaoSql);

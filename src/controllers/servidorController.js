@@ -574,7 +574,7 @@ async function listarDadosAlertas(req, res) {
 
         const nomeEmpresa = resultadoBanco[0].nomeEmpresa;
 
-        const dados = await servidorModel.pegarJsonDoS3(servidorId, nomeServer, tipo, ano, mes);
+        const dados = await servidorModel.pegarJsonDoS3(nomeEmpresa, nomeServer, tipo, ano, mes);
 
 
         if (!dados) {
