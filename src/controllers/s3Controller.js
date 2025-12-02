@@ -10,7 +10,7 @@ async function lerArquivo(servidor) {
   const bucket = process.env.S3_BUCKET;
   const ontem = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-  const prefixo = `ViaMobilidade/${servidor}/Processos/`;
+  const prefixo = `ViaMobilidade/${servidor}/processos/`;
 
   const arquivos = await listarArquivos(bucket, prefixo);
 
