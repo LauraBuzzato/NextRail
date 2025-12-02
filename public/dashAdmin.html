@@ -30,7 +30,20 @@
   </div>
 
   <main class="dashAdmin">
-    <h1>Empresa - Equipe de Suporte</h1>
+    <h1 id="sub-titulo">
+      Empresa - Equipe de Suporte
+
+      <select id="ano_periodo" class="select">
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+      </select>
+      <select id="mes_periodo" class="select">
+        <option value="#">Últimos 30 dias</option>
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+      </select>
+    </h1>
 
     <div class="linha">
       <div class="kpi">
@@ -45,7 +58,7 @@
       </div>
       <div class="kpi">
         <div class="titulo">MTBF</div>
-        <div id="mtbf" class="conteudo">8 dias</div>
+        <div id="mtbf" class="conteudo"></div>
       </div>
       <div class="kpi, kpi_sla" id="kpi_sla">
         <div class="titulo">Alertas resolvidos dentro do SLA 
@@ -56,8 +69,8 @@
           </select>
         </div>
         <div class="conteudo">
-          <div>98,99%</div>
-          <div>MTTR: 45 min.</div>
+          <div id="kpi_sla_porcentagem"></div>
+          <div id="kpi_sla_mttr"></div>
         </div>
       </div>
       <div>

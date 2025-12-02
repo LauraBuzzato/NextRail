@@ -13,18 +13,32 @@ let corAtual = ["rgba(255,0,0)", "rgba(255,0,0, 0.4)"]
 let duracaoTotal = []
 let listDate = []
 
+// kpi de sla
+let select = null
+let kpi = null
+let alerta_sla = null
+
 let graficoSla = null;
 let grafioTicket = null;
 
 async function dashAdmin() {
     console.log("Carregando gráficos...")
 
+    select = document.getElementById("alerta-sla")
+    kpi = document.getElementById("kpi_sla")
+    alerta_sla = select.value
+
+    selectAno = document.getElementById("ano_periodo")
+    selectMes = document.getElementById("mes_periodo")
+
     try {
         [incidentes] = await Promise.all([
             fetch('/servidores/listarIncidentes', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ idempresa: sessionStorage.ID_EMPRESA })
+                body: JSON.stringify({ 
+                  idempresa: sessionStorage.ID_EMPRESA
+                })
             }).then(res => res.json())
         ]) 
         console.log(incidentes)
@@ -106,6 +120,7 @@ async function dashAdmin() {
         return
     }
 
+    mudarCor()
     criarKpis()
     criarGraficoSla()
     criarGraficoTicket()
@@ -118,22 +133,24 @@ function criarKpis() {
 
     // mttr geral
     //console.log("diracao total: ", duracaoTotal)
-    let total = 0
+    let totalMttrGeral = 0
     for (let i = 0; i < duracaoTotal.length; i++) {
-        total += duracaoTotal[i]
+        totalMttrGeral += duracaoTotal[i]
     }
-    mttrGeral.innerText = `${Math.round(total/duracaoTotal.length)} min.`
+    mttrGeral.innerText = `${Math.round(totalMttrGeral/duracaoTotal.length)} min.`
 
     // mtbf
-    console.log("listDate: ",listDate)
     let diff = []
+    let totalMtbf = 0
     for (let i = 0; i < listDate.length; i++) {
         if (i > 0) {
-            diff.push(listDate[i-1].getTime() - listDate[i].getTime())
+            diff.push(listDate[i].getTime() - listDate[i-1].getTime())
+            totalMtbf += (listDate[i].getTime() - listDate[i-1].getTime())
         }
     }
-    console.log('diff: ',diff)
-
+    let mediaMtbf = totalMtbf/diff.length
+    let horasMtbf = Math.round((mediaMtbf)/(1000 * 60 * 60))
+    mtbf.innerText = `${horasMtbf} horas`
 }
 
 function criarGraficoSla() {
@@ -215,21 +232,21 @@ function criarGraficoTicket() {
             data: {
                 labels: ['João', 'Pedro', 'Matheus', 'Garbiel'],
                 datasets: [
-                    {
-                        label: 'Tickets Atribuidos',
-                        data: [4, 3, 2, 1],
-                        borderColor: 'blue',
-                        backgroundColor: 'rgba(0, 0,250,0.8)',
-                        tension: 0.3,
-                        fill: true,
-                        pointRadius: 4,
-                        borderWidth: 2
-                    },
+                    //{
+                    //    label: 'Tickets Atribuidos',
+                    //    data: [4, 3, 2, 1],
+                    //    borderColor: 'blue',
+                    //    backgroundColor: 'rgba(0, 0,250,0.8)',
+                    //    tension: 0.3,
+                    //    fill: true,
+                    //    pointRadius: 4,
+                    //    borderWidth: 2    rgba(0, 250, 0,0.8)
+                    //},
                     {
                       label: 'Tickets Resolvidos',
                       data: [4, 3, 1 ,2],
-                      borderColor: 'green',
-                      backgroundColor: 'rgba(0, 250, 0,0.8)',
+                      borderColor: 'blue',
+                      backgroundColor: 'rgba(0, 0,250,0.8)',
                       tension: 0.3,
                       fill: true,
                       pointRadius: 4,
@@ -272,17 +289,49 @@ function criarGraficoTicket() {
 }
 
 function mudarCor() {
-  let select = document.getElementById("alerta-sla")
-  let kpi = document.getElementById("kpi_sla")
-  let alerta = select.value
+    const kpi_sla = document.getElementById('kpi_sla')
+    const kpi_sla_porcentagem = document.getElementById('kpi_sla_porcentagem')
+    const kpi_sla_mttr = document.getElementById('kpi_sla_mttr')
 
-  if (alerta == "alto") {
-    kpi.style.borderColor = "red"
-  } else if (alerta == "medio") {
-    kpi.style.borderColor = "orange"
-  } else {
-    kpi.style.borderColor = "yellow"
-  }
+    select = document.getElementById("alerta-sla")
+    kpi = document.getElementById("kpi_sla")
+    alerta_sla = select.value
+
+    if (alerta_sla == "alto") {
+        kpi.style.borderColor = "red"
+    } else if (alerta_sla == "medio") {
+        kpi.style.borderColor = "orange"
+    } else {
+        kpi.style.borderColor = "yellow"
+    }
+
+    console.log(dados)
+    console.log(servidores)
+    
+    let totalDentroSla = 0
+    let totalMttr = 0
+    let length = 0
+    for (let i = 0; i < servidores.length; i++) {
+        for (let j = 0; j < dados[servidores[i]][alerta_sla].length; j++) {
+            totalMttr += dados[servidores[i]][alerta_sla][j]
+            length++
+            if (alerta_sla == "alto") {
+                if (dados[servidores[i]][alerta_sla][j] < dados[servidores[i]].slaAlto) {
+                    totalDentroSla++
+                }
+            } else if (alerta_sla == "medio") {
+                if (dados[servidores[i]][alerta_sla][j] < dados[servidores[i]].slaMedio) {
+                    totalDentroSla++
+                }
+            } else if (alerta_sla == "baixo") {
+                if (dados[servidores[i]][alerta_sla][j] < dados[servidores[i]].slaBaixo) {
+                    totalDentroSla++
+                }
+            }
+        }
+    }
+    kpi_sla_porcentagem.innerText = `${((totalDentroSla/length) * 100).toFixed(2)}%`
+    kpi_sla_mttr.innerText = `MTTR: ${Math.round(totalMttr/length)} min.`
 }
 
 function mudarAlerta() {
