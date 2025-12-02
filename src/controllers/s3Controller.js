@@ -19,7 +19,9 @@ async function lerArquivo(servidor) {
 
   const arquivosRecentes = todosArquivos
     .filter(a => {
-      if (!a.Key || a.Key.endsWith('/') || a.Size === 0) return false;
+      if (!a.Key || a.Key.endsWith('/') || a.Size === 0) {
+        return false;
+      }
       const nome = a.Key.split('/').pop();
       return nome === `ProcessosUso_${dataHoje}.csv` ||
         nome === `ProcessosUso_${dataOntem}.csv`;
@@ -37,9 +39,13 @@ async function lerArquivo(servidor) {
   const vinteQuatroHorasAtras = Date.now() - 24 * 60 * 60 * 1000;
 
   function parseTimestampBR(str) {
-    if (!str) return null;
+    if (!str) {
+      return null;
+    }
     const partes = str.trim().split(' ');
-    if (partes.length !== 2) return null;
+    if (partes.length !== 2) {
+      return null;
+    }
 
     const [data, hora] = partes;
     const [ano, mes, dia] = data.split('-').map(Number);
@@ -49,6 +55,7 @@ async function lerArquivo(servidor) {
     return isNaN(date.getTime()) ? null : date;
   }
 
+  //Faz a formatação do horario para o padrão brasileiro e converte para float
   function parseFloatBR(str) {
     if (!str) return 0;
     const limpo = str.toString().trim().replace('.', '').replace(',', '.');
@@ -59,8 +66,8 @@ async function lerArquivo(servidor) {
 
   for (const arquivo of arquivosRecentes) {
     const texto = await baixarArquivo(bucket, arquivo.Key);
-    const linhas = parseCSV(texto); 
-    
+    const linhas = parseCSV(texto);
+
     console.log("=== DEBUG PRIMEIRAS 3 LINHAS DO CSV ===");
     linhas.slice(0, 3).forEach((l, i) => {
       console.log(`Linha ${i}:`, l);
@@ -123,6 +130,7 @@ async function listarArquivos(bucket, prefix) {
   return todos;
 }
 
+//baixa o arquivo do S3 e retorna o conteúdo como string
 async function baixarArquivo(bucket, key) {
   const { Body } = await s3.getObject({ Bucket: bucket, Key: key }).promise();
   return Body.toString('utf-8').trim();
@@ -145,14 +153,18 @@ function parseCSV(texto) {
     for (let j = 0; j < cabecalho.length; j++) {
       const valor = colunas[j].replace(/^"|"$/g, '').trim();
       registro[cabecalho[j]] = valor;
-      if (valor) temDados = true;
+      if (valor) {
+        temDados = true;
+      }
     }
-    if (temDados && registro.NOME) dados.push(registro);
+    if (temDados && registro.NOME) {
+      dados.push(registro);
+    }
   }
   return dados;
 }
 
-//Trata linhas CSV com campos entre aspas e ponto-e-vírgula
+//faz todo o trabalho de tratamento de cada linha CSV com ; e aspas
 function parseLinhaCSV(linha) {
   const valores = [];
   let atual = '';
@@ -171,6 +183,7 @@ function parseLinhaCSV(linha) {
   return valores;
 }
 
+//pega a hora formatada HH:00 de uma linha
 function extrairHora(linha) {
   const colunas = Object.keys(linha);
   const colunaTempo = colunas.find(c => /TIMESTAMP|DATA|HORA/i.test(c));
@@ -180,6 +193,7 @@ function extrairHora(linha) {
   return match ? match[1].padStart(2, '0') + ':00' : null;
 }
 
+//prepara o resultado final para o dashboard
 function montarResultadoDashboard(memoriaMap, horaMap) {
   //Top 5 processos que mais consumiram memória
   const top5 = [...memoriaMap.entries()]
