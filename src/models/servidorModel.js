@@ -1164,7 +1164,7 @@ const AWS = require("aws-sdk");
 async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
     console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
 
-    const empresaPath = nomeEmpresa || "Empresa_Teste";
+    const empresaPath = nomeEmpresa 
     const servidor = nomeServidor
     const dataHoje = new Date();
 
@@ -1173,6 +1173,14 @@ async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
     const mesP = mes || (dataHoje.getMonth() + 1);
     const mesFormatado = String(mesP).padStart(2, '0');
 
+
+    const dataAtc = new Date();
+    const dia = ('0' + dataAtc.getDate()).slice(-2);
+    const mes = ('0' + (dataAtc.getMonth() + 1)).slice(-2);
+    const ano = dataAtc.getFullYear();
+    const dataFormatada = `${this.ano}-${this.mes}`;
+
+
     let nomeArquivo = "";
 
 
@@ -1180,7 +1188,7 @@ async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
         nomeArquivo = `anual_${anoP}.json`;
     } else {
 
-        nomeArquivo = `mensal_${anoP}-${mesFormatado}.json`;
+        nomeArquivo = `mensal_${dataFormatada}.json`;
     }
 
     const path = `${empresaPath}/${servidor}/dadosDashAlertas/${nomeArquivo}`;
