@@ -1175,10 +1175,9 @@ async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
 
 
     const dataAtc = new Date();
-    const dia = ('0' + dataAtc.getDate()).slice(-2);
-    const mes = ('0' + (dataAtc.getMonth() + 1)).slice(-2);
-    const ano = dataAtc.getFullYear();
-    const dataFormatada = `${this.ano}-${this.mes}`;
+    const mesT = ('0' + (dataAtc.getMonth() + 1)).slice(-2);
+    const anoT = dataAtc.getFullYear();
+    const dataFormatada = `${anoT}-${mesT}`;
 
 
     let nomeArquivo = "";
