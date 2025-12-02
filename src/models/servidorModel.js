@@ -1161,10 +1161,12 @@ async function pegarPrevisao(servidorId, periodo) {
 // Tentativa pegar dados s3
 
 const AWS = require("aws-sdk");
-async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
+async function pegarJsonDoS3(servidorId, nomeServidor, tipo, ano, mes) {
     console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
 
-    const empresaPath = nomeEmpresa 
+    const dadosServidor = await paramsNomes(servidorId);
+    const empresa = dadosServidor[0].nome_empresa;
+
     const servidor = nomeServidor
     const dataHoje = new Date();
 
@@ -1190,7 +1192,7 @@ async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
         nomeArquivo = `mensal_${dataFormatada}.json`;
     }
 
-    const path = `${empresaPath}/${servidor}/dadosDashAlertas/${nomeArquivo}`;
+    const path = `${empresa}/${servidor}/dadosDashAlertas/${nomeArquivo}`;
 
     const s3 = new AWS.S3({
         region: "us-east-1"
