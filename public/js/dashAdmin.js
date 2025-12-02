@@ -28,12 +28,17 @@ async function dashAdmin() {
     kpi = document.getElementById("kpi_sla")
     alerta_sla = select.value
 
+    selectAno = document.getElementById("ano_periodo")
+    selectMes = document.getElementById("mes_periodo")
+
     try {
         [incidentes] = await Promise.all([
             fetch('/servidores/listarIncidentes', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ idempresa: sessionStorage.ID_EMPRESA })
+                body: JSON.stringify({ 
+                  idempresa: sessionStorage.ID_EMPRESA
+                })
             }).then(res => res.json())
         ]) 
         console.log(incidentes)
