@@ -1164,8 +1164,6 @@ const AWS = require("aws-sdk");
 async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
     console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
 
-    const dadosServidor = await paramsNomes(servidorId);
-
     const empresaPath = nomeEmpresa 
     const servidor = nomeServidor
     const dataHoje = new Date();
