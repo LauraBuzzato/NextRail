@@ -9,14 +9,13 @@ async function lerArquivo(servidor) {
   const prefixo = `ViaMobilidade/${servidor}/processos/`;
   const todosArquivos = await listarArquivos(bucket, prefixo);
 
-  // === 1. Filtra apenas os arquivos de hoje e ontem pelo nome ===
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
   const ontem = new Date(hoje);
   ontem.setDate(hoje.getDate() - 1);
 
-  const dataHoje = hoje.toISOString().slice(0, 10);    // 2025-12-02
-  const dataOntem = ontem.toISOString().slice(0, 10);  // 2025-12-01
+  const dataHoje = hoje.toISOString().slice(0, 10);
+  const dataOntem = ontem.toISOString().slice(0, 10);
 
   const arquivosRecentes = todosArquivos
     .filter(a => {
@@ -33,12 +32,10 @@ async function lerArquivo(servidor) {
     throw new Error("Nenhum arquivo encontrado nas últimas 24 horas");
   }
 
-  // === 2. Processa apenas os arquivos filtrados ===
   const usoMaximoMemoriaPorProcesso = new Map();
   const processosPorHora = new Map();
   const vinteQuatroHorasAtras = Date.now() - 24 * 60 * 60 * 1000;
 
-  // Função segura para converter seu timestamp brasileiro
   function parseTimestampBR(str) {
     if (!str) return null;
     const partes = str.trim().split(' ');
@@ -48,12 +45,10 @@ async function lerArquivo(servidor) {
     const [ano, mes, dia] = data.split('-').map(Number);
     const [h, m, s] = hora.split(':').map(Number);
 
-    // Cria a data manualmente (nunca falha)
     const date = new Date(ano, mes - 1, dia, h, m, s || 0);
     return isNaN(date.getTime()) ? null : date;
   }
 
-  // Função para converter 995,1 → 995.1
   function parseFloatBR(str) {
     if (!str) return 0;
     const limpo = str.toString().trim().replace('.', '').replace(',', '.');
@@ -64,9 +59,8 @@ async function lerArquivo(servidor) {
 
   for (const arquivo of arquivosRecentes) {
     const texto = await baixarArquivo(bucket, arquivo.Key);
-    const linhas = parseCSV(texto); // seu parseCSV já separa por ;
-
-    // ADICIONE ESTE DEBUG (só temporário)
+    const linhas = parseCSV(texto); 
+    
     console.log("=== DEBUG PRIMEIRAS 3 LINHAS DO CSV ===");
     linhas.slice(0, 3).forEach((l, i) => {
       console.log(`Linha ${i}:`, l);
@@ -75,9 +69,8 @@ async function lerArquivo(servidor) {
       console.log("Date result:", new Date(l.timestamp?.trim().replace(' ', 'T')));
     });
     console.log("=== FIM DEBUG ====");
-    
+
     for (const linha of linhas) {
-      // ← AQUI ESTAVA O PROBLEMA: colunas em MAIÚSCULO no CSV!
       const tsRaw = linha.TIMESTAMP || linha.timestamp || linha.Timestamp;
       const nomeRaw = linha.NOME || linha.Nome || linha.nome;
       const memoriaRaw = linha["USO_MEMORIA (MB)"] || linha["USO_MEMORIA_MB"];
