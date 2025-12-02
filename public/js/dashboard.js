@@ -59,7 +59,7 @@ function dash_analista() {
         document.getElementById("nome-servidor-titulo").innerText = nomeServidor;
     }
 
-    var caminho = `/servidores/dados?nomeServer=${nomeServidor}&tipo=${periodoSelecionado}`;
+    var caminho = `35.175.6.79:3333/servidores/dados?nomeServer=${nomeServidor}&tipo=${periodoSelecionado}`;
 
     console.log(`Buscando dados (${periodoSelecionado}) do S3 em:`, caminho);
 
