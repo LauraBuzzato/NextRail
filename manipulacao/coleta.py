@@ -20,7 +20,7 @@ def get_daily_s3_key():
 
 load_dotenv(dotenv_path=".env.dev")
 
-BUCKET_NAME = "raw-nextrail-teste"
+BUCKET_NAME = "nextrail-raw-log"
 
 
 s3 = boto3.client(

@@ -243,6 +243,32 @@ function processarDadosParaPrevisao(dadosReais, periodo) {
     };
 }
 
+function calcularCrescimentoLatencia(dados) {
+    if (!dados.latencia || dados.latencia.length < 4) {
+        return { crescimento: 0, tendencia: "estavel", inicio: 0, fim: 0 };
+    }
+    
+    const primeiroPonto = dados.latencia[1];
+    const ultimoPonto = dados.latencia[3];   
+    
+    let crescimentoPercentual = 0;
+    let tendencia = "estavel";
+    
+    if (primeiroPonto > 0) {
+        crescimentoPercentual = ((ultimoPonto - primeiroPonto) / primeiroPonto) * 100;
+        crescimentoPercentual = Math.round(crescimentoPercentual * 10) / 10;
+        tendencia = crescimentoPercentual > 2 ? "crescendo" : 
+                    crescimentoPercentual < -2 ? "decrescendo" : "estavel";
+    }
+    
+    return {
+        crescimento: crescimentoPercentual,
+        tendencia: tendencia,
+        inicio: primeiroPonto,
+        fim: ultimoPonto
+    };
+}
+
 function calcularPrevisaoTendencia(dadosHistoricos, numPrevisoes) {
     if (dadosHistoricos.length < 2) {
         return Array(numPrevisoes).fill(dadosHistoricos[0] || 0);
@@ -1072,29 +1098,16 @@ function atualizarKPIsGerais(dados) {
     const periodo = periodoSelect.value;
     const periodoTexto = periodo === "mensal" ? "Mensal" : "Semanal";
     
-    const hoje = new Date();
-    const dataInicio = new Date(hoje);
-    const dataFim = new Date(hoje);
+    const datasLatencia = obterDatasLatencia(periodo);
     
-    if (periodo === "semanal") {
-        dataInicio.setDate(hoje.getDate() - 7);
-        dataFim.setDate(hoje.getDate() + 14);
-    } else {
-        dataInicio.setDate(hoje.getDate() - 30);
-        dataFim.setDate(hoje.getDate() + 60);
-    }
+    const crescimentoLatencia = calcularCrescimentoLatencia(dados);
     
-    const dataInicioStr = formatarData(dataInicio);
-    const dataFimStr = formatarData(dataFim);
-    
- 
     const mediasPrevisoes = {
         cpu: dados.cpu ? (dados.cpu[2] + dados.cpu[3]) / 2 : 0,
         ram: dados.ram ? (dados.ram[2] + dados.ram[3]) / 2 : 0,
         disco: dados.disco ? (dados.disco[2] + dados.disco[3]) / 2 : 0
     };
     
-
     const valoresAtuais = {
         cpu: dados.cpu ? dados.cpu[1] : 0,
         ram: dados.ram ? dados.ram[1] : 0,
@@ -1137,7 +1150,7 @@ function atualizarKPIsGerais(dados) {
     });
     
     const mediaGeral = contador > 0 ? somaTotal / contador : 0;
- 
+    
     const maiorComponentePrevisao = Object.keys(mediasPrevisoes).reduce((a, b) => 
         mediasPrevisoes[a] > mediasPrevisoes[b] ? a : b
     );
@@ -1153,7 +1166,8 @@ function atualizarKPIsGerais(dados) {
     const corMedia = determinarCorPorMetrica(mediaGeral, 'cpu');
     const corMaiorComponente = determinarCorPorMetrica(maiorValorPrevisao, maiorComponentePrevisao);
     const corTextoMaiorComponente = coresComponentes[maiorComponentePrevisao];
-
+    const corCrescimentoLatencia = getCorTendencia(crescimentoLatencia.tendencia);
+    
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI">
             <h2>Uso Médio Geral ${periodoTexto}</h2>
@@ -1169,17 +1183,23 @@ function atualizarKPIsGerais(dados) {
             <p class="tendencia" style="color:${corMaiorComponente}">
                 ${maiorValorPrevisao.toFixed(1)}%
             </p>
-            <p class="descricao-kpi" style="font-size: 12px; margin-top: 5px;"></p>
+            <p class="descricao-kpi" style="font-size: 12px; margin-top: 5px;">
+                Previsão de pico
+            </p>
         </div>
         <div class="KPI">
-            <h2>Tendência Geral Projetada</h2>
-            <p class="descricao-kpi">${dataInicioStr} → ${dataFimStr}</p>
-            <p class="valor-kpi" style="color:${getCorTendencia(tendenciaMedia)}">
-                ${crescimentoMedio > 0 ? '+' : ''}${crescimentoMedio.toFixed(1)}%
+            <h2>Taxa de Crescimento da Latência</h2>
+            <p class="descricao-kpi">${datasLatencia.inicio} → ${datasLatencia.fim}</p>
+            <p class="valor-kpi" style="color:${corCrescimentoLatencia}">
+                ${crescimentoLatencia.crescimento > 0 ? '+' : ''}${crescimentoLatencia.crescimento.toFixed(1)}%
             </p>
-            <p class="tendencia" style="color:${getCorTendencia(tendenciaMedia)}">
-                ${tendenciaMedia === "crescendo" ? "Crescendo" : 
-                  tendenciaMedia === "decrescendo" ? "Decrescendo" : "Estável"}
+            <p class="tendencia" style="color:${corCrescimentoLatencia}">
+                ${getIconeTendencia(crescimentoLatencia.tendencia) || ''} 
+                ${crescimentoLatencia.tendencia === "crescendo" ? "Crescendo" : 
+                  crescimentoLatencia.tendencia === "decrescendo" ? "Decrescendo" : "Estável"}
+            </p>
+            <p class="descricao-kpi" style="font-size: 12px; margin-top: 5px;">
+                ${crescimentoLatencia.inicio.toFixed(1)}ms → ${crescimentoLatencia.fim.toFixed(1)}ms
             </p>
         </div>
         <div class="KPI">
@@ -1251,6 +1271,35 @@ function formatarData(data) {
     const mes = String(data.getMonth() + 1).padStart(2, '0');
     const ano = data.getFullYear();
     return `${dia}/${mes}/${ano}`;
+}
+
+function obterDatasLatencia(periodo) {
+    const hoje = new Date();
+    
+    if (periodo === "semanal") {
+        const dataAtual = new Date(hoje);
+        const dataProximaSemana = new Date(hoje);
+        dataProximaSemana.setDate(hoje.getDate() + 7);
+        const dataSemanaMais2 = new Date(hoje);
+        dataSemanaMais2.setDate(hoje.getDate() + 14);
+    
+        return {
+            inicio: formatarData(dataAtual),     
+            fim: formatarData(dataSemanaMais2)   
+        };
+    } else {
+        // Para período mensal
+        const dataAtual = new Date(hoje);
+        const dataProximoMes = new Date(hoje);
+        dataProximoMes.setDate(hoje.getDate() + 30);
+        const dataMesMais2 = new Date(hoje);
+        dataMesMais2.setDate(hoje.getDate() + 60);
+        
+        return {
+            inicio: formatarData(dataAtual),      
+            fim: formatarData(dataMesMais2)      
+        };
+    }
 }
 
 function gerarLabelsAlertas(periodo, historico, previsao) {
