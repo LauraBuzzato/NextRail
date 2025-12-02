@@ -921,6 +921,8 @@ async function kpi_suporte(componente) {
 
     } catch (error) {
         console.error('Erro ao criar gráfico ram:', error);
+    } finally {
+        setTimeout(() => kpi_suporte(componente), 130000);
     }
 }
     if (componente == 'cpu') {
@@ -1056,6 +1058,8 @@ async function kpi_suporte(componente) {
 
     } catch (error) {
         console.error('Erro ao criar gráfico cpu:', error);
+    } finally {
+        setTimeout(() => kpi_suporte(componente), 130000);
     }
 }
     if (componente == 'disco') {
