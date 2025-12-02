@@ -1183,7 +1183,7 @@ async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
         nomeArquivo = `mensal_${anoP}-${mesFormatado}.json`;
     }
 
-    const path = `dadosDashAlertas/${empresaPath}/${servidor}/${nomeArquivo}`;
+    const path = `${empresaPath}/${servidor}/dadosDashAlertas/${nomeArquivo}`;
 
     const s3 = new AWS.S3({
         region: "us-east-1"
