@@ -2,7 +2,7 @@ var database = require("../database/config");
 require("dotenv").config({ path: ".env.dev" });
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 
-const BUCKET = process.env.S3_BUCKET || 'client-nextrail-teste';
+const BUCKET = process.env.S3_BUCKET;
 
 // pega credenciais do env.dev
 const s3 = new S3Client({

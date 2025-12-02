@@ -468,7 +468,7 @@ async function pegarUsoTempoReal(req, res) {
         return res.status(200).json(resultado);
 
     } catch (erro) {
-        console.error("Erro no pegarUso Controller:", erro);
+        console.error("Erro no pegarUsoTempoReal Controller:", erro);
 
         return res.status(500).json({
             erro: "Erro ao obter dados de uso",
