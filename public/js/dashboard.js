@@ -52,10 +52,10 @@ function dash_analista() {
     Chart.defaults.font.weight = 'bold';
 
     var nomeServidor = localStorage.NOME_SERVIDOR;
-    var nomeEmpresa = localStorage.NOME_EMPRESA;
+    var nomeEmpresa = sessionStorage.NOME_EMPRESA;
     
     if (!nomeServidor || nomeServidor === "undefined") {
-        nomeServidor = "Servidor01";
+        nomeServidor = "batata";
     }
 
     if(document.getElementById("nome-servidor-titulo")) {
@@ -63,7 +63,7 @@ function dash_analista() {
     }
 
 
-    var caminho = `http://35.175.6.79:3333/servidores/dados?nomeServer=${nomeServidor}&tipo=${periodoSelecionado}`;
+    var caminho = `servidores/dados?nomeEmpresa=${nomeEmpresa}&nomeServer=${nomeServidor}&tipo=${periodoSelecionado}`;
 
     console.log(`Buscando dados (${periodoSelecionado}) do S3 em:`, caminho);
 

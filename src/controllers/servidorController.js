@@ -561,7 +561,7 @@ function pegarPrevisao(req, res) {
 
 
 async function listarDadosAlertas(req, res) {
-    var {nomeEmpresa,nomeServer, tipo, ano, mes } = req.query;
+    var {nomeEmpresa, nomeServer, tipo, ano, mes } = req.query;
     console.log("noem servidor",nomeServer);
 
     try {
