@@ -950,7 +950,7 @@ function normalizarValor(valor) {
 }
 
 function calcularMedia(valores) {
-    if (!valores.length) return 0;
+    if (!valores || !valores.length) return 0;
 
     let soma = 0;
     for (let i = 0; i < valores.length; i++) {
@@ -960,42 +960,6 @@ function calcularMedia(valores) {
     return soma / valores.length;
 }
 
-// function calcularVariancia(valores) {
-//     if (!valores.length) return 0;
-
-//     const media = calcularMedia(valores);
-
-//     let soma = 0;
-//     for (let i = 0; i < valores.length; i++) {
-//         const valor = valores[i] - media;
-//         soma += valor * valor;
-//     }
-
-//     const variancia = soma / valores.length;
-//     return Math.sqrt(variancia);
-// }
-
-function calcularDesvioPadrao(valores) {
-    if (!valores.length) return 0;
-
-    const media = calcularMedia(valores);
-    let soma = 0;
-
-    for (let i = 0; i < valores.length; i++) {
-        soma += Math.pow(valores[i] - media, 2);
-    }
-
-    return Math.sqrt(soma / valores.length);
-}
-
-
-function calcularTaxaVariacao(valores) {
-    const media = calcularMedia(valores);
-    if (media === 0) return 0;
-
-    const desvio = calcularDesvioPadrao(valores);
-    return (desvio / media) * 100;
-}
 
 
 
@@ -1063,61 +1027,45 @@ async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
 
     const registros = await lerArquivoS3(BUCKET, key);
 
-    let valores = [];
+    let todosValores = [];
+    let grupos = {};
 
-    const taxaVariacao = calcularTaxaVariacao(valores);
-
-    // --- MENSAL → agrupar por dia ---
-    if (tipo === "mensal") {
-        let dias = {};
-        for (let i = 0; i < registros.length; i++) {
-            const dia = registros[i].timestamp.split(" ")[0];
-            const valor = normalizarValor(registros[i][campo]);
-            if (!isFinite(valor)) continue;
-
-            if (!dias[dia]) dias[dia] = [];
-            dias[dia].push(valor);
-        }
-
-        let mediasDiarias = [];
-        for (let dia in dias) {
-            mediasDiarias.push({
-                dia: dia,
-                media: calcularMedia(dias[dia])
-            });
-        }
-        return {
-            mediaMensal: calcularMedia(valores),
-            taxaVariacao: taxaVariacao,
-            mediasDiarias: mediasDiarias
-        };
-
-    }
-
-    let meses = {};
     for (let i = 0; i < registros.length; i++) {
-        const mesReg = Number(registros[i].timestamp.substring(5, 7));
         const valor = normalizarValor(registros[i][campo]);
-        if (!isFinite(valor)) continue;
+        if (!Number.isFinite(valor)) continue;
 
-        if (!meses[mesReg]) meses[mesReg] = [];
-        meses[mesReg].push(valor);
+        todosValores.push(valor);
+
+        let chave;
+        if (tipo === "mensal") {
+            chave = registros[i].timestamp.split(" ")[0];
+        } else {
+            chave = Number(registros[i].timestamp.substring(5, 7));
+        }
+
+        if (!grupos[chave]) grupos[chave] = [];
+        grupos[chave].push(valor);
     }
 
-    let mediasMensais = [];
-    for (let m in meses) {
-        mediasMensais.push({
-            mes: Number(m),
-            media: calcularMedia(meses[m])
+    let mediasAgrupadas = [];
+    for (let chave in grupos) {
+        mediasAgrupadas.push({
+            [tipo === "mensal" ? "dia" : "mes"]: tipo === "mensal" ? chave : Number(chave),
+            media: calcularMedia(grupos[chave])
         });
     }
 
-    return {
-        mediaAnual: calcularMedia(valores),
-        taxaVariacao: taxaVariacao,
-        mediasMensais: mediasMensais
-    };
+    if (tipo === "mensal") {
+        return {
+            mediaMensal: calcularMedia(todosValores),
+            mediasDiarias: mediasAgrupadas
+        };
+    }
 
+    return {
+        mediaAnual: calcularMedia(todosValores),
+        mediasMensais: mediasAgrupadas
+    };
 }
 
 async function pegarPrevisao(servidorId, periodo) {

@@ -118,14 +118,12 @@ async function mudarVisualizacao() {
             .then(r => r.json());
 
         let mediaUso;
-        let taxaVariacao;
         let listaPeriodos;
 
         if (!dadosUso || (!dadosUso.mediasDiarias && !dadosUso.mediasMensais)) {
             alert(`O servidor ${localStorage.NOME_SERVIDOR} ainda não possui registros de uso para esse período.`);
 
             mediaUso = 0;
-            taxaVariacao = 0;
 
             if (periodo === "Anual") {
                 listaPeriodos = [];
@@ -143,7 +141,6 @@ async function mudarVisualizacao() {
             }
         } else {
             mediaUso = periodo === "Anual" ? dadosUso.mediaAnual : dadosUso.mediaMensal;
-            taxaVariacao = dadosUso.taxaVariacao;
             listaPeriodos = periodo === "Anual" ? dadosUso.mediasMensais : dadosUso.mediasDiarias;
         }
 
