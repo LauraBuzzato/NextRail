@@ -52,6 +52,7 @@ function dash_analista() {
     Chart.defaults.font.weight = 'bold';
 
     var nomeServidor = localStorage.NOME_SERVIDOR;
+    
     if (!nomeServidor || nomeServidor === "undefined") {
         nomeServidor = "Servidor01";
     }

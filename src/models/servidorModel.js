@@ -1183,17 +1183,7 @@ function buscarComparacaoMes(idServidor) {
     return database.executar(instrucao);
 }
 
-function buscarEmpresaPorNomeServidor(nomeServidor) {
-    var instrucaoSql = `
-        SELECT e.razao_social as nome_empresa
-        FROM servidor s
-        JOIN empresa e ON s.fk_empresa = e.id
-        WHERE s.nome = '${nomeServidor}'
-        limit  1;
-    `;
-    console.log("Buscando empresa do servidor: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
-}
+
 
 module.exports = {
     listarEmpresas,
@@ -1226,6 +1216,5 @@ module.exports = {
     pegarPrevisao,
     pegarJsonDoS3,
     buscarSla,
-    buscarComparacaoMes,
-    buscarEmpresaPorNomeServidor
+    buscarComparacaoMes
 };

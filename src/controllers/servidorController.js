@@ -561,11 +561,11 @@ function pegarPrevisao(req, res) {
 
 
 async function listarDadosAlertas(req, res) {
-    var { nomeServer, tipo, ano, mes } = req.query;
+    var {nomeServer, tipo, ano, mes } = req.query;
     console.log("noem servidor",nomeServer);
 
     try {
-        const nomeEmpresa = sessionStorage.NOME_EMPRESA;
+        const nomeEmpresa = localStorage.NOME_EMPRESA;
 
         const dados = await servidorModel.pegarJsonDoS3(nomeEmpresa, nomeServer, tipo, ano, mes);
 
