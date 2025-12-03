@@ -1,5 +1,6 @@
 let meuChart = null;
 let meuChart2 = null;
+let dadosUso = null;
 function adicionarNomeServidor() {
     nomeServidor.innerHTML = localStorage.NOME_SERVIDOR
 }
@@ -10,6 +11,17 @@ function mostrarLoader() {
 
 function esconderLoader() {
     document.getElementById("loader").style.display = "none";
+}
+
+async function gerenciarTrocaPeriodo() {
+
+    await anularFuncao(); 
+
+    mudarVisualizacao(); 
+}
+
+function anularFuncao(){
+    dadosUso=null
 }
 
 
@@ -29,10 +41,24 @@ async function mudarVisualizacao() {
         const nomeComponente = option.text;
         const periodo = selectPeriodo.value;
 
+        const mapaChaves = {
+            "Cpu": "cpu",
+            "Ram": "ram",
+            "Disco": "disco"
+        };
+        
+        const mapaTimeline = {
+            "Cpu": "mediaCpu",
+            "Ram": "mediaRam",
+            "Disco": "mediaDisco"
+        };
+
+        const chaveDados = mapaChaves[nomeComponente] || "cpu";
+        const chaveGrafico = mapaTimeline[nomeComponente] || "mediaCpu";
+
         nomePeriodo.innerHTML = periodo;
 
         const palavraAntesComponente = nomeComponente === "Disco" ? "do" : "da";
-        const corGraficoUsoComponente = nomeComponente === "Disco" ? "do" : "da";
 
         const periodoParaTexto = periodo === "Anual" ? "anuais" : "mensais";
         const textoFreqAnterior = periodo === "Anual" ? "ano" : "mês";
@@ -114,41 +140,40 @@ async function mudarVisualizacao() {
 
         const diaAtual = hoje.getDate();
 
-        const dadosUso = await fetch(`/servidores/uso?empresa=${sessionStorage.NOME_EMPRESA}&servidor=${localStorage.NOME_SERVIDOR}&tipo=${periodo.toLowerCase()}&ano=${anoAtual}&mes=${mesAtual}&componente=${componente}`)
-            .then(r => r.json());
+        if(dadosUso==null){
 
+        dadosUso = await fetch(`/servidores/uso?empresa=${sessionStorage.NOME_EMPRESA}&servidor=${localStorage.NOME_SERVIDOR}&tipo=${periodo.toLowerCase()}&ano=${anoAtual}&mes=${mesAtual}&componente=${componente}`)
+            .then(r => r.json());
+        }
         let mediaUso;
         let listaPeriodos;
 
-        if (!dadosUso || (!dadosUso.mediasDiarias && !dadosUso.mediasMensais)) {
+        if (!dadosUso || !dadosUso.mediasGerais || !dadosUso.timeline) {
             alert(`O servidor ${localStorage.NOME_SERVIDOR} ainda não possui registros de uso para esse período.`);
-
+            
             mediaUso = 0;
+            listaPeriodos = [];
 
             if (periodo === "Anual") {
-                listaPeriodos = [];
                 for (let i = 1; i <= mesAtual; i++) {
-                    listaPeriodos.push({ mes: i, media: 0 });
+                    listaPeriodos.push({ mes: i, [chaveGrafico]: 0 });
                 }
             } else {
-                listaPeriodos = [];
                 for (let i = 1; i <= diaAtual; i++) {
                     listaPeriodos.push({
                         dia: `${anoAtual}-${mesAtual}-${String(i).padStart(2, '0')}`,
-                        media: 0
+                        [chaveGrafico]: 0
                     });
                 }
             }
         } else {
-            mediaUso = periodo === "Anual" ? dadosUso.mediaAnual : dadosUso.mediaMensal;
-            listaPeriodos = periodo === "Anual" ? dadosUso.mediasMensais : dadosUso.mediasDiarias;
+            mediaUso = dadosUso.mediasGerais[chaveDados];
+            listaPeriodos = dadosUso.timeline;
         }
-
 
         let corUsoMedio = "green";
 
         if (!isNaN(mediaUso)) {
-
             for (let i = gravidades.length - 1; i >= 0; i--) {
                 if (gravidades[i].valor <= mediaUso) {
                     if (gravidades[i].nome_gravidade === "Baixo") corUsoMedio = "yellow";
@@ -159,22 +184,19 @@ async function mudarVisualizacao() {
             }
         }
 
-        corGrafico = 'rgba(147, 112, 219, 0.8)'
-        corGraficoTransparente = 'rgba(147, 112, 219, 0.2)'
+        let corGrafico, corGraficoTransparente;
 
         if (nomeComponente == 'Cpu') {
-            corGrafico = 'rgba(147, 112, 219, 0.8)'
-            corGraficoTransparente = 'rgba(147, 112, 219, 0.2)'
+            corGrafico = 'rgba(147, 112, 219, 0.8)';
+            corGraficoTransparente = 'rgba(147, 112, 219, 0.2)';
         } else if (nomeComponente == 'Ram') {
-            corGrafico = 'rgba(0, 191, 255, 0.8)'
-            corGraficoTransparente = 'rgba(0, 191, 255, 0.2)'
+            corGrafico = 'rgba(0, 191, 255, 0.8)';
+            corGraficoTransparente = 'rgba(0, 191, 255, 0.2)';
         } else {
-            corGrafico = 'rgba(255, 137, 176, 0.8)'
-            corGraficoTransparente = 'rgba(255, 137, 176, 0.2)'
+            corGrafico = 'rgba(255, 137, 176, 0.8)';
+            corGraficoTransparente = 'rgba(255, 137, 176, 0.2)';
         }
 
-
-        // --- Renderizar o HTML ---
         containerGeral.innerHTML = `
             <div class="container-KPIS">
             <div class="KPI">
@@ -207,7 +229,6 @@ async function mudarVisualizacao() {
                     <h2>Variação do uso</h2>
                     <canvas id="varicaoUso" width="1500" height="400"></canvas>
                 </div>
-                
             </div>
         `;
 
@@ -221,16 +242,14 @@ async function mudarVisualizacao() {
         } else {
             for (let i = 0; i < listaPeriodos.length; i++) {
                 const item = listaPeriodos[i];
-
                 const partes = item.dia.split('-');
-
                 labelPeriodo.push(`${partes[2]}/${partes[1]}`);
             }
         }
 
         let valoresGrafico = [];
         for (let i = 0; i < listaPeriodos.length; i++) {
-            valoresGrafico.push(listaPeriodos[i].media);
+            valoresGrafico.push(listaPeriodos[i][chaveGrafico]);
         }
 
         const ctx2 = document.getElementById("varicaoUso");
@@ -293,34 +312,23 @@ async function mudarVisualizacao() {
                         ticks: {
                             color: '#fff',
                             maxRotation: 0,
-                            font: {
-                                size: 14
-                            }
+                            font: { size: 14 }
                         },
-                        grid: {
-                            color: 'rgba(255,255,255,0.1)'
-                        }
+                        grid: { color: 'rgba(255,255,255,0.1)' }
                     },
                     y: {
                         beginAtZero: true,
                         max: 100,
                         ticks: {
                             color: '#fff',
-                            callback: function (value) {
-                                return value + '%';
-                            },
-                            font: {
-                                size: 14
-                            }
+                            callback: function (value) { return value + '%'; },
+                            font: { size: 14 }
                         },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        }
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
                     }
                 }
             }
         });
-
 
         const alertas = await fetch('/servidores/buscarAlertasComponenteEspecifico', {
             method: "POST",
@@ -347,11 +355,9 @@ async function mudarVisualizacao() {
             pai.appendChild(msg);
         } else {
             let dataAlertas = [];
-
             for (let i = 0; i < alertas.length; i++) {
                 dataAlertas.push(alertas[i].total_alertas);
             }
-
 
             meuChart = new Chart(ctx, {
                 type: "bar",
@@ -377,6 +383,7 @@ async function mudarVisualizacao() {
         esconderLoader();
         console.error("Erro na visualização:", erro);
     }
+
 }
 
 

@@ -1017,9 +1017,13 @@ async function pegarUsoTempoReal(empresa, servidor) {
 }
 
 
-async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
-    const campo = mapComponentes[componente];
-    if (!campo) throw new Error(`Componente inválido (${componente}).`);
+async function pegarUso(empresa, servidor, tipo, ano, mes) {
+
+    const chavesJson = {
+        cpu: "cpu_percent",
+        ram: "memory_percent",
+        disco: "disk_percent"
+    };
 
     let key = tipo === "anual"
         ? `${empresa}/${servidor}/dadosDashComponentes/anual_${ano}.json`
@@ -1027,44 +1031,63 @@ async function pegarUso(empresa, servidor, tipo, ano, mes, componente) {
 
     const registros = await lerArquivoS3(BUCKET, key);
 
-    let todosValores = [];
+
+    let totais = { cpu: [], ram: [], disco: [] };
+    
+
     let grupos = {};
 
     for (let i = 0; i < registros.length; i++) {
-        const valor = normalizarValor(registros[i][campo]);
-        if (!Number.isFinite(valor)) continue;
+        const reg = registros[i];
 
-        todosValores.push(valor);
 
-        let chave;
+        const valCpu = normalizarValor(reg[chavesJson.cpu]);
+        const valRam = normalizarValor(reg[chavesJson.ram]);
+        const valDisco = normalizarValor(reg[chavesJson.disco]);
+
+
+        let chaveTempo;
         if (tipo === "mensal") {
-            chave = registros[i].timestamp.split(" ")[0];
+            chaveTempo = reg.timestamp.split(" ")[0];
         } else {
-            chave = Number(registros[i].timestamp.substring(5, 7));
+            chaveTempo = Number(reg.timestamp.substring(5, 7));
         }
 
-        if (!grupos[chave]) grupos[chave] = [];
-        grupos[chave].push(valor);
+        if (!grupos[chaveTempo]) {
+            grupos[chaveTempo] = { cpu: [], ram: [], disco: [] };
+        }
+
+        if (Number.isFinite(valCpu)) {
+            grupos[chaveTempo].cpu.push(valCpu);
+            totais.cpu.push(valCpu);
+        }
+        if (Number.isFinite(valRam)) {
+            grupos[chaveTempo].ram.push(valRam);
+            totais.ram.push(valRam);
+        }
+        if (Number.isFinite(valDisco)) {
+            grupos[chaveTempo].disco.push(valDisco);
+            totais.disco.push(valDisco);
+        }
     }
 
-    let mediasAgrupadas = [];
+    let timeline = [];
     for (let chave in grupos) {
-        mediasAgrupadas.push({
+        timeline.push({
             [tipo === "mensal" ? "dia" : "mes"]: tipo === "mensal" ? chave : Number(chave),
-            media: calcularMedia(grupos[chave])
+            mediaCpu: calcularMedia(grupos[chave].cpu),
+            mediaRam: calcularMedia(grupos[chave].ram),
+            mediaDisco: calcularMedia(grupos[chave].disco)
         });
     }
 
-    if (tipo === "mensal") {
-        return {
-            mediaMensal: calcularMedia(todosValores),
-            mediasDiarias: mediasAgrupadas
-        };
-    }
-
     return {
-        mediaAnual: calcularMedia(todosValores),
-        mediasMensais: mediasAgrupadas
+        mediasGerais: {
+            cpu: calcularMedia(totais.cpu),
+            ram: calcularMedia(totais.ram),
+            disco: calcularMedia(totais.disco)
+        },
+        timeline: timeline
     };
 }
 
