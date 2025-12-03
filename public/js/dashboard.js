@@ -14,6 +14,7 @@ function dash_analista() {
     var textoFrequencia = periodoSelecionado === "anual" ? "Frequência Anual" : "Frequência Mensal";
 
 
+
     if(document.getElementById("titulo-kpi-total")){
          document.getElementById("titulo-kpi-total").innerText = `Quantidade total de Alertas ${textoPeriodo}`;
     }
@@ -51,6 +52,7 @@ function dash_analista() {
     Chart.defaults.font.weight = 'bold';
 
     var nomeServidor = localStorage.NOME_SERVIDOR;
+    
     if (!nomeServidor || nomeServidor === "undefined") {
         nomeServidor = "Servidor01";
     }
@@ -59,7 +61,8 @@ function dash_analista() {
         document.getElementById("nome-servidor-titulo").innerText = nomeServidor;
     }
 
-    var caminho = `35.175.6.79:3333/servidores/dados?nomeServer=${nomeServidor}&tipo=${periodoSelecionado}`;
+
+    var caminho = `http://35.175.6.79:3333/servidores/dados?nomeServer=${nomeServidor}&tipo=${periodoSelecionado}`;
 
     console.log(`Buscando dados (${periodoSelecionado}) do S3 em:`, caminho);
 

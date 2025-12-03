@@ -1133,7 +1133,7 @@ async function pegarPrevisao(servidorId, periodo) {
 
 const AWS = require("aws-sdk");
 async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
-    console.log("BUCKET_ALERTAS =", process.env.BUCKET_ALERTAS);
+    console.log("BUCKET_ALERTAS =", process.env.S3_BUCKET);
 
     const empresaPath = nomeEmpresa 
     const servidor = nomeServidor
@@ -1168,7 +1168,7 @@ async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
     });
 
     const params = {
-        Bucket: process.env.BUCKET_ALERTAS,
+        Bucket: process.env.S3_BUCKET,
         Key: path
     };
 
@@ -1206,17 +1206,7 @@ function buscarComparacaoMes(idServidor) {
     return database.executar(instrucao);
 }
 
-function buscarEmpresaPorNomeServidor(nomeServidor) {
-    var instrucaoSql = `
-        SELECT e.razao_social as nome_empresa 
-        FROM servidor s 
-        JOIN empresa e ON s.fk_empresa = e.id 
-        WHERE e.razao_social = '${nomeServidor}'
-        limit  1;
-    `;
-    console.log("Buscando empresa do servidor: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
-}
+
 
 module.exports = {
     listarEmpresas,
@@ -1249,6 +1239,5 @@ module.exports = {
     pegarPrevisao,
     pegarJsonDoS3,
     buscarSla,
-    buscarComparacaoMes,
-    buscarEmpresaPorNomeServidor
+    buscarComparacaoMes
 };
