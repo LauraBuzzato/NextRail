@@ -14,6 +14,7 @@ function dash_analista() {
     var textoFrequencia = periodoSelecionado === "anual" ? "Frequência Anual" : "Frequência Mensal";
 
 
+
     if(document.getElementById("titulo-kpi-total")){
          document.getElementById("titulo-kpi-total").innerText = `Quantidade total de Alertas ${textoPeriodo}`;
     }

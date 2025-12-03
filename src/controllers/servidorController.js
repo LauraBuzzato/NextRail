@@ -562,17 +562,16 @@ function pegarPrevisao(req, res) {
 
 async function listarDadosAlertas(req, res) {
     var { nomeServer, tipo, ano, mes } = req.query;
+    console.log("noem servidor",nomeServer);
 
     try {
-
-        const resultadoBanco = await servidorModel.buscarEmpresaPorNomeServidor(nomeServer);
 
         if (resultadoBanco.length === 0) {
             return res.status(404).json({ error: "Servidor não encontrado no banco de dados." });
         }
 
 
-        const nomeEmpresa = resultadoBanco[0].nomeEmpresa;
+        const nomeEmpresa = sessionStorage.NOME_EMPRESA;
 
         const dados = await servidorModel.pegarJsonDoS3(nomeEmpresa, nomeServer, tipo, ano, mes);
 

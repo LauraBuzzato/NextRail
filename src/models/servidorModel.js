@@ -1185,10 +1185,10 @@ function buscarComparacaoMes(idServidor) {
 
 function buscarEmpresaPorNomeServidor(nomeServidor) {
     var instrucaoSql = `
-        SELECT e.razao_social as nome_empresa 
-        FROM servidor s 
-        JOIN empresa e ON s.fk_empresa = e.id 
-        WHERE e.razao_social = '${nomeServidor}'
+        SELECT e.razao_social as nome_empresa
+        FROM servidor s
+        JOIN empresa e ON s.fk_empresa = e.id
+        WHERE s.nome = '${nomeServidor}'
         limit  1;
     `;
     console.log("Buscando empresa do servidor: \n" + instrucaoSql);
