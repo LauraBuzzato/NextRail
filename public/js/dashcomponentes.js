@@ -213,7 +213,7 @@ async function mudarVisualizacao() {
                 </div>
                 <div class="KPI">
                     <h2>Gravidade dos alertas</h2>
-                    <canvas id="alertasComponenteChart" height="170px"></canvas>
+                    <canvas id="alertasComponenteChart" altura="190px"></canvas>
                 </div>
                 <div class="KPI">
                     <h2 class="titulo-kpi arrumarLinha2">Ranking <div class="info-icon teste" data-tooltip="Os servidores classificados entre os três primeiros colocados no ranking de alertas recebem prioridade crítica devido à maior recorrência de eventos de saturação.">
@@ -227,7 +227,7 @@ async function mudarVisualizacao() {
             <div class="container-KPIS-segunda-linha">
                 <div class="GRAFICO-2">
                     <h2>Variação do uso</h2>
-                    <canvas id="varicaoUso" width="1500" height="400"></canvas>
+                    <canvas id="varicaoUso" width="1370" height="400"></canvas>
                 </div>
             </div>
         `;
@@ -350,7 +350,7 @@ async function mudarVisualizacao() {
             msg.classList.add("msg-sem-servidores");
             msg.style.textAlign = "center";
             msg.style.color = "green";
-            msg.style.marginTop = "-95px";
+            msg.style.marginTop = "-155px";
             msg.style.fontSize = "30px";
             pai.appendChild(msg);
         } else {
@@ -372,7 +372,28 @@ async function mudarVisualizacao() {
                 },
                 options: {
                     plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
+                    scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Quantidade alertas',
+                            color: '#fff',
+                            font: { size: 20 }
+                        },
+                        ticks: {
+                            color: '#fff',
+                            font: { size: 18 }
+                        },
+                        grid: { color: '#333' }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#fff',
+                            font: { size: 18 }
+                        }
+                    }
+                }
                 }
             });
         }
