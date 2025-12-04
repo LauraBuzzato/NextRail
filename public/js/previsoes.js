@@ -13,6 +13,14 @@ let metricasAlerta = { cpu: { baixo: 70, medio: 80, alto: 90 }, ram: { baixo: 70
 Chart.defaults.color = "#fff";
 Chart.defaults.font.family = "Poppins";
 
+function mostrarLoader() {
+    document.getElementById("loader").style.display = "flex";
+}
+
+function esconderLoader() {
+    document.getElementById("loader").style.display = "none";
+}
+
 async function buscarDados(url, body) {
     try {
         const response = await fetch(url, {
@@ -219,6 +227,7 @@ function criarBotoesComponentes() {
 }
 
 function toggleVisaoGeral() {
+    mostrarLoader()
     visaoGeralAtiva = !visaoGeralAtiva;
     const btnVisaoGeral = document.getElementById('btnVisaoGeral');
     const botoesComponentes = document.getElementById('botoesComponentes');
@@ -243,10 +252,10 @@ function toggleVisaoGeral() {
     cacheCompleto[periodo] ? usarDadosCache(periodo) : atualizarDashboard();
 }
 
-function usarDadosCache(periodo) {
+async function usarDadosCache(periodo) {
     const dadosAWS = cacheCompleto[periodo];
     if (!dadosAWS) return;
-    
+
     if (visaoGeralAtiva) {
         renderGraficoLinhasMultiplas(dadosAWS);
         renderGraficoLatenciaGeral(dadosAWS);
@@ -256,7 +265,12 @@ function usarDadosCache(periodo) {
         atualizarKPIs(dadosAWS);
         renderGraficoAlertas();
     }
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+
+    esconderLoader();
 }
+
 
 function formatarData(data) {
     const dia = String(data.getDate()).padStart(2, '0');
@@ -303,6 +317,7 @@ function gerarLabelsComDatas(periodo) {
 }
 
 async function atualizarDashboard() {
+    mostrarLoader()
     const periodo = periodoSelect.value;
     limparTodosGraficos();
     await carregarTodasMetricas();
@@ -332,6 +347,8 @@ async function atualizarDashboard() {
     } catch {
         if (!visaoGeralAtiva) document.getElementById("kpisContainer").innerHTML = '<div class="KPI"><p>Dados temporariamente indisponíveis</p></div>';
     }
+
+    esconderLoader()
 }
 
 function renderGraficoLinhaUnica(dados) {
@@ -768,11 +785,13 @@ function iniciarAtualizacaoAutomatica() {
     }, 120000);
 }
 
-function inicializar() {
+async function inicializar() {
+    mostrarLoader()
     criarBotoesComponentes();
     const periodoSelect = document.getElementById("periodoSelect");
     if (periodoSelect) periodoSelect.addEventListener("change", atualizarDashboard);
-    atualizarDashboard();
+    await atualizarDashboard();
+    esconderLoader()
     iniciarAtualizacaoAutomatica();
 }
 

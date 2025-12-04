@@ -1,3 +1,10 @@
+function mostrarLoader() {
+    document.getElementById("loader").style.display = "flex";
+}
+
+function esconderLoader() {
+    document.getElementById("loader").style.display = "none";
+}
 async function carregarDados() {
     console.log("Iniciando carregamento de dados...");
 
@@ -118,6 +125,8 @@ async function carregarDados() {
       console.error('Erro ao montar gráficos:', error);
       document.getElementById('mensagemQtdProcesso').innerText = 'Erro ao carregar dados: ' + error.message;
     }
+
+    esconderLoader()
   }
 
   montarGraficos();

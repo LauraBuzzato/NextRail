@@ -3,7 +3,16 @@ var chartFreq = null;
 var chartComp = null;
 var chartGrav = null;
 
+function mostrarLoader() {
+    document.getElementById("loader").style.display = "flex";
+}
+
+function esconderLoader() {
+    document.getElementById("loader").style.display = "none";
+}
+
 function dash_analista() {
+    mostrarLoader()
     console.log('Executando dash_analista...');
 
     var select = document.getElementById("selectPeriodo");
@@ -568,7 +577,7 @@ function dash_analista() {
     
 
 
-
+            esconderLoader()
 
 
             })
@@ -1201,6 +1210,7 @@ async function kpi_suporte(componente) {
         console.error('Erro ao criar gráfico disco:', error);
     } finally {
         setTimeout(() => kpi_suporte(componente), 190000);
+        esconderLoader()
     }
 }
 }

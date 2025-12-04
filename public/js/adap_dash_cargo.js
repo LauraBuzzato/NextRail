@@ -26,8 +26,17 @@ function habilitarCSSPrincipal() {
   }
 }
 
+function mostrarLoader() {
+    document.getElementById("loader").style.display = "flex";
+}
+
+function esconderLoader() {
+    document.getElementById("loader").style.display = "none";
+}
+
 function inicializarDashboard() {
   console.log("Oi?");
+  mostrarLoader()
   
   sessionStorage.PAGINA_DESEJADA = "./dashboard.html"
   if(sessionStorage.ID_SERVIDOR>=1){

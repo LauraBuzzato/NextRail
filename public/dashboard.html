@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NextRail | Dashboard</title>
-  
-  <!-- CSS Base --> 
+
+  <!-- CSS Base -->
   <link rel="stylesheet" href="./css/menu.css">
   <link rel="stylesheet" href="./css/style.css" id="css-STYLE">
   <link rel="icon" href="./assets/icon/nextrail-logo.jpg">
@@ -18,19 +19,23 @@
 </head>
 
 <body onload="inicializarDashboard()">
-    <div class="menu" id="DIVmenu"></div>
+  <div class="menu" id="DIVmenu"></div>
 
-    <main class="fundo-escuro" id="dashboardMain">
-      <!-- DASHBOARD ANALISTA -->
-      <div class="dashboard-analista" id="div_analista" style="display: none;"></div>
-      
-      <!-- DASHBOARD SUPORTE -->
-      <div class="dashboard-suporte" id="div_suporte" style="display: none;"></div>
-      </div>
-    </main>
+  <main class="fundo-escuro" id="dashboardMain">
+    <!-- DASHBOARD ANALISTA -->
+    <div class="dashboard-analista" id="div_analista" style="display: none;"></div>
+
+    <!-- DASHBOARD SUPORTE -->
+    <div class="dashboard-suporte" id="div_suporte" style="display: none;"></div>
+    <div id="loader" class="loader-overlay" style="display:none;">
+      <div class="loader-spinner"></div>
+      <p>Carregando dados...</p>
+    </div>
+  </main>
 
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script src="./js/script.js"></script>
 </body>
+
 </html>
