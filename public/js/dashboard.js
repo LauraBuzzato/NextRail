@@ -745,6 +745,12 @@ async function kpi_suporte(componente) {
     const alturaGrafico = 370;
     let parametrosJsonTemp;
     let parametrosScriptJsonTemp;
+    const corAlertaBaixo = 'rgb(207, 207, 0)'
+    const corAlertaMedio = 'rgb(255, 140, 0)'
+    const corAlertaAlto = 'rgb(255, 0, 0)'
+    const corAlertaBaixoFundo = 'rgba(207, 207, 0, 0.2)'
+    const corAlertaMedioFundo = 'rgba(255, 140, 0, 0.2)'
+    const corAlertaAltoFundo = 'rgba(255,0,0,0.2)'
 
     try {
     const resposta = await fetch(`/servidores/buscarParametrosDoServidor/${sessionStorage.ID_SERVIDOR}/${componente}`);
@@ -841,8 +847,8 @@ async function kpi_suporte(componente) {
                     {
                         label: 'Alerta baixo',
                         data: Array(tamanhoVetor).fill(parametrosJson[0].valor),
-                        borderColor: 'rgba(255,0,0,1)',
-                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        borderColor: corAlertaBaixo,
+                        backgroundColor: corAlertaBaixoFundo,
                         tension: 0.4,
                         fill: false,
                         pointRadius: 0,
@@ -851,8 +857,8 @@ async function kpi_suporte(componente) {
                     {
                         label: 'Alerta médio',
                         data: Array(tamanhoVetor).fill(parametrosJson[1].valor),
-                        borderColor: 'rgba(255,0,0,1)',
-                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        borderColor: corAlertaMedio,
+                        backgroundColor: corAlertaMedioFundo,
                         tension: 0.4,
                         fill: false,
                         pointRadius: 0,
@@ -861,8 +867,8 @@ async function kpi_suporte(componente) {
                     {
                         label: 'Alerta alto',
                         data: Array(tamanhoVetor).fill(parametrosJson[2].valor),
-                        borderColor: 'rgba(255,0,0,1)',
-                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        borderColor: corAlertaAlto,
+                        backgroundColor: corAlertaAltoFundo,
                         tension: 0.4,
                         fill: false,
                         pointRadius: 0,
@@ -978,8 +984,8 @@ async function kpi_suporte(componente) {
                     {
                         label: 'Alerta baixo',
                         data: Array(tamanhoVetor).fill(parametrosJson[0].valor),
-                        borderColor: 'rgba(255,0,0,1)',
-                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        borderColor: corAlertaBaixo,
+                        backgroundColor: corAlertaBaixoFundo,
                         tension: 0.4,
                         fill: false,
                         pointRadius: 0,
@@ -988,8 +994,8 @@ async function kpi_suporte(componente) {
                     {
                         label: 'Alerta médio',
                         data: Array(tamanhoVetor).fill(parametrosJson[1].valor),
-                        borderColor: 'rgba(255,0,0,1)',
-                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        borderColor: corAlertaMedio,
+                        backgroundColor: corAlertaMedioFundo,
                         tension: 0.4,
                         fill: false,
                         pointRadius: 0,
@@ -998,8 +1004,8 @@ async function kpi_suporte(componente) {
                     {
                         label: 'Alerta alto',
                         data: Array(tamanhoVetor).fill(parametrosJson[2].valor),
-                        borderColor: 'rgba(255,0,0,1)',
-                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        borderColor: corAlertaAlto,
+                        backgroundColor: corAlertaAltoFundo,
                         tension: 0.4,
                         fill: false,
                         pointRadius: 0,
@@ -1107,16 +1113,16 @@ async function kpi_suporte(componente) {
                     {
                         label: 'Disco (%)',
                         data: dadosDisco.toReversed(),
-                        borderColor: 'rgba(251,191,36,1)',
-                        backgroundColor: 'rgba(251,191,36,0.2)',
+                        borderColor: '#ff89b0',
+                        backgroundColor: '#ff89b038',
                         tension: 0.4,
                         fill: true
                     },
                     {
                         label: 'Alerta baixo',
                         data: Array(tamanhoVetor).fill(parametrosJson[0].valor),
-                        borderColor: 'rgba(255,0,0,1)',
-                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        borderColor: corAlertaBaixo,
+                        backgroundColor: corAlertaBaixoFundo,
                         tension: 0.4,
                         fill: false,
                         pointRadius: 0,
@@ -1125,8 +1131,8 @@ async function kpi_suporte(componente) {
                     {
                         label: 'Alerta médio',
                         data: Array(tamanhoVetor).fill(parametrosJson[1].valor),
-                        borderColor: 'rgba(255,0,0,1)',
-                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        borderColor: corAlertaMedio,
+                        backgroundColor: corAlertaMedioFundo,
                         tension: 0.4,
                         fill: false,
                         pointRadius: 0,
@@ -1135,8 +1141,8 @@ async function kpi_suporte(componente) {
                     {
                         label: 'Alerta alto',
                         data: Array(tamanhoVetor).fill(parametrosJson[2].valor),
-                        borderColor: 'rgba(255,0,0,1)',
-                        backgroundColor: 'rgba(255,0,0,0.2)',
+                        borderColor: corAlertaAlto,
+                        backgroundColor: corAlertaAltoFundo,
                         tension: 0.4,
                         fill: false,
                         pointRadius: 0,
