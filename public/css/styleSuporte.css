@@ -234,8 +234,8 @@ body {
 }
 
 .kpi-1, .kpi-2, .kpi-3 {
-  height: 44vh;
-  width: 83%;
+  height: clamp(33%, 34% + 25px, 40%);
+  width: clamp(27vw, 28vw + 22px, 30vw);
   background-color: var(--grafico);
   border-radius: 13px;
   box-shadow: 0 8px 7px #ffffff33
@@ -320,8 +320,8 @@ body {
 
 /* ================== Histórico de alertas ================== */
 .container-tabela-dinamica{
-  height: 90%;
-  width: 75%;
+  height: clamp(33dvh, 34dvh + 45px, 40dvh);
+  width: clamp(65vw, 72vw + 108px, 88vw);
   display: flex; 
   flex-direction: column;
   justify-content: space-evenly;

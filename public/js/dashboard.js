@@ -871,8 +871,8 @@ async function kpi_suporte(componente) {
                 ]
             },
             options: {
-                responsive: false,
-                maintainAspectRatio: false,
+                responsive: true,
+                maintainAspectRatio: true,
                 animation: {
                     duration: 1000,
                     onComplete: function () {
@@ -1008,8 +1008,8 @@ async function kpi_suporte(componente) {
                 ]
             },
             options: {
-                responsive: false,
-                maintainAspectRatio: false,
+                responsive: true,
+                maintainAspectRatio: true,
                 animation: {
                     duration: 1000,
                     onComplete: function () {
@@ -1145,8 +1145,8 @@ async function kpi_suporte(componente) {
                 ]
             },
             options: {
-                responsive: false,
-                maintainAspectRatio: false,
+                responsive: true,
+                maintainAspectRatio: true,
                 animation: {
                     duration: 1000,
                     onComplete: function () {
