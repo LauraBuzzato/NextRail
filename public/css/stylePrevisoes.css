@@ -394,3 +394,79 @@ select:focus {
     border-radius: 50%;
     animation: spin 0.9s infinite linear;
 }
+
+.container-KPIS {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 65px;
+  margin: 1.5% 0 30px;
+}
+
+.KPI {
+  background: #1f1f2e;
+  color: #fff;
+  border-radius: 12px;
+  text-align: center;
+  padding: 18px;
+  width: 300px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 7px #ffffff33;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #2f323a;
+}
+
+.KPI h2 {
+  font-size: 1.2rem;
+  color: #ddd;
+  margin-bottom: 12px;
+  line-height: 1.3;
+  width: 100%;
+}
+
+.KPI span {
+  font-size: 1rem;
+  color: #ddd;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.valor-kpi {
+  font-size: 2rem;
+  color: #ffe066;
+  font-weight: bold;
+  margin: 10px 0;
+  width: 100%;
+  line-height: 1;
+}
+
+.tendencia {
+  font-size: 0.9rem;
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.tendencia.positiva {
+  color: #4caf50;
+}
+
+.tendencia.negativa {
+  color: #f44336;
+}
+
+.tendencia.neutra {
+  color: #ffc107;
+}
+
+.descricao-kpi {
+  font-size: 0.85rem;
+  color: #ccc;
+  margin-top: 8px;
+  width: 100%;
+  line-height: 1.2;
+}

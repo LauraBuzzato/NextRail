@@ -799,7 +799,7 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
             WHERE s.fk_empresa = ${fkEmpresa}
                 AND cs.fk_tipo_componente = ${fkComponente}
                 AND cs.fk_servidor = ${fkServidor}
-                AND YEARWEEK(a.inicio) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL 1 WEEK))
+                AND YEARWEEK(a.inicio, 1) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL 1 WEEK), 1)
             UNION ALL
             SELECT 
                 'semana_atual' as periodo,
@@ -815,14 +815,14 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
             WHERE s.fk_empresa = ${fkEmpresa}
                 AND cs.fk_tipo_componente = ${fkComponente}
                 AND cs.fk_servidor = ${fkServidor}
-                AND YEARWEEK(a.inicio) = YEARWEEK(CURDATE())
+                AND YEARWEEK(a.inicio, 1) = YEARWEEK(CURDATE(), 1)
             ORDER BY 
                 CASE 
                     WHEN periodo = 'semana_anterior' THEN 1
                     WHEN periodo = 'semana_atual' THEN 2
                 END;
         `;
-    } else { // mensal
+    } else {
         instrucaoSql = `
             SELECT 
                 'mes_anterior' as periodo,
