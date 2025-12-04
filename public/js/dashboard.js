@@ -539,6 +539,14 @@ function dash_analista() {
             }
 
 
+// ======================================================= SLA ================================================================            
+
+            var sla = document.getElementById("metrica-sla")
+            if(sla){
+                sla.innerHTML = `(SLA: < ${dadosS3.sla} min)` 
+            }
+
+
 // ================================================ Comparação Mês/Ano anterior ================================================================
 
             var pctCrescimento = dadosS3.alertas_pct_crescimento;
