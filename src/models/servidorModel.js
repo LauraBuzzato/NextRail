@@ -784,84 +784,88 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
     let instrucaoSql = "";
 
     if (periodo === "semanal") {
-        instrucaoSql = `
-            SELECT 
-                'semana_anterior' as periodo,
-                COUNT(*) as total_alertas,
-                SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
-                SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
-                SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
-            FROM alerta a
-            JOIN componente_servidor cs ON 
-                a.fk_componenteServidor_servidor = cs.fk_servidor AND 
-                a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
-            JOIN servidor s ON s.id = cs.fk_servidor
-            WHERE s.fk_empresa = ${fkEmpresa}
-                AND cs.fk_tipo_componente = ${fkComponente}
-                AND cs.fk_servidor = ${fkServidor}
-                AND YEARWEEK(a.inicio, 1) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL 1 WEEK), 1)
-            UNION ALL
-            SELECT 
-                'semana_atual' as periodo,
-                COUNT(*) as total_alertas,
-                SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
-                SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
-                SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
-            FROM alerta a
-            JOIN componente_servidor cs ON 
-                a.fk_componenteServidor_servidor = cs.fk_servidor AND 
-                a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
-            JOIN servidor s ON s.id = cs.fk_servidor
-            WHERE s.fk_empresa = ${fkEmpresa}
-                AND cs.fk_tipo_componente = ${fkComponente}
-                AND cs.fk_servidor = ${fkServidor}
-                AND YEARWEEK(a.inicio, 1) = YEARWEEK(CURDATE(), 1)
-            ORDER BY 
-                CASE 
-                    WHEN periodo = 'semana_anterior' THEN 1
-                    WHEN periodo = 'semana_atual' THEN 2
-                END;
+            instrucaoSql = `
+                SELECT 
+                    'semana_anterior' as periodo,
+                    COUNT(*) as total_alertas,
+                    SUM(CASE WHEN a.fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
+                    SUM(CASE WHEN a.fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
+                    SUM(CASE WHEN a.fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
+                FROM alerta a
+                JOIN componente_servidor cs ON 
+                    a.fk_componenteServidor_servidor = cs.fk_servidor AND 
+                    a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+                JOIN servidor s ON s.id = cs.fk_servidor
+                WHERE s.fk_empresa = ${fkEmpresa}
+                    AND cs.fk_tipo_componente = ${fkComponente}
+                    AND cs.fk_servidor = ${fkServidor}
+                    AND YEARWEEK(a.inicio, 1) = YEARWEEK(DATE_SUB(CURDATE(), INTERVAL 1 WEEK), 1)
+
+                UNION ALL
+
+                SELECT 
+                    'semana_atual' as periodo,
+                    COUNT(*) as total_alertas,
+                    SUM(CASE WHEN a.fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
+                    SUM(CASE WHEN a.fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
+                    SUM(CASE WHEN a.fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
+                FROM alerta a
+                JOIN componente_servidor cs ON 
+                    a.fk_componenteServidor_servidor = cs.fk_servidor AND 
+                    a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+                JOIN servidor s ON s.id = cs.fk_servidor
+                WHERE s.fk_empresa = ${fkEmpresa}
+                    AND cs.fk_tipo_componente = ${fkComponente}
+                    AND cs.fk_servidor = ${fkServidor}
+                    AND YEARWEEK(a.inicio, 1) = YEARWEEK(CURDATE(), 1)
+                ORDER BY 
+                    CASE 
+                        WHEN periodo = 'semana_anterior' THEN 1
+                        WHEN periodo = 'semana_atual' THEN 2
+                    END;
+
         `;
     } else {
         instrucaoSql = `
-            SELECT 
-                'mes_anterior' as periodo,
-                COUNT(*) as total_alertas,
-                SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
-                SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
-                SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
-            FROM alerta a
-            JOIN componente_servidor cs ON 
-                a.fk_componenteServidor_servidor = cs.fk_servidor AND 
-                a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
-            JOIN servidor s ON s.id = cs.fk_servidor
-            WHERE s.fk_empresa = ${fkEmpresa}
-                AND cs.fk_tipo_componente = ${fkComponente}
-                AND cs.fk_servidor = ${fkServidor}
-                AND YEAR(a.inicio) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), 1)
-                AND MONTH(a.inicio) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), 1)
-            UNION ALL
-            SELECT 
-                'mes_atual' as periodo,
-                COUNT(*) as total_alertas,
-                SUM(CASE WHEN fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
-                SUM(CASE WHEN fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
-                SUM(CASE WHEN fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
-            FROM alerta a
-            JOIN componente_servidor cs ON 
-                a.fk_componenteServidor_servidor = cs.fk_servidor AND 
-                a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
-            JOIN servidor s ON s.id = cs.fk_servidor
-            WHERE s.fk_empresa = ${fkEmpresa}
-                AND cs.fk_tipo_componente = ${fkComponente}
-                AND cs.fk_servidor = ${fkServidor}
-                AND YEAR(a.inicio) = YEAR(CURDATE(), 1)
-                AND MONTH(a.inicio) = MONTH(CURDATE(), 1)
-            ORDER BY 
-                CASE 
-                    WHEN periodo = 'mes_anterior' THEN 1
-                    WHEN periodo = 'mes_atual' THEN 2
-                END;
+                SELECT 
+                    'mes_anterior' as periodo,
+                    COUNT(*) as total_alertas,
+                    SUM(CASE WHEN a.fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
+                    SUM(CASE WHEN a.fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
+                    SUM(CASE WHEN a.fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
+                FROM alerta a
+                JOIN componente_servidor cs ON 
+                    a.fk_componenteServidor_servidor = cs.fk_servidor AND 
+                    a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+                JOIN servidor s ON s.id = cs.fk_servidor
+                WHERE s.fk_empresa = ${fkEmpresa}
+                    AND cs.fk_tipo_componente = ${fkComponente}
+                    AND cs.fk_servidor = ${fkServidor}
+                    AND YEAR(a.inicio) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+                    AND MONTH(a.inicio) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+                UNION ALL
+                SELECT 
+                    'mes_atual' as periodo,
+                    COUNT(*) as total_alertas,
+                    SUM(CASE WHEN a.fk_gravidade = 3 THEN 1 ELSE 0 END) as alertas_altos,
+                    SUM(CASE WHEN a.fk_gravidade = 2 THEN 1 ELSE 0 END) as alertas_medios,
+                    SUM(CASE WHEN a.fk_gravidade = 1 THEN 1 ELSE 0 END) as alertas_baixos
+                FROM alerta a
+                JOIN componente_servidor cs ON 
+                    a.fk_componenteServidor_servidor = cs.fk_servidor AND 
+                    a.fk_componenteServidor_tipoComponente = cs.fk_tipo_componente
+                JOIN servidor s ON s.id = cs.fk_servidor
+                WHERE s.fk_empresa = ${fkEmpresa}
+                    AND cs.fk_tipo_componente = ${fkComponente}
+                    AND cs.fk_servidor = ${fkServidor}
+                    AND YEAR(a.inicio) = YEAR(CURDATE())
+                    AND MONTH(a.inicio) = MONTH(CURDATE())
+                ORDER BY 
+                    CASE 
+                        WHEN periodo = 'mes_anterior' THEN 1
+                        WHEN periodo = 'mes_atual' THEN 2
+                    END;
+
         `;
     }
 
@@ -1033,7 +1037,7 @@ async function pegarUso(empresa, servidor, tipo, ano, mes) {
 
 
     let totais = { cpu: [], ram: [], disco: [] };
-    
+
 
     let grupos = {};
 
@@ -1135,7 +1139,7 @@ const AWS = require("aws-sdk");
 async function pegarJsonDoS3(nomeEmpresa, nomeServidor, tipo, ano, mes) {
     console.log("BUCKET_ALERTAS =", process.env.S3_BUCKET);
 
-    const empresaPath = nomeEmpresa 
+    const empresaPath = nomeEmpresa
     const servidor = nomeServidor
     const dataHoje = new Date();
 
