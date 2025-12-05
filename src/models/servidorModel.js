@@ -1,6 +1,6 @@
 var database = require("../database/config");
 require("dotenv").config({ path: ".env.dev" });
-const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, GetObjectCommand, ListObjectsV2Command } = require("@aws-sdk/client-s3");
 
 const BUCKET = process.env.S3_BUCKET;
 
@@ -1206,6 +1206,47 @@ function buscarComparacaoMes(idServidor) {
     return database.executar(instrucao);
 }
 
+async function pegarDadosJira(empresa, ano, mes) {
+    const mesFormatado = ('0' + mes).slice(-2);
+    const prefixoMensal = `${empresa}/JiraInfo/Jira-${ano}-${mesFormatado}-`
+    console.log("Buscando dados do Jira com o prefixo: ", prefixoMensal)
+
+    const arquivos = await listarArquivosPorPrefixo(BUCKET, prefixoMensal)
+    if (arquivos.length == 0) {
+        console.log("Nenhum arquivo encontrado para o periodo: ",ano,"-",mes)
+        return []
+    }
+
+
+    const promessasDeLeitura = arquivos.map(chaveArquivo => {
+        console.log("Criando promessa para o arquivo: ", chaveArquivo);
+        // O método 'lerArquivoS3' retorna uma Promessa
+        return lerArquivoS3(BUCKET, chaveArquivo);
+    });
+    const resultadosDiarios = await Promise.all(promessasDeLeitura);
+
+    //const dados = resultadosDiarios.flat()
+    let dados = []
+    for (let i = 0; i < resultadosDiarios.length; i++) {
+        dados.push(resultadosDiarios[i])
+    }
+    return dados
+}
+
+async function listarArquivosPorPrefixo(bucket, prefix) {
+    const params = {
+        Bucket: bucket,
+        Prefix: prefix
+    }
+
+    const command = new ListObjectsV2Command(params)
+    const response = await s3.send(command)
+
+    if (response.Contents) {
+        return response.Contents.map(item => item.Key)
+    }
+    return []
+}
 
 
 module.exports = {
@@ -1239,5 +1280,6 @@ module.exports = {
     pegarPrevisao,
     pegarJsonDoS3,
     buscarSla,
-    buscarComparacaoMes
+    buscarComparacaoMes,
+    pegarDadosJira
 };

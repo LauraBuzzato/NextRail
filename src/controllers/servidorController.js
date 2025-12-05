@@ -682,6 +682,22 @@ async function compararAlertas(req, res) {
     }
 }
 
+function pegarDadosJira(req, res) {
+    const { empresa, ano, mes} = req.body;
+
+    if (!empresa || !ano || !mes) {
+        return res.status(400).json({ error: "Campos não preenchidos" });
+    }
+
+    servidorModel.pegarDadosJira(empresa, ano, mes)
+        .then(dados => {
+            res.json(dados);
+        })
+        .catch(error => {
+            console.error("Erro no controller:", error);
+            res.status(500).json({ error: "Erro interno do servidor" });
+        });
+}
 
 module.exports = {
     listarEmpresas,
@@ -714,5 +730,6 @@ module.exports = {
     pegarPrevisao,
     listarDadosAlertas,
     buscarSla,
-    compararAlertas
+    compararAlertas,
+    pegarDadosJira
 };

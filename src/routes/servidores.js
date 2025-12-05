@@ -46,4 +46,6 @@ router.get("/sla/:idServidor", servidorController.buscarSla);
 
 router.get("/comparacao/:idServidor", servidorController.compararAlertas);
 
+router.post("/pegarDadosJira", servidorController.pegarDadosJira);
+
 module.exports = router;
