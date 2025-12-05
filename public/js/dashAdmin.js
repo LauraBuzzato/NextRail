@@ -1,4 +1,5 @@
 let incidentes = null
+let jira = null
 let dados = {}
 let servidores = []
 
@@ -18,8 +19,12 @@ let select = null
 let kpi = null
 let alerta_sla = null
 
+let selectAno = null
+let selectMes = null
+
 let graficoSla = null;
 let grafioTicket = null;
+
 
 async function dashAdmin() {
     console.log("Carregando gráficos...")
@@ -39,10 +44,9 @@ async function dashAdmin() {
                 body: JSON.stringify({ 
                   idempresa: sessionStorage.ID_EMPRESA
                 })
-            }).then(res => res.json())
+            }).then(res => res.json()),
         ]) 
-        console.log(incidentes)
-
+        console.log("INCIDENTES: ", incidentes)
     } catch(err) {
         console.log("Erro ao carregar gráficos")
     }
@@ -120,10 +124,27 @@ async function dashAdmin() {
         return
     }
 
+    carregarDadosJira()
+
     mudarCor()
     criarKpis()
     criarGraficoSla()
     criarGraficoTicket()
+}
+
+async function carregarDadosJira() {
+    [jira] = await Promise.all([
+        fetch('/servidores/pegarDadosJira', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                empresa: sessionStorage.NOME_EMPRESA,
+                ano: selectAno.value,
+                mes: selectMes.value
+            })
+        }).then(res => res.json())
+    ])
+    console.log("JIRA: ", jira)
 }
 
 function criarKpis() {
