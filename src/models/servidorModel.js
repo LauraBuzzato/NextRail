@@ -1228,7 +1228,11 @@ async function pegarDadosJira(empresa, ano, mes) {
     //const dados = resultadosDiarios.flat()
     let dados = []
     for (let i = 0; i < resultadosDiarios.length; i++) {
-        dados.push(resultadosDiarios[i])
+        if (resultadosDiarios[i] != []) {
+            dados.push(resultadosDiarios[i])
+        } else {
+            console.log("Json vazio não inserido")
+        }
     }
     return dados
 }
