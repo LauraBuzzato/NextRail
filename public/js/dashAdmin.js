@@ -25,6 +25,10 @@ let selectMes = null
 let graficoSla = null;
 let grafioTicket = null;
 
+function esconderLoader() {
+    document.getElementById("loader").style.display = "none";
+}
+
 
 async function dashAdmin() {
     console.log("Carregando gráficos...")
@@ -130,6 +134,8 @@ async function dashAdmin() {
     criarKpis()
     criarGraficoSla()
     criarGraficoTicket()
+
+    esconderLoader()
 }
 
 async function carregarDadosJira() {
