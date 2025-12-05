@@ -499,6 +499,8 @@ async function renderGraficoAlertas() {
         return array.concat(Array(tamanho - array.length).fill(0));
     };
 
+    document.getElementById("graflat").textContent = `Gráfico de Alertas ${componenteAtual}`
+
     const alto = ajustarArray(dadosProcessados.alto, totalPontos);
     const medio = ajustarArray(dadosProcessados.medio, totalPontos);
     const baixo = ajustarArray(dadosProcessados.baixo, totalPontos);
