@@ -838,8 +838,8 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
             WHERE s.fk_empresa = ${fkEmpresa}
                 AND cs.fk_tipo_componente = ${fkComponente}
                 AND cs.fk_servidor = ${fkServidor}
-                AND YEAR(a.inicio) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
-                AND MONTH(a.inicio) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+                AND YEAR(a.inicio) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), 1)
+                AND MONTH(a.inicio) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), 1)
             UNION ALL
             SELECT 
                 'mes_atual' as periodo,

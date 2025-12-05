@@ -747,7 +747,7 @@ function atualizarKPIsGerais(dados) {
     const corMedia = determinarCorPorMetrica(mediaGeral, 'cpu');
     const corMaiorComponente = determinarCorPorMetrica(maiorValorPrevisao, maiorComponentePrevisao);
     const corTextoMaiorComponente = cores[maiorComponentePrevisao];
-    const corCrescimentoLatencia = crescimentoLatencia.tendencia === 'crescendo' ? '#ff6b6b' : crescimentoLatencia.tendencia === 'decrescendo' ? '#51cf66' : 'rgba(255, 255, 255, 1)';
+    const corCrescimentoLatencia = crescimentoLatencia.tendencia === 'crescendo' ? '#ff6b6b' : crescimentoLatencia.tendencia === 'decrescendo' ? '#51cf66' : 'rgb(65, 94, 243)';
 
     let statusGeral = "Normal";
     if (mediaGeral >= metricasAlerta.cpu.medio) statusGeral = "Atenção";
