@@ -274,47 +274,58 @@ async function usarDadosCache(periodo) {
 
 function formatarData(data) {
     const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const mes = String(data.getMonth() + 1).padStart(2, '0'); 
     const ano = data.getFullYear();
     return `${dia}/${mes}/${ano}`;
 }
 
 function gerarLabelsComDatas(periodo) {
-    const hoje = new Date();
+    const hoje = new Date(); 
     const labels = [];
     
     if (periodo === "semanal") {
+
         const dataSemanaAnterior = new Date(hoje);
-        dataSemanaAnterior.setDate(hoje.getDate() - 7);
+        dataSemanaAnterior.setDate(hoje.getDate() - 7); 
         labels.push(formatarData(dataSemanaAnterior));
-
-        labels.push(formatarData(hoje));
-
+        labels.push(formatarData(hoje)); 
         const dataProximaSemana = new Date(hoje);
-        dataProximaSemana.setDate(hoje.getDate() + 7);
+        dataProximaSemana.setDate(hoje.getDate() + 7); 
         labels.push(formatarData(dataProximaSemana));
 
         const dataSemanaMais2 = new Date(hoje);
-        dataSemanaMais2.setDate(hoje.getDate() + 14);
+        dataSemanaMais2.setDate(hoje.getDate() + 14); 
         labels.push(formatarData(dataSemanaMais2));
-    } else {
+
+    } else { 
+
         const dataMesAnterior = new Date(hoje);
-        dataMesAnterior.setDate(hoje.getDate() - 30);
+        dataMesAnterior.setMonth(hoje.getMonth() - 1); 
         labels.push(formatarData(dataMesAnterior));
 
-        labels.push(formatarData(hoje));
+        labels.push(formatarData(hoje)); 
+
 
         const dataProximoMes = new Date(hoje);
-        dataProximoMes.setDate(hoje.getDate() + 30);
+        dataProximoMes.setMonth(hoje.getMonth() + 1);26
         labels.push(formatarData(dataProximoMes));
 
         const dataMesMais2 = new Date(hoje);
-        dataMesMais2.setDate(hoje.getDate() + 60);
+        dataMesMais2.setMonth(hoje.getMonth() + 2); 
         labels.push(formatarData(dataMesMais2));
     }
 
     return labels;
 }
+
+const labelsSemanais = gerarLabelsComDatas("semanal");
+console.log("Labels Semanais:", labelsSemanais);
+
+
+const labelsMensais = gerarLabelsComDatas("mensal");
+console.log("Labels Mensais:", labelsMensais);
+
+
 
 async function atualizarDashboard() {
     mostrarLoader()
