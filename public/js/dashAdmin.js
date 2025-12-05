@@ -36,13 +36,19 @@ async function dashAdmin() {
     selectAno = document.getElementById("ano_periodo")
     selectMes = document.getElementById("mes_periodo")
 
+    // reseta os dados
+    incidentes = []
+    dados = {}
+
     try {
         [incidentes] = await Promise.all([
             fetch('/servidores/listarIncidentes', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                  idempresa: sessionStorage.ID_EMPRESA
+                  idempresa: sessionStorage.ID_EMPRESA,
+                  ano: selectAno.value,
+                  mes: selectMes.value
                 })
             }).then(res => res.json()),
         ]) 
@@ -50,6 +56,7 @@ async function dashAdmin() {
     } catch(err) {
         console.log("Erro ao carregar gráficos")
     }
+
     
     for (let i = 0; i < incidentes.length; i++) {
         let incidente = incidentes[i] 
@@ -116,16 +123,12 @@ async function dashAdmin() {
         `
     }
 
-
-
-    if (typeof Chart === 'undefined') {
-        console.log("erro ao carregar grafico")
-        setTimeout(dashAdmin(), 500)
-        return
+    if (graficoSla != null && grafioTicket != null) {
+        graficoSla.destroy()
+        grafioTicket.destroy()
     }
 
     carregarDadosJira()
-
     mudarCor()
     criarKpis()
     criarGraficoSla()

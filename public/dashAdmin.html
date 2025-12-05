@@ -33,12 +33,11 @@
     <h1 id="sub-titulo">
       Empresa - Equipe de Suporte
 
-      <select onchange="carregarDadosJira()" id="ano_periodo" class="select">
+      <select onchange="carregarDadosJira(), dashAdmin()" id="ano_periodo" class="select">
         <option value="2024">2024</option>
         <option value="2025">2025</option>
       </select>
-      <select onchange="carregarDadosJira()" id="mes_periodo" class="select">
-        <option value="#">Últimos 30 dias</option>
+      <select onchange="carregarDadosJira(), dashAdmin()" id="mes_periodo" class="select">
         <option value="01">Janeiro</option>
         <option value="02">Fevereiro</option>
         <option value="03">Março</option>
