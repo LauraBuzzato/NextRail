@@ -1319,6 +1319,6 @@ async function kpi_suporte(componente) {
     } catch (erro) {
         console.log("Erro: ", erro)
     } finally {
-        setTimeout(() => criarTabela(), 130000);
+        setTimeout(() => criarTabela(), 190000);
     }
 }
