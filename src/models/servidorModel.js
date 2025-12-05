@@ -855,8 +855,8 @@ function buscarAlertasHistorico(fkEmpresa, fkComponente, fkServidor, periodo) {
             WHERE s.fk_empresa = ${fkEmpresa}
                 AND cs.fk_tipo_componente = ${fkComponente}
                 AND cs.fk_servidor = ${fkServidor}
-                AND YEAR(a.inicio) = YEAR(CURDATE())
-                AND MONTH(a.inicio) = MONTH(CURDATE())
+                AND YEAR(a.inicio) = YEAR(CURDATE(), 1)
+                AND MONTH(a.inicio) = MONTH(CURDATE(), 1)
             ORDER BY 
                 CASE 
                     WHEN periodo = 'mes_anterior' THEN 1
