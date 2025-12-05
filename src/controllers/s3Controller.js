@@ -31,12 +31,12 @@ async function lerArquivo(servidor) {
   console.log(`Encontrados ${arquivosRecentes.length} arquivos relevantes (hoje/ontem)`);
 
   if (arquivosRecentes.length === 0) {
-    throw new Error("Nenhum arquivo encontrado nas últimas 24 horas");
+    throw new Error("Nenhum arquivo encontrado na ultima hora");
   }
 
   const usoMaximoMemoriaPorProcesso = new Map();
   const processosPorHora = new Map();
-  const vinteQuatroHorasAtras = Date.now() - 24 * 60 * 60 * 1000;
+  const umaHoraAtras = Date.now() - (1 * 60 * 60 * 1000);
 
   function parseTimestampBR(str) {
     if (!str) {
@@ -62,7 +62,19 @@ async function lerArquivo(servidor) {
     return parseFloat(limpo) || 0;
   }
 
+  function gerarChaveIntervalo(ts) {
+    if (!ts) return null;
 
+    // Obter o minuto e arredondar para o múltiplo de 5 mais próximo (inferior)
+    const minutoOriginal = ts.getMinutes();
+    const minutoArredondado = Math.floor(minutoOriginal / 5) * 5;
+
+    // Criar a chave no formato "HH:MM"
+    const hora = ts.getHours().toString().padStart(2, '0');
+    const minutoFormatado = String(minutoArredondado).padStart(2, '0');
+
+    return `${hora}:${minutoFormatado}`;
+  }
 
   for (const arquivo of arquivosRecentes) {
     const texto = await baixarArquivo(bucket, arquivo.Key);
@@ -85,7 +97,7 @@ async function lerArquivo(servidor) {
       if (!tsRaw) continue;
 
       const ts = parseTimestampBR(tsRaw);
-      if (!ts || ts.getTime() < vinteQuatroHorasAtras) continue;
+      if (!ts || ts.getTime() < umaHoraAtras) continue;
 
       const nome = (nomeRaw || "Desconhecido").trim();
       const memoria = parseFloatBR(memoriaRaw);
@@ -97,13 +109,15 @@ async function lerArquivo(servidor) {
       }
 
       // Por hora
-      const hora = ts.getHours().toString().padStart(2, '0') + ':00';
-      processosPorHora.set(hora, (processosPorHora.get(hora) || 0) + 1);
+      const intervalo = gerarChaveIntervalo(ts);
+      if (intervalo) {
+        processosPorHora.set(intervalo, (processosPorHora.get(intervalo) || 0) + 1);
+      }
     }
   }
 
   if (usoMaximoMemoriaPorProcesso.size === 0) {
-    throw new Error("Nenhum dado encontrado nas últimas 24 horas");
+    throw new Error("Nenhum dado encontrado na ultima hora");
   }
 
   console.log(`Processados ${usoMaximoMemoriaPorProcesso.size} processos únicos com sucesso!`);
@@ -200,9 +214,14 @@ function montarResultadoDashboard(memoriaMap, horaMap) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
 
-  //Horários ordenados e quantidade de processos por hora
-  const horas = [...horaMap.keys()].sort();
-  const quantidades = horas.map(h => horaMap.get(h) || 0);
+  const horariosIntervalos = [...horaMap.keys()].sort((a, b) => {
+    // Converte HH:MM para um valor numérico de minutos para garantir a ordenação cronológica
+    const [hA, mA] = a.split(':').map(Number);
+    const [hB, mB] = b.split(':').map(Number);
+    return (hA * 60 + mA) - (hB * 60 + mB);
+  });
+
+  const quantidades = horariosIntervalos.map(h => horaMap.get(h) || 0);
 
   const totalHoras = quantidades.length;
   const soma = quantidades.reduce((a, b) => a + b, 0);
@@ -212,7 +231,7 @@ function montarResultadoDashboard(memoriaMap, horaMap) {
   return {
     labelsMemoria: top5.map(([nome]) => nome),
     memoriaMB: top5.map(([, mb]) => mb),
-    horarios: horas,
+    horarios: horariosIntervalos,
     processos24h: quantidades,
     maximoProcessos: maximo,
     mediaProcessos: media,
