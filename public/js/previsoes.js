@@ -274,56 +274,60 @@ async function usarDadosCache(periodo) {
 
 function formatarData(data) {
     const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0'); 
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
     const ano = data.getFullYear();
     return `${dia}/${mes}/${ano}`;
 }
 
 function gerarLabelsComDatas(periodo) {
-    const hoje = new Date(); 
+    const hoje = new Date();
     const labels = [];
-    
+
     if (periodo === "semanal") {
-
-        const dataSemanaAnterior = new Date(hoje);
-        dataSemanaAnterior.setDate(hoje.getDate() - 7); 
-        labels.push(formatarData(dataSemanaAnterior));
-        labels.push(formatarData(hoje)); 
-        const dataProximaSemana = new Date(hoje);
-        dataProximaSemana.setDate(hoje.getDate() + 7); 
-        labels.push(formatarData(dataProximaSemana));
-
-        const dataSemanaMais2 = new Date(hoje);
-        dataSemanaMais2.setDate(hoje.getDate() + 14); 
-        labels.push(formatarData(dataSemanaMais2));
-
+        const datas = [
+            new Date(hoje.getTime() - 7 * 24 * 60 * 60 * 1000),
+            hoje,
+            new Date(hoje.getTime() + 7 * 24 * 60 * 60 * 1000),
+            new Date(hoje.getTime() + 14 * 24 * 60 * 60 * 1000)
+        ];
+        
+        datas.forEach(data => {
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            labels.push(`${dia}/${mes}/${ano}`);
+        });
+        
     } else { 
-
-        const dataMesAnterior = new Date(hoje);
-        dataMesAnterior.setMonth(hoje.getMonth() - 1); 
-        labels.push(formatarData(dataMesAnterior));
-
-        labels.push(formatarData(hoje)); 
-
-
-        const dataProximoMes = new Date(hoje);
-        dataProximoMes.setMonth(hoje.getMonth() + 1);26
-        labels.push(formatarData(dataProximoMes));
-
-        const dataMesMais2 = new Date(hoje);
-        dataMesMais2.setMonth(hoje.getMonth() + 2); 
-        labels.push(formatarData(dataMesMais2));
+        const nomesDosMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+        const mesAtual = hoje.getMonth();
+        
+        for (let i = -1; i <= 2; i++) {
+            let mesIndex = mesAtual + i;
+            let ano = hoje.getFullYear();
+            
+            if (mesIndex < 0) {
+                mesIndex += 12;
+                ano -= 1;
+            } else if (mesIndex >= 12) {
+                mesIndex -= 12;
+                ano += 1;
+            }
+            
+            labels.push(nomesDosMeses[mesIndex]);
+        }
     }
 
     return labels;
 }
-
 const labelsSemanais = gerarLabelsComDatas("semanal");
 console.log("Labels Semanais:", labelsSemanais);
 
 
 const labelsMensais = gerarLabelsComDatas("mensal");
 console.log("Labels Mensais:", labelsMensais);
+
+
 
 
 
@@ -365,6 +369,8 @@ async function atualizarDashboard() {
 function renderGraficoLinhaUnica(dados) {
     const canvas = document.getElementById("graficoPrevisaoLinha");
     if (!canvas) return;
+
+    document.getElementById("recursos").textContent = `Previsão de uso de ${componenteAtual} ${periodoSelect.value}`;
     
     const labels = gerarLabelsComDatas(periodoSelect.value);
     const dadosCompletos = dados[componenteAtual];
@@ -430,6 +436,7 @@ function renderGraficoLinhaUnica(dados) {
     });
 }
 
+
 function renderGraficoLatenciaGeral(dados) {
     const canvas = document.getElementById("graficoLatencia");
     if (!canvas) return;
@@ -439,6 +446,8 @@ function renderGraficoLatenciaGeral(dados) {
     const ctx = canvas.getContext("2d");
     
     if (graficoLatencia) graficoLatencia.destroy();
+
+    document.getElementById('graflat').textContent = "Previsão de Latência entre os componentes";
 
     const temDadosValidos = data.some(valor => valor > 0);
     if (!temDadosValidos) {
@@ -451,8 +460,8 @@ function renderGraficoLatenciaGeral(dados) {
             labels: labels,
             datasets: [{
                 label: "Latência", data: data,
-                backgroundColor: context => `rgba(65, 94, 243, ${context.dataIndex < 2 ? '0.8' : '0.4'})`,
-                borderColor: context => `rgba(20, 35, 168, ${context.dataIndex < 2 ? '1' : '0.6'})`,
+                backgroundColor: context => `rgba(68, 94, 290, ${context.dataIndex < 2 ? '0.8' : '0.4'})`,
+                borderColor: context => `rgba(47, 79, 242, 1), ${context.dataIndex < 2 ? '1' : '0.6'})`,
                 borderWidth: 2, borderDash: context => context.dataIndex >= 2 ? [5,5] : []
             }]
         },
@@ -489,19 +498,7 @@ async function renderGraficoAlertas() {
 
     const totalPontos = dadosProcessados.historico + dadosProcessados.previsao;
     const hoje = new Date();
-    const labels = [];
-
-    for (let i = dadosProcessados.historico - 1; i >= 0; i--) {
-        const data = new Date(hoje);
-        data.setDate(hoje.getDate() - (i * (periodo === "semanal" ? 7 : 30) + (periodo === "semanal" ? 7 : 30)));
-        labels.push(formatarData(data));
-    }
-
-    for (let i = 1; i <= dadosProcessados.previsao; i++) {
-        const data = new Date(hoje);
-        data.setDate(hoje.getDate() + (i * (periodo === "semanal" ? 7 : 30)));
-        labels.push(formatarData(data));
-    }
+    const labels = gerarLabelsComDatas(periodoSelect.value);
 
     const ajustarArray = (array, tamanho) => {
         if (!array) return Array(tamanho).fill(0);
@@ -535,7 +532,7 @@ async function renderGraficoAlertas() {
             },
             scales: {
                 y: { beginAtZero: true, stacked: false, grid: { color: "rgba(255,255,255,0.1)" }, ticks: { color: "#fff", font: { size: 15 }, callback: value => `${value} alerta${value !== 1 ? 's' : ''}` } },
-                x: { stacked: false, grid: { color: "rgba(255,255,255,0.1)" }, ticks: { color: "#fff", font: { size: 12 }, callback: (value, index) => index === dadosProcessados.historico - 1 ? `${labels[index]} (Hoje)` : labels[index] } }
+                x: { stacked: false, grid: { color: "rgba(255,255,255,0.1)" }, ticks: { color: "#fff", font: { size: 12 } } }
             }
         }
     });
@@ -548,6 +545,8 @@ function renderGraficoLinhasMultiplas(dados) {
     const labels = gerarLabelsComDatas(periodoSelect.value);
     const datasets = [];
 
+    document.getElementById('recursos').textContent = `Previsão do Uso de Recursos ${periodoSelect.value}`;
+
     for (const componente in dados) {
         if (['cpu', 'ram', 'disco'].includes(componente)) {
             const dadosCompletos = dados[componente];
@@ -555,7 +554,6 @@ function renderGraficoLinhasMultiplas(dados) {
 
             const dadosHistorico = dadosCompletos.slice(0, 2);
 
-      
             datasets.push({
                 label: nomes[componente],
                 data: dadosHistorico.concat([null, null]),
@@ -568,7 +566,6 @@ function renderGraficoLinhasMultiplas(dados) {
                 pointBackgroundColor: cores[componente],
                 spanGaps: true
             });
-
 
             datasets.push({
                 label: nomes[componente] + " (previsão)",
@@ -713,7 +710,7 @@ async function atualizarKPIs(dados) {
     const corStatus = determinarCorPorMetrica(Number(mediaUso), componenteAtual);
 
     document.getElementById("kpisContainer").innerHTML = `
-        <div class="KPI"><h2>Previsão de Uso Médio ${periodoTexto}</h2><p class="valor-kpi" style="color:${corMedia}">${mediaUso}%</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">Status: ${statusComponente}</p></div>
+        <div class="KPI"><h2>Previsão de Uso Médio de ${componenteAtual} ${periodoTexto}</h2><p class="valor-kpi" style="color:${corMedia}">${mediaUso}%</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">Status: ${statusComponente}</p></div>
         <div class="KPI"><h2>Taxa de Crescimento Projetada</h2><p class="descricao-kpi">${formatarData(dataInicio)} → ${formatarData(dataFim)}</p><p class="valor-kpi" style="color:${corTendencia}">${crescimentoPercentual > 0 ? '+' : ''}${crescimentoPercentual.toFixed(1)}%</p><p class="tendencia" style="color:${corTendencia}">${iconeTendencia || ''} ${tendencia === "crescendo" ? "Crescendo" : tendencia === "decrescendo" ? "Decrescendo" : "Estável"}</p></div>
         <div class="KPI"><h2>Previsão do Alerta Mais Frequente</h2><p class="valor-kpi" style="color:${corAlerta}">${alertaMaisFrequente}</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">${temAlertas ? 'Baseado nas previsões futuras' : 'Sem alertas previstos'}</p></div>
         <div class="KPI"><h2>Status do Componente</h2><p class="valor-kpi" style="color:${corStatus}">${statusComponente}</p></div>
@@ -758,7 +755,7 @@ function atualizarKPIsGerais(dados) {
     const corMedia = determinarCorPorMetrica(mediaGeral, 'cpu');
     const corMaiorComponente = determinarCorPorMetrica(maiorValorPrevisao, maiorComponentePrevisao);
     const corTextoMaiorComponente = cores[maiorComponentePrevisao];
-    const corCrescimentoLatencia = crescimentoLatencia.tendencia === 'crescendo' ? '#ff6b6b' : crescimentoLatencia.tendencia === 'decrescendo' ? '#51cf66' : 'rgb(65, 94, 243)';
+    const corCrescimentoLatencia = crescimentoLatencia.tendencia === 'crescendo' ? '#rgb(65, 94, 243)' : crescimentoLatencia.tendencia === 'decrescendo' ? '#rgb(65, 94, 243)' : 'rgb(65, 94, 243)';
 
     let statusGeral = "Normal";
     if (mediaGeral >= metricasAlerta.cpu.medio) statusGeral = "Atenção";
@@ -772,7 +769,7 @@ function atualizarKPIsGerais(dados) {
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI"><h2>Uso Médio Geral ${periodo === "mensal" ? "Mensal" : "Semanal"}</h2><p class="valor-kpi" style="color:${corMedia}">${mediaGeral.toFixed(1)}%</p></div>
         <div class="KPI"><h2>Componente com Maior Uso na Previsão</h2><p class="valor-kpi" style="color:${corTextoMaiorComponente}">${nomes[maiorComponentePrevisao]}</p><p class="tendencia" style="color:${corMaiorComponente}">${maiorValorPrevisao.toFixed(1)}%</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">Previsão de pico</p></div>
-        <div class="KPI"><h2>Taxa de Crescimento da Latência</h2><p class="descricao-kpi">${formatarData(hoje)} → ${formatarData(dataFim)}</p><p class="valor-kpi" style="color:${corCrescimentoLatencia}">${crescimentoLatencia.crescimento > 0 ? '+' : ''}${crescimentoLatencia.crescimento.toFixed(1)}%</p><p class="tendencia" style="color:${corCrescimentoLatencia}">${crescimentoLatencia.tendencia === "crescendo" ? "📈" : crescimentoLatencia.tendencia === "decrescendo" ? "📉" : ""} ${crescimentoLatencia.tendencia === "crescendo" ? "Crescendo" : crescimentoLatencia.tendencia === "decrescendo" ? "Decrescendo" : "Estável"}</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">${crescimentoLatencia.inicio.toFixed(1)}ms → ${crescimentoLatencia.fim.toFixed(1)}ms</p></div>
+        <div class="KPI"><h2>Taxa de Crescimento da Latência</h2><p class="descricao-kpi">${formatarData(hoje)} → ${formatarData(dataFim)}</p><p class="valor-kpi" style="color:rgba(47, 79, 242, 1)">${crescimentoLatencia.crescimento > 0 ? '+' : ''}${crescimentoLatencia.crescimento.toFixed(1)}%</p><p class="tendencia" style="color:${corCrescimentoLatencia}">${crescimentoLatencia.tendencia === "crescendo" ? "📈" : crescimentoLatencia.tendencia === "decrescendo" ? "📉" : ""} ${crescimentoLatencia.tendencia === "crescendo" ? "Crescendo" : crescimentoLatencia.tendencia === "decrescendo" ? "Decrescendo" : "Estável"}</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">${crescimentoLatencia.inicio.toFixed(1)}ms → ${crescimentoLatencia.fim.toFixed(1)}ms</p></div>
         <div class="KPI"><h2>Status Geral do Servidor</h2><p class="valor-kpi" style="color:${corStatus}">${statusGeral}</p></div>
     `;
 }
