@@ -435,7 +435,9 @@ function atualizarConfiguracaoSla(req, res) {
 
 function listarIncidentes(req, res) {
     var fkEmpresa = req.body.idempresa;
-    servidorModel.listarIncidentes(fkEmpresa)
+    var ano = req.body.ano;
+    var mes = req.body.mes;
+    servidorModel.listarIncidentes(fkEmpresa, ano, mes)
         .then(resultado => res.json(resultado))
         .catch(erro => {
             console.log(erro);

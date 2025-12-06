@@ -905,7 +905,7 @@ function atualizarConfiguracaoSla(dadosSla) {
     });
 }
 
-function listarIncidentes(fkEmpresa) {
+function listarIncidentes(fkEmpresa, ano, mes) {
     var instrucaoSql = `
        SELECT emp.razao_social AS empresa,	srv.nome AS servidor, 
        status.descricao AS status, gv.nome AS gravidade, inicio, fim,
@@ -920,7 +920,8 @@ function listarIncidentes(fkEmpresa) {
                       AND tc.id = mt.fk_componenteServidor_tipoComponente
                       AND gv.id = mt.fk_gravidade
        JOIN empresa emp ON emp.id = srv.fk_empresa
-       WHERE emp.id = ${fkEmpresa} and fk_status = 3
+       WHERE emp.id = ${fkEmpresa} AND fk_status = 3 AND
+             YEAR(inicio) = ${ano} AND MONTH(inicio) = ${mes}
        ORDER BY srv.nome, inicio;
     `;
     console.log("Executando SQL: \n" + instrucaoSql);
@@ -1212,7 +1213,7 @@ function buscarComparacaoMes(idServidor) {
 
 async function pegarDadosJira(empresa, ano, mes) {
     const mesFormatado = ('0' + mes).slice(-2);
-    const prefixoMensal = `${empresa}/JiraInfo/Jira-${ano}-${mesFormatado}-`
+    const prefixoMensal = `${empresa}/JiraInfo/Jira-${ano}-${mesFormatado}`
     console.log("Buscando dados do Jira com o prefixo: ", prefixoMensal)
 
     const arquivos = await listarArquivosPorPrefixo(BUCKET, prefixoMensal)
@@ -1229,15 +1230,8 @@ async function pegarDadosJira(empresa, ano, mes) {
     });
     const resultadosDiarios = await Promise.all(promessasDeLeitura);
 
-    //const dados = resultadosDiarios.flat()
-    let dados = []
-    for (let i = 0; i < resultadosDiarios.length; i++) {
-        if (resultadosDiarios[i] != []) {
-            dados.push(resultadosDiarios[i])
-        } else {
-            console.log("Json vazio não inserido")
-        }
-    }
+    const dados = resultadosDiarios.flat()
+
     return dados
 }
 
