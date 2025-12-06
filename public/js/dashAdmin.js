@@ -21,6 +21,7 @@ let alerta_sla = null
 
 let selectAno = null
 let selectMes = null
+let selectServidor = null
 
 let graficoSla = null;
 let grafioTicket = null;
@@ -36,23 +37,39 @@ async function dashAdmin() {
     selectAno = document.getElementById("ano_periodo")
     selectMes = document.getElementById("mes_periodo")
 
+    selectServidor = document.getElementById("muda-servidor")
+
     // reseta os dados
     incidentes = []
     dados = {}
+    servidores = []
+    listDate = []
+    selectServidor.innerHTML = ''
 
     try {
-        [incidentes] = await Promise.all([
+        [incidentes, jira] = await Promise.all([
             fetch('/servidores/listarIncidentes', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                  idempresa: sessionStorage.ID_EMPRESA,
-                  ano: selectAno.value,
-                  mes: selectMes.value
+                    idempresa: sessionStorage.ID_EMPRESA,
+                    ano: selectAno.value,
+                    mes: selectMes.value
                 })
             }).then(res => res.json()),
+
+            fetch('/servidores/pegarDadosJira', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    empresa: sessionStorage.NOME_EMPRESA,
+                    ano: selectAno.value,
+                    mes: selectMes.value
+                })
+            }).then(res => res.json())
         ]) 
         console.log("INCIDENTES: ", incidentes)
+        console.log("JIRA: ", jira)
     } catch(err) {
         console.log("Erro ao carregar gráficos")
     }
@@ -115,7 +132,6 @@ async function dashAdmin() {
 
 
     // cria o select para cada servidor
-    const selectServidor = document.getElementById("muda-servidor")
     selectServidor.innerHTML = null
     for (let i = 0; i < servidores.length; i++) {
         selectServidor.innerHTML += `
@@ -128,27 +144,13 @@ async function dashAdmin() {
         grafioTicket.destroy()
     }
 
-    carregarDadosJira()
+
     mudarCor()
     criarKpis()
     criarGraficoSla()
     criarGraficoTicket()
 }
 
-async function carregarDadosJira() {
-    [jira] = await Promise.all([
-        fetch('/servidores/pegarDadosJira', {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                empresa: sessionStorage.NOME_EMPRESA,
-                ano: selectAno.value,
-                mes: selectMes.value
-            })
-        }).then(res => res.json())
-    ])
-    console.log("JIRA: ", jira)
-}
 
 function criarKpis() {
     const mtta = document.getElementById('mtta')
@@ -173,8 +175,8 @@ function criarKpis() {
         }
     }
     let mediaMtbf = totalMtbf/diff.length
-    let horasMtbf = Math.round((mediaMtbf)/(1000 * 60 * 60))
-    mtbf.innerText = `${horasMtbf} horas`
+    let minMtbf = Math.round((mediaMtbf)/(1000 * 60))
+    mtbf.innerText = `${minMtbf} min.`
 }
 
 function criarGraficoSla() {
@@ -249,26 +251,51 @@ function criarGraficoSla() {
 }
 
 function criarGraficoTicket() {
+    console.log("Jira dentro da func ticket: ", jira)
+
+    const kpi_mtta = document.getElementById("mtta")
+    let nomes = []
+    let tickets = []
+    let listaTtas = []
+    
+    for (let i = 0;i < jira.length; i++) {
+        let membroSup = jira[i]
+
+        if (nomes.includes(membroSup.nome)) {
+            tickets[nomes.indexOf(membroSup.nome)] += membroSup.qtdTickets
+        } else {
+            nomes.push(membroSup.nome)
+            tickets.push(membroSup.qtdTickets)
+        }
+
+        for (let j = 0;j < membroSup.datasMtta.length; j++) {
+            let tta = membroSup.datasMtta[j].timeToAcknowledgeMilis
+            listaTtas.push(tta)
+        }
+    }
+    console.log("nomes: ",nomes)
+    console.log("tickets: ",tickets)
+    console.log("listaTtas: ",listaTtas)
+
+    // cria kpi de mtta
+    let totalMtta = 0
+    for (let i = 0; i < listaTtas.length; i++) {
+        totalMtta += listaTtas[i]
+    }
+    let mtta = totalMtta/listaTtas.length
+
+    kpi_mtta.innerText = `${Math.round(mtta/(1000 * 60))} min.`
+
     const ticketsSup = document.getElementById("ticketsSup");
     grafioTicket = new Chart(ticketsSup,
         {
             type: 'bar',
             data: {
-                labels: ['João', 'Pedro', 'Matheus', 'Garbiel'],
+                labels: nomes,
                 datasets: [
-                    //{
-                    //    label: 'Tickets Atribuidos',
-                    //    data: [4, 3, 2, 1],
-                    //    borderColor: 'blue',
-                    //    backgroundColor: 'rgba(0, 0,250,0.8)',
-                    //    tension: 0.3,
-                    //    fill: true,
-                    //    pointRadius: 4,
-                    //    borderWidth: 2    rgba(0, 250, 0,0.8)
-                    //},
                     {
                       label: 'Tickets Resolvidos',
-                      data: [4, 3, 1 ,2],
+                      data: tickets,
                       borderColor: 'blue',
                       backgroundColor: 'rgba(0, 0,250,0.8)',
                       tension: 0.3,

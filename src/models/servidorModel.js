@@ -1213,7 +1213,7 @@ function buscarComparacaoMes(idServidor) {
 
 async function pegarDadosJira(empresa, ano, mes) {
     const mesFormatado = ('0' + mes).slice(-2);
-    const prefixoMensal = `${empresa}/JiraInfo/Jira-${ano}-${mesFormatado}-`
+    const prefixoMensal = `${empresa}/JiraInfo/Jira-${ano}-${mesFormatado}`
     console.log("Buscando dados do Jira com o prefixo: ", prefixoMensal)
 
     const arquivos = await listarArquivosPorPrefixo(BUCKET, prefixoMensal)
@@ -1230,15 +1230,8 @@ async function pegarDadosJira(empresa, ano, mes) {
     });
     const resultadosDiarios = await Promise.all(promessasDeLeitura);
 
-    //const dados = resultadosDiarios.flat()
-    let dados = []
-    for (let i = 0; i < resultadosDiarios.length; i++) {
-        if (resultadosDiarios[i].length === 0) {
-            console.log("Json vazio não inserido")
-        } else {
-            dados.push(resultadosDiarios[i])
-        }
-    }
+    const dados = resultadosDiarios.flat()
+
     return dados
 }
 
