@@ -55,8 +55,10 @@ async function lerArquivo(servidor) {
   const usoMaximoMemoriaPorProcesso = new Map();
   const processosPorIntervalo = new Map();
   
-  // Pegar dados das últimas 24 horas (independente de timezone)
-  const vinteCuatroHorasAtras = agoraSaoPaulo.getTime() - (24 * 60 * 60 * 1000);
+  // Pegar dados da última hora apenas
+  const umaHoraAtras = agoraSaoPaulo.getTime() - (1 * 60 * 60 * 1000);
+  
+  console.log(`[S3Controller] Filtrando dados após: ${new Date(umaHoraAtras).toISOString()}`);
 
   function parseTimestampBR(str) {
     if (!str) return null;
@@ -141,8 +143,8 @@ async function lerArquivo(servidor) {
         ultimoTimestamp = ts;
       }
 
-      // Verificar se está dentro das últimas 24 horas
-      if (ts.getTime() < vinteCuatroHorasAtras) {
+      // Verificar se está dentro da última hora
+      if (ts.getTime() < umaHoraAtras) {
         continue;
       }
 
@@ -168,7 +170,7 @@ async function lerArquivo(servidor) {
   console.log(`[S3Controller] ========== RESUMO DO PROCESSAMENTO ==========`);
   console.log(`[S3Controller] Total de linhas processadas: ${totalLinhasProcessadas}`);
   console.log(`[S3Controller] Linhas com timestamp válido: ${linhasComTimestampValido}`);
-  console.log(`[S3Controller] Linhas dentro do intervalo (24h): ${linhasDentroDoIntervalo}`);
+  console.log(`[S3Controller] Linhas dentro do intervalo (1 hora): ${linhasDentroDoIntervalo}`);
   console.log(`[S3Controller] Processos únicos encontrados: ${usoMaximoMemoriaPorProcesso.size}`);
   
   if (primeiroTimestamp && ultimoTimestamp) {
@@ -181,7 +183,7 @@ async function lerArquivo(servidor) {
 
   if (usoMaximoMemoriaPorProcesso.size === 0) {
     throw new Error(
-      `Nenhum dado encontrado nas últimas 24 horas. ` +
+      `Nenhum dado encontrado na última hora. ` +
       `Total de linhas: ${totalLinhasProcessadas}, ` +
       `Timestamps válidos: ${linhasComTimestampValido}, ` +
       `Dentro do intervalo: ${linhasDentroDoIntervalo}. ` +
