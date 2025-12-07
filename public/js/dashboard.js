@@ -534,6 +534,14 @@ function dash_analista() {
 
 
             var kpiMttr = document.getElementById("kpi-mttr-medio");
+
+            if(dadosS3.mttr > dadosS3.sla){
+                kpiMttr = kpiMttr.style.color = "rgba(255, 0, 0, 1)"
+            } 
+            else if(dadosS3.mttr <= dadosS3.sla){
+                kpiMttr = kpiMttr.style.color = "rgba(0, 255, 0, 1)"
+            }
+
             if (kpiMttr) {
                 kpiMttr.innerHTML = `${dadosS3.mttr} min`
             }
