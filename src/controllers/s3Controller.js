@@ -1,7 +1,6 @@
 const { S3Client } = require('@aws-sdk/client-s3');
 const { ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
 
-// Configuração do cliente S3
 const s3 = new S3Client({
     region: process.env.AWS_REGION || 'us-east-1',
     credentials: {
@@ -18,29 +17,29 @@ async function lerArquivo(servidor) {
   const prefixo = `ViaMobilidade/${servidor}/processos/`;
   const todosArquivos = await listarArquivos(bucket, prefixo);
 
+  if (todosArquivos.length === 0) {
+    throw new Error("Nenhum arquivo encontrado para este servidor");
+  }
+
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
   const ontem = new Date(hoje);
   ontem.setDate(hoje.getDate() - 1);
 
-  const dataHoje = hoje.toISOString().slice(0, 10);
-  const dataOntem = ontem.toISOString().slice(0, 10);
+  const dataHoje = formatarData(hoje);
+  const dataOntem = formatarData(ontem);
 
   const arquivosRecentes = todosArquivos
     .filter(a => {
-      if (!a.Key || a.Key.endsWith('/') || a.Size === 0) {
-        return false;
-      }
+      if (!a.Key || a.Key.endsWith('/') || a.Size === 0) return false;
+      
       const nome = a.Key.split('/').pop();
-      return nome === `ProcessosUso_${dataHoje}.csv` ||
-        nome === `ProcessosUso_${dataOntem}.csv`;
+      return nome.includes(dataHoje) || nome.includes(dataOntem);
     })
     .sort((a, b) => (b.LastModified || 0) - (a.LastModified || 0));
 
-  console.log(`Encontrados ${arquivosRecentes.length} arquivos relevantes (hoje/ontem)`);
-
   if (arquivosRecentes.length === 0) {
-    throw new Error("Nenhum arquivo encontrado na ultima hora");
+    throw new Error("Nenhum arquivo encontrado para hoje ou ontem");
   }
 
   const usoMaximoMemoriaPorProcesso = new Map();
@@ -48,13 +47,10 @@ async function lerArquivo(servidor) {
   const umaHoraAtras = Date.now() - (1 * 60 * 60 * 1000);
 
   function parseTimestampBR(str) {
-    if (!str) {
-      return null;
-    }
+    if (!str) return null;
+    
     const partes = str.trim().split(' ');
-    if (partes.length !== 2) {
-      return null;
-    }
+    if (partes.length !== 2) return null;
 
     const [data, hora] = partes;
     const [ano, mes, dia] = data.split('-').map(Number);
@@ -64,7 +60,6 @@ async function lerArquivo(servidor) {
     return isNaN(date.getTime()) ? null : date;
   }
 
-  // Faz a formatação do horario para o padrão brasileiro e converte para float
   function parseFloatBR(str) {
     if (!str) return 0;
     const limpo = str.toString().trim().replace('.', '').replace(',', '.');
@@ -73,30 +68,15 @@ async function lerArquivo(servidor) {
 
   function gerarChaveIntervalo(ts) {
     if (!ts) return null;
-
-    // Obter o minuto e arredondar para o múltiplo de 5 mais próximo (inferior)
-    const minutoOriginal = ts.getMinutes();
-    const minutoArredondado = Math.floor(minutoOriginal / 5) * 5;
-
-    // Criar a chave no formato "HH:MM"
+    const minutoArredondado = Math.floor(ts.getMinutes() / 5) * 5;
     const hora = ts.getHours().toString().padStart(2, '0');
     const minutoFormatado = String(minutoArredondado).padStart(2, '0');
-
     return `${hora}:${minutoFormatado}`;
   }
 
   for (const arquivo of arquivosRecentes) {
     const texto = await baixarArquivo(bucket, arquivo.Key);
     const linhas = parseCSV(texto);
-
-    console.log("=== DEBUG PRIMEIRAS 3 LINHAS DO CSV ===");
-    linhas.slice(0, 3).forEach((l, i) => {
-      console.log(`Linha ${i}:`, l);
-      console.log("timestamp bruto:", l.timestamp);
-      console.log("timestamp tratado:", l.timestamp?.trim().replace(' ', 'T'));
-      console.log("Date result:", new Date(l.timestamp?.trim().replace(' ', 'T')));
-    });
-    console.log("=== FIM DEBUG ====");
 
     for (const linha of linhas) {
       const tsRaw = linha.TIMESTAMP || linha.timestamp || linha.Timestamp;
@@ -111,13 +91,11 @@ async function lerArquivo(servidor) {
       const nome = (nomeRaw || "Desconhecido").trim();
       const memoria = parseFloatBR(memoriaRaw);
 
-      // Pico de memória
       const atual = usoMaximoMemoriaPorProcesso.get(nome) || 0;
       if (memoria > atual) {
         usoMaximoMemoriaPorProcesso.set(nome, memoria);
       }
 
-      // Por hora
       const intervalo = gerarChaveIntervalo(ts);
       if (intervalo) {
         processosPorHora.set(intervalo, (processosPorHora.get(intervalo) || 0) + 1);
@@ -129,8 +107,14 @@ async function lerArquivo(servidor) {
     throw new Error("Nenhum dado encontrado na ultima hora");
   }
 
-  console.log(`Processados ${usoMaximoMemoriaPorProcesso.size} processos únicos com sucesso!`);
   return montarResultadoDashboard(usoMaximoMemoriaPorProcesso, processosPorHora);
+}
+
+function formatarData(data) {
+  const dia = String(data.getDate()).padStart(2, '0');
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+  return `${ano}-${mes}-${dia}`;
 }
 
 async function listarArquivos(bucket, prefix) {
@@ -151,18 +135,12 @@ async function listarArquivos(bucket, prefix) {
   return todos;
 }
 
-// Baixa o arquivo do S3 e retorna o conteúdo como string
 async function baixarArquivo(bucket, key) {
-  const command = new GetObjectCommand({ 
-    Bucket: bucket, 
-    Key: key 
-  });
-  
+  const command = new GetObjectCommand({ Bucket: bucket, Key: key });
   const response = await s3.send(command);
   return await streamToString(response.Body);
 }
 
-// Converte CSV separado por ; (com ou sem aspas)
 function parseCSV(texto) {
   const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   if (linhas.length === 0) return [];
@@ -179,13 +157,9 @@ function parseCSV(texto) {
     for (let j = 0; j < cabecalho.length; j++) {
       const valor = colunas[j].replace(/^"|"$/g, '').trim();
       registro[cabecalho[j]] = valor;
-      if (valor) {
-        temDados = true;
-      }
+      if (valor) temDados = true;
     }
-    if (temDados && registro.NOME) {
-      dados.push(registro);
-    }
+    if (temDados && registro.NOME) dados.push(registro);
   }
   return dados;
 }
@@ -195,7 +169,7 @@ function parseLinhaCSV(linha) {
   let atual = '';
   let aspas = false;
 
-  for (let char of linha + ';') { 
+  for (let char of linha + ';') {
     if (char === '"') {
       aspas = !aspas;
     } else if (char === ';' && !aspas) {
@@ -208,17 +182,6 @@ function parseLinhaCSV(linha) {
   return valores;
 }
 
-// Pega a hora formatada HH:00 de uma linha
-function extrairHora(linha) {
-  const colunas = Object.keys(linha);
-  const colunaTempo = colunas.find(c => /TIMESTAMP|DATA|HORA/i.test(c));
-  if (!colunaTempo) return null;
-
-  const match = linha[colunaTempo].match(/(\d{1,2}):\d{2}/);
-  return match ? match[1].padStart(2, '0') + ':00' : null;
-}
-
-// Prepara o resultado final para o dashboard
 function montarResultadoDashboard(memoriaMap, horaMap) {
   const top5 = [...memoriaMap.entries()]
     .sort((a, b) => b[1] - a[1])
@@ -248,7 +211,6 @@ function montarResultadoDashboard(memoriaMap, horaMap) {
   };
 }
 
-// Helper para converter stream em string
 async function streamToString(stream) {
   const chunks = [];
   for await (const chunk of stream) {
