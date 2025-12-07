@@ -678,6 +678,8 @@ async function atualizarKPIs(dados) {
     let alertaMaisFrequente = "Sem alertas";
     let corAlerta = "#51cf66";
     let temAlertas = false;
+    let statusComponente = "Normal";
+    let corStatus = "#51cf66";
 
     if (alertasReais) {
         const dadosProcessados = processarDadosParaPrevisao(alertasReais, periodo);
@@ -692,9 +694,53 @@ async function atualizarKPIs(dados) {
 
             if (totalAlertas > 0) {
                 temAlertas = true;
-                if (totalAltos > totalMedios && totalAltos > totalBaixos) { alertaMaisFrequente = "Alto"; corAlerta = "#ff6b6b"; }
-                else if (totalMedios > totalBaixos) { alertaMaisFrequente = "Médio"; corAlerta = "#ff922b"; }
-                else if (totalBaixos > 0) { alertaMaisFrequente = "Baixo"; corAlerta = "#ffd43b"; }
+                
+                // Determinar o alerta mais frequente
+                if (totalAltos > totalMedios && totalAltos > totalBaixos) { 
+                    alertaMaisFrequente = "Alto"; 
+                    corAlerta = "#ff6b6b"; 
+                }
+                else if (totalMedios > totalBaixos) { 
+                    alertaMaisFrequente = "Médio"; 
+                    corAlerta = "#ff922b"; 
+                }
+                else if (totalBaixos > 0) { 
+                    alertaMaisFrequente = "Baixo"; 
+                    corAlerta = "#ffd43b"; 
+                }
+
+                // Determinar status baseado no crescimento dos alertas
+                const historicoAltos = dadosProcessados.alto.slice(0,2) || [0,0];
+                const historicoMedios = dadosProcessados.medio.slice(0,2) || [0,0];
+                const historicoBaixos = dadosProcessados.baixo.slice(0,2) || [0,0];
+                
+                const totalHistoricoAltos = historicoAltos.reduce((a,b)=>a+b,0);
+                const totalHistoricoMedios = historicoMedios.reduce((a,b)=>a+b,0);
+                const totalHistoricoBaixos = historicoBaixos.reduce((a,b)=>a+b,0);
+                
+                const crescimentoAltos = totalAltos > 0 ? 
+                    ((totalAltos - totalHistoricoAltos) / totalHistoricoAltos) * 100 : 0;
+                const crescimentoMedios = totalMedios > 0 ? 
+                    ((totalMedios - totalHistoricoMedios) / totalHistoricoMedios) * 100 : 0;
+                const crescimentoBaixos = totalBaixos > 0 ? 
+                    ((totalBaixos - totalHistoricoBaixos) / totalHistoricoBaixos) * 100 : 0;
+                
+                const maiorCrescimento = Math.max(crescimentoAltos, crescimentoMedios, crescimentoBaixos);
+                
+                // Definir status baseado no crescimento
+                if (maiorCrescimento > 150 && totalAltos >= 100) {
+                    statusComponente = "Crítico";
+                    corStatus = "#ff6b6b";
+                } else if (maiorCrescimento > 20 || totalMedios >= 3 || totalAltos >= 1) {
+                    statusComponente = "Atenção";
+                    corStatus = "#ff922b";
+                } else {
+                    statusComponente = "Normal";
+                    corStatus = "#51cf66";
+                }
+            } else {
+                statusComponente = "Normal";
+                corStatus = "#51cf66";
             }
         }
     }
@@ -704,16 +750,11 @@ async function atualizarKPIs(dados) {
     const periodoTexto = periodo === "mensal" ? "Mensal" : "Semanal";
     const corMedia = determinarCorPorMetrica(Number(mediaUso), componenteAtual);
 
-    let statusComponente = "Normal";
-    if (Number(mediaUso) >= metricasAlerta[componenteAtual].medio) statusComponente = "Atenção";
-    if (Number(mediaUso) >= metricasAlerta[componenteAtual].alto) statusComponente = "Crítico";
-    const corStatus = determinarCorPorMetrica(Number(mediaUso), componenteAtual);
-
     document.getElementById("kpisContainer").innerHTML = `
-        <div class="KPI"><h2>Previsão de Uso Médio de ${componenteAtual} ${periodoTexto}</h2><p class="valor-kpi" style="color:${corMedia}">${mediaUso}%</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">Status: ${statusComponente}</p></div>
+        <div class="KPI"><h2>Previsão de Uso Médio de ${componenteAtual} ${periodoTexto}</h2><p class="valor-kpi" style="color:${corMedia}">${mediaUso}%</p></div>
         <div class="KPI"><h2>Taxa de Crescimento Projetada</h2><p class="descricao-kpi">${formatarData(dataInicio)} → ${formatarData(dataFim)}</p><p class="valor-kpi" style="color:${corTendencia}">${crescimentoPercentual > 0 ? '+' : ''}${crescimentoPercentual.toFixed(1)}%</p><p class="tendencia" style="color:${corTendencia}">${iconeTendencia || ''} ${tendencia === "crescendo" ? "Crescendo" : tendencia === "decrescendo" ? "Decrescendo" : "Estável"}</p></div>
         <div class="KPI"><h2>Previsão do Alerta Mais Frequente</h2><p class="valor-kpi" style="color:${corAlerta}">${alertaMaisFrequente}</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">${temAlertas ? 'Baseado nas previsões futuras' : 'Sem alertas previstos'}</p></div>
-        <div class="KPI"><h2>Status do Componente</h2><p class="valor-kpi" style="color:${corStatus}">${statusComponente}</p></div>
+        <div class="KPI"><h2>Status do Componente</h2><p class="valor-kpi" style="color:${corStatus}">${statusComponente}</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">Baseado no crescimento de alertas</p></div>
     `;
 }
 
@@ -755,12 +796,19 @@ function atualizarKPIsGerais(dados) {
     const corMedia = determinarCorPorMetrica(mediaGeral, 'cpu');
     const corMaiorComponente = determinarCorPorMetrica(maiorValorPrevisao, maiorComponentePrevisao);
     const corTextoMaiorComponente = cores[maiorComponentePrevisao];
-    const corCrescimentoLatencia = crescimentoLatencia.tendencia === 'crescendo' ? '#rgb(65, 94, 243)' : crescimentoLatencia.tendencia === 'decrescendo' ? '#rgb(65, 94, 243)' : 'rgb(65, 94, 243)';
+    const corCrescimentoLatencia = crescimentoLatencia.tendencia === 'crescendo' ? 'rgb(244, 67, 54)' : crescimentoLatencia.tendencia === 'decrescendo' ? 'rgb(76, 175, 80)' : 'rgb(65, 94, 243)';
 
+    // Para o status geral, vamos usar a tendência média e latência como referência
     let statusGeral = "Normal";
-    if (mediaGeral >= metricasAlerta.cpu.medio) statusGeral = "Atenção";
-    if (mediaGeral >= metricasAlerta.cpu.alto) statusGeral = "Crítico";
-    const corStatus = determinarCorPorMetrica(mediaGeral, 'cpu');
+    let corStatus = "#51cf66";
+    
+    if (crescimentoMedio > 20 || crescimentoLatencia.crescimento > 30) {
+        statusGeral = "Crítico";
+        corStatus = "#ff6b6b";
+    } else if (crescimentoMedio > 10 || crescimentoLatencia.crescimento > 15) {
+        statusGeral = "Atenção";
+        corStatus = "#ff922b";
+    }
 
     const hoje = new Date();
     const dataFim = new Date(hoje);
@@ -769,8 +817,8 @@ function atualizarKPIsGerais(dados) {
     document.getElementById("kpisContainer").innerHTML = `
         <div class="KPI"><h2>Uso Médio Geral ${periodo === "mensal" ? "Mensal" : "Semanal"}</h2><p class="valor-kpi" style="color:${corMedia}">${mediaGeral.toFixed(1)}%</p></div>
         <div class="KPI"><h2>Componente com Maior Uso na Previsão</h2><p class="valor-kpi" style="color:${corTextoMaiorComponente}">${nomes[maiorComponentePrevisao]}</p><p class="tendencia" style="color:${corMaiorComponente}">${maiorValorPrevisao.toFixed(1)}%</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">Previsão de pico</p></div>
-        <div class="KPI"><h2>Taxa de Crescimento da Latência</h2><p class="descricao-kpi">${formatarData(hoje)} → ${formatarData(dataFim)}</p><p class="valor-kpi" style="color:rgba(47, 79, 242, 1)">${crescimentoLatencia.crescimento > 0 ? '+' : ''}${crescimentoLatencia.crescimento.toFixed(1)}%</p><p class="tendencia" style="color:${corCrescimentoLatencia}">${crescimentoLatencia.tendencia === "crescendo" ? "📈" : crescimentoLatencia.tendencia === "decrescendo" ? "📉" : ""} ${crescimentoLatencia.tendencia === "crescendo" ? "Crescendo" : crescimentoLatencia.tendencia === "decrescendo" ? "Decrescendo" : "Estável"}</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">${crescimentoLatencia.inicio.toFixed(1)}ms → ${crescimentoLatencia.fim.toFixed(1)}ms</p></div>
-        <div class="KPI"><h2>Status Geral do Servidor</h2><p class="valor-kpi" style="color:${corStatus}">${statusGeral}</p></div>
+        <div class="KPI"><h2>Taxa de Crescimento da Latência</h2><p class="descricao-kpi">${formatarData(hoje)} → ${formatarData(dataFim)}</p><p class="valor-kpi" style="color:${corCrescimentoLatencia}">${crescimentoLatencia.crescimento > 0 ? '+' : ''}${crescimentoLatencia.crescimento.toFixed(1)}%</p><p class="tendencia" style="color:${corCrescimentoLatencia}">${crescimentoLatencia.tendencia === "crescendo" ? "📈" : crescimentoLatencia.tendencia === "decrescendo" ? "📉" : ""} ${crescimentoLatencia.tendencia === "crescendo" ? "Crescendo" : crescimentoLatencia.tendencia === "decrescendo" ? "Decrescendo" : "Estável"}</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">${crescimentoLatencia.inicio.toFixed(1)}ms → ${crescimentoLatencia.fim.toFixed(1)}ms</p></div>
+        <div class="KPI"><h2>Status Geral do Servidor</h2><p class="valor-kpi" style="color:${corStatus}">${statusGeral}</p><p class="descricao-kpi" style="font-size:12px;margin-top:5px;">Baseado no crescimento médio e latência</p></div>
     `;
 }
 
