@@ -1,6 +1,15 @@
-const AWS = require('aws-sdk');
-AWS.config.update({ region: process.env.AWS_REGION });
-const s3 = new AWS.S3();
+const { S3Client } = require('@aws-sdk/client-s3');
+const { ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
+
+// Configuração do cliente S3
+const s3 = new S3Client({
+    region: process.env.AWS_REGION || 'us-east-1',
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        sessionToken: process.env.AWS_SESSION_TOKEN || undefined
+    }
+});
 
 async function lerArquivo(servidor) {
   if (!servidor) throw new Error("Servidor não informado");
@@ -55,7 +64,7 @@ async function lerArquivo(servidor) {
     return isNaN(date.getTime()) ? null : date;
   }
 
-  //Faz a formatação do horario para o padrão brasileiro e converte para float
+  // Faz a formatação do horario para o padrão brasileiro e converte para float
   function parseFloatBR(str) {
     if (!str) return 0;
     const limpo = str.toString().trim().replace('.', '').replace(',', '.');
@@ -124,33 +133,36 @@ async function lerArquivo(servidor) {
   return montarResultadoDashboard(usoMaximoMemoriaPorProcesso, processosPorHora);
 }
 
-module.exports = { lerArquivo };
-
-
 async function listarArquivos(bucket, prefix) {
   let todos = [];
   let token = null;
   do {
-    const resultado = await s3.listObjectsV2({
+    const command = new ListObjectsV2Command({
       Bucket: bucket,
       Prefix: prefix,
       MaxKeys: 1000,
       ContinuationToken: token || undefined
-    }).promise();
+    });
 
+    const resultado = await s3.send(command);
     todos = todos.concat(resultado.Contents || []);
     token = resultado.NextContinuationToken;
   } while (token);
   return todos;
 }
 
-//baixa o arquivo do S3 e retorna o conteúdo como string
+// Baixa o arquivo do S3 e retorna o conteúdo como string
 async function baixarArquivo(bucket, key) {
-  const { Body } = await s3.getObject({ Bucket: bucket, Key: key }).promise();
-  return Body.toString('utf-8').trim();
+  const command = new GetObjectCommand({ 
+    Bucket: bucket, 
+    Key: key 
+  });
+  
+  const response = await s3.send(command);
+  return await streamToString(response.Body);
 }
 
-//Converte CSV separado por ; (com ou sem aspas)
+// Converte CSV separado por ; (com ou sem aspas)
 function parseCSV(texto) {
   const linhas = texto.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   if (linhas.length === 0) return [];
@@ -178,13 +190,12 @@ function parseCSV(texto) {
   return dados;
 }
 
-//faz todo o trabalho de tratamento de cada linha CSV com ; e aspas
 function parseLinhaCSV(linha) {
   const valores = [];
   let atual = '';
   let aspas = false;
 
-  for (let char of linha + ';') { // adiciona ; no final pra fechar o último campo
+  for (let char of linha + ';') { 
     if (char === '"') {
       aspas = !aspas;
     } else if (char === ';' && !aspas) {
@@ -197,7 +208,7 @@ function parseLinhaCSV(linha) {
   return valores;
 }
 
-//pega a hora formatada HH:00 de uma linha
+// Pega a hora formatada HH:00 de uma linha
 function extrairHora(linha) {
   const colunas = Object.keys(linha);
   const colunaTempo = colunas.find(c => /TIMESTAMP|DATA|HORA/i.test(c));
@@ -207,15 +218,13 @@ function extrairHora(linha) {
   return match ? match[1].padStart(2, '0') + ':00' : null;
 }
 
-//prepara o resultado final para o dashboard
+// Prepara o resultado final para o dashboard
 function montarResultadoDashboard(memoriaMap, horaMap) {
-  //Top 5 processos que mais consumiram memória
   const top5 = [...memoriaMap.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
 
   const horariosIntervalos = [...horaMap.keys()].sort((a, b) => {
-    // Converte HH:MM para um valor numérico de minutos para garantir a ordenação cronológica
     const [hA, mA] = a.split(':').map(Number);
     const [hB, mB] = b.split(':').map(Number);
     return (hA * 60 + mA) - (hB * 60 + mB);
@@ -238,3 +247,14 @@ function montarResultadoDashboard(memoriaMap, horaMap) {
     processoMaisFrequente: top5[0]?.[0] || 'N/A'
   };
 }
+
+// Helper para converter stream em string
+async function streamToString(stream) {
+  const chunks = [];
+  for await (const chunk of stream) {
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks).toString('utf-8');
+}
+
+module.exports = { lerArquivo };

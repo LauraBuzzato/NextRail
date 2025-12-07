@@ -1,5 +1,5 @@
 var database = require("../database/config");
-require("dotenv").config({ path: ".env.dev" });
+require("dotenv").config({ path: ".env." });
 const { S3Client, GetObjectCommand, ListObjectsV2Command } = require("@aws-sdk/client-s3");
 
 const BUCKET = process.env.S3_BUCKET;
