@@ -3,23 +3,16 @@ var database = require("../database/config")
 function autenticar(email, senha) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function entrar(): ", email, senha)
     var instrucaoSql = `
-   SELECT u.id AS id, u.nome AS nome, u.email AS email, c.nome AS cargo, u.fk_empresa AS empresaId, e.razao_social AS nomeEmpresa
+    SELECT u.id AS id, u.nome AS nome, u.email AS email, u.fk_cargo AS cargoId, c.nome AS cargo, u.fk_empresa AS empresaId, e.razao_social AS nomeEmpresa
     FROM usuario u
     JOIN cargo c ON u.fk_cargo = c.id
     JOIN empresa e on u.fk_empresa = e.id
     WHERE u.email = '${email}' AND u.senha = MD5('${senha}');
 `;
 
-    var instrucaoSqlSegura = `
-    SELECT u.id AS id, u.nome AS nome, u.email AS email, c.nome AS cargo, u.fk_empresa AS empresaId
-    FROM usuario u
-    JOIN cargo c ON u.fk_cargo = c.id
-    WHERE u.email = '${email}');
-    `
-    console.log("Executando a instrução SQL: \n" + instrucaoSqlSegura);
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
-
 
 function cadastrar(nome, cpf, email, senha, cargo, fkEmpresa) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, email, senha, fkEmpresa);
@@ -27,10 +20,7 @@ function cadastrar(nome, cpf, email, senha, cargo, fkEmpresa) {
         INSERT INTO usuario (nome, cpf, email, senha, fk_cargo, fk_empresa) VALUES ('${nome}', '${cpf}', '${email}', MD5('${senha}'), ${cargo}, ${fkEmpresa});
     `;
 
-    var instrucaoSqlSegura = `
-        INSERT INTO usuario (nome, cpf, email, senha, fk_cargo, fk_empresa) VALUES ('${nome}', '${cpf}', '${email}', ${cargo}, ${fkEmpresa});
-    `
-    console.log("Executando a instrução SQL: \n" + instrucaoSqlSegura);
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
 
@@ -71,7 +61,6 @@ function carregarDados(id) {
 }
 
 function atualizar(nome, cpf, email, senha, cargo, fkEmpresa, id) {
-
     var instrucaoSql = `
         UPDATE usuario
 SET nome = '${nome}', cpf = '${cpf}', email = '${email}', senha = '${senha}', fk_cargo = ${cargo}

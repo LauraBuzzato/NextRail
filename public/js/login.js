@@ -18,46 +18,45 @@ function entrar() {
     console.log("FORM SENHA: ", senhaVar);
 
     fetch("/usuarios/autenticar", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        emailServer: emailVar,
-        senhaServer: senhaVar,
-    })
-}).then(function (resposta) {
-    console.log("ESTOU NO THEN DO entrar()!");
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            emailServer: emailVar,
+            senhaServer: senhaVar,
+        })
+    }).then(function (resposta) {
+        console.log("ESTOU NO THEN DO entrar()!");
 
-    if (resposta.ok) {
-        resposta.json().then(json => {
-            console.log(json);
-            sessionStorage.EMAIL_USUARIO = json.email;
-            sessionStorage.NOME_USUARIO = json.nome;
-            sessionStorage.ID_USUARIO = json.id;
-            sessionStorage.CARGO_USUARIO = json.cargo;
-            sessionStorage.ID_EMPRESA = json.empresaId;
-            sessionStorage.NOME_EMPRESA = json.nomeEmpresa;
+        if (resposta.ok) {
+            resposta.json().then(json => {
+                console.log(json);
+                sessionStorage.EMAIL_USUARIO = json.email;
+                sessionStorage.NOME_USUARIO = json.nome;
+                sessionStorage.ID_USUARIO = json.id;
+                sessionStorage.CARGO_ID = json.cargoId;
+                sessionStorage.CARGO_NOME = json.cargo;
+                sessionStorage.ID_EMPRESA = json.empresaId;
+                sessionStorage.NOME_EMPRESA = json.nomeEmpresa;
 
-            setTimeout(() => {
-                if (json.cargo === "Suporte técnico" || json.cargo === "Analista de infraestrutura") {
-                    window.location = "./selecionarServidor.html"; 
-                } else {
-                    window.location = "./usuarios.html"; 
-                }
-            }, 1000);
-        });
-
-    } else {
-        resposta.text().then(texto => {
-            console.error(texto);
-            finalizarAguardar(texto);
-        });
-    }
-
-}).catch(function (erro) {
-    console.log(erro);
-});
+                setTimeout(() => {
+                    if (json.cargoId === 3 || json.cargoId === 2) {
+                        window.location = "./selecionarServidor.html"; 
+                    } else {
+                        window.location = "./usuarios.html"; 
+                    }
+                }, 1000);
+            });
+        } else {
+            resposta.text().then(texto => {
+                console.error(texto);
+                finalizarAguardar(texto);
+            });
+        }
+    }).catch(function (erro) {
+        console.log(erro);
+    });
 
     return false;
 }
