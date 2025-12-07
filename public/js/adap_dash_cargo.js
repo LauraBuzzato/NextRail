@@ -330,6 +330,12 @@ async function atualizar(a) {
         <div id="kpi-componente-mais-impactado" style="font-size: 40px;"></div>
       </div>
 
+
+    <div class="kpi-box">
+        <span class="kpi-title" id="titulo-kpi-grav"></span>
+        <div id="kpi-gravidade-mais-frequente"></div>
+      </div>
+
       <div class="kpi-box">
     <span class="kpi-title">
         
@@ -354,10 +360,7 @@ async function atualizar(a) {
         <h4 id="metrica-sla"></h4>
       </div>
 
-      <div class="kpi-box">
-        <span class="kpi-title" id="titulo-kpi-grav"></span>
-        <div id="kpi-gravidade-mais-frequente"></div>
-      </div>
+      
     </section>
     
     
