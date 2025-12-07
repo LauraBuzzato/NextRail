@@ -614,6 +614,7 @@ let graficoRam;
 let graficoCpu;
 let graficoDisco;
 let indiceAtual = 0;
+const tempoGraficoTabela = 130000;
 
 function gerarDadoAleatorio() {
     return Math.floor(Math.random() * 100);
@@ -959,7 +960,7 @@ async function kpi_suporte(componente) {
     } catch (error) {
         console.error('Erro ao criar gráfico ram:', error);
     } finally {
-        setTimeout(() => kpi_suporte(componente), 190000);
+        setTimeout(() => kpi_suporte(componente), tempoGraficoTabela);
     }
 }
     if (componente == 'cpu') {
@@ -1096,7 +1097,7 @@ async function kpi_suporte(componente) {
     } catch (error) {
         console.error('Erro ao criar gráfico cpu:', error);
     } finally {
-        setTimeout(() => kpi_suporte(componente), 190000);
+        setTimeout(() => kpi_suporte(componente), tempoGraficoTabela);
     }
 }
     if (componente == 'disco') {
@@ -1233,7 +1234,7 @@ async function kpi_suporte(componente) {
     } catch (error) {
         console.error('Erro ao criar gráfico disco:', error);
     } finally {
-        setTimeout(() => kpi_suporte(componente), 190000);
+        setTimeout(() => kpi_suporte(componente), tempoGraficoTabela);
         esconderLoader()
     }
 }
@@ -1329,6 +1330,8 @@ async function kpi_suporte(componente) {
     } catch (erro) {
         console.log("Erro: ", erro)
     } finally {
-        setTimeout(() => criarTabela(), 190000);
+        setTimeout(() => criarTabela(), tempoGraficoTabela);
     }
 }
+console.log(localStorage)
+console.log(sessionStorage)
