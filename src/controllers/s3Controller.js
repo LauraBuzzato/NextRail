@@ -14,13 +14,22 @@ async function lerArquivo(servidor) {
   
   const todosArquivos = await listarArquivos(bucket, prefixo);
 
-  const hoje = new Date();
+  // Data atual em São Paulo (UTC-3)
+  const agora = new Date();
+  const agoraSaoPaulo = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+  
+  const hoje = new Date(agoraSaoPaulo);
   hoje.setHours(0, 0, 0, 0);
   const ontem = new Date(hoje);
   ontem.setDate(hoje.getDate() - 1);
 
   const dataHoje = hoje.toISOString().slice(0, 10);
   const dataOntem = ontem.toISOString().slice(0, 10);
+
+  console.log(`[S3Controller] Timezone Info:`);
+  console.log(`  - Hora UTC: ${agora.toISOString()}`);
+  console.log(`  - Hora São Paulo: ${agoraSaoPaulo.toISOString()}`);
+  console.log(`  - Buscando arquivos de: ${dataOntem} e ${dataHoje}`);
 
   const arquivosRecentes = todosArquivos
     .filter(a => {
@@ -33,15 +42,21 @@ async function lerArquivo(servidor) {
     })
     .sort((a, b) => (b.LastModified || 0) - (a.LastModified || 0));
 
-  console.log(`[S3Controller] Encontrados ${arquivosRecentes.length} arquivos relevantes (hoje/ontem)`);
+  console.log(`[S3Controller] Encontrados ${arquivosRecentes.length} arquivos relevantes`);
+  
+  if (arquivosRecentes.length > 0) {
+    console.log(`[S3Controller] Arquivos encontrados:`, arquivosRecentes.map(a => a.Key));
+  }
 
   if (arquivosRecentes.length === 0) {
-    throw new Error(`Nenhum arquivo encontrado para ${servidor} nas datas ${dataHoje} ou ${dataOntem}`);
+    throw new Error(`Nenhum arquivo encontrado para ${servidor} nas datas ${dataOntem} ou ${dataHoje}`);
   }
 
   const usoMaximoMemoriaPorProcesso = new Map();
   const processosPorIntervalo = new Map();
-  const umaHoraAtras = Date.now() - (1 * 60 * 60 * 1000);
+  
+  // Pegar dados das últimas 24 horas (independente de timezone)
+  const vinteCuatroHorasAtras = agoraSaoPaulo.getTime() - (24 * 60 * 60 * 1000);
 
   function parseTimestampBR(str) {
     if (!str) return null;
@@ -53,8 +68,12 @@ async function lerArquivo(servidor) {
     const [ano, mes, dia] = data.split('-').map(Number);
     const [h, m, s] = hora.split(':').map(Number);
 
+    // Criar data assumindo que o CSV está em horário de São Paulo
     const date = new Date(ano, mes - 1, dia, h, m, s || 0);
-    return isNaN(date.getTime()) ? null : date;
+    
+    if (isNaN(date.getTime())) return null;
+    
+    return date;
   }
 
   function parseFloatBR(str) {
@@ -75,6 +94,12 @@ async function lerArquivo(servidor) {
     return `${hora}:${minutoFormatado}`;
   }
 
+  let totalLinhasProcessadas = 0;
+  let linhasComTimestampValido = 0;
+  let linhasDentroDoIntervalo = 0;
+  let primeiroTimestamp = null;
+  let ultimoTimestamp = null;
+
   // Processar cada arquivo
   for (const arquivo of arquivosRecentes) {
     console.log(`[S3Controller] Processando arquivo: ${arquivo.Key}`);
@@ -82,10 +107,12 @@ async function lerArquivo(servidor) {
     const texto = await baixarArquivo(bucket, arquivo.Key);
     const linhas = parseCSV(texto);
 
+    totalLinhasProcessadas += linhas.length;
     console.log(`[S3Controller] Linhas parseadas: ${linhas.length}`);
     
     if (linhas.length > 0) {
-      console.log("[S3Controller] Exemplo de primeira linha:", linhas[0]);
+      console.log("[S3Controller] Exemplo de primeira linha:", JSON.stringify(linhas[0]));
+      console.log("[S3Controller] Colunas disponíveis:", Object.keys(linhas[0]));
     }
 
     for (const linha of linhas) {
@@ -96,7 +123,30 @@ async function lerArquivo(servidor) {
       if (!tsRaw) continue;
 
       const ts = parseTimestampBR(tsRaw);
-      if (!ts || ts.getTime() < umaHoraAtras) continue;
+      
+      if (!ts) {
+        if (linhasComTimestampValido === 0) {
+          console.log(`[S3Controller] Exemplo de timestamp inválido: "${tsRaw}"`);
+        }
+        continue;
+      }
+      
+      linhasComTimestampValido++;
+
+      // Rastrear primeiro e último timestamp
+      if (!primeiroTimestamp || ts.getTime() < primeiroTimestamp.getTime()) {
+        primeiroTimestamp = ts;
+      }
+      if (!ultimoTimestamp || ts.getTime() > ultimoTimestamp.getTime()) {
+        ultimoTimestamp = ts;
+      }
+
+      // Verificar se está dentro das últimas 24 horas
+      if (ts.getTime() < vinteCuatroHorasAtras) {
+        continue;
+      }
+
+      linhasDentroDoIntervalo++;
 
       const nome = (nomeRaw || "Desconhecido").trim();
       const memoria = parseFloatBR(memoriaRaw);
@@ -115,11 +165,30 @@ async function lerArquivo(servidor) {
     }
   }
 
+  console.log(`[S3Controller] ========== RESUMO DO PROCESSAMENTO ==========`);
+  console.log(`[S3Controller] Total de linhas processadas: ${totalLinhasProcessadas}`);
+  console.log(`[S3Controller] Linhas com timestamp válido: ${linhasComTimestampValido}`);
+  console.log(`[S3Controller] Linhas dentro do intervalo (24h): ${linhasDentroDoIntervalo}`);
+  console.log(`[S3Controller] Processos únicos encontrados: ${usoMaximoMemoriaPorProcesso.size}`);
+  
+  if (primeiroTimestamp && ultimoTimestamp) {
+    console.log(`[S3Controller] Range de timestamps no CSV:`);
+    console.log(`  - Primeiro: ${primeiroTimestamp.toISOString()}`);
+    console.log(`  - Último: ${ultimoTimestamp.toISOString()}`);
+    console.log(`  - Diferença para agora: ${Math.round((agoraSaoPaulo.getTime() - ultimoTimestamp.getTime()) / (1000 * 60))} minutos`);
+  }
+  console.log(`[S3Controller] =============================================`);
+
   if (usoMaximoMemoriaPorProcesso.size === 0) {
-    throw new Error("Nenhum dado encontrado na última hora");
+    throw new Error(
+      `Nenhum dado encontrado nas últimas 24 horas. ` +
+      `Total de linhas: ${totalLinhasProcessadas}, ` +
+      `Timestamps válidos: ${linhasComTimestampValido}, ` +
+      `Dentro do intervalo: ${linhasDentroDoIntervalo}. ` +
+      (primeiroTimestamp ? `Dados mais recentes de ${Math.round((agoraSaoPaulo.getTime() - ultimoTimestamp.getTime()) / (1000 * 60))} minutos atrás.` : '')
+    );
   }
 
-  console.log(`[S3Controller] Processados ${usoMaximoMemoriaPorProcesso.size} processos únicos`);
   return montarResultadoDashboard(usoMaximoMemoriaPorProcesso, processosPorIntervalo);
 }
 
@@ -160,7 +229,9 @@ function parseCSV(texto) {
   for (let i = 1; i < linhas.length; i++) {
     const colunas = parseLinhaCSV(linhas[i]);
     
-    if (colunas.length !== cabecalho.length) continue;
+    if (colunas.length !== cabecalho.length) {
+      continue;
+    }
 
     const registro = {};
     let temDados = false;
@@ -171,7 +242,7 @@ function parseCSV(texto) {
       if (valor) temDados = true;
     }
     
-    if (temDados && registro.NOME) {
+    if (temDados) {
       dados.push(registro);
     }
   }
@@ -199,11 +270,12 @@ function parseLinhaCSV(linha) {
 }
 
 function montarResultadoDashboard(memoriaMap, intervaloMap) {
-
+  // Top 5 processos que mais consumiram memória
   const top5 = [...memoriaMap.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5);
 
+  // Ordenar intervalos cronologicamente
   const horariosIntervalos = [...intervaloMap.keys()].sort((a, b) => {
     const [hA, mA] = a.split(':').map(Number);
     const [hB, mB] = b.split(':').map(Number);
@@ -216,6 +288,10 @@ function montarResultadoDashboard(memoriaMap, intervaloMap) {
   const soma = quantidades.reduce((a, b) => a + b, 0);
   const media = totalIntervalos > 0 ? Math.round(soma / totalIntervalos) : 0;
   const maximo = totalIntervalos > 0 ? Math.max(...quantidades) : 0;
+
+  console.log(`[S3Controller] Dashboard montado com sucesso!`);
+  console.log(`[S3Controller] Top 5 processos:`, top5.map(([nome]) => nome));
+  console.log(`[S3Controller] Intervalos de tempo: ${horariosIntervalos.length}`);
 
   return {
     labelsMemoria: top5.map(([nome]) => nome),
