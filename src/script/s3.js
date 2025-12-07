@@ -3,15 +3,7 @@ const Papa = require('papaparse');
 
 AWS.config.update({ region: process.env.AWS_REGION });
 
-const s3 = new S3Client({
-    region: process.env.AWS_DEFAULT_REGION,
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        sessionToken: process.env.AWS_SESSION_TOKEN
-    },
-    useAccelerateEndpoint: true,
-});
+const s3 = new S3Client();
 
 async function lerArquivo(req, res) {
   try {
