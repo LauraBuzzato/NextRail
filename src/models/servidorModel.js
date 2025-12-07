@@ -11,7 +11,8 @@ const s3 = new S3Client({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
         sessionToken: process.env.AWS_SESSION_TOKEN
-    }
+    },
+    useAccelerateEndpoint: true,
 });
 
 function listarEmpresas() {

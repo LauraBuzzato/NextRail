@@ -1,6 +1,7 @@
 let meuChart = null;
 let meuChart2 = null;
 let dadosUso = null;
+
 function adicionarNomeServidor() {
     nomeServidor.innerHTML = localStorage.NOME_SERVIDOR
 }
