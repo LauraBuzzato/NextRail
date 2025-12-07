@@ -536,14 +536,15 @@ function dash_analista() {
             var kpiMttr = document.getElementById("kpi-mttr-medio");
 
             if(dadosS3.mttr > dadosS3.sla){
-                kpiMttr = kpiMttr.style.color = "rgba(255, 0, 0, 1)"
+                kpiMttr.style.color = "rgba(255, 0, 0, 1)"
             } 
             else if(dadosS3.mttr <= dadosS3.sla){
-                kpiMttr = kpiMttr.style.color = "rgba(0, 255, 0, 1)"
+                kpiMttr.style.color = "rgba(0, 255, 0, 1)"
             }
 
             if (kpiMttr) {
-                kpiMttr.innerHTML = `${dadosS3.mttr} min`
+                kpiMttr.textContent = `${dadosS3.mttr} min`
+                console.log(dadosS3.mttr)
             }
 
 
@@ -551,7 +552,8 @@ function dash_analista() {
 
             var sla = document.getElementById("metrica-sla")
             if(sla){
-                sla.innerHTML = `(SLA: < ${dadosS3.sla} min)` 
+                sla.innerHTML = `(SLA: < ${dadosS3.sla} min)`
+                console.log(dadosS3.sla) 
             }
 
 
