@@ -19,7 +19,9 @@ let select = null
 let kpi = null
 let alerta_sla = null
 
-let selectAno = null
+const dt = new Date();
+
+let selectAno = dt.getFullYear();
 let selectMes = null
 let selectServidor = null
 

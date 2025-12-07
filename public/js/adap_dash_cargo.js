@@ -4,7 +4,6 @@ function carregarCSS(caminho) {
     cssAntigo.remove();
   }
 
-  // Adicionar novo CSS
   const link = document.createElement('link');
   link.id = 'css-dashboard';
   link.rel = 'stylesheet';
@@ -64,7 +63,7 @@ function inicializarDashboard() {
 }
 
 function arrumarMenuDash() {
-  if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
+  if (sessionStorage.CARGO_ID == "2") {
     DIVmenu.innerHTML = `<ul class="link-items">
       <div class="logo-container">
         <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
@@ -155,11 +154,6 @@ function inicializarGraficosSuporte() {
   setTimeout(() => {
     if (typeof dash_suporte === 'function') {
       console.log('Inicializando gráficos do suporte...');
-      /*try {
-        dash_suporte();
-      } catch (error) {
-        console.error('Erro ao inicializar gráficos do suporte:', error);
-      }*/
       try {
         kpi_suporte('ram');
       } catch (error) {
@@ -179,11 +173,6 @@ function inicializarGraficosSuporte() {
       console.error('dash_suporte não disponível');
       setTimeout(() => {
         if (typeof dash_suporte === 'function') {
-          /*try {
-            dash_suporte();
-          } catch (error) {
-            console.error('Erro na segunda tentativa do suporte:', error);
-          }*/
           try {
             kpi_suporte('ram');
           } catch (error) {
@@ -244,15 +233,12 @@ async function atualizar(a) {
   const dash_analista = document.getElementById("div_analista");
   const dash_suporte = document.getElementById("div_suporte");
 
-  // Limpar conteúdos anteriores
   dash_analista.innerHTML = '';
   dash_suporte.innerHTML = '';
 
-  if (a === true) { // SUPORTE TÉCNICO
-    // Desabilitar CSS principal
+  if (a === true) {
     desabilitarCSSPrincipal();
 
-    // Inserir HTML do suporte
     dash_suporte.innerHTML = `
     <div class="container-pagina">
       <h1 class="bem-vindo">Uso dos Componentes: ${localStorage.NOME_SERVIDOR}</span></h1>
@@ -273,11 +259,6 @@ async function atualizar(a) {
         </div>
 
           <div class="graficos-container">
-            <!--<div class="grafico-box">
-    <div class="grafico-header">Leituras mais frequentes nas últimas 24 horas</div>
-    <canvas id="graficoSuporte"></canvas>
-  </div>-->
-
           <div class="container-tabela-dinamica">
             <div class="tabela-titulo">Histórico de alertas dos últimos 7 dias</div>
             <div class="legenda">
@@ -318,9 +299,7 @@ async function atualizar(a) {
       
     }, 200);
 
-  } else { // ANALISTA DE INFRAESTRUTURA
-    // ... (o resto do código do analista permanece igual)
-    // IMPORTANTE: Primeiro habilitar o CSS principal
+  } else {
     habilitarCSSPrincipal();
 
     dash_analista.innerHTML = `
@@ -337,7 +316,6 @@ async function atualizar(a) {
 
       </div>
     
-    <!-- KPIs -->
     <section class="kpis">
 
       <div class="kpi-box">
@@ -416,7 +394,6 @@ async function atualizar(a) {
       carregarCSS('./css/styleAnalista.css');
     }, 100);
 
-
     setTimeout(() => {
       inicializarGraficosAnalista();
     }, 300);
@@ -424,7 +401,7 @@ async function atualizar(a) {
 }
 
 function arrumarMenu() {
-  if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
+  if (sessionStorage.CARGO_ID == "2") {
     DIVmenu.innerHTML = `<ul class="link-items">
       <div class="logo-container">
         <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
@@ -512,16 +489,18 @@ function arrumarMenu() {
 }
 
 function analisaCargo() {
-  var cargo = sessionStorage.CARGO_USUARIO;
+  var cargoId = sessionStorage.CARGO_ID;
   
   var mudanca;
 
-  if (cargo == "Analista de infraestrutura") {
+  if (cargoId == "2") { 
     mudanca = false;
-  } else if (cargo == "Suporte técnico") {
+  } else if (cargoId == "3") { 
     mudanca = true;
+  } else if (cargoId == "1") { 
+    mudanca = false; 
   } else {
-    mudanca = false;
+    mudanca = false; 
   }
 
   return mudanca;
