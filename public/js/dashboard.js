@@ -250,7 +250,7 @@ function dash_analista() {
 
             var totalS3 = dadosS3.total_alertas_baixo +
                 dadosS3.total_alertas_medio +
-                dadosS3.total_alertas_alto
+                dadosS3.total_alertas_alto 
 
 // ============================================== Cálculo alertas por gravidades  ================================================================
             var s3Baixo = dadosS3.total_alertas_baixo;

@@ -65,7 +65,8 @@ async function carregarDados() {
               backgroundColor: 'rgba(56,189,248,1)',
               borderColor: 'rgba(56,189,248,0)',
               borderWidth: 2,
-              borderRadius: 8
+              borderRadius: 8,
+              font: { size: 15 }
             },
 
 
@@ -77,7 +78,9 @@ async function carregarDados() {
             plugins: {
               title: {
                 display: true,
-                text: '5 maiores Processos - Uso de Memória'
+                font: { size: 18 },
+                text: '5 maiores Processos - Uso de Memória',
+                ticks: { color: "#fff", font: { size: 15 }}
               }
             }
           }
@@ -114,7 +117,14 @@ async function carregarDados() {
           },
           options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: false,
+                font: { size: 18 },
+                 ticks: { color: "#fff", font: { size: 15 }}
+              }
+            }
           }
         });
       }
