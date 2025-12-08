@@ -105,6 +105,43 @@ async function dashAdmin() {
                 })
             }).then(res => res.json())
         ]) 
+
+        // pegar dados do mes passado para comparacao
+        /*
+        let anoPassado = anoSelecionado
+        let mesPassado = null
+        if ((mesSelecionado - 1) == 0) {
+            anoPassado = anoSelecionado - 1
+            mesPassado = 12
+        } else {
+            mesPassado = mesSelecionado - 1
+        }
+        [incidentesMesPassado, jiraMesPassado] = await Promise.all([
+            fetch('/servidores/listarIncidentes', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    idempresa: sessionStorage.ID_EMPRESA,
+                    ano: anoPassado, 
+                    mes: mesPassado
+                })
+            }).then(res => res.json()),
+
+            fetch('/servidores/pegarDadosJira', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    empresa: sessionStorage.NOME_EMPRESA,
+                    ano: anoPassado, 
+                    mes: mesPassado 
+                })
+            }).then(res => res.json())
+        ]) 
+        console.log("INCIDENTES do mes passado: ", incidentesMesPassado)
+        console.log("JIRA do mes passado: ", jiraMesPassado)
+        */
+
+
         console.log("INCIDENTES: ", incidentes)
         console.log("JIRA: ", jira)
     } catch(err) {
@@ -112,6 +149,7 @@ async function dashAdmin() {
     }
 
     
+    // agrupar dados dos incidentes
     for (let i = 0; i < incidentes.length; i++) {
         let incidente = incidentes[i] 
         let serv = incidente.servidor
@@ -158,6 +196,8 @@ async function dashAdmin() {
 
         }    
     }
+
+
     // inicializa os valores atuais
     servidorAtual = Object.keys(dados)[0]
     dataAtual = "dataAlto"
@@ -189,9 +229,6 @@ async function dashAdmin() {
 
     esconderLoader()
 }
-
-
-
 
 function criarKpis() {
     const mtta = document.getElementById('mtta')
