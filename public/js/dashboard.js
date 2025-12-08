@@ -818,13 +818,28 @@ async function kpi_suporte(componente) {
     // 2 minutos (120 segundos) dividido pelo intervalo de leitura do script retorna a quantidade de dados do gráfico de linhas
     let tamanhoVetor = Math.round(120 / parametrosScriptJson[0].intervalo); 
 
-    for (let i = dadosMaquinaJson.length - 1; i >= (dadosMaquinaJson.length - tamanhoVetor); i--){
+   for (let i = dadosMaquinaJson.length - 1; i >= (dadosMaquinaJson.length - tamanhoVetor); i--) {
 
-        dadosCpu.push(Number(dadosMaquinaJson[i].cpu.replaceAll(",", ".")));
-        dadosRam.push(Number(dadosMaquinaJson[i].ram.replaceAll(",", ".")));
-        dadosDisco.push(Number(dadosMaquinaJson[i].disco.replaceAll(",", ".")));
-        timestamps.push(dadosMaquinaJson[i].timestampCaptura.split(" ")[1]); // pegar somente o horário
-    }
+    dadosCpu.push(Number(dadosMaquinaJson[i].cpu.replaceAll(",", ".")));
+    dadosRam.push(Number(dadosMaquinaJson[i].ram.replaceAll(",", ".")));
+    dadosDisco.push(Number(dadosMaquinaJson[i].disco.replaceAll(",", ".")));
+
+    let ts = dadosMaquinaJson[i].timestampCaptura;
+    let data = new Date(ts.replace(" ", "T"));
+
+    data.setMinutes(data.getMinutes() - 3);
+
+    let horarioCorrigido = data.toTimeString().split(" ")[0];
+
+    timestamps.push(horarioCorrigido);
+}
+
+timestamps.reverse();
+dadosCpu.reverse();
+dadosRam.reverse();
+dadosDisco.reverse();
+
+
     
     if (componente == 'ram') {
 
