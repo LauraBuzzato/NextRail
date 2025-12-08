@@ -27,6 +27,8 @@ async function carregarDados() {
 
   console.log("Dados recebidos da API:", dados);
   return dados;
+
+
 }
 
 async function montarGraficos() {
@@ -84,8 +86,8 @@ async function montarGraficos() {
             title: {
               display: true,
               text: '5 maiores Processos - Uso de Memória',
-              font: { size: 20 },
-              color: '#FFFFFF'
+              color: '#FFFFFF',
+              font: { size: 20 }
             },
             legend: {
               labels: {
@@ -142,8 +144,11 @@ async function montarGraficos() {
         }
       });
     }
+
+    esconderLoader();
   } catch (erro) {
     console.error("Erro ao montar gráficos:", erro);
   }
 }
 
+montarGraficos();
