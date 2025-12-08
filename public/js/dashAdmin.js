@@ -311,6 +311,18 @@ function criarGraficoSla() {
                 ]
             },
             options: {
+
+                        plugins: {
+                            datalabels: {
+                                    color: '#fff',
+                            },
+                            legend: {
+                                labels: {
+                                    color: '#fff',
+                                }
+                            }
+                        },
+                   
                 color: 'white',
                 scales: {
                     x: {
@@ -322,7 +334,10 @@ function criarGraficoSla() {
                                 size: 20
                             }
                         },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: {
+                            color: 'white' // Set the tick label color to red
+                        }
                     },
                     y: {
                         beginAtZero: true,
@@ -334,7 +349,10 @@ function criarGraficoSla() {
                                 size: 20
                             }
                         },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: {
+                            color: 'white' // Set the tick label color to red
+                        }
                     }
                 }
             },
@@ -423,7 +441,10 @@ function criarGraficoTicket() {
                                     size: 20
                                 }
                             },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: {
+                                color: 'white' // Set the tick label color to red
+                            }
                         },
                         y: {
                             beginAtZero: true,
@@ -435,7 +456,10 @@ function criarGraficoTicket() {
                                     size: 20
                                 }
                             },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: {
+                                color: 'white' // Set the tick label color to red
+                            }
                         }
                     }
                 },
