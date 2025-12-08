@@ -307,7 +307,7 @@ async function atualizar(a) {
 
   
       <div class="pai">
-        <h2 class="desempenho" >Alertas do ${localStorage.NOME_SERVIDOR} </h2>
+        <h2 class="desempenho" >Dashboard Alertas</h2>
 
        <select id="selectPeriodo" onchange="dash_analista()">
             <option value="mensal" selected>Visualização Mensal</option>
