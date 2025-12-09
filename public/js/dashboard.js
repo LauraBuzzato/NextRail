@@ -20,7 +20,7 @@ function dash_analista() {
 
     var textoPeriodo = periodoSelecionado === "anual" ? "do Ano" : "do Mês";
     var textoEstePeriodo = periodoSelecionado === "anual" ? "deste Ano" : "deste Mês";
-    var textoFrequencia = periodoSelecionado === "anual" ? "Frequência Anual" : "Frequência Mensal";
+    var textoFrequencia = periodoSelecionado === "anual" ? "Evolução Mensal de Alertas no Ano" : "Evolução Diária de Alertas no Mês";
 
 
 
@@ -35,7 +35,7 @@ function dash_analista() {
     }
 
     if(document.getElementById("titulo-graf-freq")){
-        document.getElementById("titulo-graf-freq").innerText = `${textoFrequencia} de Alertas`;
+        document.getElementById("titulo-graf-freq").innerText = `${textoFrequencia}`;
     }
 
     if(document.getElementById("titulo-graf-grav")){ 
