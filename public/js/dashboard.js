@@ -839,12 +839,12 @@ dadosDisco.reverse();
         const configLine = {
             type: 'line',
             data: {
-                labels: timestamps.toReversed(),
+                labels: timestamps,
 
                 datasets: [
                     {
                         label: 'RAM (%)',
-                        data: dadosRam.toReversed(),
+                        data: dadosRam,
                         borderColor: 'rgba(56,189,248,1)',
                         backgroundColor: 'rgba(56,189,248,0.2)',
                         tension: 0.4,
@@ -976,12 +976,12 @@ dadosDisco.reverse();
         const configLine = {
             type: 'line',
             data: {
-                labels: timestamps.toReversed(),
+                labels: timestamps,
 
                 datasets: [
                     {
                         label: 'CPU (%)',
-                        data: dadosCpu.toReversed(),
+                        data: dadosCpu,
                         borderColor: 'rgba(167,139,250,1)',
                         backgroundColor: 'rgba(167,139,250,0.2)',
                         tension: 0.4,
@@ -1113,12 +1113,12 @@ dadosDisco.reverse();
         const configLine = {
             type: 'line',
             data: {
-                labels: timestamps.toReversed(),
+                labels: timestamps,
 
                 datasets: [
                     {
                         label: 'Disco (%)',
-                        data: dadosDisco.toReversed(),
+                        data: dadosDisco,
                         borderColor: '#ff89b0',
                         backgroundColor: '#ff89b038',
                         tension: 0.4,
