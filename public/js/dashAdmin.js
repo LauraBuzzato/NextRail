@@ -19,12 +19,40 @@ let select = null
 let kpi = null
 let alerta_sla = null
 
-let selectAno = null
-let selectMes = null
+const dt = new Date();
+
+// mudar nome da variável para não conflitar
+let anoSelecionado = dt.getFullYear();
+let mesSelecionado = null
 let selectServidor = null
 
 let graficoSla = null;
 let grafioTicket = null;
+
+// Adicionar código para definir ano atual no select
+window.onload = function() {
+    const anoAtual = new Date().getFullYear();
+    const selectAnoElement = document.getElementById("ano_periodo");
+    
+    selectAnoElement.value = anoAtual;
+    
+    let existeOpcao = false;
+    for (let i = 0; i < selectAnoElement.options.length; i++) {
+        if (selectAnoElement.options[i].value == anoAtual) {
+            existeOpcao = true;
+            selectAnoElement.value = anoAtual;
+            break;
+        }
+    }
+    
+    if (!existeOpcao) {
+        const option = document.createElement("option");
+        option.value = anoAtual;
+        option.text = anoAtual;
+        selectAnoElement.add(option);
+        selectAnoElement.value = anoAtual;
+    }
+}
 
 function esconderLoader() {
     document.getElementById("loader").style.display = "none";
@@ -38,9 +66,14 @@ async function dashAdmin() {
     kpi = document.getElementById("kpi_sla")
     alerta_sla = select.value
 
-    selectAno = document.getElementById("ano_periodo")
-    selectMes = document.getElementById("mes_periodo")
-
+    // usar variáveis diferentes para elementos DOM e valores
+    const selectAnoElement = document.getElementById("ano_periodo")
+    const selectMesElement = document.getElementById("mes_periodo")
+    
+    // Pegar os valores dos selects
+    anoSelecionado = selectAnoElement.value
+    mesSelecionado = selectMesElement.value
+    
     selectServidor = document.getElementById("muda-servidor")
 
     // reseta os dados
@@ -57,8 +90,8 @@ async function dashAdmin() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     idempresa: sessionStorage.ID_EMPRESA,
-                    ano: selectAno.value,
-                    mes: selectMes.value
+                    ano: anoSelecionado, 
+                    mes: mesSelecionado 
                 })
             }).then(res => res.json()),
 
@@ -67,11 +100,48 @@ async function dashAdmin() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     empresa: sessionStorage.NOME_EMPRESA,
-                    ano: selectAno.value,
-                    mes: selectMes.value
+                    ano: anoSelecionado, 
+                    mes: mesSelecionado   
                 })
             }).then(res => res.json())
         ]) 
+
+        // pegar dados do mes passado para comparacao
+        /*
+        let anoPassado = anoSelecionado
+        let mesPassado = null
+        if ((mesSelecionado - 1) == 0) {
+            anoPassado = anoSelecionado - 1
+            mesPassado = 12
+        } else {
+            mesPassado = mesSelecionado - 1
+        }
+        [incidentesMesPassado, jiraMesPassado] = await Promise.all([
+            fetch('/servidores/listarIncidentes', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    idempresa: sessionStorage.ID_EMPRESA,
+                    ano: anoPassado, 
+                    mes: mesPassado
+                })
+            }).then(res => res.json()),
+
+            fetch('/servidores/pegarDadosJira', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    empresa: sessionStorage.NOME_EMPRESA,
+                    ano: anoPassado, 
+                    mes: mesPassado 
+                })
+            }).then(res => res.json())
+        ]) 
+        console.log("INCIDENTES do mes passado: ", incidentesMesPassado)
+        console.log("JIRA do mes passado: ", jiraMesPassado)
+        */
+
+
         console.log("INCIDENTES: ", incidentes)
         console.log("JIRA: ", jira)
     } catch(err) {
@@ -79,6 +149,7 @@ async function dashAdmin() {
     }
 
     
+    // agrupar dados dos incidentes
     for (let i = 0; i < incidentes.length; i++) {
         let incidente = incidentes[i] 
         let serv = incidente.servidor
@@ -125,6 +196,8 @@ async function dashAdmin() {
 
         }    
     }
+
+
     // inicializa os valores atuais
     servidorAtual = Object.keys(dados)[0]
     dataAtual = "dataAlto"
@@ -157,7 +230,6 @@ async function dashAdmin() {
     esconderLoader()
 }
 
-
 function criarKpis() {
     const mtta = document.getElementById('mtta')
     const mttrGeral = document.getElementById('mttr-geral')
@@ -169,7 +241,12 @@ function criarKpis() {
     for (let i = 0; i < duracaoTotal.length; i++) {
         totalMttrGeral += duracaoTotal[i]
     }
-    mttrGeral.innerText = `${Math.round(totalMttrGeral/duracaoTotal.length)} min.`
+    //  verificar se há dados antes de calcular
+    if (duracaoTotal.length > 0) {
+        mttrGeral.innerText = `${Math.round(totalMttrGeral/duracaoTotal.length)} min.`
+    } else {
+        mttrGeral.innerText = "0 min."
+    }
 
     // mtbf
     let diff = []
@@ -180,9 +257,14 @@ function criarKpis() {
             totalMtbf += (listDate[i].getTime() - listDate[i-1].getTime())
         }
     }
-    let mediaMtbf = totalMtbf/diff.length
-    let minMtbf = Math.round((mediaMtbf)/(1000 * 60))
-    mtbf.innerText = `${minMtbf} min.`
+    //  verificar se há diferenças antes de calcular
+    if (diff.length > 0) {
+        let mediaMtbf = totalMtbf/diff.length
+        let minMtbf = Math.round((mediaMtbf)/(1000 * 60))
+        mtbf.innerText = `${minMtbf} min.`
+    } else {
+        mtbf.innerText = "0 min."
+    }
 }
 
 function criarGraficoSla() {
@@ -194,6 +276,11 @@ function criarGraficoSla() {
     //console.log("servidorAtual: ",servidorAtual)
     //console.log("gravidadeAtual: ",gravidadeAtual)
     //console.log("corAtual: ",corAtual)
+
+    if (!servidorAtual || !dados[servidorAtual] || dados[servidorAtual][dataAtual].length === 0) {
+        // Opcional: mostrar mensagem de nenhum dado
+        return;
+    }
 
     graficoSla = new Chart(tempoSla,
         {
@@ -213,7 +300,7 @@ function criarGraficoSla() {
                     },
                     {
                         label: 'limite SLA',
-                        data: Array(13).fill(dados[servidorAtual][slaAtual]),
+                        data: Array(dados[servidorAtual][dataAtual].length).fill(dados[servidorAtual][slaAtual]),
                         borderColor: '#a78bfa',
                         backgroundColor: 'rgba(167,139,250,0.2)',
                         tension: 0.4,
@@ -224,6 +311,18 @@ function criarGraficoSla() {
                 ]
             },
             options: {
+
+                        plugins: {
+                            datalabels: {
+                                    color: '#fff',
+                            },
+                            legend: {
+                                labels: {
+                                    color: '#fff',
+                                }
+                            }
+                        },
+                   
                 color: 'white',
                 scales: {
                     x: {
@@ -235,7 +334,10 @@ function criarGraficoSla() {
                                 size: 20
                             }
                         },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: {
+                            color: 'white' // Set the tick label color to red
+                        }
                     },
                     y: {
                         beginAtZero: true,
@@ -247,7 +349,10 @@ function criarGraficoSla() {
                                 size: 20
                             }
                         },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: {
+                            color: 'white' // Set the tick label color to red
+                        }
                     }
                 }
             },
@@ -264,19 +369,25 @@ function criarGraficoTicket() {
     let tickets = []
     let listaTtas = []
     
-    for (let i = 0;i < jira.length; i++) {
-        let membroSup = jira[i]
+    // verificar se jira existe e tem dados
+    if (jira && jira.length > 0) {
+        for (let i = 0;i < jira.length; i++) {
+            let membroSup = jira[i]
 
-        if (nomes.includes(membroSup.nome)) {
-            tickets[nomes.indexOf(membroSup.nome)] += membroSup.qtdTickets
-        } else {
-            nomes.push(membroSup.nome)
-            tickets.push(membroSup.qtdTickets)
-        }
+            if (nomes.includes(membroSup.nome)) {
+                tickets[nomes.indexOf(membroSup.nome)] += membroSup.qtdTickets
+            } else {
+                nomes.push(membroSup.nome)
+                tickets.push(membroSup.qtdTickets)
+            }
 
-        for (let j = 0;j < membroSup.datasMtta.length; j++) {
-            let tta = membroSup.datasMtta[j].timeToAcknowledgeMilis
-            listaTtas.push(tta)
+            //  verificar se datasMtta existe
+            if (membroSup.datasMtta) {
+                for (let j = 0;j < membroSup.datasMtta.length; j++) {
+                    let tta = membroSup.datasMtta[j].timeToAcknowledgeMilis
+                    listaTtas.push(tta)
+                }
+            }
         }
     }
     console.log("nomes: ",nomes)
@@ -288,61 +399,74 @@ function criarGraficoTicket() {
     for (let i = 0; i < listaTtas.length; i++) {
         totalMtta += listaTtas[i]
     }
-    let mtta = totalMtta/listaTtas.length
-
-    kpi_mtta.innerText = `${Math.round(mtta/(1000 * 60))} min.`
+    //  verificar se há dados antes de calcular
+    if (listaTtas.length > 0) {
+        let mtta = totalMtta/listaTtas.length
+        kpi_mtta.innerText = `${Math.round(mtta/(1000 * 60))} min.`
+    } else {
+        kpi_mtta.innerText = "0 min."
+    }
 
     const ticketsSup = document.getElementById("ticketsSup");
-    grafioTicket = new Chart(ticketsSup,
-        {
-            type: 'bar',
-            data: {
-                labels: nomes,
-                datasets: [
-                    {
-                      label: 'Tickets Resolvidos',
-                      data: tickets,
-                      borderColor: 'blue',
-                      backgroundColor: 'rgba(0, 0,250,0.8)',
-                      tension: 0.3,
-                      fill: true,
-                      pointRadius: 4,
-                     borderWidth: 2
-                    }
-                ]
-            },
-            options: {
-                indexAxis: 'y',
-                color: 'white',
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Tickets',
-                            color: 'white',
-                            font: {
-                                size: 20
+    //  verificar se há dados antes de criar gráfico
+    if (nomes.length > 0) {
+        grafioTicket = new Chart(ticketsSup,
+            {
+                type: 'bar',
+                data: {
+                    labels: nomes,
+                    datasets: [
+                        {
+                          label: 'Tickets Resolvidos',
+                          data: tickets,
+                          borderColor: 'blue',
+                          backgroundColor: 'rgba(0, 0,250,0.8)',
+                          tension: 0.3,
+                          fill: true,
+                          pointRadius: 4,
+                         borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    color: 'white',
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Tickets',
+                                color: 'white',
+                                font: {
+                                    size: 20
+                                }
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: {
+                                color: 'white' // Set the tick label color to red
                             }
                         },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Membro do Suporte',
-                            color: 'white',
-                            font: {
-                                size: 20
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Membro do Suporte',
+                                color: 'white',
+                                font: {
+                                    size: 20
+                                }
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: {
+                                color: 'white' // Set the tick label color to red
                             }
-                        },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
+                        }
                     }
-                }
-            },
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-        })
+                },
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            })
+    }
 }
 
 function mudarCor() {
@@ -373,22 +497,31 @@ function mudarCor() {
             totalMttr += dados[servidores[i]][alerta_sla][j]
             length++
             if (alerta_sla == "alto") {
-                if (dados[servidores[i]][alerta_sla][j] < dados[servidores[i]].slaAlto) {
+                //  verificar se slaAlto existe
+                if (dados[servidores[i]].slaAlto && dados[servidores[i]][alerta_sla][j] < dados[servidores[i]].slaAlto) {
                     totalDentroSla++
                 }
             } else if (alerta_sla == "medio") {
-                if (dados[servidores[i]][alerta_sla][j] < dados[servidores[i]].slaMedio) {
+                //  verificar se slaMedio existe
+                if (dados[servidores[i]].slaMedio && dados[servidores[i]][alerta_sla][j] < dados[servidores[i]].slaMedio) {
                     totalDentroSla++
                 }
             } else if (alerta_sla == "baixo") {
-                if (dados[servidores[i]][alerta_sla][j] < dados[servidores[i]].slaBaixo) {
+                // verificar se slaBaixo existe
+                if (dados[servidores[i]].slaBaixo && dados[servidores[i]][alerta_sla][j] < dados[servidores[i]].slaBaixo) {
                     totalDentroSla++
                 }
             }
         }
     }
-    kpi_sla_porcentagem.innerText = `${((totalDentroSla/length) * 100).toFixed(2)}%`
-    kpi_sla_mttr.innerText = `MTTR: ${Math.round(totalMttr/length)} min.`
+    //  verificar se length > 0 antes de calcular
+    if (length > 0) {
+        kpi_sla_porcentagem.innerText = `${((totalDentroSla/length) * 100).toFixed(2)}%`
+        kpi_sla_mttr.innerText = `MTTR: ${Math.round(totalMttr/length)} min.`
+    } else {
+        kpi_sla_porcentagem.innerText = "0%"
+        kpi_sla_mttr.innerText = `MTTR: 0 min.`
+    }
 }
 
 function mudarAlerta() {
@@ -412,8 +545,15 @@ function mudarServidor() {
 }
 
 function destruirGraficos() {
-    graficoSla.destroy()
-    grafioTicket.destroy()
+    //  verificar se gráficos existem antes de destruir
+    if (graficoSla != null) {
+        graficoSla.destroy()
+        graficoSla = null
+    }
+    if (grafioTicket != null) {
+        grafioTicket.destroy()
+        grafioTicket = null
+    }
 }
 
 function atualizaGraficoSla() {
@@ -423,6 +563,11 @@ function atualizaGraficoSla() {
 
     // toda essa parte das variaveisAtual vai para o atualizaGraficoSla,
     // e aqui só comeca pre-selecionado no Alto do primeiro servidor
+
+    // verificar se gráfico existe antes de atualizar
+    if (!graficoSla || !servidorAtual || !dados[servidorAtual]) {
+        return
+    }
 
     if (gravidadeSla == "Alto") {
         gravidadeAtual = "alto"
@@ -444,11 +589,14 @@ function atualizaGraficoSla() {
 
     }
     
-    graficoSla.data.labels = dados[servidorAtual][dataAtual]
-    graficoSla.data.datasets[0].label = gravidadeSla
-    graficoSla.data.datasets[0].data = dados[servidorAtual][gravidadeAtual]
-    graficoSla.data.datasets[0].borderColor = corAtual[0]
-    graficoSla.data.datasets[0].backgroundColor = corAtual[1]
-    graficoSla.data.datasets[1].data = Array(dados[servidorAtual][dataAtual].length).fill(dados[servidorAtual][slaAtual])
-    graficoSla.update()
+    // verificar se dados existem antes de atualizar
+    if (dados[servidorAtual][dataAtual] && dados[servidorAtual][dataAtual].length > 0) {
+        graficoSla.data.labels = dados[servidorAtual][dataAtual]
+        graficoSla.data.datasets[0].label = gravidadeSla
+        graficoSla.data.datasets[0].data = dados[servidorAtual][gravidadeAtual]
+        graficoSla.data.datasets[0].borderColor = corAtual[0]
+        graficoSla.data.datasets[0].backgroundColor = corAtual[1]
+        graficoSla.data.datasets[1].data = Array(dados[servidorAtual][dataAtual].length).fill(dados[servidorAtual][slaAtual])
+        graficoSla.update()
+    }
 }

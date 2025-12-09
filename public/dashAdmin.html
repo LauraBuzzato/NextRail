@@ -70,15 +70,15 @@
                 <p>Carregando dados...</p>
     </div>
     <h1 id="sub-titulo">
-      Empresa - Equipe de Suporte
+      Equipe de Suporte - Período: 
 
       <select onchange="dashAdmin()" id="ano_periodo" class="select">
-        <option value="2024">2024</option>
         <option value="2025">2025</option>
+        <option value="2024">2024</option>
       </select>
       <select onchange="dashAdmin()" id="mes_periodo" class="select">
-        <option value="11">Novebro</option>
         <option value="12">Dezembro</option>
+        <option value="11">Novembro</option>
       </select>
     </h1>
 
@@ -115,7 +115,7 @@
 
     <div class="linha">
       <div class="cardGrafico">
-        <h2>Tempo de Resolução em relação a Meta</h2>
+        <h2>Tempo de Resolução em relação ao SLA</h2>
           <div class="servidorAlerta">
             <select name="" id="muda-servidor" onchange="mudarServidor()" class="mudaAlerta"></select>
             
@@ -151,22 +151,24 @@
     </div>
       <div class="descricoes">
         <div class="desc">
-          <span>MTTA:</span> Tempo médio para um alerta ser Reconhecido
+          <span>MTTA: </span> Tempo médio para um alerta ser reconhecido.
         </div>
         <div class="desc">
-          <span>MTTR:</span> Tempo médio de resolução de um alerta        
+          <span>MTTR:</span> Tempo médio de resolução de um alerta.        
         </div>
         <div class="desc">
-          <span>MTBF:</span> Tempo médio entre alertas
+          <span>MTBF:</span> Tempo médio entre alertas.
         </div>
+        <!-- 
         <div class="desc">
           <ion-icon name="arrow-up-outline" style="color: red; width: 50px;" class="seta"></ion-icon>
-          Aumento em relação ao último mês
+          Aumento em relação ao último mês.
         </div>
         <div class="desc">
           <ion-icon name="arrow-down-outline" style="color: green; width: 50px;" class="seta"></ion-icon>
-          Redução em relação ao último mês
+          Redução em relação ao último mês.
         </div>
+        -->
       </div>
     </div>
 

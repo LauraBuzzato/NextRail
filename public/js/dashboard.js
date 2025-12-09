@@ -20,7 +20,7 @@ function dash_analista() {
 
     var textoPeriodo = periodoSelecionado === "anual" ? "do Ano" : "do Mês";
     var textoEstePeriodo = periodoSelecionado === "anual" ? "deste Ano" : "deste Mês";
-    var textoFrequencia = periodoSelecionado === "anual" ? "Frequência Anual" : "Frequência Mensal";
+    var textoFrequencia = periodoSelecionado === "anual" ? "Evolução Mensal de Alertas no Ano" : "Evolução Diária de Alertas no Mês";
 
 
 
@@ -30,14 +30,12 @@ function dash_analista() {
     if(document.getElementById("titulo-kpi-comp")){ 
         document.getElementById("titulo-kpi-comp").innerText = `Componente Mais Impactado ${textoPeriodo}`;
     }
-    if(document.getElementById("titulo-kpi-mttr")){
-        document.getElementById("titulo-kpi-mttr").innerText = `MTTR ${textoPeriodo} `;
-    }
+   
     if(document.getElementById("titulo-kpi-grav")){ document.getElementById("titulo-kpi-grav").innerText = `Gravidade mais frequente ${textoPeriodo}`;
     }
 
     if(document.getElementById("titulo-graf-freq")){
-        document.getElementById("titulo-graf-freq").innerText = `${textoFrequencia} de Alertas`;
+        document.getElementById("titulo-graf-freq").innerText = `${textoFrequencia}`;
     }
 
     if(document.getElementById("titulo-graf-grav")){ 
@@ -250,7 +248,7 @@ function dash_analista() {
 
             var totalS3 = dadosS3.total_alertas_baixo +
                 dadosS3.total_alertas_medio +
-                dadosS3.total_alertas_alto
+                dadosS3.total_alertas_alto 
 
 // ============================================== Cálculo alertas por gravidades  ================================================================
             var s3Baixo = dadosS3.total_alertas_baixo;
@@ -529,22 +527,6 @@ function dash_analista() {
             }
 
 
-// ======================================================= MTTR ================================================================
-
-
-
-            var kpiMttr = document.getElementById("kpi-mttr-medio");
-            if (kpiMttr) {
-                kpiMttr.innerHTML = `${dadosS3.mttr} min`
-            }
-
-
-// ======================================================= SLA ================================================================            
-
-            var sla = document.getElementById("metrica-sla")
-            if(sla){
-                sla.innerHTML = `(SLA: < ${dadosS3.sla} min)` 
-            }
 
 
 // ================================================ Comparação Mês/Ano anterior ================================================================
@@ -604,6 +586,7 @@ let graficoRam;
 let graficoCpu;
 let graficoDisco;
 let indiceAtual = 0;
+const tempoGraficoTabela = 130000;
 
 function gerarDadoAleatorio() {
     return Math.floor(Math.random() * 100);
@@ -807,13 +790,28 @@ async function kpi_suporte(componente) {
     // 2 minutos (120 segundos) dividido pelo intervalo de leitura do script retorna a quantidade de dados do gráfico de linhas
     let tamanhoVetor = Math.round(120 / parametrosScriptJson[0].intervalo); 
 
-    for (let i = dadosMaquinaJson.length - 1; i >= (dadosMaquinaJson.length - tamanhoVetor); i--){
+   for (let i = dadosMaquinaJson.length - 1; i >= (dadosMaquinaJson.length - tamanhoVetor); i--) {
 
-        dadosCpu.push(Number(dadosMaquinaJson[i].cpu.replaceAll(",", ".")));
-        dadosRam.push(Number(dadosMaquinaJson[i].ram.replaceAll(",", ".")));
-        dadosDisco.push(Number(dadosMaquinaJson[i].disco.replaceAll(",", ".")));
-        timestamps.push(dadosMaquinaJson[i].timestampCaptura.split(" ")[1]); // pegar somente o horário
-    }
+    dadosCpu.push(Number(dadosMaquinaJson[i].cpu.replaceAll(",", ".")));
+    dadosRam.push(Number(dadosMaquinaJson[i].ram.replaceAll(",", ".")));
+    dadosDisco.push(Number(dadosMaquinaJson[i].disco.replaceAll(",", ".")));
+
+    let ts = dadosMaquinaJson[i].timestampCaptura;
+    let data = new Date(ts.replace(" ", "T"));
+
+    data.setMinutes(data.getMinutes() - 3);
+
+    let horarioCorrigido = data.toTimeString().split(" ")[0];
+
+    timestamps.push(horarioCorrigido);
+}
+
+timestamps.reverse();
+dadosCpu.reverse();
+dadosRam.reverse();
+dadosDisco.reverse();
+
+
     
     if (componente == 'ram') {
 
@@ -841,12 +839,12 @@ async function kpi_suporte(componente) {
         const configLine = {
             type: 'line',
             data: {
-                labels: timestamps.toReversed(),
+                labels: timestamps,
 
                 datasets: [
                     {
                         label: 'RAM (%)',
-                        data: dadosRam.toReversed(),
+                        data: dadosRam,
                         borderColor: 'rgba(56,189,248,1)',
                         backgroundColor: 'rgba(56,189,248,0.2)',
                         tension: 0.4,
@@ -949,7 +947,7 @@ async function kpi_suporte(componente) {
     } catch (error) {
         console.error('Erro ao criar gráfico ram:', error);
     } finally {
-        setTimeout(() => kpi_suporte(componente), 190000);
+        setTimeout(() => kpi_suporte(componente), tempoGraficoTabela);
     }
 }
     if (componente == 'cpu') {
@@ -978,12 +976,12 @@ async function kpi_suporte(componente) {
         const configLine = {
             type: 'line',
             data: {
-                labels: timestamps.toReversed(),
+                labels: timestamps,
 
                 datasets: [
                     {
                         label: 'CPU (%)',
-                        data: dadosCpu.toReversed(),
+                        data: dadosCpu,
                         borderColor: 'rgba(167,139,250,1)',
                         backgroundColor: 'rgba(167,139,250,0.2)',
                         tension: 0.4,
@@ -1086,7 +1084,7 @@ async function kpi_suporte(componente) {
     } catch (error) {
         console.error('Erro ao criar gráfico cpu:', error);
     } finally {
-        setTimeout(() => kpi_suporte(componente), 190000);
+        setTimeout(() => kpi_suporte(componente), tempoGraficoTabela);
     }
 }
     if (componente == 'disco') {
@@ -1115,12 +1113,12 @@ async function kpi_suporte(componente) {
         const configLine = {
             type: 'line',
             data: {
-                labels: timestamps.toReversed(),
+                labels: timestamps,
 
                 datasets: [
                     {
                         label: 'Disco (%)',
-                        data: dadosDisco.toReversed(),
+                        data: dadosDisco,
                         borderColor: '#ff89b0',
                         backgroundColor: '#ff89b038',
                         tension: 0.4,
@@ -1223,7 +1221,7 @@ async function kpi_suporte(componente) {
     } catch (error) {
         console.error('Erro ao criar gráfico disco:', error);
     } finally {
-        setTimeout(() => kpi_suporte(componente), 190000);
+        setTimeout(() => kpi_suporte(componente), tempoGraficoTabela);
         esconderLoader()
     }
 }
@@ -1319,6 +1317,8 @@ async function kpi_suporte(componente) {
     } catch (erro) {
         console.log("Erro: ", erro)
     } finally {
-        setTimeout(() => criarTabela(), 190000);
+        setTimeout(() => criarTabela(), tempoGraficoTabela);
     }
 }
+console.log(localStorage)
+console.log(sessionStorage)

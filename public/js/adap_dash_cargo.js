@@ -4,7 +4,6 @@ function carregarCSS(caminho) {
     cssAntigo.remove();
   }
 
-  // Adicionar novo CSS
   const link = document.createElement('link');
   link.id = 'css-dashboard';
   link.rel = 'stylesheet';
@@ -64,7 +63,7 @@ function inicializarDashboard() {
 }
 
 function arrumarMenuDash() {
-  if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
+  if (sessionStorage.CARGO_ID == "2") {
     DIVmenu.innerHTML = `<ul class="link-items">
       <div class="logo-container">
         <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
@@ -155,11 +154,6 @@ function inicializarGraficosSuporte() {
   setTimeout(() => {
     if (typeof dash_suporte === 'function') {
       console.log('Inicializando gráficos do suporte...');
-      /*try {
-        dash_suporte();
-      } catch (error) {
-        console.error('Erro ao inicializar gráficos do suporte:', error);
-      }*/
       try {
         kpi_suporte('ram');
       } catch (error) {
@@ -179,11 +173,6 @@ function inicializarGraficosSuporte() {
       console.error('dash_suporte não disponível');
       setTimeout(() => {
         if (typeof dash_suporte === 'function') {
-          /*try {
-            dash_suporte();
-          } catch (error) {
-            console.error('Erro na segunda tentativa do suporte:', error);
-          }*/
           try {
             kpi_suporte('ram');
           } catch (error) {
@@ -244,40 +233,32 @@ async function atualizar(a) {
   const dash_analista = document.getElementById("div_analista");
   const dash_suporte = document.getElementById("div_suporte");
 
-  // Limpar conteúdos anteriores
   dash_analista.innerHTML = '';
   dash_suporte.innerHTML = '';
 
-  if (a === true) { // SUPORTE TÉCNICO
-    // Desabilitar CSS principal
+  if (a === true) {
     desabilitarCSSPrincipal();
 
-    // Inserir HTML do suporte
     dash_suporte.innerHTML = `
     <div class="container-pagina">
       <h1 class="bem-vindo">Uso dos Componentes: ${localStorage.NOME_SERVIDOR}</span></h1>
       <section class="conteudo-principal">
         <div class="kpi-container">
           <div class="kpi-1">
-            <div class="kpi-titulo">Uso de RAM nos últimos três minutos</div>
+            <div class="kpi-titulo">Uso de RAM nos últimos dois minutos</div>
             <canvas id="grafico_ram"></canvas>
           </div>
           <div class="kpi-2">
-            <div class="kpi-titulo">Uso de CPU nos últimos três minutos</div>
+            <div class="kpi-titulo">Uso de CPU nos últimos dois minutos</div>
             <canvas id="grafico_cpu"></canvas>
           </div>
           <div class="kpi-3">
-            <div class="kpi-titulo">Uso de DISCO nos últimos três minutos</div>
+            <div class="kpi-titulo">Uso de DISCO nos últimos dois minutos</div>
             <canvas id="grafico_disco"></canvas>
           </div>
         </div>
 
           <div class="graficos-container">
-            <!--<div class="grafico-box">
-    <div class="grafico-header">Leituras mais frequentes nas últimas 24 horas</div>
-    <canvas id="graficoSuporte"></canvas>
-  </div>-->
-
           <div class="container-tabela-dinamica">
             <div class="tabela-titulo">Histórico de alertas dos últimos 7 dias</div>
             <div class="legenda">
@@ -318,9 +299,7 @@ async function atualizar(a) {
       
     }, 200);
 
-  } else { // ANALISTA DE INFRAESTRUTURA
-    // ... (o resto do código do analista permanece igual)
-    // IMPORTANTE: Primeiro habilitar o CSS principal
+  } else {
     habilitarCSSPrincipal();
 
     dash_analista.innerHTML = `
@@ -328,7 +307,7 @@ async function atualizar(a) {
 
   
       <div class="pai">
-        <h2 class="desempenho" >Alertas do ${localStorage.NOME_SERVIDOR} </h2>
+        <h2 class="desempenho" >Dashboard Alertas</h2>
 
        <select id="selectPeriodo" onchange="dash_analista()">
             <option value="mensal" selected>Visualização Mensal</option>
@@ -337,7 +316,6 @@ async function atualizar(a) {
 
       </div>
     
-    <!-- KPIs -->
     <section class="kpis">
 
       <div class="kpi-box">
@@ -352,34 +330,13 @@ async function atualizar(a) {
         <div id="kpi-componente-mais-impactado" style="font-size: 40px;"></div>
       </div>
 
-      <div class="kpi-box">
-    <span class="kpi-title">
-        
-        <span id="titulo-kpi-mttr"></span>
-        
-        <span class="info-icon" data-tooltip="Média de tempo decorrido entre o início de um alerta e sua finalização." style="display: inline-block; vertical-align: middle; margin-left: 5px;">
-             <svg fill="#000000" width="18px" height="18px" viewBox="0 0 24 24" id="information-circle" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" style="display: block;">
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                <g id="SVGRepo_iconCarrier">
-                    <line id="secondary-upstroke" x1="12.05" y1="8" x2="11.95" y2="8" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line>
-                    <line id="secondary" x1="12" y1="13" x2="12" y2="16" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line>
-                    <path id="primary" d="M3,12a9,9,0,0,1,9-9h0a9,9,0,0,1,9,9h0a9,9,0,0,1-9,9h0a9,9,0,0,1-9-9Z" style="fill: none; stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
-                </g>
-            </svg>
-        </span>
-    </span>
-  
 
-
-        <div id="kpi-mttr-medio"></div>
-        <h4 id="metrica-sla"></h4>
-      </div>
-
-      <div class="kpi-box">
+    <div class="kpi-box">
         <span class="kpi-title" id="titulo-kpi-grav"></span>
         <div id="kpi-gravidade-mais-frequente"></div>
       </div>
+
+      
     </section>
     
     
@@ -416,7 +373,6 @@ async function atualizar(a) {
       carregarCSS('./css/styleAnalista.css');
     }, 100);
 
-
     setTimeout(() => {
       inicializarGraficosAnalista();
     }, 300);
@@ -424,7 +380,7 @@ async function atualizar(a) {
 }
 
 function arrumarMenu() {
-  if (sessionStorage.CARGO_USUARIO == "Analista de infraestrutura") {
+  if (sessionStorage.CARGO_ID == "2") {
     DIVmenu.innerHTML = `<ul class="link-items">
       <div class="logo-container">
         <img src="./assets/icon/logo-SFroxo.png" alt="Logo NextRail" class="logo-menu">
@@ -512,16 +468,18 @@ function arrumarMenu() {
 }
 
 function analisaCargo() {
-  var cargo = sessionStorage.CARGO_USUARIO;
+  var cargoId = sessionStorage.CARGO_ID;
   
   var mudanca;
 
-  if (cargo == "Analista de infraestrutura") {
+  if (cargoId == "2") { 
     mudanca = false;
-  } else if (cargo == "Suporte técnico") {
+  } else if (cargoId == "3") { 
     mudanca = true;
+  } else if (cargoId == "1") { 
+    mudanca = false; 
   } else {
-    mudanca = false;
+    mudanca = false; 
   }
 
   return mudanca;

@@ -1,4 +1,7 @@
+
  var ambiente_processo = 'producao';
+
+var ambiente_processo = 'producao';
 // var ambiente_processo = 'desenvolvimento';
 
 var caminho_env = ambiente_processo === 'producao' ? '.env' : '.env.dev';
@@ -7,7 +10,7 @@ var caminho_env = ambiente_processo === 'producao' ? '.env' : '.env.dev';
 
 require("dotenv").config({ path: caminho_env });
 
-var express = require("express");
+var express = require("express");   
 var cors = require("cors");
 var path = require("path");
 var PORTA_APP = process.env.APP_PORT;
