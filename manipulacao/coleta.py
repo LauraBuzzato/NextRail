@@ -18,7 +18,7 @@ def get_daily_s3_key():
     today = date.today().strftime("%Y-%m-%d")
     return f"machine_data_{today}.csv"
 
-load_dotenv(dotenv_path=".env.dev")
+load_dotenv(dotenv_path=".env")
 
 BUCKET_NAME = "nextrail-raw-log"
 
