@@ -1,6 +1,4 @@
 
- var ambiente_processo = 'producao';
-
 var ambiente_processo = 'producao';
 // var ambiente_processo = 'desenvolvimento';
 

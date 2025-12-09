@@ -1,2 +1,0 @@
-id;servidor;timestamp;horario_de_pico;cpu_percent;memory_percent;memory_available;processos_ativos;disk_percent;disk_avl;latencia_media_ms
-1;Servidor01;2025-12-08 12:01:25.556617;True;92.0;64.5;5.7G;688;3.2;337.9G;12.012083927790323
