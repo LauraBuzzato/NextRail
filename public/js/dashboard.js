@@ -30,9 +30,7 @@ function dash_analista() {
     if(document.getElementById("titulo-kpi-comp")){ 
         document.getElementById("titulo-kpi-comp").innerText = `Componente Mais Impactado ${textoPeriodo}`;
     }
-    if(document.getElementById("titulo-kpi-mttr")){
-        document.getElementById("titulo-kpi-mttr").innerText = `MTTR ${textoPeriodo} `;
-    }
+   
     if(document.getElementById("titulo-kpi-grav")){ document.getElementById("titulo-kpi-grav").innerText = `Gravidade mais frequente ${textoPeriodo}`;
     }
 
@@ -529,32 +527,6 @@ function dash_analista() {
             }
 
 
-// ======================================================= MTTR ================================================================
-
-
-
-            var kpiMttr = document.getElementById("kpi-mttr-medio");
-
-            if(dadosS3.mttr > dadosS3.sla){
-                kpiMttr.style.color = "rgba(255, 0, 0, 1)"
-            } 
-            else if(dadosS3.mttr <= dadosS3.sla){
-                kpiMttr.style.color = "rgba(0, 255, 0, 1)"
-            }
-
-            if (kpiMttr) {
-                kpiMttr.textContent = `${dadosS3.mttr} min`
-                console.log(dadosS3.mttr)
-            }
-
-
-// ======================================================= SLA ================================================================            
-
-            var sla = document.getElementById("metrica-sla")
-            if(sla){
-                sla.innerHTML = `(SLA: < ${dadosS3.sla} min)`
-                console.log(dadosS3.sla) 
-            }
 
 
 // ================================================ Comparação Mês/Ano anterior ================================================================
